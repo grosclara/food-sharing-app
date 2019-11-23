@@ -1,0 +1,8 @@
+"18/11 to 20/11 - CG : State of the art of the main languages programming & databases, see results in doc state_of_the_art, 10h00"
+"20/11 - BT + YR : Weeks 1 & 2 of the Android app tutorial achieved, 2h00"
+"21/11 - CG + BT + YR : Brainstorming to gather ideas/concepts for the app project, see results in doc specifications, 1h00"
+"21/11 - YR + CG : Survey which aims at defining the needs on a campus, see results in the doc survey, 1h30"
+"22/11 - BT + CG + YR : First paper prototype of the app, 2h00"
+"23/11 - CG : Creation of a git repo"
+"23/11 - YR : Writes the specification of the mobile app named CShare, see results in doc specifications, 2h00"
+"23/11 - BT : Wireframes on the software Balsamiq, see results in the doc wireframes, 2h00"
