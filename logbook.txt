@@ -8,6 +8,8 @@
 "23/11 - BT : Wireframes on the software Balsamiq, see results in the doc wireframes_v1, 2h00"
 "24/11 - YR + CG : Writing of the specification doc of the mobile app named CShare, see results in doc specifications, 2h00"
 "24/11 - CG : Add features to the app, see results in doc wireframes_v2, 1h00"
+"01/12 - CG : Focus on the client-server architecture and choice of databases, see results in doc specifications, 2h00"
+"03/12 - CG + BT : Modeling of the database using the webapp QuickDatabaseDiagram, see results in database_modeling/server_side_v1, 1h00"
+"04/12 - BT : Initialisation of a Android Studio project named CShare"
 
-"25/11 - CG + YR + BT : Functional modeling, see results in doc functional_modeling_v1, 2h00"
-"25/11 - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
+" - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
