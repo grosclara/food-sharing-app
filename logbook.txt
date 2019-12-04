@@ -11,5 +11,8 @@
 "01/12 - CG : Focus on the client-server architecture and choice of databases, see results in doc specifications, 2h00"
 "03/12 - CG + BT : Modeling of the database using the webapp QuickDatabaseDiagram, see results in database_modeling/server_side_v1, 1h00"
 "04/12 - BT : Initialisation of a Android Studio project named CShare"
+"04/12 - BT : Initialisation of a Django project named rest_api, 30mn"
+"04/12 - BT + CG : Tuto MySQL + Creation of a SQL database named CShare" 
+"05/12 - CG + BT : Tuto Django, 1h30"
 
 " - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
