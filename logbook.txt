@@ -14,5 +14,6 @@
 "04/12 - BT : Initialisation of a Django project named rest_api, 30mn"
 "04/12 - BT + CG : Tuto MySQL + Creation of a SQL database named CShare" 
 "05/12 - CG + BT : Tuto Django, 1h30"
+"05/12 - CG : Modification of the database & connection of the db to the Django API, 1h00"
 
 " - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
