@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.LogPrinter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CollectActivity extends AppCompatActivity {
         textViewUserList = findViewById(R.id.textViewUserList);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://127.0.0.1:8000/api/v1/")
+                .baseUrl("http://10.0.2.2:8000/api/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -40,13 +41,17 @@ public class CollectActivity extends AppCompatActivity {
                 if(!response.isSuccessful()){
                     textViewUserList.setText("Code HTTP: "+response.code());
                 }
-                List<User> users =response.body();
-                for(User user : users){
-                    String content="";
-                    content += "Name: " + user.getName() + "\n";
-                    content += "First name: " + user.getFirstName() + "\n";
-                    textViewUserList.append(content);
-                }
+
+                textViewUserList.setText("Code HTTP: "+response.code());
+
+               // List<User> users = response.body();
+
+                //for(User user : users){
+                  //  String content="";
+                    //content += "Name: " + user.getName() + "\n";
+                    //content += "First name: " + user.getFirstName() + "\n";
+                    //textViewUserList.append(content);
+                //}
             }
 
             @Override
