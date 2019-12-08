@@ -17,5 +17,6 @@
 "05/12 - CG : Modification of the database & connection of the db to the Django API, 1h00"
 "07/12 - BT : Creation of the Django models, 1h00"
 "07/12 - CG : Use of django_rest_framework to create the api, 2h00"
+"08/12 - CG : Tutorial retrofit lib to connect Android to the Web api, 1h00"
 
 " - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
