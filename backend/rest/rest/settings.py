@@ -25,7 +25,9 @@ SECRET_KEY = 'uqslo&1_*_ramq8*lmnv$0za1-c=2k4j&$aya*%!_k1*+9)*2-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '10.0.2.2'
+]
 
 
 # Application definition
