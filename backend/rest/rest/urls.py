@@ -20,9 +20,10 @@ from api import views
 from rest_framework import routers
 
 router=routers.DefaultRouter()
-router.register(r'user',views.UserViewSet)
-router.register(r'product',views.ProductViewSet)
-router.register(r'order',views.ProductViewSet)
+router.register(r'api/v1/user',views.UserViewSet)
+router.register(r'api/v1/product',views.ProductViewSet)
+router.register(r'api/v1/order',views.OrderViewSet)
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^',include(router.urls))
