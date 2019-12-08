@@ -33,25 +33,23 @@ public class CollectActivity extends AppCompatActivity {
 
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        Call<List<User>> callAllUsers =djangoRestApi.getAllUsers();
+        Call<List<User>> callAllUsers = djangoRestApi.getAllUsers();
 
         callAllUsers.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if(!response.isSuccessful()){
-                    textViewUserList.setText("Code HTTP: "+response.code());
+                if (!response.isSuccessful()) {
+                    textViewUserList.setText("Code HTTP: " + response.code());
                 }
 
-                textViewUserList.setText("Code HTTP: "+response.code());
+                List<User> users = response.body();
 
-               // List<User> users = response.body();
-
-                //for(User user : users){
-                  //  String content="";
-                    //content += "Name: " + user.getName() + "\n";
-                    //content += "First name: " + user.getFirstName() + "\n";
-                    //textViewUserList.append(content);
-                //}
+                for (User user : users) {
+                    String content = "";
+                    content += "Name: " + user.getName() + "\n";
+                    content += "First name: " + user.getFirstName() + "\n";
+                    textViewUserList.append(content);
+                }
             }
 
             @Override
