@@ -3,15 +3,20 @@ package com.example.frontend;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
+
+    private int id;
     private String name;
-    @SerializedName("first_name")
-    private String firstName;
+    private String first_name;
 
     public String getName() {
         return name;
     }
 
     public String getFirstName() {
-        return firstName;
+        return first_name;
+    }
+
+    public int getId() {
+        return id;
     }
 }

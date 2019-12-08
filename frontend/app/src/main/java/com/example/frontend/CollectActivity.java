@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.LogPrinter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,14 +19,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CollectActivity extends AppCompatActivity {
 
-    private TextView textViewUserList;
+    private TextView textViewProducts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
-
-        textViewUserList = findViewById(R.id.textViewUserList);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8000/api/v1/")
@@ -33,28 +33,34 @@ public class CollectActivity extends AppCompatActivity {
 
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        Call<List<User>> callAllUsers = djangoRestApi.getAllUsers();
+        Call<List<Product>> callAllProducts = djangoRestApi.getAllProducts();
 
-        callAllUsers.enqueue(new Callback<List<User>>() {
+        callAllProducts.enqueue(new Callback<List<Product>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+
+                textViewProducts = findViewById(R.id.textViewProducts);
+
                 if (!response.isSuccessful()) {
-                    textViewUserList.setText("Code HTTP: " + response.code());
+                    textViewProducts.setText("Code HTTP: " + response.code());
                 }
 
-                List<User> users = response.body();
+                List<Product> products = response.body();
 
-                for (User user : users) {
-                    String content = "";
-                    content += "Name: " + user.getName() + "\n";
-                    content += "First name: " + user.getFirstName() + "\n";
-                    textViewUserList.append(content);
+                for (Product product : products) {
+                    if (product.getIsAvailable()) {
+                        String content = "";
+                        content += "ProductID: " + product.getId() + "\n";
+                        content += "Name: " + product.getName() + "\n";
+                        content += "Offerer: " + product.getOfferer() + "\n\n";
+                        textViewProducts.append(content);
+                    }
                 }
+
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                textViewUserList.setText(t.getMessage());
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 Log.d("connection", "failed to connect to localhost");
             }
         });

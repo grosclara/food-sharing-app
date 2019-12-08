@@ -1,9 +1,24 @@
 package com.example.frontend;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Product {
+    private int id;
     private String name;
-    @SerializedName("first_name")
-    private String firstName;
+    private Boolean is_available;
+    private String offerer;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Boolean getIsAvailable() {
+        return is_available;
+    }
+
+    public String getOfferer() {
+        return offerer;
+    }
 }

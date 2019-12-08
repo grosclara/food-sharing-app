@@ -10,4 +10,7 @@ public interface DjangoRestApi {
     @GET("user")
     Call<List<User>> getAllUsers();
 
+    @GET("product")
+    Call<List<Product>> getAllProducts();
+
 }
