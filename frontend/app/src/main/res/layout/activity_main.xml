@@ -25,4 +25,12 @@
         app:layout_constraintTop_toBottomOf="@id/textViewHelloWorld"
         android:onClick="toCollectActivity"/>
 
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Give a product"
+        app:layout_constraintTop_toBottomOf="@id/buttonCollect"
+        android:onClick="toAddActivity"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

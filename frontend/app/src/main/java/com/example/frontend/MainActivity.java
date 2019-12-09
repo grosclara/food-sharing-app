@@ -18,6 +18,11 @@ public class MainActivity extends AppCompatActivity {
         Intent toCollectActivityIntent = new Intent();
         toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
         startActivity(toCollectActivityIntent);
-        finish();
+    }
+
+    public void toAddActivity(View view) {
+        Intent toAddActivityIntent = new Intent();
+        toAddActivityIntent.setClass(getApplicationContext(), AddActivity.class);
+        startActivity(toAddActivityIntent);
     }
 }
