@@ -20,6 +20,10 @@ from api import views
 from rest_framework import routers
 
 router=routers.DefaultRouter()
+# Router that includes a default API root view,
+# that returns a response containing hyperlinks to all the list views.
+# It also generates routes for optional .json style format suffixes.
+
 router.register(r'api/v1/user',views.UserViewSet)
 router.register(r'api/v1/product',views.ProductViewSet)
 router.register(r'api/v1/order',views.OrderViewSet)

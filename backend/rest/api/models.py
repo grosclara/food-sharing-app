@@ -1,19 +1,19 @@
 from django.db import models
 
-# Create your models here.
+# Django models to create our SQL tables
 
-class User(models.Model):
+class User(models.Model): # User table
     name = models.CharField(max_length=200)
-    first_name = models.CharField(max_length=200)    
-    objects = models.Manager()
+    first_name = models.CharField(max_length=200) 
+    objects = models.Manager() # A Manager is the interface through which database query operations are provided to Django models.
 
-class Product(models.Model):
+class Product(models.Model): # Product table
     name = models.CharField(max_length=200)
     is_available = models.BooleanField()
-    offerer = models.ForeignKey('User',on_delete=models.CASCADE)
+    offerer = models.ForeignKey('User', on_delete=models.CASCADE) # equivalent to the sql constraint ON DELETE CASCADE
     objects = models.Manager()
 
-class Order(models.Model):
+class Order(models.Model): # Order table
     client = models.ForeignKey('User',on_delete=models.CASCADE)
     product = models.ForeignKey('Product',on_delete=models.CASCADE)
     objects = models.Manager()

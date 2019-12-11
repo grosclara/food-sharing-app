@@ -1,11 +1,11 @@
 from django.contrib import admin
 from api.models import User, Product, Order
+# Provide a admin interface
 
 # username : admin
 # password : P@ssword1
 
-# Register your models here.
-
+# Indicates the tables on which the administrator can operate
 admin.site.register(User)
 admin.site.register(Product)
 admin.site.register(Order)
