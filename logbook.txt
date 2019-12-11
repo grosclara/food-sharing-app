@@ -20,5 +20,7 @@
 "08/12 - CG : Tutorial retrofit lib to connect Android to the Web api, 1h00"
 "09/12 - BT + CG : Connection of the Android app to the Web API : first GET request successful, 2h00"
 "09/12 - CG : Creation of the Add Activity class and the Collect Class, 1h00"
+"10/12 - CG : State of the art bibliography, 1h00"
+"10/12 - BT : Code cleaning (adding javadoc), 1h00"
 
 " - CG + YR + BT : Planning & organisation of the team, see results un doc planning & specifications, 1h00"
