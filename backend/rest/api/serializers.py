@@ -9,7 +9,7 @@ from .models import User, Product, Order
 # with fields that correspond to the Model fields.
 # It uses hyperlinks to represent relationships, rather than primary keys.
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """
     The HyperLinkedModelSerializer class provides a shortcut that lets you automatically create 
     a Serializer class with fields that correspond to the Model fields. 
@@ -20,13 +20,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model=User 
         fields='__all__'
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     class Meta:
         model=Product
         fields='__all__'
 
-class OrderSerializer(serializers.HyperlinkedModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     class Meta:
         model=Order

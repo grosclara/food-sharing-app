@@ -11,11 +11,11 @@ public class Product {
     private int id;
     private String name;
     private Boolean is_available;
-    /** Contains the URL to the User offerer */
-    private String offerer;
+    /** Contains the id of the User offerer */
+    private int offerer;
 
     // Constructor
-    public Product(String name, Boolean is_available, String offerer) {
+    public Product(String name, Boolean is_available, int offerer) {
         this.name = name;
         this.is_available = is_available;
         this.offerer = offerer;
@@ -31,5 +31,5 @@ public class Product {
         return is_available;
     }
 
-    public String getOfferer() { return offerer; }
+    public int getOfferer() { return offerer; }
 }
