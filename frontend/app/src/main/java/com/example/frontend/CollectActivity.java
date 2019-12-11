@@ -8,8 +8,11 @@ import android.util.LogPrinter;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Possibility to retrieve the lists of available products
+ *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -27,52 +31,65 @@ public class CollectActivity extends AppCompatActivity {
 
     // temporary view to see the results
     private TextView textViewProducts;
+    private ListView listViewProducts;
 
+    private DjangoRestApi djangoRestApi;
+
+    /**
+     * Retrieves the available products in a listView thanks to the retrofit and GSon library
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /**
-         * Retrieves the available products in a listView thanks to the retrofit and GSon library
-         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
+        // Create a new class ?
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DjangoRestApi.baseUrl)
+                // use of the GsonConverterFactory class to generate an implementation of the
+                // DjangoRestApi interface which uses Gson for its deserialization.
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        // Generates an implementation of the DjangoRestApi
+        djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+        getAllProducts();
+    }
 
+    private void getAllProducts() {
         Call<List<Product>> callAllProducts = djangoRestApi.getAllProducts();
 
+        // Asynchronous request
         callAllProducts.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
 
-                textViewProducts = findViewById(R.id.textViewProducts);
+                // Get the listView from the xml file
+                listViewProducts = findViewById(R.id.listViewProducts);
 
+                // If the request fails:
                 if (!response.isSuccessful()) {
-                    textViewProducts.setText("Code HTTP: " + response.code());
+                    Toast.makeText(getApplicationContext(), "Code HTTP: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
 
-                List<Product> products = response.body();
-
-                for (Product product : products) {
+                // Initialization of the list
+                List<String> products = new ArrayList<>();
+                // Print the product name in each item if the product isAvailable
+                for (Product product : response.body()) {
                     if (product.getIsAvailable()) {
-                        String content = "";
-                        content += "ProductID: " + product.getId() + "\n";
-                        content += "Name: " + product.getName() + "\n";
-                        content += "Offerer: " + product.getOfferer() + "\n\n";
-                        textViewProducts.append(content);
+                        products.add(product.getName());
                     }
                 }
-
+                String[] arrayProducts = products.toArray(new String[products.size()]);
+                ArrayAdapter<String> adapterProducts = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayProducts);
+                listViewProducts.setAdapter(adapterProducts);
             }
 
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
-                Log.d("connection", "failed to connect to localhost");
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }

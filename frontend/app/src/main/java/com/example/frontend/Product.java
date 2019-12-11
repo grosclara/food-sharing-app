@@ -11,9 +11,15 @@ public class Product {
     private int id;
     private String name;
     private Boolean is_available;
-
     /** Contains the URL to the User offerer */
     private String offerer;
+
+    // Constructor
+    public Product(String name, Boolean is_available, String offerer) {
+        this.name = name;
+        this.is_available = is_available;
+        this.offerer = offerer;
+    }
 
     public int getId() { return id; }
 
