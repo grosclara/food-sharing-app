@@ -17,17 +17,27 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Possibility to retrieve the lists of available products
+ * @author Clara Gros, Babacar Toure
+ * @version 1.0
+ */
+
 public class CollectActivity extends AppCompatActivity {
 
+    // temporary view to see the results
     private TextView textViewProducts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /**
+         * Retrieves the available products in a listView thanks to the retrofit and GSon library
+         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8000/api/v1/")
+                .baseUrl(DjangoRestApi.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

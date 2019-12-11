@@ -1,6 +1,10 @@
 package com.example.frontend;
 
-import com.google.gson.annotations.SerializedName;
+/**
+ * Class of the <b>User</b> table. Each attribute corresponds to a column of the table and the defined methods are the getters.
+ * @author Clara Gros, Babacar Toure
+ * @version 1.0
+ */
 
 public class User {
 
