@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.frontend.CustomProductsAdapter;
 import com.example.frontend.DjangoRestApi;
 import com.example.frontend.R;
 import com.example.frontend.model.Product;
@@ -32,10 +33,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class CollectActivity extends AppCompatActivity {
-
-    // temporary view to see the results
-    private TextView textViewProducts;
-    private ListView listViewProducts;
 
     private DjangoRestApi djangoRestApi;
 
@@ -61,6 +58,7 @@ public class CollectActivity extends AppCompatActivity {
     }
 
     private void getAllProducts() {
+
         Call<List<Product>> callAllProducts = djangoRestApi.getAllProducts();
 
         // Asynchronous request
@@ -69,10 +67,26 @@ public class CollectActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Product>> call, final Response<List<Product>> response) {
 
+                ListView listViewProducts;
+                CustomProductsAdapter adapter;
+
                 // Get the listView from the xml file
                 listViewProducts = findViewById(R.id.listViewProducts);
 
-                // Set a listener for item click
+                // Populate the products arrayList
+                final ArrayList<Product> productsArrayList = (ArrayList<Product>) response.body();
+                adapter = new CustomProductsAdapter(productsArrayList, getApplicationContext());
+
+                listViewProducts.setAdapter(adapter);
+                listViewProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Product product = productsArrayList.get(position);
+                        Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                /*// Set a listener for item click
                 listViewProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
@@ -83,25 +97,27 @@ public class CollectActivity extends AppCompatActivity {
                         toOrderActivityIntent.putExtra("product", response.body().get(position));
                         startActivity(toOrderActivityIntent);
                     }
-                });
+                });*/
+
+
 
                 // If the request fails:
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Code HTTP: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
 
-                // Initialization of the list
+               /* // Initialization of the list
                 List<String> products = new ArrayList<>();
                 // Print the product name in each item if the product isAvailable
                 for (Product product : response.body()) {
-                    if (product.getIsAvailable()) {
+                    if (product.getIs_available()) {
                         products.add(product.getName());
                     }
                 }
                 String[] arrayProducts = products.toArray(new String[products.size()]);
                 ArrayAdapter<String> adapterProducts = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayProducts);
                 listViewProducts.setAdapter(adapterProducts);
-
+*/
             }
 
             @Override

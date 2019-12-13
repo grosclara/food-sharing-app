@@ -68,7 +68,7 @@ public class AddActivity extends AppCompatActivity {
         productName = String.valueOf(editTextProductName.getText());
 
         // Creation of a new product and its attribute
-        Product product = new Product(productName, true, 3);
+        Product product = new Product(productName, true, 3, "test");
 
         // Asynchronous request
         Call<Product> call = djangoRestApi.createProduct(product);

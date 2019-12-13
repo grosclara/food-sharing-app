@@ -31,9 +31,13 @@ public class Product implements Serializable {
         return name;
     }
 
-    public Boolean getIsAvailable() {
+    public int getOfferer() { return offerer; }
+
+    public Boolean getIs_available() {
         return is_available;
     }
 
-    public int getOfferer() { return offerer; }
+    public String getProduct_image_url() {
+        return product_image_url;
+    }
 }
