@@ -1,12 +1,14 @@
 package com.example.frontend;
 
+import java.io.Serializable;
+
 /**
  * Class of the <b>Product</b> table. Each attribute corresponds to a column of the table and the defined methods are the getters.
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
 
-public class Product {
+public class Product implements Serializable {
 
     private int id;
     private String name;

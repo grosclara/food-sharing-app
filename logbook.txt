@@ -25,3 +25,5 @@
 "11/12 - CG : Format GET request creating an adapter, 3h00"
 "11/12 - BT : POST request to give a product, 4h00"
 "11/12 - CG + BT : Planning & organisation of the team, see results un doc planning, 15mn"
+"12/12 - BT : Creation of the order activity, 1h00"
+"13/12 - CG : Overriding the Adapter class to set tags to each items, 2h00"

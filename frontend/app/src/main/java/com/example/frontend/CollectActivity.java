@@ -2,9 +2,12 @@ package com.example.frontend;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.LogPrinter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,11 +64,25 @@ public class CollectActivity extends AppCompatActivity {
 
         // Asynchronous request
         callAllProducts.enqueue(new Callback<List<Product>>() {
+
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<List<Product>> call, final Response<List<Product>> response) {
 
                 // Get the listView from the xml file
                 listViewProducts = findViewById(R.id.listViewProducts);
+
+                // Set a listener for item click
+                listViewProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Intent toOrderActivityIntent = new Intent();
+                        toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
+                        toOrderActivityIntent.putExtra("product", response.body().get(position));
+                        startActivity(toOrderActivityIntent);
+                    }
+                });
 
                 // If the request fails:
                 if (!response.isSuccessful()) {
@@ -83,6 +100,7 @@ public class CollectActivity extends AppCompatActivity {
                 String[] arrayProducts = products.toArray(new String[products.size()]);
                 ArrayAdapter<String> adapterProducts = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayProducts);
                 listViewProducts.setAdapter(adapterProducts);
+
             }
 
             @Override
