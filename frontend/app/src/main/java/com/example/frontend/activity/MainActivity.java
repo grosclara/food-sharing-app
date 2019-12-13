@@ -1,10 +1,12 @@
-package com.example.frontend;
+package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.frontend.R;
 
 /**
  * Launcher activity that allows navigating to the Collect and Add activities

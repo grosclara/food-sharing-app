@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".OrderActivity"></activity>
-        <activity android:name=".AddActivity" />
-        <activity android:name=".CollectActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.OrderActivity"></activity>
+        <activity android:name=".activity.AddActivity" />
+        <activity android:name=".activity.CollectActivity" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

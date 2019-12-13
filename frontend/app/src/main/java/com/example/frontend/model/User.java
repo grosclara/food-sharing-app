@@ -1,4 +1,4 @@
-package com.example.frontend;
+package com.example.frontend.model;
 
 /**
  * Class of the <b>User</b> table. Each attribute corresponds to a column of the table and the defined methods are the getters.

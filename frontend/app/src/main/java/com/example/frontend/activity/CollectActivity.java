@@ -1,11 +1,9 @@
-package com.example.frontend;
+package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.LogPrinter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,9 +11,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.frontend.DjangoRestApi;
+import com.example.frontend.R;
+import com.example.frontend.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import retrofit2.Call;
 import retrofit2.Callback;

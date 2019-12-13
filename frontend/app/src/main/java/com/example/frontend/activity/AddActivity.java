@@ -1,4 +1,4 @@
-package com.example.frontend;
+package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.frontend.DjangoRestApi;
+import com.example.frontend.R;
+import com.example.frontend.model.Product;
 
 import retrofit2.Call;
 import retrofit2.Callback;
