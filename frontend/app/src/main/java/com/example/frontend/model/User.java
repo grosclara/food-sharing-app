@@ -11,6 +11,8 @@ public class User {
     private int id;
     private String name;
     private String first_name;
+    private String profile_picture_url;
+
 
     public String getName() {
         return name;
