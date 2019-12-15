@@ -3,24 +3,14 @@ package com.example.frontend.api;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.frontend.CustomProductsAdapter;
-import com.example.frontend.GetAvailableProductsCallbacks;
 import com.example.frontend.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,7 +59,15 @@ public class RequestHelper {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<Product> productArrayList = (ArrayList<Product>) response.body();
+
+                    // Initialization of the array List
+                    ArrayList<Product> productArrayList = new ArrayList<>();
+                    // The productArrayList will only contains available products
+                    for(Product product : response.body()){
+                        if(product.getIs_available()){
+                            productArrayList.add(product);
+                        }
+                    }
                     // Call for the onSuccess method of the callbacks object to process the data
                     // from the productArrayList
                     if (callbacks != null)

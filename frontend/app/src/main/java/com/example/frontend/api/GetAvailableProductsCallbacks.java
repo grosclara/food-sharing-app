@@ -1,4 +1,4 @@
-package com.example.frontend;
+package com.example.frontend.api;
 
 import androidx.annotation.NonNull;
 import com.example.frontend.model.Product;

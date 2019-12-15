@@ -25,35 +25,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bf570a46-b0ce-4330-9cd8-40e63522d304" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0005_auto_20191213_1035.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0006_auto_20191213_1036.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0007_auto_20191213_1037.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0008_auto_20191213_1040.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0009_auto_20191213_1053.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0010_auto_20191213_1057.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0011_auto_20191213_1059.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0012_auto_20191213_1101.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0013_auto_20191213_1102.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0014_auto_20191213_1103.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0015_auto_20191213_1104.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0016_auto_20191213_1106.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0017_auto_20191213_1120.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0018_auto_20191213_1132.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/api/migrations/0019_auto_20191213_1137.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/rest/rest/media/user/android.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/CustomProductsAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/OrderActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/test.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_order.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/product_row_item.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/DjangoRestApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/DjangoRestApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/AddActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/AddActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/GetAvailableProductsCallbacks.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/GetAvailableProductsCallbacks.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/CollectActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/CollectActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_collect.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_collect.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/com/example/frontend/DjangoRestApi.html" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/frontend/DjangoRestApi.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constant-values.html" beforeDir="false" afterPath="$PROJECT_DIR$/constant-values.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +52,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/CollectActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="253">
-              <caret line="76" column="30" selection-start-line="76" selection-start-column="30" selection-end-line="76" selection-end-column="30" />
+              <caret line="68" column="30" selection-start-line="68" selection-start-column="30" selection-end-line="68" selection-end-column="30" />
               <folding>
                 <element signature="e#2365#3219#0" expanded="true" />
                 <element signature="e#3218#3219#0" expanded="true" />
@@ -99,11 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/OrderActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="27" column="94" selection-start-line="27" selection-start-column="94" selection-end-line="27" selection-end-column="94" />
+            <state relative-caret-position="391">
+              <caret line="31" column="5" lean-forward="true" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -142,11 +116,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="82" column="41" lean-forward="true" selection-start-line="82" selection-start-column="41" selection-end-line="82" selection-end-column="41" />
+            <state relative-caret-position="166">
+              <caret line="67" column="58" selection-start-line="67" selection-start-column="58" selection-end-line="67" selection-end-column="58" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -155,10 +129,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/GetAvailableProductsCallbacks.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/GetAvailableProductsCallbacks.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+            <state relative-caret-position="170">
+              <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -218,11 +195,12 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_collect.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/CustomProductsAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/DjangoRestApi.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/GetAvailableProductsCallbacks.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/AddActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/CollectActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/OrderActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/GetAvailableProductsCallbacks.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java" />
       </list>
     </option>
   </component>
@@ -264,6 +242,13 @@
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="frontend" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="activity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="frontend" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="frontend" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -379,9 +364,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.2852349" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.2852349" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -397,7 +383,7 @@
       <window_info anchor="bottom" id="Terminal" order="5" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Build" order="8" weight="0.46782842" />
+      <window_info active="true" anchor="bottom" id="Build" order="8" visible="true" weight="0.46782842" />
       <window_info anchor="bottom" id="Android Profiler" order="9" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
@@ -542,23 +528,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/GetAvailableProductsCallbacks.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="82" column="41" lean-forward="true" selection-start-line="82" selection-start-column="41" selection-end-line="82" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/AddActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="355">
@@ -572,7 +541,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/CollectActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
-          <caret line="76" column="30" selection-start-line="76" selection-start-column="30" selection-end-line="76" selection-end-column="30" />
+          <caret line="68" column="30" selection-start-line="68" selection-start-column="30" selection-end-line="68" selection-end-column="30" />
           <folding>
             <element signature="e#2365#3219#0" expanded="true" />
             <element signature="e#3218#3219#0" expanded="true" />
@@ -582,8 +551,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/activity/OrderActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="27" column="94" selection-start-line="27" selection-start-column="94" selection-end-line="27" selection-end-column="94" />
+        <state relative-caret-position="391">
+          <caret line="31" column="5" lean-forward="true" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/GetAvailableProductsCallbacks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/frontend/api/RequestHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="67" column="58" selection-start-line="67" selection-start-column="58" selection-end-line="67" selection-end-column="58" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

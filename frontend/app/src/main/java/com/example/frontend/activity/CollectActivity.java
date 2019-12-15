@@ -12,20 +12,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.frontend.CustomProductsAdapter;
-import com.example.frontend.GetAvailableProductsCallbacks;
-import com.example.frontend.api.DjangoRestApi;
+import com.example.frontend.api.GetAvailableProductsCallbacks;
 import com.example.frontend.R;
 import com.example.frontend.api.RequestHelper;
 import com.example.frontend.model.Product;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Possibility to retrieve the lists of available products
