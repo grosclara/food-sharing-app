@@ -27,3 +27,5 @@
 "11/12 - CG + BT : Planning & organisation of the team, see results un doc planning, 15mn"
 "12/12 - BT : Creation of the order activity, 1h00"
 "13/12 - CG : Overriding the Adapter class to set tags to each items, 2h00"
+"15/12 - CG : Restructuring the project creating packages and a new RequestHelper class, 30min"
+"15/12 - CG : Fixing issues of the Order activity by creating a new callback interface to process properly the productArrayList, 4h00"

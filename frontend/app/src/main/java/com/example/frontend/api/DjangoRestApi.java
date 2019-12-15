@@ -1,4 +1,4 @@
-package com.example.frontend;
+package com.example.frontend.api;
 
 import com.example.frontend.model.Product;
 
@@ -25,7 +25,7 @@ public interface DjangoRestApi {
      * @return a call object containing a list of products
      */
     @GET("product/")
-    Call<List<Product>> getAllProducts();
+    Call<List<Product>> getAvailableProducts();
 
     /**
      * @param productId
@@ -39,6 +39,6 @@ public interface DjangoRestApi {
      * @return a call object containing the product to post to the api
      */
     @POST("product/")
-    Call<Product> createProduct(@Body Product product );
+    Call<Product> addProduct(@Body Product product );
 
 }

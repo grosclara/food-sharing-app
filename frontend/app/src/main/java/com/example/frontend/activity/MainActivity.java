@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.frontend.R;
+import com.example.frontend.api.RequestHelper;
 
 /**
  * Launcher activity that allows navigating to the Collect and Add activities
@@ -16,10 +17,18 @@ import com.example.frontend.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private  static RequestHelper requestHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestHelper = new RequestHelper(getApplicationContext());
+    }
+
+    public static RequestHelper getRequestHelper() {
+        return requestHelper;
     }
 
     public void toCollectActivity(View view) {
