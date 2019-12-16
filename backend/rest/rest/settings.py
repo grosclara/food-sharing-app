@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [ # Access allowed to Android emulators and localhost
 INSTALLED_APPS = [
     'api',
     'rest_framework',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -130,3 +131,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR+'/rest/'
 
 MEDIA_URL = '/'
+
+# Allow for basic sorting operations on the API
+# Requires pip install django-filter
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}

@@ -30,7 +30,7 @@
 "15/12 - CG : Restructuring the project creating packages and a new RequestHelper class, 30min"
 "15/12 - CG : Fixing issues of the Order activity by creating a new callback interface to process properly the productArrayList, 4h00"
 "16/12 - CG : Fixing structure issues, 1h00"
+"16/12 - BT : Add the user info to the Order Activity, 1h00"
 
 photo
-user
 trier par ordre desc les annonces

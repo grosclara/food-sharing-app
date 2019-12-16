@@ -12,8 +12,10 @@ class Product(models.Model): # Product table
     name = models.CharField(max_length=200)
     is_available = models.BooleanField()
     supplier = models.ForeignKey('User', on_delete=models.CASCADE) # equivalent to the sql constraint ON DELETE CASCADE
-    objects = models.Manager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
+    objects = models.Manager()
 
 
 class Order(models.Model): # Order table
