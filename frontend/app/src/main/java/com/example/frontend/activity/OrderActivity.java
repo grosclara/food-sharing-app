@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.example.frontend.R;
 import com.example.frontend.api.RequestHelper;
 import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +37,7 @@ public class OrderActivity extends AppCompatActivity {
     TextView textViewSupplierName;
     TextView textViewSupplierFirstName;
     private RequestHelper requestHelper;
+    ImageView imageViewProduct;
 
     /**
      *
@@ -50,8 +53,6 @@ public class OrderActivity extends AppCompatActivity {
         Intent toOrderActivityIntent = getIntent();
         Product product = (Product) toOrderActivityIntent.getSerializableExtra("product");
 
-        Toast.makeText(getApplicationContext(), product.getProduct_picture(), Toast.LENGTH_SHORT).show();
-
         // Retrieve and display the supplier information in the upper Linear Layout
         int userID = product.getSupplier();
         getUserById(userID);
@@ -59,6 +60,7 @@ public class OrderActivity extends AppCompatActivity {
         // Display the product info in the lower Linear Layout
         textViewProductName = findViewById(R.id.textViewProductName);
         textViewProductStatus = findViewById(R.id.textViewProductStatus);
+        imageViewProduct = findViewById(R.id.imageViewProduct);
 
         textViewProductName.setText(product.getName());
         if(product.getIs_available()){
@@ -66,6 +68,7 @@ public class OrderActivity extends AppCompatActivity {
         } else{
             textViewProductStatus.setText("Already ordered by someone else");
         }
+        Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
     public void getUserById(int userId){

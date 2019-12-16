@@ -30,6 +30,14 @@
         app:layout_constraintTop_toBottomOf="@id/textViewSupplierFirstName" />
 
 
+    <ImageView
+        android:id="@+id/imageViewProduct"
+        android:layout_width="86dp"
+        android:layout_height="43dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductStatus"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/test" />
+
     <TextView
         android:id="@+id/textViewProductName"
         android:layout_width="match_parent"

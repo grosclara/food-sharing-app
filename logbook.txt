@@ -34,3 +34,4 @@
 "16/12 - CG : Sort the product offers from most recent ads to old ads, 30mn"
 
 photo
+commenter adapter
