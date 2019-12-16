@@ -50,6 +50,8 @@ public class OrderActivity extends AppCompatActivity {
         Intent toOrderActivityIntent = getIntent();
         Product product = (Product) toOrderActivityIntent.getSerializableExtra("product");
 
+        Toast.makeText(getApplicationContext(), product.getProduct_picture(), Toast.LENGTH_SHORT).show();
+
         // Retrieve and display the supplier information in the upper Linear Layout
         int userID = product.getSupplier();
         getUserById(userID);
@@ -81,7 +83,6 @@ public class OrderActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(),"yes",Toast.LENGTH_SHORT).show();
                     textViewSupplierFirstName.setText(response.body().getFirstName());
                     textViewSupplierName.setText(response.body().getName());
                 } else {
