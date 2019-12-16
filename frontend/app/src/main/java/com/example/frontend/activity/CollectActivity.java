@@ -12,15 +12,19 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.frontend.CustomProductsAdapter;
-import com.example.frontend.api.GetAvailableProductsCallbacks;
 import com.example.frontend.R;
 import com.example.frontend.api.RequestHelper;
 import com.example.frontend.model.Product;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
- * Possibility to retrieve the lists of available products
+ * Retrieve the lists of available products
  *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
@@ -32,51 +36,71 @@ public class CollectActivity extends AppCompatActivity {
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
-    /**
-     * Call fro the getAvailableProducts() method to retrieves the available products in a listView
-     * @see RequestHelper#addProduct(Product)
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
-        listViewAvailableProducts = findViewById(R.id.listViewAvailableProducts);
-
         // Get a reference on the requestHelper object defined in MainActivity
         requestHelper = MainActivity.getRequestHelper();
 
-        // Retrieve the arrayList of available products to process the data
-        requestHelper.getAvailableProducts(new GetAvailableProductsCallbacks() {
+        getAvailableProducts();
+    }
+
+    public void getAvailableProducts(){
+
+        // Retrieve a reference on the listView defined in the xml file
+        listViewAvailableProducts = findViewById(R.id.listViewAvailableProducts);
+
+        // Creation of a call object that will contain the response
+        Call<List<Product>> callAvailableProducts = requestHelper.djangoRestApi.getAvailableProducts();
+        // Asynchronous request
+        callAvailableProducts.enqueue(new Callback<List<Product>>() {
+
             @Override
-            public void onSuccess(@NonNull final ArrayList<Product> productArrayList) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                Log.d("serverRequest",response.message());
 
-                // Attach the adapter to the listView
-                adapterAvailableProducts = new CustomProductsAdapter(productArrayList,getApplicationContext());
-                listViewAvailableProducts.setAdapter(adapterAvailableProducts);
+                if (response.isSuccessful()) {
 
-                // The current object handles the event "click on a listView item"
-                listViewAvailableProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                        Product product = productArrayList.get(position);
-
-                        // Toast the name of the product
-                        Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
-
-                        // Redirect to the OrderActivity
-                        Intent toOrderActivityIntent = new Intent();
-                        toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
-                        toOrderActivityIntent.putExtra("productToOrder", product);
-                        startActivity(toOrderActivityIntent);
+                    // Initialization of the productArrayList that will only contain available products
+                    final ArrayList<Product> productArrayList = new ArrayList<>();
+                    for (Product product : response.body()) {
+                        if (product.getIs_available()) {
+                            productArrayList.add(product);
+                        }
                     }
-                });
+
+                    // Attach the adapter to the listView
+                    adapterAvailableProducts = new CustomProductsAdapter(productArrayList,getApplicationContext());
+                    listViewAvailableProducts.setAdapter(adapterAvailableProducts);
+
+                    // The current object handles the event "click on a listView item"
+                    listViewAvailableProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Product product = productArrayList.get(position);
+
+                            // Toast the name of the product
+                            Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
+
+                            // Redirect to the OrderActivity
+                            Intent toOrderActivityIntent = new Intent();
+                            toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
+                            // Send the product information to the OrderActivity
+                            toOrderActivityIntent.putExtra("productToOrder", product);
+                            startActivity(toOrderActivityIntent);
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                }
             }
 
             @Override
-            public void onError(@NonNull Throwable throwable) {
-                Log.d("error","getAvailableProductRequestError");
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                Log.d("serverRequest", t.getMessage());
             }
         });
     }

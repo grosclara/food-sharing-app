@@ -1,6 +1,7 @@
 package com.example.frontend.api;
 
 import com.example.frontend.model.Product;
+import com.example.frontend.model.User;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Interface that represents the API of the web service in our app
@@ -25,14 +27,10 @@ public interface DjangoRestApi {
      * @return a call object containing a list of products
      */
     @GET("product/")
-    Call<List<Product>> getAvailableProducts();
-
-    /**
-     * @param productId
-     * @return a call object containing a single product chosen by its id
-     */
-    @GET("product/{id}/")
-    Call<Product> getProduct(@Path("id") int productId);
+    Call<List<Product>> getAvailableProducts(
+//            @Query("sort") String sort,
+//            @Query("order") String order
+    );
 
     /**
      * @param product
@@ -40,5 +38,12 @@ public interface DjangoRestApi {
      */
     @POST("product/")
     Call<Product> addProduct(@Body Product product );
+
+    /**
+     * @param userId
+     * @return a call object containing a single user chosen by its id
+     */
+    @GET("user/{id}/")
+    Call<User> getUserByID(@Path("id") int userId);
 
 }
