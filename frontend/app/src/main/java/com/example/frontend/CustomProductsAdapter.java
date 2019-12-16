@@ -22,12 +22,12 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
     // View lookup cache
     private static class ProductViewHolder {
         TextView textViewProductName;
-        TextView textViewOfferer;
+        TextView textViewSupplier;
        // ImageView imageViewProduct;
 
-        public ProductViewHolder(TextView textViewProductName, TextView textViewOfferer){
+        public ProductViewHolder(TextView textViewProductName, TextView textViewSupplier){
             this.textViewProductName = textViewProductName;
-            this.textViewOfferer = textViewOfferer;
+            this.textViewSupplier = textViewSupplier;
         }
     }
 
@@ -67,7 +67,7 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
             convertView = inflater.inflate(R.layout.product_row_item, parent, false);
 
             TextView textViewProductName = convertView.findViewById(R.id.textViewProductName);
-            TextView textViewOfferer = convertView.findViewById(R.id.textViewOfferer);
+            TextView textViewOfferer = convertView.findViewById(R.id.textViewSupplier);
             //imageViewProduct = (ImageView) convertView.findViewById(R.id.imageViewProduct);
 
             convertView.setTag(new ProductViewHolder(textViewProductName, textViewOfferer));
@@ -82,7 +82,7 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
         productViewHolder = (ProductViewHolder) convertView.getTag();
         productViewHolder.textViewProductName.setText(product.getName());
-        productViewHolder.textViewOfferer.setId(product.getOfferer());
+        productViewHolder.textViewSupplier.setId(product.getSupplier());
 
 
         return convertView;

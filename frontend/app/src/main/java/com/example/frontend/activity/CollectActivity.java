@@ -59,7 +59,7 @@ public class CollectActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                Log.d("serverRequest",response.message());
+                Log.i("serverRequest",response.message());
 
                 if (response.isSuccessful()) {
 
@@ -89,7 +89,7 @@ public class CollectActivity extends AppCompatActivity {
                             Intent toOrderActivityIntent = new Intent();
                             toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
                             // Send the product information to the OrderActivity
-                            toOrderActivityIntent.putExtra("productToOrder", product);
+                            toOrderActivityIntent.putExtra("product", product);
                             startActivity(toOrderActivityIntent);
                         }
                     });
@@ -100,7 +100,7 @@ public class CollectActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
-                Log.d("serverRequest", t.getMessage());
+                Log.i("serverRequest", t.getMessage());
             }
         });
     }

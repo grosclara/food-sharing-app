@@ -13,15 +13,15 @@ public class Product implements Serializable {
     private int id;
     private String name;
     private Boolean is_available;
-    /** Contains the id of the User offerer */
-    private int offerer;
+    /** Contains the id of the User supplier */
+    private int supplier;
     private String product_image_url;
 
     // Constructor
-    public Product(String name, Boolean is_available, int offerer, String product_image_url) {
+    public Product(String name, Boolean is_available, int supplier, String product_image_url) {
         this.name = name;
         this.is_available = is_available;
-        this.offerer = offerer;
+        this.supplier = supplier;
         this.product_image_url = product_image_url;
     }
 
@@ -31,7 +31,7 @@ public class Product implements Serializable {
         return name;
     }
 
-    public int getOfferer() { return offerer; }
+    public int getSupplier() { return supplier; }
 
     public Boolean getIs_available() {
         return is_available;

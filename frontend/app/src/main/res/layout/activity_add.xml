@@ -29,6 +29,6 @@
         android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:onClick="toMainActivity"/>
+        android:onClick="fromAddToMainActivity"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

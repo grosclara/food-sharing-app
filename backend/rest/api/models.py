@@ -11,7 +11,7 @@ class User(models.Model): # User table
 class Product(models.Model): # Product table
     name = models.CharField(max_length=200)
     is_available = models.BooleanField()
-    offerer = models.ForeignKey('User', on_delete=models.CASCADE) # equivalent to the sql constraint ON DELETE CASCADE
+    supplier = models.ForeignKey('User', on_delete=models.CASCADE) # equivalent to the sql constraint ON DELETE CASCADE
     objects = models.Manager()
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
 

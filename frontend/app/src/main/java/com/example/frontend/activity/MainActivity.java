@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         return requestHelper;
     }
 
-    public void toCollectActivity(View view) {
+    public void fromMainToCollectActivity(View view) {
         /**
          * Redirect to the CollectActivity when clicking the buttonCollect
          * @param Button buttonCollect
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(toCollectActivityIntent);
     }
 
-    public void toAddActivity(View view) {
+    public void fromMainToAddActivity(View view) {
         /**
          * Redirect to the AddActivity when clicking the buttonCollect
          */

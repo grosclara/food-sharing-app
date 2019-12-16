@@ -45,7 +45,7 @@ public class AddActivity extends AppCompatActivity {
      * @param view buttonSubmit
      * @see #addProduct(Product product)
      */
-    public void toMainActivity(View view) {
+    public void fromAddToMainActivity(View view) {
 
         // Retrieve the name of the product typed in the editText field
         editTextProductName = findViewById(R.id.editTextProductName);
@@ -79,7 +79,7 @@ public class AddActivity extends AppCompatActivity {
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
-                Log.d("serverRequest", response.message());
+                Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
                     Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT);
@@ -90,7 +90,7 @@ public class AddActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
-                Log.d("serverRequest", t.getMessage());
+                Log.i("serverRequest", t.getMessage());
             }
         });
     }

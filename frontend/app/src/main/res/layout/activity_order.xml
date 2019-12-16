@@ -1,25 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout
-    tools:context=".activity.OrderActivity"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.OrderActivity">
 
     <Button
         android:id="@+id/buttonOrder"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Order"/>
+        android:layout_height="wrap_content"
+        android:onClick="fromOrderToMainActivity"
+        android:text="Order"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 
     <TextView
-        android:layout_height="wrap_content"
+        android:id="@+id/textViewSupplierFirstName"
         android:layout_width="match_parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/buttonOrder"
-        android:id="@+id/textViewProduct"/>
+        android:text="Supplier First Name"/>
+
+    <TextView
+        android:id="@+id/textViewSupplierName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Supplier Name"
+        app:layout_constraintTop_toBottomOf="@id/textViewSupplierFirstName" />
+
+
+    <TextView
+        android:id="@+id/textViewProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        app:layout_constraintTop_toBottomOf="@id/textViewSupplierName"
+
+        />
+
+    <TextView
+        android:id="@+id/textViewProductStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

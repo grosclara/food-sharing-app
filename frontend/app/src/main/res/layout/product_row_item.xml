@@ -17,7 +17,7 @@
 
 
     <TextView
-        android:id="@+id/textViewOfferer"
+        android:id="@+id/textViewSupplier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewProductName"

@@ -23,7 +23,7 @@
         android:text="Collect"
         android:textColor="#000"
         app:layout_constraintTop_toBottomOf="@id/textViewHelloWorld"
-        android:onClick="toCollectActivity"/>
+        android:onClick="fromMainToCollectActivity"/>
 
     <Button
         android:id="@+id/buttonAdd"
@@ -31,6 +31,6 @@
         android:layout_height="wrap_content"
         android:text="Give a product"
         app:layout_constraintTop_toBottomOf="@id/buttonCollect"
-        android:onClick="toAddActivity"/>
+        android:onClick="fromMainToAddActivity"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
