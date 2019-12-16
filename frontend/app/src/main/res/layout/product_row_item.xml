@@ -15,16 +15,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
 
-
-    <TextView
-        android:id="@+id/textViewSupplier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewProductName"
-        android:layout_marginTop="5dp"
-        android:text="Nom de l'offreur"
-        android:textColor="@android:color/black" />
-
     <ImageView
         android:id="@+id/imageViewProduct"
         android:layout_width="86dp"

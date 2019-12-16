@@ -94,7 +94,7 @@ public class CollectActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
             }
 
