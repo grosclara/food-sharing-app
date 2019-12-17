@@ -1,5 +1,6 @@
 package com.example.frontend.api;
 
+import com.example.frontend.model.Order;
 import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 
@@ -45,5 +46,13 @@ public interface DjangoRestApi {
      */
     @GET("user/{id}/")
     Call<User> getUserByID(@Path("id") int userId);
+
+    /**
+     * @param order
+     * @return a call object containing the order to post to the api
+     */
+    @POST("order/")
+    Call<Order> addOrder(@Body Order order );
+
 
 }
