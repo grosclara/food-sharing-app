@@ -25,6 +25,10 @@ public class Product implements Serializable {
         this.product_picture = product_picture;
     }
 
+    public void setIs_available(Boolean is_available) {
+        this.is_available = is_available;
+    }
+
     public int getId() { return id; }
 
     public String getName() {

@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -54,5 +55,10 @@ public interface DjangoRestApi {
     @POST("order/")
     Call<Order> addOrder(@Body Order order );
 
-
+    /**
+     * @params id, product
+     * @return a call object containing the product chosen by its id to update in the api
+     */
+    @PUT("order/{id}/")
+    Call<Product> updateProduct(@Path("id") int id ,@Body Product product);
 }

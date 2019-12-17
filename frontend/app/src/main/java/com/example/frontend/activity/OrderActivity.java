@@ -113,6 +113,11 @@ public class OrderActivity extends AppCompatActivity {
         //post order
         addOrder(order);
 
+        // set to not available
+        product.setIs_available(true);
+        int id =  product.getId();
+        setToNotAvailable(id ,product);
+
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
         toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
@@ -146,6 +151,37 @@ public class OrderActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Order> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
+    }
+
+    public void setToNotAvailable(int id, Product product){
+        /**
+         * Take into param a product and its id and update it in the remote database asynchronously
+         *
+         * @param Product product
+         */
+
+        // Get a reference on the requestHelper object defined in MainActivity
+        requestHelper = MainActivity.getRequestHelper();
+
+        // Asynchronous request
+        Call<Product> call = requestHelper.djangoRestApi.addProduct(product);
+        call.enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    // In case of success, toast "Submit!"
+                    Toast.makeText(getApplicationContext(), "Not available", Toast.LENGTH_SHORT);
+                } else {
+                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
                 Log.i("serverRequest", t.getMessage());
             }
         });

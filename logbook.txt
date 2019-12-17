@@ -33,7 +33,7 @@
 "16/12 - BT : Add the user info to the Order Activity, 1h00"
 "16/12 - CG : Sort the product offers from most recent ads to old ads, 30mn"
 "16/12 - CG : Handle the display of pictures with the Picasso library, 1h00"
-"17/12 - BT : add POST orders to databses, 1h00" 
+"17/12 - BT : add POST orders to databses and switch product to unavailable, 1h00" 
 
 photo
 commenter adapter
