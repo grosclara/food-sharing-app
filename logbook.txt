@@ -34,6 +34,7 @@
 "16/12 - CG : Sort the product offers from most recent ads to old ads, 30mn"
 "16/12 - CG : Handle the display of pictures with the Picasso library, 1h00"
 "17/12 - BT : add POST orders to databses and switch product to unavailable, 1h00" 
+"18/12 - CG : "attempts to fix POST issues due to the picture field in the product class, 5h00"
 
 photo
 commenter adapter

@@ -1,6 +1,5 @@
 package com.example.frontend.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,7 +12,8 @@ import android.widget.Toast;
 
 import com.example.frontend.CustomProductsAdapter;
 import com.example.frontend.R;
-import com.example.frontend.api.RequestHelper;
+import com.example.frontend.api.DjangoRestApi;
+import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Product;
 
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Retrieve the lists of available products
@@ -32,7 +33,6 @@ import retrofit2.Response;
 
 public class CollectActivity extends AppCompatActivity {
 
-    private RequestHelper requestHelper;
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
@@ -40,9 +40,6 @@ public class CollectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
-
-        // Get a reference on the requestHelper object defined in MainActivity
-        requestHelper = MainActivity.getRequestHelper();
 
         getAvailableProducts();
     }
@@ -52,8 +49,12 @@ public class CollectActivity extends AppCompatActivity {
         // Retrieve a reference on the listView defined in the xml file
         listViewAvailableProducts = findViewById(R.id.listViewAvailableProducts);
 
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = requestHelper.djangoRestApi.getAvailableProducts();
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts();
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
 

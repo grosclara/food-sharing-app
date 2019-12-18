@@ -10,7 +10,7 @@ class User(models.Model): # User table
 
 class Product(models.Model): # Product table
     name = models.CharField(max_length=200)
-    is_available = models.BooleanField()
+    is_available = models.BooleanField(default=True)
     supplier = models.ForeignKey('User', on_delete=models.CASCADE) # equivalent to the sql constraint ON DELETE CASCADE
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

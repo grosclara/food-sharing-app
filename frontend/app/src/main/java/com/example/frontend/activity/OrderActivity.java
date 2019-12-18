@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.frontend.R;
-import com.example.frontend.api.RequestHelper;
+import com.example.frontend.api.DjangoRestApi;
+import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Order;
 import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Possibility to retrieve the information of both the product and the supplier of the product we
@@ -33,13 +34,13 @@ import retrofit2.Response;
  */
 public class OrderActivity extends AppCompatActivity {
 
-    TextView textViewProductName;
-    TextView textViewProductStatus;
-    TextView textViewSupplierName;
-    TextView textViewSupplierFirstName;
-    private RequestHelper requestHelper;
-    ImageView imageViewProduct;
-    Product product;
+    private TextView textViewProductName;
+    private TextView textViewProductStatus;
+    private TextView textViewSupplierName;
+    private TextView textViewSupplierFirstName;
+    private ImageView imageViewProduct;
+
+    private Product product;
 
     /**
      *
@@ -59,13 +60,12 @@ public class OrderActivity extends AppCompatActivity {
         int userID = product.getSupplier();
         getUserById(userID);
 
-
-
-        // Display the product info in the lower Linear Layout
+        // Retrieve the views from the xml file
         textViewProductName = findViewById(R.id.textViewProductName);
         textViewProductStatus = findViewById(R.id.textViewProductStatus);
         imageViewProduct = findViewById(R.id.imageViewProduct);
 
+        // Display the product info in the xml file
         textViewProductName.setText(product.getName());
         if(product.getIs_available()){
             textViewProductStatus.setText("Available");
@@ -80,11 +80,13 @@ public class OrderActivity extends AppCompatActivity {
         textViewSupplierFirstName = findViewById(R.id.textViewSupplierFirstName);
         textViewSupplierName = findViewById(R.id.textViewSupplierName);
 
-        //Get a reference on the requestHelper object defined in MainActivity
-        requestHelper = MainActivity.getRequestHelper();
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
 
         // Asynchronous request
-        Call<User> call = requestHelper.djangoRestApi.getUserByID(userId);
+        Call<User> call = djangoRestApi.getUserByID(userId);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -105,18 +107,15 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     public void fromOrderToMainActivity(View view) {
+
+        // Change the is_available attribute of the product object to not available
+        updateProduct(product);
+
         // Create the order object
-        Order order = new Order(3, product.getId());
-        Toast.makeText(getApplicationContext(), ""+product.getId(), Toast.LENGTH_SHORT).show();
+        Order order = new Order(product.getSupplier(), product.getId());
 
-
-        //post order
+        // Post order
         addOrder(order);
-
-        // set to not available
-        product.setIs_available(true);
-        int id =  product.getId();
-        setToNotAvailable(id ,product);
 
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
@@ -133,11 +132,12 @@ public class OrderActivity extends AppCompatActivity {
          * @param Order order
          */
 
-        // Get a reference on the requestHelper object defined in MainActivity
-        requestHelper = MainActivity.getRequestHelper();
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Asynchronous request
-        Call<Order> call = requestHelper.djangoRestApi.addOrder(order);
+        Call<Order> call = djangoRestApi.addOrder(order);
         call.enqueue(new Callback<Order>() {
             @Override
             public void onResponse(Call<Order> call, Response<Order> response) {
@@ -156,18 +156,22 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-    public void setToNotAvailable(int id, Product product){
+    public void updateProduct(Product product){
         /**
          * Take into param a product and its id and update it in the remote database asynchronously
          *
          * @param Product product
          */
 
-        // Get a reference on the requestHelper object defined in MainActivity
-        requestHelper = MainActivity.getRequestHelper();
+        int productId = product.getId();
+        product.setIs_available(false);
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Asynchronous request
-        Call<Product> call = requestHelper.djangoRestApi.addProduct(product);
+        Call<Product> call = djangoRestApi.updateProduct(productId, product);
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
@@ -176,7 +180,7 @@ public class OrderActivity extends AppCompatActivity {
                     // In case of success, toast "Submit!"
                     Toast.makeText(getApplicationContext(), "Not available", Toast.LENGTH_SHORT);
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
             }
 

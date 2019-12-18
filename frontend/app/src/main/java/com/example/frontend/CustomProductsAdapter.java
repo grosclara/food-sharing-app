@@ -34,25 +34,6 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
         this.mContext=context;
     }
 
-    // OnClick pour traiter l'image
-    /*@Override
-    public void onClick(View v) {
-
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        Product product = (Product) object;
-
-        switch (v.getId())
-        {
-            case R.id.item_info:
-                Snackbar.make(v, "Release date " +dataModel.getFeature(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-                break;
-        }
-    }*/
-
-    private int lastPosition = -1;
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -78,15 +59,12 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
         productViewHolder = (ProductViewHolder) convertView.getTag();
 
+        //Picasso.get().load(product.getProduct_picture()).into(productViewHolder.imageViewProduct);
         Picasso.get().load(product.getProduct_picture()).into(productViewHolder.imageViewProduct);
         productViewHolder.textViewProductName.setText(product.getName());
 
 
         return convertView;
-
-        /*Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        result.startAnimation(animation);
-        lastPosition = position;*/
     }
 
 }

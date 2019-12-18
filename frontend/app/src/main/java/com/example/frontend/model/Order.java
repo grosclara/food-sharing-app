@@ -12,12 +12,12 @@ package com.example.frontend.model;
 public class Order {
     private int id;
     private int client;
-    private int productID;
+    private int product;
 
     //constructor
-    public Order( int client, int productID) {
+    public Order( int client, int product) {
         this.client = client;
-        this.productID = productID;
+        this.product = product;
     }
 
     public int getId() {
@@ -28,8 +28,8 @@ public class Order {
         return client;
     }
 
-    public int getProductID() {
-        return productID;
+    public int getProduct() {
+        return product;
     }
 
 }

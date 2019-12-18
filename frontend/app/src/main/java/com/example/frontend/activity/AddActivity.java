@@ -1,21 +1,41 @@
 package com.example.frontend.activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.frontend.R;
-import com.example.frontend.api.RequestHelper;
+import com.example.frontend.api.DjangoRestApi;
+import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Product;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Possibility to add a single product in the database by indicating its characteristics in a editView
@@ -29,7 +49,11 @@ public class AddActivity extends AppCompatActivity {
 
     private EditText editTextProductName;
     private String productName;
-    private RequestHelper requestHelper;
+    private ImageView imageViewProduct;
+
+    private String picturePath;
+
+    private static final int PICTURE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +76,7 @@ public class AddActivity extends AppCompatActivity {
         productName = String.valueOf(editTextProductName.getText());
 
         // Creation of a new product and its attribute
-        Product product = new Product(productName, true, 3, "test");
+        Product product = new Product(productName, 3, "");
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);
@@ -71,27 +95,87 @@ public class AddActivity extends AppCompatActivity {
          * @param Product product
          */
 
-        // Get a reference on the requestHelper object defined in MainActivity
-        requestHelper = MainActivity.getRequestHelper();
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        // Create a file object using file path
+        File fileToUpload = new File(picturePath);;
+
+        // Create RequestBody instance from file
+        RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), fileToUpload);
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part file = MultipartBody.Part.createFormData("product_picture", fileToUpload.getName(), filePart);
+
+        RequestBody name = RequestBody.create(MultipartBody.FORM, product.getName());
+        RequestBody id = RequestBody.create(MultipartBody.FORM, String.valueOf(product.getId()));
 
         // Asynchronous request
-        Call<Product> call = requestHelper.djangoRestApi.addProduct(product);
-        call.enqueue(new Callback<Product>() {
+        Call<ResponseBody> call = djangoRestApi.addProduct(file, name, id);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
                     Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT);
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.i("serverRequest", t.getMessage());
             }
         });
+    }
+
+    public void takePicture(View view) {
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Test that the intent can be handled
+        if(pictureIntent.resolveActivity(getPackageManager()) != null){
+
+            // Create a unique file name
+            String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File pictureDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            try {
+                File pictureFile = File.createTempFile("picture"+time,"jpg",pictureDir);
+                // Register the whole path
+                picturePath = pictureFile.getAbsolutePath();
+                // Create the URI
+                Uri pictureUri = FileProvider.getUriForFile(
+                        AddActivity.this,
+                        AddActivity.this.getApplicationContext().getPackageName()+".provider",
+                        pictureFile);
+                // Transfer of the URI to the intent to register the picture in the temp file
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+                // Open the activity
+                startActivityForResult(pictureIntent,PICTURE_REQUEST_CODE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Return of the camera call (startActivityForResult)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Verify the request code and the result code
+        if(requestCode == PICTURE_REQUEST_CODE && resultCode == RESULT_OK){
+            // Retrieve the picture
+            Bitmap picture = BitmapFactory.decodeFile(picturePath);
+            // Display the picture
+            imageViewProduct = findViewById(R.id.imageViewProduct);
+            imageViewProduct.setImageBitmap(picture);
+        }
+
     }
 }
