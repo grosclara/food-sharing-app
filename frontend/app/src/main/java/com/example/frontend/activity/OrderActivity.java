@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.frontend.R;
 import com.example.frontend.api.RequestHelper;
+import com.example.frontend.model.Order;
 import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 import com.squareup.picasso.Picasso;
@@ -38,6 +39,7 @@ public class OrderActivity extends AppCompatActivity {
     TextView textViewSupplierFirstName;
     private RequestHelper requestHelper;
     ImageView imageViewProduct;
+    Product product;
 
     /**
      *
@@ -51,11 +53,13 @@ public class OrderActivity extends AppCompatActivity {
 
         // Get product info in this new activity
         Intent toOrderActivityIntent = getIntent();
-        Product product = (Product) toOrderActivityIntent.getSerializableExtra("product");
+        product = (Product) toOrderActivityIntent.getSerializableExtra("product");
 
         // Retrieve and display the supplier information in the upper Linear Layout
         int userID = product.getSupplier();
         getUserById(userID);
+
+
 
         // Display the product info in the lower Linear Layout
         textViewProductName = findViewById(R.id.textViewProductName);
@@ -101,8 +105,19 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     public void fromOrderToMainActivity(View view) {
+        // Create the order object
+        Order order = new Order(3, product.getId());
+        Toast.makeText(getApplicationContext(), ""+product.getId(), Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getApplicationContext(), "You order the product!", Toast.LENGTH_SHORT).show();
+
+        //post order
+        addOrder(order);
+
+        // set to not available
+        product.setIs_available(true);
+        int id =  product.getId();
+        setToNotAvailable(id ,product);
+
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
         toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
@@ -110,4 +125,65 @@ public class OrderActivity extends AppCompatActivity {
         finish(); // Disable the "going back functionality" from the MainActivity to the OrderActivity
 
     }
-}
+
+    public void addOrder(Order order){
+        /**
+         * Take into param an order and add it to the remote database asynchronously
+         *
+         * @param Order order
+         */
+
+        // Get a reference on the requestHelper object defined in MainActivity
+        requestHelper = MainActivity.getRequestHelper();
+
+        // Asynchronous request
+        Call<Order> call = requestHelper.djangoRestApi.addOrder(order);
+        call.enqueue(new Callback<Order>() {
+            @Override
+            public void onResponse(Call<Order> call, Response<Order> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "You order the product!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Order> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
+    }
+
+    public void setToNotAvailable(int id, Product product){
+        /**
+         * Take into param a product and its id and update it in the remote database asynchronously
+         *
+         * @param Product product
+         */
+
+        // Get a reference on the requestHelper object defined in MainActivity
+        requestHelper = MainActivity.getRequestHelper();
+
+        // Asynchronous request
+        Call<Product> call = requestHelper.djangoRestApi.addProduct(product);
+        call.enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    // In case of success, toast "Submit!"
+                    Toast.makeText(getApplicationContext(), "Not available", Toast.LENGTH_SHORT);
+                } else {
+                    Toast.makeText(getApplicationContext(), "An error occured!", Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
+    }
+    }
