@@ -31,20 +31,4 @@
         app:layout_constraintRight_toRightOf="parent"
         android:onClick="fromAddToMainActivity"/>
 
-    <Button
-        android:id="@+id/buttonGallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Choose a picture from gallery"
-        app:layout_constraintTop_toBottomOf="@id/editTextProductName"
-        android:onClick="takePicture"/>
-
-    <ImageView
-        android:id="@+id/imageViewProduct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonGallery"
-        tools:srcCompat="@tools:sample/avatars" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

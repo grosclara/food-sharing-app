@@ -21,17 +21,13 @@ public class Product implements Serializable {
     private int supplier;
     private String created_at;
     private String updated_at;
-    // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/product/apple.png/")
-    private String product_picture;
-
     /*
      * Constructor of the Product class.
      * Only take a few attributes in argument because the server auto adds the others (id, is_available, created_at, updated_at)
      */
-    public Product(String name, int supplier, String product_picture) {
+    public Product(String name, int supplier) {
         this.name = name;
         this.supplier = supplier;
-        this.product_picture = product_picture;
     }
 
     public int getId() {
@@ -80,13 +76,5 @@ public class Product implements Serializable {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
-    }
-
-    public String getProduct_picture() {
-        return product_picture;
-    }
-
-    public void setProduct_picture(String product_picture) {
-        this.product_picture = product_picture;
     }
 }

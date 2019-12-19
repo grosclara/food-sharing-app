@@ -36,7 +36,6 @@ public class OrderActivity extends AppCompatActivity {
     private TextView textViewProductStatus;
     private TextView textViewSupplierName;
     private TextView textViewSupplierFirstName;
-    private ImageView imageViewProduct;
 
     private Product product;
 
@@ -63,7 +62,6 @@ public class OrderActivity extends AppCompatActivity {
         // Retrieve the views from the xml file
         textViewProductName = findViewById(R.id.textViewProductName);
         textViewProductStatus = findViewById(R.id.textViewProductStatus);
-        imageViewProduct = findViewById(R.id.imageViewProduct);
 
         // Display the product info in the xml file
         textViewProductName.setText(product.getName());
@@ -73,7 +71,6 @@ public class OrderActivity extends AppCompatActivity {
         } else{
             textViewProductStatus.setText("Already ordered by someone else");
         }
-        Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
     /**

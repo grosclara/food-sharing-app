@@ -65,10 +65,6 @@ public interface DjangoRestApi {
     @POST("order/")
     Call<Order> addOrder(@Body Order order);
 
-
-    // PATCH METHOD TO UPDATE A PRODUCT
-    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
-
     /**
      * Return a call object containing the product selected by its id to update in the api
      *
@@ -80,27 +76,5 @@ public interface DjangoRestApi {
     // PATCH allows to update a product modifying only one column in the db
     @PATCH("product/{id}/")
     Call<Product> updateProduct(@Path("id") int id, @Body Product product);
-
-    // POST METHOD USING MULTIPART TO UPDATE A PRODUCT
-    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
-
-    /**
-     * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
-     *
-     * @param product_picture
-     * @param name
-     * @param supplierId
-     * @return
-     */
-
-    @Multipart
-    //Denotes that the request body is multi-part.
-    // Parts should be declared as parameters and annotated with @Part.
-    @POST("product/")
-    Call<ResponseBody> addProduct(
-            @Part MultipartBody.Part product_picture,
-            @Part("name") RequestBody name,
-            @Part("supplierId") RequestBody supplierId
-    );
 
 }

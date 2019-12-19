@@ -55,8 +55,6 @@ public class AddActivity extends AppCompatActivity {
     private ImageView imageViewProduct;
 
     private String productName;
-    // Path to the location of the picture taken by the phone
-    private String picturePath;
 
     private Product product;
 
@@ -84,8 +82,7 @@ public class AddActivity extends AppCompatActivity {
 
         // Creation of a new product with its attribute
         // While the login module isn't set, we provide a default supplier id
-        // Pb with the product_picture string
-        product = new Product(productName, 3, "");
+        product = new Product(productName, 3);
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);
@@ -104,25 +101,13 @@ public class AddActivity extends AppCompatActivity {
          */
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        // Create a file object using file path
-        File fileToUpload = new File(picturePath);;
-
-        // Create RequestBody instance from file
-        RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), fileToUpload);
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part file = MultipartBody.Part.createFormData("product_picture", fileToUpload.getName(), filePart);
-
-        RequestBody name = RequestBody.create(MultipartBody.FORM, product.getName());
-        RequestBody id = RequestBody.create(MultipartBody.FORM, String.valueOf(product.getId()));
-
         // Asynchronous request
-        Call<ResponseBody> call = djangoRestApi.addProduct(file, name, id);
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<Product> call = djangoRestApi.addProduct(product);
+        call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Product> call, Response<Product> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
@@ -133,68 +118,9 @@ public class AddActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Product> call, Throwable t) {
                 Log.i("serverRequest", t.getMessage());
             }
         });
-    }
-
-    public void takePicture(View view) {
-        /**
-         * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
-         * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
-         * We create a URI (Uniform Resource Identifier) for this file.
-         * Eventually the intent call for the onActivityResult method.
-         * @see #onActivityResult(int, int, Intent)
-         */
-        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Test that the intent can be handled
-        if(pictureIntent.resolveActivity(getPackageManager()) != null){
-
-            // Create a unique file name
-            String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File pictureDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            try {
-                File pictureFile = File.createTempFile("picture"+time,"jpg",pictureDir);
-                // Register the whole path
-                picturePath = pictureFile.getAbsolutePath();
-                // Create the URI
-                Uri pictureUri = FileProvider.getUriForFile(
-                        AddActivity.this,
-                        AddActivity.this.getApplicationContext().getPackageName()+".provider",
-                        pictureFile);
-                // Transfer of the URI to the intent to register the picture in the temp file
-                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
-                // Open the activity
-                startActivityForResult(pictureIntent,PICTURE_REQUEST_CODE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // NECESSARY ??
-    // BITMAP FORMAT ??
-
-    /**
-     * Return of the camera call (startActivityForResult)
-     * Get the picture and load it into the imageView to give the user a preview of the picture he took
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Verify the request code and the result code
-        if(requestCode == PICTURE_REQUEST_CODE && resultCode == RESULT_OK){
-            // Retrieve the picture
-            Bitmap picture = BitmapFactory.decodeFile(picturePath);
-            // Display the picture
-            imageViewProduct = findViewById(R.id.imageViewProduct);
-            imageViewProduct.setImageBitmap(picture);
-        }
-
     }
 }

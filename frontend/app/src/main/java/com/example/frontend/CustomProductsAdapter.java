@@ -43,18 +43,15 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
     // View lookup cache
     static class ProductViewHolder {
         TextView textViewProductName;
-        ImageView imageViewProduct;
 
         /**
          * Constructor to instantiate a viewHolder object, which is an object of a class that can store the widgets present in the layout.
          *
          * @param textViewProductName
-         * @param imageViewProduct
          */
 
-        public ProductViewHolder(TextView textViewProductName, ImageView imageViewProduct) {
+        public ProductViewHolder(TextView textViewProductName) {
             this.textViewProductName = textViewProductName;
-            this.imageViewProduct = imageViewProduct;
         }
     }
 
@@ -81,10 +78,9 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
             // Set the data into the views.
             TextView textViewProductName = convertView.findViewById(R.id.textViewProductName);
-            ImageView imageViewProduct = (ImageView) convertView.findViewById(R.id.imageViewProduct);
 
             // Save the viewHolder into the memory of that convertView(setTag).
-            convertView.setTag(new ProductViewHolder(textViewProductName, imageViewProduct));
+            convertView.setTag(new ProductViewHolder(textViewProductName));
 
         }
 
@@ -95,7 +91,6 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
         productViewHolder = (ProductViewHolder) convertView.getTag();
 
         // Update the widgets inside it.
-        Picasso.get().load(product.getProduct_picture()).into(productViewHolder.imageViewProduct);
         productViewHolder.textViewProductName.setText(product.getName());
 
         return convertView;

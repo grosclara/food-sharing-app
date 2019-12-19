@@ -15,14 +15,5 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
 
-    <ImageView
-        android:id="@+id/imageViewProduct"
-        android:layout_width="86dp"
-        android:layout_height="43dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/test" />
-
 
 </RelativeLayout>
