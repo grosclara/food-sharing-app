@@ -37,10 +37,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+// PHOTOS PB
+
 /**
- * Possibility to add a single product in the database by indicating its characteristics in a editView
- * After having added the product, the user is redirected to the MainActivity
- *
+ * AddActivity Class.
+ * Give the possibility to the user to add a product in the database.
+ * The form to fill the product includes EditTexts.
+ * Allows to take a picture of the product by opening the camera clicking on the buttonPicture.
+ * After having added the product, the user is redirected to the MainActivity.
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -48,11 +52,15 @@ import retrofit2.Retrofit;
 public class AddActivity extends AppCompatActivity {
 
     private EditText editTextProductName;
-    private String productName;
     private ImageView imageViewProduct;
 
+    private String productName;
+    // Path to the location of the picture taken by the phone
     private String picturePath;
 
+    private Product product;
+
+    // Ensures the intent to open the camera can be performed
     private static final int PICTURE_REQUEST_CODE = 1;
 
     @Override
@@ -63,9 +71,8 @@ public class AddActivity extends AppCompatActivity {
 
     /**
      * Get the product information from the editTextViews to create a Product object.
-     * Call the addProduct(Product) method
-     * Eventually redirect to the MainActivity when clicking the buttonSubmit
-     *
+     * Call the addProduct(Product) method.
+     * Eventually redirect to the MainActivity when clicking the buttonSubmit.
      * @param view buttonSubmit
      * @see #addProduct(Product product)
      */
@@ -75,8 +82,10 @@ public class AddActivity extends AppCompatActivity {
         editTextProductName = findViewById(R.id.editTextProductName);
         productName = String.valueOf(editTextProductName.getText());
 
-        // Creation of a new product and its attribute
-        Product product = new Product(productName, 3, "");
+        // Creation of a new product with its attribute
+        // While the login module isn't set, we provide a default supplier id
+        // Pb with the product_picture string
+        product = new Product(productName, 3, "");
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);
@@ -90,9 +99,8 @@ public class AddActivity extends AppCompatActivity {
 
     public void addProduct(Product product) {
         /**
-         * Take into param a product and add it to the remote database asynchronously
-         *
-         * @param Product product
+         * Send a HTTP request to post the Product product taken in param
+         * @param product
          */
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
@@ -132,6 +140,13 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void takePicture(View view) {
+        /**
+         * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
+         * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
+         * We create a URI (Uniform Resource Identifier) for this file.
+         * Eventually the intent call for the onActivityResult method.
+         * @see #onActivityResult(int, int, Intent)
+         */
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Test that the intent can be handled
@@ -159,8 +174,12 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    // NECESSARY ??
+    // BITMAP FORMAT ??
+
     /**
      * Return of the camera call (startActivityForResult)
+     * Get the picture and load it into the imageView to give the user a preview of the picture he took
      * @param requestCode
      * @param resultCode
      * @param data

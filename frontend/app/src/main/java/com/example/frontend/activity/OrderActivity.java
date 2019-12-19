@@ -24,11 +24,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
- * Possibility to retrieve the information of both the product and the supplier of the product we
- * want to order.
- * For now the button Order is of zero utility (possibility to change statuses)
+ * Possibility to retrieve the information of both the product and the supplier of the product we want to order.
+ * Clicking on the buttonOrder, the status of the product is set to non available and a order object is created and post to the remote db
  * After having ordered the product, the user is redirected to the MainActivity
- *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -43,8 +41,10 @@ public class OrderActivity extends AppCompatActivity {
     private Product product;
 
     /**
-     *
+     * Retrieve the object product (Product) by a getExtra to the intent sent by the collectActivity
+     * Display the information of both the product and the supplier from the product variable and the getUserById method
      * @param savedInstanceState
+     * @see #getUserById(int)
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class OrderActivity extends AppCompatActivity {
 
         // Display the product info in the xml file
         textViewProductName.setText(product.getName());
+        // Check to see if the product is still available
         if(product.getIs_available()){
             textViewProductStatus.setText("Available");
         } else{
@@ -75,24 +76,29 @@ public class OrderActivity extends AppCompatActivity {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
+    /**
+     * Send a HTTP request to retrieve all information from the user
+     * @param userId
+     */
     public void getUserById(int userId){
 
+        // Retrieve a reference on the textViews defined in the xml layout file
         textViewSupplierFirstName = findViewById(R.id.textViewSupplierFirstName);
         textViewSupplierName = findViewById(R.id.textViewSupplierName);
 
+        // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-
-        // Asynchronous request
+        // Creation of a call object that will contain the response
         Call<User> call = djangoRestApi.getUserByID(userId);
+        // Asynchronous request
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
-                    textViewSupplierFirstName.setText(response.body().getFirstName());
+                    textViewSupplierFirstName.setText(response.body().getFirst_name());
                     textViewSupplierName.setText(response.body().getName());
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
@@ -106,17 +112,22 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * When clicking the Button buttonOrder:
+     * Call the method to update the product (updateProduct) in the remote db
+     * Create an order object to post to the remote db calling the addOrder method
+     * Redirect to the Main when clicking the buttonOrder
+     * @param view buttonOrder
+     * @see #addOrder(Order)
+     * @see #updateProduct(Product)
+     */
     public void fromOrderToMainActivity(View view) {
-
         // Change the is_available attribute of the product object to not available
         updateProduct(product);
-
         // Create the order object
         Order order = new Order(product.getSupplier(), product.getId());
-
         // Post order
         addOrder(order);
-
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
         toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
@@ -125,19 +136,19 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Take into param an order and add it to the remote database asynchronously
+     * @param order
+     */
     public void addOrder(Order order){
-        /**
-         * Take into param an order and add it to the remote database asynchronously
-         *
-         * @param Order order
-         */
 
+        // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        // Asynchronous request
+        // Creation of a call object that will contain the response
         Call<Order> call = djangoRestApi.addOrder(order);
+        // Asynchronous request
         call.enqueue(new Callback<Order>() {
             @Override
             public void onResponse(Call<Order> call, Response<Order> response) {
@@ -156,22 +167,25 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
+    // PB WITH THE PICTURE FIELD
+    /**
+     * Take into param a product and update it in the remote database asynchronously
+     * @param product
+     */
     public void updateProduct(Product product){
-        /**
-         * Take into param a product and its id and update it in the remote database asynchronously
-         *
-         * @param Product product
-         */
 
+        // Retrieve the id of the product
         int productId = product.getId();
+        // Set is is_available attribute to false as it has just been order by someone
         product.setIs_available(false);
 
+        // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        // Asynchronous request
+        // Creation of a call object that will contain the response
         Call<Product> call = djangoRestApi.updateProduct(productId, product);
+        // Asynchronous request
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {

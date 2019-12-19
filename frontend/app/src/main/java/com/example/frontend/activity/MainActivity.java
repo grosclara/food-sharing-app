@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public void fromMainToAddActivity(View view) {
         /**
          * Redirect to the AddActivity when clicking the buttonCollect
+         * @param Button buttonAdd
          */
         Intent toAddActivityIntent = new Intent();
         toAddActivityIntent.setClass(getApplicationContext(), AddActivity.class);

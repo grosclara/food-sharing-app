@@ -21,63 +21,86 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Interface that represents the API of the web service in our app
+ * Interface that represents the API of the web service in our app.
+ * Defines the possible HTTP operations.
  *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
 
 public interface DjangoRestApi {
-    /**
-     * @return a call object containing a list of products
-     */
-    @GET("product/")
-    Call<List<Product>> getAvailableProducts(
-//            @Query("sort") String sort,
-//            @Query("order") String order
-    );
 
     /**
+     * Return a call object containing the list of all the products defined in the db
+     *
+     * @return améliorer en filtrant la requete ?????
+     */
+    @GET("product/")
+    Call<List<Product>> getAvailableProducts();
+
+    /**
+     * Return a call object containing the product to post to the api
+     *
      * @param product
-     * @return a call object containing the product to post to the api
+     * @return
      */
     @POST("product/")
     Call<Product> addProduct(@Body Product product);
 
     /**
+     * Return a call object containing a single user selected by its id
+     *
      * @param userId
-     * @return a call object containing a single user chosen by its id
+     * @return
      */
     @GET("user/{id}/")
     Call<User> getUserByID(@Path("id") int userId);
 
     /**
+     * Return a call object containing the order to post to the api
+     *
      * @param order
-     * @return a call object containing the order to post to the api
+     * @return
      */
     @POST("order/")
     Call<Order> addOrder(@Body Order order);
 
+
+    // PATCH METHOD TO UPDATE A PRODUCT
+    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
+
     /**
-     * @return a call object containing the product chosen by its id to update in the api
-     * @params id, product
+     * Return a call object containing the product selected by its id to update in the api
+     *
+     * @param id
+     * @param product
+     * @return
      */
+
+    // PATCH allows to update a product modifying only one column in the db
     @PATCH("product/{id}/")
     Call<Product> updateProduct(@Path("id") int id, @Body Product product);
 
-    //@Multipart
+    // POST METHOD USING MULTIPART TO UPDATE A PRODUCT
+    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
+
+    /**
+     * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
+     *
+     * @param product_picture
+     * @param name
+     * @param supplierId
+     * @return
+     */
+
+    @Multipart
     //Denotes that the request body is multi-part.
     // Parts should be declared as parameters and annotated with @Part.
-   /* @POST("/upload")
-    Call<ResponseBody> uploadImage(@Part MultipartBody.Part file, @Part("name") RequestBody requestBody);*/
-
-    /*@Multipart
     @POST("product/")
     Call<ResponseBody> addProduct(
             @Part MultipartBody.Part product_picture,
             @Part("name") RequestBody name,
             @Part("supplierId") RequestBody supplierId
-    );*/
-
+    );
 
 }

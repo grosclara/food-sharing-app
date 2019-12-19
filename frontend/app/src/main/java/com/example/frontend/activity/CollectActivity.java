@@ -25,8 +25,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
- * Retrieve the lists of available products
- *
+ * CollectActivity Class.
+ * Displays the list of all available products in a listView.
+ * Clicking on a product redirects the user to the OrderActivityT<;
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -41,20 +42,30 @@ public class CollectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
+        // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
     }
 
+    // AVAILABLE PRODUCTS DIRELCTLY IN THE REQ ????
+
+    /**
+     * Send a HTTP request to retrieve all the products in the db in a ArrayList.
+     * Then filter this ArrayList to keep the available products and display them in a listView through the CustomProductAdapter
+     * Set a onItemClickListener to the listView : clicking on an item, the user will be redirected to the OrderActivity and the intent will contain the product information.
+     * @see CustomProductsAdapter
+     */
     public void getAvailableProducts(){
 
         // Retrieve a reference on the listView defined in the xml file
         listViewAvailableProducts = findViewById(R.id.listViewAvailableProducts);
 
+        // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
         Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts();
+
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
 
