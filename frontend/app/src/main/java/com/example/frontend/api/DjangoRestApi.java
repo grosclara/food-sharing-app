@@ -56,10 +56,6 @@ public interface DjangoRestApi {
     @POST("order/")
     Call<Order> addOrder(@Body Order order);
 
-
-    // PATCH METHOD TO UPDATE A PRODUCT
-    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
-
     /**
      * Return a call object containing the product selected by its id to update in the api
      *
