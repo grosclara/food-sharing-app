@@ -19,7 +19,6 @@ class Product(models.Model): # Product table
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
     objects = models.Manager()
 
-
 class Order(models.Model): # Order table
     client = models.ForeignKey('User',on_delete=models.CASCADE)
     product = models.ForeignKey('Product',on_delete=models.CASCADE)

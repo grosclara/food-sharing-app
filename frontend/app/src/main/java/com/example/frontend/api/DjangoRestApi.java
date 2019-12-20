@@ -89,18 +89,20 @@ public interface DjangoRestApi {
      *
      * @param product_picture
      * @param name
-     * @param supplierId
+     * @param supplier
+     * @param is_available
      * @return
      */
 
     @Multipart
-    //Denotes that the request body is multi-part.
+    // Denotes that the request body is multi-part.
     // Parts should be declared as parameters and annotated with @Part.
     @POST("product/")
-    Call<ResponseBody> addProduct(
+    Call<Product> addProduct(
             @Part MultipartBody.Part product_picture,
-            @Part("name") RequestBody name,
-            @Part("supplierId") RequestBody supplierId
+            @Part("name") String name,
+            @Part("supplier") int supplier,
+            @Part("is_available") boolean is_available
     );
 
 }

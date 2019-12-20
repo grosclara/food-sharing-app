@@ -4,13 +4,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -22,11 +22,14 @@ import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Product;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.net.URL;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -52,16 +55,19 @@ import retrofit2.Retrofit;
 public class AddActivity extends AppCompatActivity {
 
     private EditText editTextProductName;
-    private ImageView imageViewProduct;
-
-    private String productName;
-    // Path to the location of the picture taken by the phone
-    private String picturePath;
+    private ImageView imageViewPreviewProduct;
 
     private Product product;
+    private String productName;
+    private int supplierId;
+    private boolean is_available;
+
+    // Path to the location of the picture taken by the phone
+    private String imageFilePath;
+    private Uri fileUri;
 
     // Ensures the intent to open the camera can be performed
-    private static final int PICTURE_REQUEST_CODE = 1;
+    private static final int REQUEST_CAPTURE_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,8 @@ public class AddActivity extends AppCompatActivity {
         // Retrieve the name of the product typed in the editText field
         editTextProductName = findViewById(R.id.editTextProductName);
         productName = String.valueOf(editTextProductName.getText());
+        supplierId = 1; //default value before having set the log in module
+        is_available = true; // By default, when creating a product, this attribute must equals true
 
         // Creation of a new product with its attribute
         // While the login module isn't set, we provide a default supplier id
@@ -103,79 +111,96 @@ public class AddActivity extends AppCompatActivity {
          * @param product
          */
 
+        // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Create a file object using file path
-        File fileToUpload = new File(picturePath);;
+        File file = new File(imageFilePath);
 
         // Create RequestBody instance from file
-        RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), fileToUpload);
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
         // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part file = MultipartBody.Part.createFormData("product_picture", fileToUpload.getName(), filePart);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
 
-        RequestBody name = RequestBody.create(MultipartBody.FORM, product.getName());
-        RequestBody id = RequestBody.create(MultipartBody.FORM, String.valueOf(product.getId()));
 
         // Asynchronous request
-        Call<ResponseBody> call = djangoRestApi.addProduct(file, name, id);
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<Product> call = djangoRestApi.addProduct(body, productName, supplierId, is_available);
+        call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i("serverRequest", response.message());
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                Log.d("serverRequest",response.message()+' '+String.valueOf(response.code()));
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
-                    Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.i("serverRequest", t.getMessage());
+            public void onFailure(Call<Product> call, Throwable t) {
+                Log.d("serverRequest",t.getLocalizedMessage());
             }
         });
     }
 
-    public void takePicture(View view) {
+    public void openCameraIntent(View view) {
         /**
          * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
          * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
          * We create a URI (Uniform Resource Identifier) for this file.
          * Eventually the intent call for the onActivityResult method.
+         * @param view ButtonGallery to pick a picture
          * @see #onActivityResult(int, int, Intent)
+         * @see #createImageFile()
          */
-        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Test that the intent can be handled
+        Intent pictureIntent = new Intent(
+                MediaStore.ACTION_IMAGE_CAPTURE);
         if(pictureIntent.resolveActivity(getPackageManager()) != null){
-
-            // Create a unique file name
-            String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File pictureDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            //Create a file to store the image
+            File photoFile = null;
             try {
-                File pictureFile = File.createTempFile("picture"+time,"jpg",pictureDir);
-                // Register the whole path
-                picturePath = pictureFile.getAbsolutePath();
-                // Create the URI
-                Uri pictureUri = FileProvider.getUriForFile(
+                photoFile = createImageFile();
+                Log.d("file", "File was successfully created");
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.d("file", "An error occurred while creating the file");
+            }
+            if (photoFile != null) {
+                fileUri = FileProvider.getUriForFile(
                         AddActivity.this,
                         AddActivity.this.getApplicationContext().getPackageName()+".provider",
-                        pictureFile);
-                // Transfer of the URI to the intent to register the picture in the temp file
-                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
-                // Open the activity
-                startActivityForResult(pictureIntent,PICTURE_REQUEST_CODE);
-            } catch (IOException e) {
-                e.printStackTrace();
+                        photoFile
+                );
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        fileUri);
+                startActivityForResult(pictureIntent,
+                        REQUEST_CAPTURE_IMAGE);
             }
         }
     }
 
-    // NECESSARY ??
-    // BITMAP FORMAT ??
+    /**
+     * Method that creates a file for the photo with a unique name
+     * @return
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        imageFilePath = image.getAbsolutePath();
+        return image;
+    }
 
     /**
      * Return of the camera call (startActivityForResult)
@@ -185,16 +210,23 @@ public class AddActivity extends AppCompatActivity {
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Verify the request code and the result code
-        if(requestCode == PICTURE_REQUEST_CODE && resultCode == RESULT_OK){
-            // Retrieve the picture
-            Bitmap picture = BitmapFactory.decodeFile(picturePath);
-            // Display the picture
-            imageViewProduct = findViewById(R.id.imageViewProduct);
-            imageViewProduct.setImageBitmap(picture);
+        Log.d("file","Request code: "+String.valueOf(requestCode));
+        Log.d("file","Result code: "+String.valueOf(resultCode));
+        if (requestCode == REQUEST_CAPTURE_IMAGE) {
+            // Handle the case where the user cancelled the camera intent without taking a picture like,
+            // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
+            if (resultCode == Activity.RESULT_OK) {
+                // Load with the imageFilePath we obtained before opening the cameraIntent
+                imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(imageFilePath);
+                imageViewPreviewProduct.setImageBitmap(imageBitmap);
+            }
+            else if(resultCode == Activity.RESULT_CANCELED) {
+                // User Cancelled the action
+            }
         }
-
     }
 }

@@ -3,9 +3,9 @@ package com.example.frontend.api;
 import android.content.Context;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Class NetworkClient.
@@ -34,15 +34,20 @@ public class NetworkClient {
         // If condition to ensure we don't create multiple retrofit instances in a single application
         if (retrofit == null) {
 
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
             // Creation of a client
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .addInterceptor(logging)
+                    .build();
 
             //Defining the Retrofit using Builder
             // Retrofit.builder() is used to convert our interface methods to a callable network request which can be executed.
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL) // This is the only mandatory call on Builder object.
                     .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create()) // Convertor library used to convert response into POJO
+                    .addConverterFactory(GsonConverterFactory.create()) // Converter library used to convert response into POJO
                     .build();
         }
         return retrofit;
