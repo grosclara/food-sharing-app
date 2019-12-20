@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Class NetworkClient.
@@ -47,6 +48,7 @@ public class NetworkClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL) // This is the only mandatory call on Builder object.
                     .client(okHttpClient)
+                    //.addConverterFactory(ScalarsConverterFactory.create()) // Converter which supports converting strings and both primitives and their boxed types to text/plain bodies
                     .addConverterFactory(GsonConverterFactory.create()) // Converter library used to convert response into POJO
                     .build();
         }

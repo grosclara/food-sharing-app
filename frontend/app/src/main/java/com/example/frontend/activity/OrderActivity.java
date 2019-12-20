@@ -18,6 +18,7 @@ import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 import com.squareup.picasso.Picasso;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -176,7 +177,11 @@ public class OrderActivity extends AppCompatActivity {
 
         // Retrieve the id of the product
         int productId = product.getId();
-        // Set is is_available attribute to false as it has just been order by someone
+        // Set attributes to null so taht they are not changed in the db by the HTTP PATCH request
+        product.setProduct_picture(null);
+        product.setName(null);
+        product.setCreated_at(null);
+        // Set its is_available attribute to false as it has just been order by someone
         product.setIs_available(false);
 
         // Define the URL endpoint for the HTTP operation.

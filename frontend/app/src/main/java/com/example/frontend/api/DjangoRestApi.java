@@ -39,15 +39,6 @@ public interface DjangoRestApi {
     Call<List<Product>> getAvailableProducts();
 
     /**
-     * Return a call object containing the product to post to the api
-     *
-     * @param product
-     * @return
-     */
-    @POST("product/")
-    Call<Product> addProduct(@Body Product product);
-
-    /**
      * Return a call object containing a single user selected by its id
      *
      * @param userId
