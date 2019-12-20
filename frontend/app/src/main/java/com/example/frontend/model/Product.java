@@ -21,6 +21,7 @@ public class Product implements Serializable {
     private int supplier;
     private String created_at;
     private String updated_at;
+    private String product_picture;
     /*
      * Constructor of the Product class.
      * Only take a few attributes in argument because the server auto adds the others (id, is_available, created_at, updated_at)
@@ -76,5 +77,13 @@ public class Product implements Serializable {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getProduct_picture() {
+        return product_picture;
+    }
+
+    public void setProduct_picture(String product_picture) {
+        this.product_picture = product_picture;
     }
 }
