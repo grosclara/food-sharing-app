@@ -31,4 +31,20 @@
         app:layout_constraintRight_toRightOf="parent"
         android:onClick="fromAddToMainActivity"/>
 
+    <Button
+        android:id="@+id/buttonPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="openCameraIntent"
+        android:text="Take a photo"
+        app:layout_constraintTop_toBottomOf="@id/editTextProductName" />
+
+    <ImageView
+        android:id="@+id/imageViewPreviewProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonPhoto"
+        tools:srcCompat="@tools:sample/avatars" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

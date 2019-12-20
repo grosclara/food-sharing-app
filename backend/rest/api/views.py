@@ -14,6 +14,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
+
+    model = Product
+    lookup_field = 'id'
+
     queryset = Product.objects.all()
     filter_backends = [filters.OrderingFilter]
     # Explicitly specify which fields the API may be ordered against
@@ -21,6 +25,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     # This will be used as the default ordering
     ordering = ('-created_at')
     serializer_class = ProductSerializer
+
+    # Defines the function to call for a PATCH request
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
