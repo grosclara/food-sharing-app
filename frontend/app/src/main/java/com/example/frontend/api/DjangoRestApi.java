@@ -33,10 +33,20 @@ public interface DjangoRestApi {
     /**
      * Return a call object containing the list of all the products defined in the db
      *
-     * @return améliorer en filtrant la requete ?????
+     * @return
      */
     @GET("product/")
-    Call<List<Product>> getAvailableProducts();
+    Call<List<Product>> getProducts();
+
+    /**
+     * Return a call object containing the list of all the available products defined in the db
+     *
+     * @return
+     */
+    @GET("product/")
+    Call<List<Product>> getAvailableProducts(
+            @Query("is_available")  int is_available
+    );
 
     /**
      * Return a call object containing a single user selected by its id

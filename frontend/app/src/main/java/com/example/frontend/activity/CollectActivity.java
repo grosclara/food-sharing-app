@@ -64,7 +64,7 @@ public class CollectActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts();
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(1);
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
@@ -76,12 +76,7 @@ public class CollectActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     // Initialization of the productArrayList that will only contain available products
-                    final ArrayList<Product> productArrayList = new ArrayList<>();
-                    for (Product product : response.body()) {
-                        if (product.getIs_available()) {
-                            productArrayList.add(product);
-                        }
-                    }
+                    final ArrayList<Product> productArrayList = (ArrayList<Product>) response.body();
 
                     // Attach the adapter to the listView
                     adapterAvailableProducts = new CustomProductsAdapter(productArrayList,getApplicationContext());
