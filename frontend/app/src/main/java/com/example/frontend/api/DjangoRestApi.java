@@ -97,7 +97,8 @@ public interface DjangoRestApi {
     @POST("product/")
     Call<Product> addProduct(
             @Part MultipartBody.Part product_picture,
-            @Part("name") String name,
+            @Part("name") RequestBody name,
+          //  @Part("name") String productName,
             @Part("supplier") int supplier,
             @Part("is_available") boolean is_available
     );
