@@ -34,10 +34,11 @@
         android:onClick="fromMainToAddActivity"/>
 
     <Button
-        android:id="@+id/buttonShoppingCart"
+        android:id="@+id/buttonCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My Shopping Cart"
-        app:layout_constraintTop_toBottomOf="@id/buttonAdd"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonAdd"
+        android:onClick="fromMainToCartActivity"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

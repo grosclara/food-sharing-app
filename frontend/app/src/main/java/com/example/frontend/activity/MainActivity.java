@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(toAddActivityIntent);
     }
 
-/*    public void fromMainToShoppingCartActivity(View view) {
-        *//**
-         * Method attached to the Shopping Cart button that redirects to the ShoppingCartActivity when clicking the button
-         * @param Button buttonShoppingCart
-         *//*
-        Intent toShoppingCartActivityIntent = new Intent();
-        toShoppingCartActivityIntent.setClass(getApplicationContext(), ShoppingCartActivity.class);
-        startActivity(toShoppingCartActivityIntent);
-    }*/
+    public void fromMainToCartActivity(View view) {
+        /**
+         * Method attached to the Shopping Cart button that redirects to the CartActivity when clicking the button
+         * @param Button buttonCart
+         */
+        Intent toCartActivityIntent = new Intent();
+        toCartActivityIntent.setClass(getApplicationContext(), CartActivity.class);
+        startActivity(toCartActivityIntent);
+    }
 }
