@@ -20,7 +20,7 @@ public class Order {
      * Constructor of the Order class.
      * Only take a few attributes in argument because the server auto adds the id
      */
-    public Order( int client, int product) {
+    public Order(int client, int product) {
         this.client = client;
         this.product = product;
     }

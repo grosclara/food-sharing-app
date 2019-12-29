@@ -123,12 +123,12 @@ public class OrderActivity extends AppCompatActivity {
      * @see #updateProduct(Product)
      */
     public void fromOrderToMainActivity(View view) {
-        // Change the is_available attribute of the product object to not available
-        updateProduct(product);
         // Create the order object
-        Order order = new Order(product.getSupplier(), product.getId());
+        Order order = new Order(MainActivity.userId, product.getId());
         // Post order
         addOrder(order);
+        // Change the is_available attribute of the product object to not available
+        updateProduct(product);
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
         toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
@@ -177,10 +177,10 @@ public class OrderActivity extends AppCompatActivity {
 
         // Retrieve the id of the product
         int productId = product.getId();
-        // Set attributes to null so taht they are not changed in the db by the HTTP PATCH request
+        // Set attributes to null so that they are not changed in the db by the HTTP PATCH request
         product.setProduct_picture(null);
-        product.setName(null);
         product.setCreated_at(null);
+        product.setName(null);
         // Set its is_available attribute to false as it has just been order by someone
         product.setIs_available(false);
 

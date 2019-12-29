@@ -17,10 +17,15 @@ import com.example.frontend.api.NetworkClient;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Replace by the real id of the user located in the shared pref
+        userId = 3;
     }
 
     public void fromMainToCollectActivity(View view) {

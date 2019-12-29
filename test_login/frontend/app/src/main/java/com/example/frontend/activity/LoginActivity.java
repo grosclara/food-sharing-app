@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.i("serverRequest", t.getMessage());
+                Log.i("serverRequest", t.getLocalizedMessage());
             }
         });
     }

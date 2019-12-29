@@ -92,7 +92,7 @@ public class AddActivity extends AppCompatActivity {
 
         // Creation of a new product with its attribute
         // While the login module isn't set, we provide a default supplier id
-        product = new Product(productName, 3);
+        product = new Product(productName, MainActivity.userId);
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);

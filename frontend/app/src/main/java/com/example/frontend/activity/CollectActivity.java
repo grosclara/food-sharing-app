@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.frontend.CustomProductsAdapter;
+import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -46,11 +46,9 @@ public class CollectActivity extends AppCompatActivity {
         getAvailableProducts();
     }
 
-    // AVAILABLE PRODUCTS DIRELCTLY IN THE REQ ????
-
     /**
-     * Send a HTTP request to retrieve all the products in the db in a ArrayList.
-     * Then filter this ArrayList to keep the available products and display them in a listView through the CustomProductAdapter
+     * Send a HTTP request to retrieve all the available products in the db in a ArrayList.
+     * Then display them in a listView through the CustomProductAdapter
      * Set a onItemClickListener to the listView : clicking on an item, the user will be redirected to the OrderActivity and the intent will contain the product information.
      * @see CustomProductsAdapter
      */

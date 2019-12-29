@@ -4,6 +4,7 @@ import com.example.frontend.model.Order;
 import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -29,14 +30,6 @@ import retrofit2.http.Query;
  */
 
 public interface DjangoRestApi {
-
-    /**
-     * Return a call object containing the list of all the products defined in the db
-     *
-     * @return
-     */
-    @GET("product/")
-    Call<List<Product>> getProducts();
 
     /**
      * Return a call object containing the list of all the available products defined in the db
@@ -102,5 +95,32 @@ public interface DjangoRestApi {
             @Part("supplier") int supplier,
             @Part("is_available") boolean is_available
     );
+
+    /**
+     * Return a call object containing the list of all the products given by the user
+     *
+     * @return
+     */
+    @GET("product/")
+    Call<List<Product>> getGivenProducts(
+            @Query("supplier")  int userId
+    );
+
+    /**
+     * Return a call object containing the list of all the orders made by a client
+     *
+     * @return
+     */
+    @GET("order/")
+    Call<List<Order>> getClientOrders(
+            @Query("client")  int userId
+    );
+
+
+    @GET("product/")
+    Call<List<Product>> getProductsByIds(
+            @Query("id") ArrayList<Integer> productIdArrayList
+    );
+
 
 }

@@ -15,19 +15,18 @@ class UserSerializer(serializers.ModelSerializer):
     a Serializer class with fields that correspond to the Model fields. 
     It uses hyperlinks to represent relationships, rather than primary keys.
     """
-    id = serializers.IntegerField(read_only=True) # should not be included in the input during create or update operations
     class Meta:
         model=User 
         fields='__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
+
     class Meta:
         model=Product
         fields='__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
+
     class Meta:
-        model=Order
+        model = Order
         fields='__all__'

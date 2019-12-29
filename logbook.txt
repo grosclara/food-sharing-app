@@ -38,6 +38,8 @@
 "19/12 - CG : Cleaning and commenting code, 2h00"
 "20/12 - CG : Adding photo field to user and product tables, fixing issues of post request with image field thanks to Postman, see our Postman directory (https://app.getpostman.com/join-team?invite_code=5faf6b8d05b5efa2b4559c1c3261835a), 4h00"
 "21/12 - CG : Improvment of some of the requests, see commits ,1h00"
+"26/12 - BT : Login module, see results in login_test Android Studio project, 3h00"
+"29/12 - CG : Creation of the CartActivity (tabbed act) with GET requests related to given and collected products ,6h00"
 
 Link to our Postman working directory : https://app.getpostman.com/join-team?invite_code=5faf6b8d05b5efa2b4559c1c3261835a
 
