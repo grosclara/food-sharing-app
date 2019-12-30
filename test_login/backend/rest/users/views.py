@@ -29,28 +29,14 @@ class UserViewSet(viewsets.ModelViewSet):
 	permission_classes = (AllowAny,)
 	#queryset = User.objects.all()
 	
-	slug_field = "username"  # permet d'acceder au user via son username
+	slug_field = "username"  # permet d'acceder au user via son username n'est pas utilisé à ce stade
 
 	serializer_class = RegisterSerializer
 	queryset = User.objects.all()
 
 
 
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.response import Response
 
 
-class CustomObtainAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     """
-#     This viewset automatically provides `list` and `detail` actions.
-#     """
-#     #permission_classes = (IsAuthenticated,)  
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+

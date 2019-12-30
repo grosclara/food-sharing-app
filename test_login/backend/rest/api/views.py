@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .models import Product, Order
-from .serializers import ProductSerializer, OrderSerializer # UserSerializer,
+from .serializers import ProductSerializer, OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -20,19 +20,13 @@ from rest_framework.response import Response
 
 
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     """
-#     This viewset automatically provides `list` and `detail` actions.
-#     """
-#     #permission_classes = (IsAuthenticated,)  
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+
     
 class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
-    #permission_classes = (IsAuthenticated,)  
+    #permission_classes = (IsAuthenticated,)   we will add this when the login will be setup properly
     model = Product
     lookup_field = 'id'
 

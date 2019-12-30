@@ -105,7 +105,7 @@ public interface DjangoRestApi {
     Call<User> registerInServer(@Body User user);
 
     /**
-     * Return a call object containing the user logged in ( token )
+     * Return a call object containing the user logged in ( his token )
      *
      * @param login
      * @return
