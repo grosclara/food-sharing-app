@@ -3,6 +3,8 @@ package com.example.frontend.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.wifi.hotspot2.pps.HomeSp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,9 @@ import retrofit2.Retrofit;
  * @version 1.0
  */
 public class OrderActivity extends AppCompatActivity {
+    int id;
+    String token;
+
 
     private TextView textViewProductName;
     private TextView textViewProductStatus;
@@ -51,6 +56,12 @@ public class OrderActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+
+        //get id and token
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+
+        token = sharedPreferences.getString("token", null);
+        id = sharedPreferences.getInt("id",0);
 
         // Get product info in this new activity
         Intent toOrderActivityIntent = getIntent();
@@ -123,12 +134,12 @@ public class OrderActivity extends AppCompatActivity {
         // Change the is_available attribute of the product object to not available
         updateProduct(product);
         // Create the order object
-        Order order = new Order(product.getSupplier(), product.getId());
+        Order order = new Order(id, product.getId());
         // Post order
         addOrder(order);
         // Redirect to the MainActivity
         Intent toMainActivityIntent = new Intent();
-        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+        toMainActivityIntent.setClass(getApplicationContext(), HomeScreenActivity.class);
         startActivity(toMainActivityIntent);
         finish(); // Disable the "going back functionality" from the MainActivity to the OrderActivity
 
@@ -145,7 +156,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Order> call = djangoRestApi.addOrder(order);
+        Call<Order> call = djangoRestApi.addOrder("Token "+token, order);
         // Asynchronous request
         call.enqueue(new Callback<Order>() {
             @Override

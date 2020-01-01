@@ -56,7 +56,7 @@ public interface DjangoRestApi {
      * @return
      */
     @POST("order/")
-    Call<Order> addOrder(@Body Order order);
+    Call<Order> addOrder(@Header("Authorization")  String token, @Body Order order);
 
     /**
      * Return a call object containing the product selected by its id to update in the api
@@ -88,6 +88,7 @@ public interface DjangoRestApi {
     // Parts should be declared as parameters and annotated with @Part.
     @POST("product/")
     Call<Product> addProduct(
+            @Header("Authorization")  String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String name,
             @Part("supplier") int supplier,
@@ -110,7 +111,7 @@ public interface DjangoRestApi {
      * @param login
      * @return
      */
-    @POST("user/api-token-auth/")
+    @POST("user/authenticate/")
     Call<User> login(@Body Login login);
 
 }

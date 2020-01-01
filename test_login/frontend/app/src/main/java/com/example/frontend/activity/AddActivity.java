@@ -54,9 +54,9 @@ import retrofit2.Retrofit;
  */
 
 public class AddActivity extends AppCompatActivity {
-    SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+    int id;
+    String token;
 
-    String myString = sharedPreferences.getString("token", null);
 
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
@@ -77,6 +77,12 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        //get token and id
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+
+        token = sharedPreferences.getString("token", null);
+        id = sharedPreferences.getInt("id",0);
     }
 
     /**        sharedPreferences = getBaseContext().getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -88,22 +94,23 @@ public class AddActivity extends AppCompatActivity {
      */
     public void fromAddToMainActivity(View view) {
 
+
         // Retrieve the name of the product typed in the editText field
         editTextProductName = findViewById(R.id.editTextProductName);
         productName = String.valueOf(editTextProductName.getText());
-        supplierId = 1; //default value before having set the log in module
+        supplierId = id; //default value before having set the log in module
         is_available = true; // By default, when creating a product, this attribute must equals true
 
         // Creation of a new product with its attribute
         // While the login module isn't set, we provide a default supplier id
-        product = new Product(productName, 3);
+        product = new Product(productName, supplierId);
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);
 
         // Go back to the mainActivity
         Intent toMainActivityIntent = new Intent();
-        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+        toMainActivityIntent.setClass(getApplicationContext(), HomeScreenActivity.class);
         startActivity(toMainActivityIntent);
         finish(); // Disable the "going back functionality" from the MainActivity to the AddActivity
     }
@@ -128,7 +135,7 @@ public class AddActivity extends AppCompatActivity {
 
 
         // Asynchronous request
-        Call<Product> call = djangoRestApi.addProduct(body, productName, supplierId, is_available);
+        Call<Product> call = djangoRestApi.addProduct("Token "+token, body, productName, supplierId, is_available);
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {

@@ -43,7 +43,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return self.partial_update(request, *args, **kwargs)
 
 class OrderViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)  
+    #permission_classes = (IsAuthenticated,)  
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
