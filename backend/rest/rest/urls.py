@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from api import views
+from users import views as userViews
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -26,12 +27,15 @@ router=routers.DefaultRouter()
 # that returns a response containing hyperlinks to all the list views.
 # It also generates routes for optional .json style format suffixes.
 
-router.register(r'api/v1/user',views.UserViewSet)
-router.register(r'api/v1/product',views.ProductViewSet, base_name="Product")
+#router.register(r'api/v1/user',views.UserViewSet)
+router.register(r'api/v1/product',views.ProductViewSet)
 router.register(r'api/v1/order',views.OrderViewSet)
+router.register(r'api/v1/user', userViews.UserViewSet)
+
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/user/', include('users.urls', namespace='users')),
     url(r'^',include(router.urls))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

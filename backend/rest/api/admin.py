@@ -1,5 +1,6 @@
 from django.contrib import admin
-from api.models import User, Product, Order
+from api.models import Product, Order
+from users.models import User
 # Provide a admin interface
 
 # username : admin
@@ -9,3 +10,4 @@ from api.models import User, Product, Order
 admin.site.register(User)
 admin.site.register(Product)
 admin.site.register(Order)
+
