@@ -62,7 +62,7 @@ public class CollectActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(1);
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts("token",1);
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {

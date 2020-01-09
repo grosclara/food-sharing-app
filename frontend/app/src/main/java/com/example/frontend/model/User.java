@@ -12,6 +12,8 @@ package com.example.frontend.model;
 public class User {
 
     private int id;
+    private String email;
+    private String password;
     private String name;
     private String first_name;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
@@ -23,10 +25,11 @@ public class User {
      * Constructor of the User class.
      * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
      */
-    public User(String name, String first_name, String profile_picture_url) {
+    public User(String email, String name, String first_name, String password) {
+        this.email = email;
         this.name = name;
         this.first_name = first_name;
-        this.profile_picture_url = profile_picture_url;
+        this.password = password;
     }
 
     public int getId() {
@@ -75,6 +78,22 @@ public class User {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

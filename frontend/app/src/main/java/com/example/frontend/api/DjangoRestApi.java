@@ -13,6 +13,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -38,7 +39,9 @@ public interface DjangoRestApi {
      */
     @GET("product/")
     Call<List<Product>> getAvailableProducts(
-            @Query("is_available")  int is_available
+           // @Header("Authorization") String idToken,
+           @Header("Authorization") String token,
+           @Query("is_available")  int is_available
     );
 
     /**
@@ -122,5 +125,13 @@ public interface DjangoRestApi {
             @Query("id") ArrayList<Integer> productIdArrayList
     );
 
+    /**
+     * Return a call object containing the current user
+     *
+     * @param user
+     * @return
+     */
+    @POST("user/register/")
+    Call<User> createUser(@Body User user);
 
 }

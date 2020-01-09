@@ -41,4 +41,12 @@
         app:layout_constraintTop_toBottomOf="@id/buttonAdd"
         android:onClick="fromMainToCartActivity"/>
 
+    <Button
+        android:id="@+id/logButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/buttonCart"
+        android:text="Log"
+        android:onClick="fromMainToSignInActivity"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

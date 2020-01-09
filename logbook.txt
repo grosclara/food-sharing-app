@@ -40,15 +40,30 @@
 "21/12 - CG : Improvment of some of the requests, see commits ,1h00"
 "26/12 - BT : Login module, see results in login_test Android Studio project, 3h00"
 "29/12 - CG : Creation of the CartActivity (tabbed act) with GET requests related to given and collected products ,6h00"
-
+"09/01 - CG, BT : Auth (fail), 4h00"
+  
 Link to our Postman working directory : https://app.getpostman.com/join-team?invite_code=5faf6b8d05b5efa2b4559c1c3261835a
 
 TO DO:
 
 Base de données : 
-PRODUITS: Room / Campus / Catégories / 
-residence
-add romm number to the db
+PRODUITS: Catégories ...
+USERS: Room Résidence...
+
+Auth :
+Django HTTPS
+User shared pref encrypt
+
+User :
+Auth
+Delete
+Modify
+
+Statut produit 
+
+Chat
+
+
 
 
 

@@ -3,11 +3,11 @@ package com.example.frontend.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.frontend.R;
-import com.example.frontend.api.NetworkClient;
 
 /**
  * Launcher activity that allows navigating to the Collect and Add activities
@@ -18,6 +18,8 @@ import com.example.frontend.api.NetworkClient;
 public class MainActivity extends AppCompatActivity {
 
     public static int userId;
+    public static String token;
+    public static SharedPreferences SecurePreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
