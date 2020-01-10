@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
-from .models import Product, Order
+from .models import Product, Order, User
 from .serializers import ProductSerializer, OrderSerializer
 from rest_framework.permissions import IsAuthenticated
-
-
+from rest_auth.registration.views import RegisterView
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
@@ -17,11 +16,9 @@ from rest_framework.status import (
 )
 from rest_framework.response import Response
 
+class CustomRegisterView(RegisterView):
+    queryset = User.objects.all()
 
-
-
-
-    
 class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
