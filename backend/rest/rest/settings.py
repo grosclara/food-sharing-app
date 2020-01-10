@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [ # Access allowed to Android emulators and localhost
 
 INSTALLED_APPS = [
     'api',
-    'rest_framework',
+
     'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,10 +43,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework.authtoken',
+    'rest_framework',
 
-    'users',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+
 ]
+
+SITE_ID = 1
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -142,7 +152,5 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',  
     ]
+
 }
-
-
-AUTH_USER_MODEL = "users.User" 

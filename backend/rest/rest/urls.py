@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from api import views
-from users import views as userViews
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -28,14 +27,14 @@ router=routers.DefaultRouter()
 # It also generates routes for optional .json style format suffixes.
 
 #router.register(r'api/v1/user',views.UserViewSet)
-router.register(r'api/v1/product',views.ProductViewSet)
-router.register(r'api/v1/order',views.OrderViewSet)
-router.register(r'api/v1/user', userViews.UserViewSet)
+router.register(r'api/v1/product/',views.ProductViewSet)
+router.register(r'api/v1/order/',views.OrderViewSet)
 
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/user/', include('users.urls', namespace='users')),
-    url(r'^',include(router.urls))
+    url(r'^',include(router.urls)),
+    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
+    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
