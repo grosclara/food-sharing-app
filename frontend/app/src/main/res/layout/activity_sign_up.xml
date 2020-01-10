@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        app:layout_constraintTop_toBottomOf="@+id/editTextName"/>
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignUp"/>
 
     <Button
         android:id="@+id/buttonAlreadyHaveAnAccount"

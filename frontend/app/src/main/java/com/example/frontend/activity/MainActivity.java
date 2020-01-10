@@ -17,9 +17,12 @@ import com.example.frontend.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static SharedPreferences SecurePreferences;
+    public static SharedPreferences pref;
+    public static SharedPreferences.Editor editor;
+
     public static int userId;
     public static String token;
-    public static SharedPreferences SecurePreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

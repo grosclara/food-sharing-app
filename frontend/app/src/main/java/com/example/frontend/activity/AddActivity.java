@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -40,6 +41,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.frontend.activity.MainActivity.pref;
+import static com.example.frontend.activity.MainActivity.token;
+import static com.example.frontend.activity.MainActivity.userId;
+
 // PHOTOS PB
 
 /**
@@ -73,6 +78,10 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        token = pref.getString("token",null);
+        MainActivity.userId = pref.getInt("id", -1);
     }
 
     /**
@@ -125,7 +134,7 @@ public class AddActivity extends AppCompatActivity {
 
 
         // Asynchronous request
-        Call<Product> call = djangoRestApi.addProduct(body, name, supplierId, is_available);
+        Call<Product> call = djangoRestApi.addProduct(token, body, name, userId, is_available);
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {

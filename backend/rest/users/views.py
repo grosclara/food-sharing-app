@@ -4,8 +4,7 @@ from rest_framework import viewsets
 from django.http import HttpResponse
 from django.http import JsonResponse
 
-from users.serializers import RegisterSerializer
-#from users.serializers import UserSerializer
+from users.serializers import UserSerializer, AuthCustomTokenSerializer
 
 from rest_framework.generics import (CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView)
 from rest_framework.response import Response
@@ -29,9 +28,8 @@ class UserViewSet(viewsets.ModelViewSet):
 	permission_classes = (AllowAny,)
 	#queryset = User.objects.all()
 	
-	slug_field = "username"  # permet d'acceder au user via son username n'est pas utilisé à ce stade
 
-	serializer_class = RegisterSerializer
+	serializer_class = UserSerializer
 	queryset = User.objects.all()
 
 
@@ -45,7 +43,10 @@ from rest_framework.response import Response
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+	def post(self, request, *args, **kwargs):
+		serializer=AuthCustomTokenSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		user=serializer.validated_data['user']
+		token=Token.objects.get_or_create(user=user)
+		print(token)
+		return Response({'token': token[0], 'id': token[1]})

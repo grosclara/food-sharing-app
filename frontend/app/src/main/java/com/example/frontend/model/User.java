@@ -16,6 +16,7 @@ public class User {
     private String password;
     private String name;
     private String first_name;
+    private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
     private String profile_picture_url;
     private String created_at;
@@ -30,6 +31,16 @@ public class User {
         this.name = name;
         this.first_name = first_name;
         this.password = password;
+    }
+
+    public User(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+
+    public String getToken() {
+        return token;
     }
 
     public int getId() {

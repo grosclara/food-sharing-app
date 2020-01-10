@@ -29,6 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.frontend.activity.MainActivity.token;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -104,7 +106,7 @@ public class PlaceholderFragment extends Fragment {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getGivenProducts(userId);
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getGivenProducts(token, userId);
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
@@ -168,7 +170,7 @@ public class PlaceholderFragment extends Fragment {
         final DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Order>> callClientOrders = djangoRestApi.getClientOrders(userId);
+        Call<List<Order>> callClientOrders = djangoRestApi.getClientOrders(token, userId);
 
         // Asynchronous request
         callClientOrders.enqueue(new Callback<List<Order>>() {
@@ -208,7 +210,7 @@ public class PlaceholderFragment extends Fragment {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callClientOrders = djangoRestApi.getProductsByIds(productIdArrayList);
+        Call<List<Product>> callClientOrders = djangoRestApi.getProductsByIds(token, productIdArrayList);
 
         // Asynchronous request
         callClientOrders.enqueue(new Callback<List<Product>>() {

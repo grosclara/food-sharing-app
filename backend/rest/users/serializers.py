@@ -4,6 +4,9 @@ from rest_framework.serializers import (
 	ValidationError,
 	EmailField,
 )
+from django.contrib.auth import authenticate
+from django.core import exceptions
+
 
 from users.models import User
 
@@ -19,17 +22,16 @@ from users.models import User
 # Here we have to add a data validator so wa will make sure the form is filled properly
 # for example, an email address has the syntax of an email address
 
-class RegisterSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'name', 'profile_picture')
+        fields = ('id', 'password', 'email', 'first_name', 'name', 'profile_picture')
         write_only_fields = ('password',)
         read_only_fields = ('id',)
 
 
     def create(self, validated_data):
         user = User.objects.create(
-            username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             name=validated_data['name']
@@ -40,14 +42,27 @@ class RegisterSerializer(ModelSerializer):
 
         return user
 
+class AuthCustomTokenSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
 
-# class UserSerializer(serializers.ModelSerializer):
-#     """
-#     The HyperLinkedModelSerializer class provides a shortcut that lets you automatically create 
-#     a Serializer class with fields that correspond to the Model fields. 
-#     It uses hyperlinks to represent relationships, rather than primary keys.
-#     """
-#     id = serializers.IntegerField(read_only=True) # should not be included in the input during create or update operations
-#     class Meta:
-#         model=User 
-#         fields=('id', 'name', 'profile_picture')
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            user = authenticate(username=email, password=password)
+
+            if user:
+                if not user.is_active:
+                    msg = ('User account is disabled.')
+                    raise exceptions.ValidationError(msg)
+            else:
+                msg = ('Unable to log in with provided credentials.')
+                raise exceptions.ValidationError(msg)
+        else:
+            msg = ('Must include "email or username" and "password"')
+            raise exceptions.ValidationError(msg)
+
+        attrs['user'] = user
+        return attrs

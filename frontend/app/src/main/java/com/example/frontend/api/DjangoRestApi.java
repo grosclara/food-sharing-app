@@ -51,7 +51,9 @@ public interface DjangoRestApi {
      * @return
      */
     @GET("user/{id}/")
-    Call<User> getUserByID(@Path("id") int userId);
+    Call<User> getUserByID(
+            @Header("Authorization") String token,
+            @Path("id") int userId);
 
     /**
      * Return a call object containing the order to post to the api
@@ -60,7 +62,9 @@ public interface DjangoRestApi {
      * @return
      */
     @POST("order/")
-    Call<Order> addOrder(@Body Order order);
+    Call<Order> addOrder(
+            @Header("Authorization") String token,
+            @Body Order order);
 
     /**
      * Return a call object containing the product selected by its id to update in the api
@@ -72,7 +76,9 @@ public interface DjangoRestApi {
 
     // PATCH allows to update a product modifying only one column in the db
     @PATCH("product/{id}/")
-    Call<Product> updateProduct(@Path("id") int id, @Body Product product);
+    Call<Product> updateProduct(
+            @Header("Authorization") String token,
+            @Path("id") int id, @Body Product product);
 
     // POST METHOD USING MULTIPART TO UPDATE A PRODUCT
     // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
@@ -92,6 +98,7 @@ public interface DjangoRestApi {
     // Parts should be declared as parameters and annotated with @Part.
     @POST("product/")
     Call<Product> addProduct(
+            @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") RequestBody name,
           //  @Part("name") String productName,
@@ -106,6 +113,7 @@ public interface DjangoRestApi {
      */
     @GET("product/")
     Call<List<Product>> getGivenProducts(
+            @Header("Authorization") String token,
             @Query("supplier")  int userId
     );
 
@@ -116,12 +124,14 @@ public interface DjangoRestApi {
      */
     @GET("order/")
     Call<List<Order>> getClientOrders(
+            @Header("Authorization") String token,
             @Query("client")  int userId
     );
 
 
     @GET("product/")
     Call<List<Product>> getProductsByIds(
+            @Header("Authorization") String token,
             @Query("id") ArrayList<Integer> productIdArrayList
     );
 
@@ -131,7 +141,10 @@ public interface DjangoRestApi {
      * @param user
      * @return
      */
-    @POST("user/register/")
+    @POST("user/")
     Call<User> createUser(@Body User user);
+
+    @POST("user/authenticate/")
+    Call<User> authUser(@Body User user);
 
 }

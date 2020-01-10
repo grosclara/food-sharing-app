@@ -24,6 +24,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.frontend.activity.MainActivity.pref;
+import static com.example.frontend.activity.MainActivity.token;
+
 /**
  * Possibility to retrieve the information of both the product and the supplier of the product we want to order.
  * Clicking on the buttonOrder, the status of the product is set to non available and a order object is created and post to the remote db
@@ -49,6 +52,10 @@ public class OrderActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        token = pref.getString("token",null);
+        MainActivity.userId = pref.getInt("id", -1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
@@ -92,7 +99,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<User> call = djangoRestApi.getUserByID(userId);
+        Call<User> call = djangoRestApi.getUserByID(token, userId);
         // Asynchronous request
         call.enqueue(new Callback<User>() {
             @Override
@@ -148,7 +155,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Order> call = djangoRestApi.addOrder(order);
+        Call<Order> call = djangoRestApi.addOrder(token, order);
         // Asynchronous request
         call.enqueue(new Callback<Order>() {
             @Override
@@ -189,7 +196,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Product> call = djangoRestApi.updateProduct(productId, product);
+        Call<Product> call = djangoRestApi.updateProduct(token, productId, product);
         // Asynchronous request
         call.enqueue(new Callback<Product>() {
             @Override

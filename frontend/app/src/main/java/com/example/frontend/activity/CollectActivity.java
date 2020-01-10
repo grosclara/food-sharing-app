@@ -24,6 +24,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.frontend.activity.MainActivity.pref;
+import static com.example.frontend.activity.MainActivity.token;
+
 /**
  * CollectActivity Class.
  * Displays the list of all available products in a listView.
@@ -41,6 +44,10 @@ public class CollectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
+
+        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        token = pref.getString("token",null);
+        MainActivity.userId = pref.getInt("id", -1);
 
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
@@ -62,7 +69,7 @@ public class CollectActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts("token",1);
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(token,1);
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {

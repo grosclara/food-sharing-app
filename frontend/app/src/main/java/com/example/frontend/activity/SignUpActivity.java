@@ -61,9 +61,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         else if (v == buttonSignUp){
             createAccount();
 
-            Intent toMainActivityIntent = new Intent();
-            toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-            startActivity(toMainActivityIntent);
+            Intent toSignInActivityIntent = new Intent();
+            toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+            startActivity(toSignInActivityIntent);
         }
     }
 
@@ -91,7 +91,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("serverRequest", response.message());
                 if (response.isSuccessful()){
-                }else{}
+                }
+                else{}
             }
 
             @Override
