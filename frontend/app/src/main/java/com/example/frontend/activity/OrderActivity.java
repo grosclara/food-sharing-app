@@ -107,7 +107,7 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     textViewSupplierFirstName.setText(response.body().getFirst_name());
-                    textViewSupplierName.setText(response.body().getName());
+                    textViewSupplierName.setText(response.body().getLast_name());
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
                 }

@@ -22,10 +22,13 @@ import retrofit2.Retrofit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText editTextName;
+    private EditText editTextLastName;
     private EditText editTextFirstName;
     private EditText editTextEmailSignUp;
     private EditText editTextPasswordSignUp;
+    private EditText editTextPasswordConfirm;
+    private EditText editTextCampus;
+    private EditText editTextRoomNumber;
 
     private Button buttonSignUp;
     private Button buttonAlreadyHaveAnAccount;
@@ -36,10 +39,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
 
         // Views
+        editTextPasswordConfirm = findViewById(R.id.editTextPasswordConfirm);
         editTextEmailSignUp = findViewById(R.id.editTextEmailSignUp);
         editTextFirstName = findViewById(R.id.editTextFirstName);
-        editTextName = findViewById(R.id.editTextName);
+        editTextLastName = findViewById(R.id.editTextLastName);
         editTextPasswordSignUp = findViewById(R.id.editTextPasswordSignUp);
+        editTextCampus = findViewById(R.id.editTextCampus);
+        editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
 
         // Buttons
         buttonSignUp = findViewById(R.id.buttonSignUp);
@@ -60,23 +66,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
         else if (v == buttonSignUp){
             createAccount();
-
-            Intent toSignInActivityIntent = new Intent();
-            toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
-            startActivity(toSignInActivityIntent);
         }
     }
 
     private void createAccount() {
 
         String email = editTextEmailSignUp.getText().toString().trim();
-        String name = editTextName.getText().toString().trim();
+        String lastName = editTextLastName.getText().toString().trim();
         String firstName = editTextFirstName.getText().toString().trim();
-        String password = editTextPasswordSignUp.getText().toString().trim();
+        String password1 = editTextPasswordSignUp.getText().toString().trim();
+        String password2 = editTextPasswordConfirm.getText().toString().trim();
+        String campus = editTextCampus.getText().toString().trim();
+        String room_number = editTextRoomNumber.getText().toString().trim();
 
         // Call to a field validation method before registering the user
 
-        User user = new User(email, name, firstName, password);
+        User user = new User(email, lastName, firstName, password1, password2, campus, room_number);
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
@@ -91,6 +96,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("serverRequest", response.message());
                 if (response.isSuccessful()){
+
+                    Intent toSignInActivityIntent = new Intent();
+                    toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+                    startActivity(toSignInActivityIntent);
+
                 }
                 else{}
             }

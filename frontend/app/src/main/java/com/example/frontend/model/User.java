@@ -13,29 +13,33 @@ public class User {
 
     private int id;
     private String email;
-    private String password;
-    private String name;
+    private String password1;
+    private String password2;
+    private String last_name;
     private String first_name;
+    private String room_number;
+    private String campus;
     private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
     private String profile_picture_url;
-    private String created_at;
-    private String updated_at;
 
     /*
      * Constructor of the User class.
      * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
      */
-    public User(String email, String name, String first_name, String password) {
+    public User(String email, String last_name, String first_name, String password1, String password2, String campus, String room_number) {
         this.email = email;
-        this.name = name;
+        this.last_name = last_name;
         this.first_name = first_name;
-        this.password = password;
+        this.password1 = password1;
+        this.password2 = password2;
+        this.campus = campus;
+        this.room_number = room_number;
     }
 
     public User(String email, String password){
         this.email = email;
-        this.password = password;
+        this.password1 = password;
     }
 
 
@@ -51,12 +55,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLast_name() {
+        return last_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
     }
 
     public String getFirst_name() {
@@ -75,36 +79,12 @@ public class User {
         this.profile_picture_url = profile_picture_url;
     }
 
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public String getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
 }

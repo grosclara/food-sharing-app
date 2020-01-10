@@ -17,8 +17,8 @@
         android:id="@+id/editTextEmailSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:inputType="textEmailAddress"
+        android:hint="Email"
         app:layout_constraintTop_toBottomOf="@+id/textViewSignUp"/>
 
     <EditText
@@ -26,15 +26,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="First name"
+        android:hint="First name"
         app:layout_constraintTop_toBottomOf="@id/editTextEmailSignUp"/>
 
     <EditText
-        android:id="@+id/editTextName"
+        android:id="@+id/editTextLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:hint="Last name"
         app:layout_constraintTop_toBottomOf="@+id/editTextFirstName"/>
 
     <EditText
@@ -42,15 +42,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:text="Password"
-        app:layout_constraintTop_toBottomOf="@+id/editTextName"/>
+        android:hint="Password"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLastName"/>
+
+    <EditText
+        android:id="@+id/editTextPasswordConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Confirm password"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignUp"/>
+
+    <EditText
+        android:id="@+id/editTextCampus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Campus"
+        app:layout_constraintTop_toBottomOf="@id/editTextPasswordConfirm"/>
+
+    <EditText
+        android:id="@+id/editTextRoomNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Room Number"
+        app:layout_constraintTop_toBottomOf="@id/editTextCampus"/>
 
     <Button
         android:id="@+id/buttonSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignUp"/>
+        app:layout_constraintTop_toBottomOf="@+id/editTextRoomNumber"/>
 
     <Button
         android:id="@+id/buttonAlreadyHaveAnAccount"

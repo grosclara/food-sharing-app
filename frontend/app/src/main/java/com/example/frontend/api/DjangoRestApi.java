@@ -141,10 +141,10 @@ public interface DjangoRestApi {
      * @param user
      * @return
      */
-    @POST("user/")
+    @POST("rest-auth/registration/")
     Call<User> createUser(@Body User user);
 
-    @POST("user/authenticate/")
+    @POST("rest-auth/registration/")
     Call<User> authUser(@Body User user);
 
 }
