@@ -13,7 +13,7 @@ public class User {
 
     private int id;
     private String email;
-    private String password1;
+    private String password;
     private String password2;
     private String last_name;
     private String first_name;
@@ -31,7 +31,7 @@ public class User {
         this.email = email;
         this.last_name = last_name;
         this.first_name = first_name;
-        this.password1 = password1;
+        this.password = password1;
         this.password2 = password2;
         this.campus = campus;
         this.room_number = room_number;
@@ -39,7 +39,7 @@ public class User {
 
     public User(String email, String password){
         this.email = email;
-        this.password1 = password;
+        this.password = password;
     }
 
 

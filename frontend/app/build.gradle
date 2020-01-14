@@ -6,7 +6,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId "com.example.frontend"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -38,6 +38,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
-
-
+    implementation "androidx.security:security-crypto:1.0.0-alpha02"
 }

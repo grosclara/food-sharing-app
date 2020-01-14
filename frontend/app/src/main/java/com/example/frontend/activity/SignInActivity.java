@@ -1,6 +1,8 @@
 package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,9 @@ import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,16 +87,36 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     String token = response.body().getToken();
                     int id = response.body().getId();
 
-                    MainActivity.pref = getApplicationContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-                    editor = MainActivity.pref.edit();
-                    editor.putBoolean("signed in",true);
-                    editor.putInt("id",id);
-                    editor.putString("token",token);
-                    editor.apply();
+                    //put token in encrypted shared  shared prefs
+                    try {
+                        String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
 
-                    Intent toMainActivityIntent = new Intent();
-                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                    startActivity(toMainActivityIntent);
+                        SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
+                                "mySecuredPrefs",
+                                masterKeyAlias,
+                                getApplicationContext(),
+                                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                        );
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("signed in",true);
+                        editor.putInt("id",id);
+                        editor.putString("token",token);
+                        editor.apply();
+
+                        Intent toMainActivityIntent = new Intent();
+                        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+                        startActivity(toMainActivityIntent);
+                    } catch (GeneralSecurityException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
                 }
             }
 

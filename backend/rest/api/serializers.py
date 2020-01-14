@@ -2,11 +2,19 @@ from rest_framework import serializers
 from .models import  Product, Order, User
 from rest_auth.serializers import UserDetailsSerializer
 from rest_auth.registration.serializers import RegisterSerializer
+from rest_framework.authtoken.models import Token
+
 
 
 # Serializers allow querysets and model instances 
 # to be converted to native Python datatypes that can then be easily rendered into JSON, XML or other content types
 # Also provide deserialization, allowing parsed data to be converted back into complex types
+
+class TokenSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Token
+        fields = ('key', 'user')
 
 class CustomRegisterSerializer(RegisterSerializer):
 
