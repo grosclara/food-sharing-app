@@ -4,6 +4,8 @@ from .models import Product, Order, User
 from .serializers import ProductSerializer, OrderSerializer, CustomUserDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
+from rest_auth.views import LogoutView, UserDetailsView
+from rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
@@ -14,17 +16,9 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK
 )
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-
-
-# class CustomRegisterView(RegisterView):
-#     queryset = User.objects.all()
-
-# class UserViewSet(viewsets.ModelViewSet):
-#     #permission_classes = (IsAuthenticated,)  
-#     queryset = User.objects.all()
-#     serializer_class = CustomUserDetailsSerializer
 
 class ProductViewSet(viewsets.ModelViewSet):
     """ 
@@ -50,6 +44,11 @@ class OrderViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)  
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    #permission_classes = (IsAuthenticated,)  
+    queryset = User.objects.all()
+    serializer_class = CustomUserDetailsSerializer
 
 
 

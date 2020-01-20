@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from rest_framework import routers
-from rest_auth.views import UserDetailsView
 
 router=routers.DefaultRouter()
 # Router that includes a default API root view,
@@ -29,9 +28,9 @@ router=routers.DefaultRouter()
 
 router.register(r'api/v1/product',views.ProductViewSet)
 router.register(r'api/v1/order',views.OrderViewSet)
+router.register(r'api/v1/user',views.UserViewSet)
 
 urlpatterns = [
-    url(r'^user/', UserDetailsView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^',include(router.urls)),
     url(r'^api/v1/rest-auth/', include('rest_auth.urls')),

@@ -22,7 +22,6 @@ except ImportError:
 # Also provide deserialization, allowing parsed data to be converted back into complex types
 
 class CustomRegisterSerializer(RegisterSerializer):
-
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     first_name = serializers.CharField(required=True)
@@ -65,10 +64,9 @@ class CustomRegisterSerializer(RegisterSerializer):
         return user 
 
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
-        fields = ('email','is_active','room_number','first_name','last_name','profile_picture','campus')
+        fields = ('email','first_name','last_name','room_number','campus','profile_picture','is_active','last_login','date_joined')
         read_only_fields = ('email',)
 
 # The HyperLinkedModelSerializer class provides a shortcut that lets you automatically create a Serializer class 
