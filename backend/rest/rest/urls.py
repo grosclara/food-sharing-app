@@ -31,6 +31,7 @@ router.register(r'api/v1/product',views.ProductViewSet)
 router.register(r'api/v1/order',views.OrderViewSet)
 
 urlpatterns = [
+    url(r'^user/', UserDetailsView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^',include(router.urls)),
     url(r'^api/v1/rest-auth/', include('rest_auth.urls')),

@@ -161,7 +161,6 @@ ACCOUNT_USER_EMAIL_FIELD = 'email'
 #ACCOUNT_LOGOUT_ON_GET = True
 
 REST_AUTH_SERIALIZERS = {
-    'TOKEN_SERIALIZER': 'api.serializers.TokenSerializer',
     'USER_DETAILS_SERIALIZER': 'api.serializers.CustomUserDetailsSerializer'
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
