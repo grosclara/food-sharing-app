@@ -1,5 +1,6 @@
 from django.contrib import admin
 from api.models import Product, Order, User
+from django.conf import settings
 # Provide a admin interface
 
 # username : admin

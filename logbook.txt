@@ -43,6 +43,8 @@
 "09/01 - CG, BT : Auth (fail), 5h00"
 "10/01 - CG : Auth using rest_auth, 3h00, see results in branch auth-clara_2"
 "14/01 - BT : encrypted shared preferences and logout" 
+"15/01 - CG : Login, Logout and Registration completed in Backend with rest_auth, 3h00"
+
 Link to our Postman working directory : https://app.getpostman.com/join-team?invite_code=5faf6b8d05b5efa2b4559c1c3261835a
 
 TO DO:
