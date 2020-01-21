@@ -15,15 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.LauncherActivity">
+        <activity android:name=".activity.LauncherActivity"
+            android:label="LauncherActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignInActivity"/>
-        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.SignInActivity"
+            android:label="SignInActivity" />
+        <activity android:name=".activity.AddActivity"
+            android:label="AddActivity" />
+        <activity android:name=".activity.SignUpActivity"
+            android:label="SignUpActivity" />
         <activity
             android:name=".activity.CartActivity"
             android:label="CartActivity"
@@ -32,22 +37,18 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.OrderActivity">
+        <activity android:name=".activity.OrderActivity"
+            android:label="OrderActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AddActivity">
+        <activity android:name=".activity.CollectActivity"
+            android:label="CollectActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CollectActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activity.MainActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

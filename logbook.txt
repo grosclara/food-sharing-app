@@ -50,21 +50,21 @@ Link to our Postman working directory : https://app.getpostman.com/join-team?inv
 TO DO:
 
 Base de donn�es : 
-PRODUITS: Cat�gories ...
-USERS: Room R�sidence...
+PRODUITS: Cat�gories/Statuses...
 
 Auth :
 Django HTTPS
-User shared pref encrypt
+Log out
 
-User :
-Auth
+User : -> Menu index
+Log out
 Delete
 Modify
 
-Statut produit 
-
+Functionality :
 Chat
+Menu index
+Pop up when clicking on a product
 
 
 

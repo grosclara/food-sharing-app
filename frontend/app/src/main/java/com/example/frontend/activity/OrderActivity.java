@@ -24,13 +24,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.frontend.activity.MainActivity.pref;
-import static com.example.frontend.activity.MainActivity.token;
-
 /**
  * Possibility to retrieve the information of both the product and the supplier of the product we want to order.
  * Clicking on the buttonOrder, the status of the product is set to non available and a order object is created and post to the remote db
- * After having ordered the product, the user is redirected to the MainActivity
+ * After having ordered the product, the user is redirected to the CollectActivity
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -53,10 +50,6 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        token = pref.getString("token",null);
-        MainActivity.userId = pref.getInt("id", -1);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
@@ -65,8 +58,8 @@ public class OrderActivity extends AppCompatActivity {
         product = (Product) toOrderActivityIntent.getSerializableExtra("product");
 
         // Retrieve and display the supplier information in the upper Linear Layout
-        int userID = product.getSupplier();
-        getUserById(userID);
+        int supplierId = product.getSupplier();
+        getUserById(supplierId);
 
         // Retrieve the views from the xml file
         textViewProductName = findViewById(R.id.textViewProductName);
@@ -99,7 +92,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<User> call = djangoRestApi.getUserByID(token, userId);
+        Call<User> call = djangoRestApi.getUserByID(CollectActivity.token, CollectActivity.userId);
         // Asynchronous request
         call.enqueue(new Callback<User>() {
             @Override
@@ -109,7 +102,7 @@ public class OrderActivity extends AppCompatActivity {
                     textViewSupplierFirstName.setText(response.body().getFirst_name());
                     textViewSupplierName.setText(response.body().getLast_name());
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -124,23 +117,23 @@ public class OrderActivity extends AppCompatActivity {
      * When clicking the Button buttonOrder:
      * Call the method to update the product (updateProduct) in the remote db
      * Create an order object to post to the remote db calling the addOrder method
-     * Redirect to the Main when clicking the buttonOrder
+     * Redirect to the CollectActivity when clicking the buttonOrder
      * @param view buttonOrder
      * @see #addOrder(Order)
      * @see #updateProduct(Product)
      */
-    public void fromOrderToMainActivity(View view) {
+    public void fromOrderToCollectActivity(View view) {
         // Create the order object
-        Order order = new Order(MainActivity.userId, product.getId());
+        Order order = new Order(CollectActivity.userId, product.getId());
         // Post order
         addOrder(order);
         // Change the is_available attribute of the product object to not available
         updateProduct(product);
-        // Redirect to the MainActivity
-        Intent toMainActivityIntent = new Intent();
-        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-        startActivity(toMainActivityIntent);
-        finish(); // Disable the "going back functionality" from the MainActivity to the OrderActivity
+        // Redirect to the CollectActivity
+        Intent toCollectActivityIntent = new Intent();
+        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+        startActivity(toCollectActivityIntent);
+        finish(); // Disable the "going back functionality" from theCollectActivity to the OrderActivity
 
     }
 
@@ -155,7 +148,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Order> call = djangoRestApi.addOrder(token, order);
+        Call<Order> call = djangoRestApi.addOrder(CollectActivity.token, order);
         // Asynchronous request
         call.enqueue(new Callback<Order>() {
             @Override
@@ -196,7 +189,7 @@ public class OrderActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Product> call = djangoRestApi.updateProduct(token, productId, product);
+        Call<Product> call = djangoRestApi.updateProduct(CollectActivity.token, productId, product);
         // Asynchronous request
         call.enqueue(new Callback<Product>() {
             @Override
@@ -204,7 +197,7 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
-                    Toast.makeText(getApplicationContext(), "Not available", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT);
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
@@ -216,4 +209,5 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
     }
+
     }

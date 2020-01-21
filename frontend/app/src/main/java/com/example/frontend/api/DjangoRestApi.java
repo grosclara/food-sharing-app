@@ -123,16 +123,16 @@ public interface DjangoRestApi {
      * @return
      */
     @GET("order/")
-    Call<List<Order>> getClientOrders(
+    Call<Object> getOrdersByClient(
             @Header("Authorization") String token,
             @Query("client")  int userId
     );
 
 
-    @GET("product/")
-    Call<List<Product>> getProductsByIds(
+    @GET("product/{id}/")
+    Call<Product> getProductById(
             @Header("Authorization") String token,
-            @Query("id") ArrayList<Integer> productIdArrayList
+            @Path("id") int productId
     );
 
     /**
@@ -145,6 +145,6 @@ public interface DjangoRestApi {
     Call<User> createUser(@Body User user);
 
     @POST("rest-auth/login/")
-    Call<User> authUser(@Body User user);
+    Call<Object> authUser(@Body User user);
 
 }

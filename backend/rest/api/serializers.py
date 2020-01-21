@@ -4,6 +4,7 @@ from rest_auth.serializers import UserDetailsSerializer
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
 from django.conf import settings
+from rest_framework.authtoken.views import ObtainAuthToken
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -66,8 +67,20 @@ class CustomRegisterSerializer(RegisterSerializer):
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email','first_name','last_name','room_number','campus','profile_picture','is_active','last_login','date_joined')
+        fields = ('id','email','first_name','last_name','room_number','campus','profile_picture','is_active','last_login','date_joined')
         read_only_fields = ('email',)
+
+class CustomTokenSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Token model.
+    """
+
+    user = CustomUserDetailsSerializer(read_only=True)
+
+    class Meta:
+        model = Token
+        fields = ('key','user')
+
 
 # The HyperLinkedModelSerializer class provides a shortcut that lets you automatically create a Serializer class 
 # with fields that correspond to the Model fields.
@@ -79,8 +92,16 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields='__all__'
 
-class OrderSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
+class OrderDetailsSerializer(serializers.ModelSerializer):
+
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model=Order
-        fields='__all__'
+        fields=('__all__')
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Order
+        fields=('__all__')

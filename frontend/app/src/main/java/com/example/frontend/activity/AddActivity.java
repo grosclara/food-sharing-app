@@ -41,18 +41,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.frontend.activity.MainActivity.pref;
-import static com.example.frontend.activity.MainActivity.token;
-import static com.example.frontend.activity.MainActivity.userId;
-
-// PHOTOS PB
-
 /**
  * AddActivity Class.
  * Give the possibility to the user to add a product in the database.
  * The form to fill the product includes EditTexts.
  * Allows to take a picture of the product by opening the camera clicking on the buttonPicture.
- * After having added the product, the user is redirected to the MainActivity.
+ * After having added the product, the user is redirected to the CollectActivity.
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -64,7 +58,6 @@ public class AddActivity extends AppCompatActivity {
 
     private Product product;
     private String productName;
-    private int supplierId;
     private boolean is_available;
 
     // Path to the location of the picture taken by the phone
@@ -78,39 +71,34 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-
-        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        token = pref.getString("token",null);
-        MainActivity.userId = pref.getInt("id", -1);
     }
 
     /**
      * Get the product information from the editTextViews to create a Product object.
      * Call the addProduct(Product) method.
-     * Eventually redirect to the MainActivity when clicking the buttonSubmit.
+     * Eventually redirect to the CollectActivity when clicking the buttonSubmit.
      * @param view buttonSubmit
      * @see #addProduct(Product product)
      */
-    public void fromAddToMainActivity(View view) {
+    public void fromAddToCollectActivity(View view) {
 
         // Retrieve the name of the product typed in the editText field
         editTextProductName = findViewById(R.id.editTextProductName);
         productName = String.valueOf(editTextProductName.getText());
-        supplierId = 1; //default value before having set the log in module
         is_available = true; // By default, when creating a product, this attribute must equals true
 
         // Creation of a new product with its attribute
         // While the login module isn't set, we provide a default supplier id
-        product = new Product(productName, MainActivity.userId);
+        product = new Product(productName, CollectActivity.userId);
 
         // Call for the addProduct(Product) method to transfer data to the server
         addProduct(product);
 
-        // Go back to the mainActivity
-        Intent toMainActivityIntent = new Intent();
-        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-        startActivity(toMainActivityIntent);
-        finish(); // Disable the "going back functionality" from the MainActivity to the AddActivity
+        // Go back to the CollectActivity
+        Intent toCollectActivityIntent = new Intent();
+        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+        startActivity(toCollectActivityIntent);
+        finish(); // Disable the "going back functionality" from the CollectActivity to the AddActivity
     }
 
     public void addProduct(Product product) {
@@ -134,7 +122,7 @@ public class AddActivity extends AppCompatActivity {
 
 
         // Asynchronous request
-        Call<Product> call = djangoRestApi.addProduct(token, body, name, userId, is_available);
+        Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, name, CollectActivity.userId, is_available);
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {

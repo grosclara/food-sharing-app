@@ -10,7 +10,7 @@
         android:id="@+id/buttonOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="fromOrderToMainActivity"
+        android:onClick="fromOrderToCollectActivity"
         android:text="Order"
         app:layout_constraintBottom_toBottomOf="parent" />
 
