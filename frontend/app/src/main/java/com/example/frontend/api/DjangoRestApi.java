@@ -132,7 +132,7 @@ public interface DjangoRestApi {
     @GET("product/")
     Call<List<Product>> getProductsByIds(
             @Header("Authorization") String token,
-            @Query("id") ArrayList<Integer> productIdArrayList
+            @Query("ids") ArrayList<Integer> productIdArrayList
     );
 
     /**

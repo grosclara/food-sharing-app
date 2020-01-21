@@ -28,7 +28,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     model = Product
     lookup_field = 'id'
 
-    queryset = Product.objects.all()
     filter_backends = [filters.OrderingFilter]
     # Explicitly specify which fields the API may be ordered against
     ordering_fields = ['created_at','updated_at']
@@ -39,6 +38,20 @@ class ProductViewSet(viewsets.ModelViewSet):
     # Defines the function to call for a PATCH request
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `supplier` or a 'is_available' query parameter in the URL.
+        """
+        queryset = Product.objects.all()
+        supplier = self.request.query_params.get('supplier', None)
+        is_available = self.request.query_params.get('is_available', None)
+        if supplier is not None:
+            queryset = queryset.filter(supplier=supplier)
+        if is_available is not None:
+            queryset = queryset.filter(is_available=is_available)
+        return queryset
 
 class OrderViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)  

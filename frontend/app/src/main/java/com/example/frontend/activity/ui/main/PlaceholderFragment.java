@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.frontend.R;
 import com.example.frontend.activity.CartActivity;
 import com.example.frontend.activity.CollectActivity;
-import com.example.frontend.activity.MainActivity;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -215,6 +214,7 @@ public class PlaceholderFragment extends Fragment {
 
                     // Initialization of the productArrayList that will contain collected products
                     final ArrayList<Product> productArrayList = (ArrayList<Product>) response.body();
+                    Log.e("TAG",productArrayList.toString());
 
                     // Attach the adapter to the listView
                     CustomProductsAdapter adapterCollectedProducts = new CustomProductsAdapter(productArrayList,getActivity().getApplicationContext());
