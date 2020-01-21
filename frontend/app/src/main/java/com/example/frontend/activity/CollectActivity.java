@@ -24,9 +24,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.frontend.activity.MainActivity.pref;
-import static com.example.frontend.activity.MainActivity.token;
-
 /**
  * CollectActivity Class.
  * Displays the list of all available products in a listView.
@@ -40,14 +37,13 @@ public class CollectActivity extends AppCompatActivity {
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
+    public static final String token = LauncherActivity.userCredits.getString("token",null);
+    public static int userId = LauncherActivity.userCredits.getInt("id",-1);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
-
-        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        token = pref.getString("token",null);
-        MainActivity.userId = pref.getInt("id", -1);
 
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
@@ -115,5 +111,25 @@ public class CollectActivity extends AppCompatActivity {
                 Log.i("serverRequest", t.getMessage());
             }
         });
+    }
+
+    public void fromCollectToAddActivity(View view) {
+        /**
+         * Redirect to the AddActivity when clicking the buttonCollect
+         * @param Button buttonAdd
+         */
+        Intent toAddActivityIntent = new Intent();
+        toAddActivityIntent.setClass(getApplicationContext(), AddActivity.class);
+        startActivity(toAddActivityIntent);
+    }
+
+    public void fromCollectToCartActivity(View view) {
+        /**
+         * Method attached to the Shopping Cart button that redirects to the CartActivity when clicking the button
+         * @param Button buttonCart
+         */
+        Intent toCartActivityIntent = new Intent();
+        toCartActivityIntent.setClass(getApplicationContext(), CartActivity.class);
+        startActivity(toCartActivityIntent);
     }
 }

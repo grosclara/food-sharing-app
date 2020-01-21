@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.textclassifier.TextClassifierEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,16 +19,20 @@ import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static com.example.frontend.activity.MainActivity.editor;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,6 +41,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText editTextEmailSignIn;
     private EditText editTextPasswordSignIn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,60 +79,58 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         String email = editTextEmailSignIn.getText().toString().trim();
         String password = editTextPasswordSignIn.getText().toString().trim();
 
-        User user = new User(email,password);
+        final User user = new User(email,password);
+
+        final SharedPreferences.Editor editor = LauncherActivity.userCreditsEditor;
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        Call<User> call = djangoRestApi.authUser(user);
-        call.enqueue(new Callback<User>() {
+        Call<Object> call = djangoRestApi.authUser(user);
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 Log.d("serverRequest", response.message());
                 if (response.isSuccessful()){
-                    String token = response.body().getToken();
-                    int id = response.body().getId();
 
-                    //put token in encrypted shared  shared prefs
                     try {
-                        String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+                        JSONObject JsonResponse = new JSONObject(new Gson().toJson(response.body()));
+                        JSONObject userCredits = JsonResponse.getJSONObject("user");
 
-                        SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
-                                "mySecuredPrefs",
-                                masterKeyAlias,
-                                getApplicationContext(),
-                                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-                        );
+                        String token = JsonResponse.getString("key");
+                        int userId = userCredits.getInt("id");
+                        String email = userCredits.getString("email");
+                        String first_name = userCredits.getString("first_name");
+                        String last_name = userCredits.getString("last_name");
+                        String room_number = userCredits.getString("room_number");
+                        String campus = userCredits.getString("campus");
 
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("signed in",true);
-                        editor.putInt("id",id);
-                        editor.putString("token",token);
-                        editor.apply();
+                        LauncherActivity.userCreditsEditor.putBoolean("logStatus",true);
+                        LauncherActivity.userCreditsEditor.putString("token", token);
+                        LauncherActivity.userCreditsEditor.putInt("id",userId);
+                        LauncherActivity.userCreditsEditor.putString("email",userCredits.getString("email"));
+                        LauncherActivity.userCreditsEditor.putString("first_name",userCredits.getString("first_name"));
+                        LauncherActivity.userCreditsEditor.putString("last_name",userCredits.getString("last_name"));
+                        LauncherActivity.userCreditsEditor.putString("room_number",userCredits.getString("room_number"));
+                        LauncherActivity.userCreditsEditor.putString("campus",userCredits.getString("campus"));
+                        LauncherActivity.userCreditsEditor.apply();
 
-                        Intent toMainActivityIntent = new Intent();
-                        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                        startActivity(toMainActivityIntent);
-                    } catch (GeneralSecurityException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
-
-
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Log.d("serverRequest", t.getLocalizedMessage());
 
             }
         });
 
 
+        Intent toCollectActivityIntent = new Intent();
+        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+        startActivity(toCollectActivityIntent);
     }
 }

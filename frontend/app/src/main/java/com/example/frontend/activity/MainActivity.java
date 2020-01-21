@@ -22,42 +22,11 @@ import java.security.GeneralSecurityException;
  */
 
 public class MainActivity extends AppCompatActivity {
-    public static SharedPreferences pref;
-    public static SharedPreferences sharedPreferences;
-    public static SharedPreferences.Editor editor;
-
-    public static int userId;
-    public static String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // get token and id // does not work
-        try {
-            String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-
-            sharedPreferences = EncryptedSharedPreferences.create(
-                    "mySecuredPrefs",
-                    masterKeyAlias,
-                    getApplicationContext(),
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-
-            editor = sharedPreferences.edit();
-
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Replace by the real id of the user located in the shared pref
-        userId = sharedPreferences.getInt("id", -1) ;
-        token = sharedPreferences.getString("token", "");
-        Toast.makeText(this, userId + " " + token, Toast.LENGTH_SHORT).show();
     }
 
     public void fromMainToCollectActivity(View view) {
@@ -92,11 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void fromMainToSignInActivity(View view) {
 
-
-        // set logged in boolean to false
-        editor.putBoolean("signed in",false);
-        editor.putString("token", "");
-        editor.apply();
         /**
          * Method attached to the LOGOUT button that redirects to the SignInActivity when clicking the button
          * @param Button LOGOUT
