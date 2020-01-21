@@ -99,9 +99,6 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            // Toast the name of the product
-                            Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
-
                             // Redirect to the OrderActivity
                             Intent toOrderActivityIntent = new Intent();
                             toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);

@@ -102,7 +102,7 @@ public class OrderActivity extends AppCompatActivity {
                     textViewSupplierFirstName.setText(response.body().getFirst_name());
                     textViewSupplierName.setText(response.body().getLast_name());
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -197,7 +197,7 @@ public class OrderActivity extends AppCompatActivity {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
                     // In case of success, toast "Submit!"
-                    Toast.makeText(getApplicationContext(), "Not available", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT);
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }

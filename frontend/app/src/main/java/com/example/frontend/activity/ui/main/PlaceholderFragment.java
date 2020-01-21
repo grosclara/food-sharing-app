@@ -121,18 +121,6 @@ public class PlaceholderFragment extends Fragment {
                     CustomProductsAdapter adapterGivenProducts = new CustomProductsAdapter(productArrayList, getActivity().getApplicationContext());
                     listViewGivenProducts.setAdapter(adapterGivenProducts);
 
-                    /*// The current object handles the event "click on a listView item"
-                    listViewGivenProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            Product product = productArrayList.get(position);
-
-                            // Toast the name of the product (ALERT DIALOG)
-                            Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    });*/
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }

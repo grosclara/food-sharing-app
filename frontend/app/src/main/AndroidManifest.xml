@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".activity.SignInActivity"
             android:label="SignInActivity" />
+        <activity android:name=".activity.AddActivity"
+            android:label="AddActivity" />
         <activity android:name=".activity.SignUpActivity"
             android:label="SignUpActivity" />
         <activity
