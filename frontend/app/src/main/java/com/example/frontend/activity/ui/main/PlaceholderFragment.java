@@ -20,6 +20,11 @@ import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Order;
 import com.example.frontend.model.Product;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,15 +128,9 @@ public class PlaceholderFragment extends Fragment {
 
                             Product product = productArrayList.get(position);
 
-                            // Toast the name of the product
+                            // Toast the name of the product (ALERT DIALOG)
                             Toast.makeText(getApplicationContext(), product.getName(), Toast.LENGTH_SHORT).show();
 
-                            // Redirect to the OrderActivity
-                            Intent toOrderActivityIntent = new Intent();
-                            toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
-                            // Send the product information to the OrderActivity
-                            toOrderActivityIntent.putExtra("product", product);
-                            startActivity(toOrderActivityIntent);
                         }
                     });*/
                 } else {
@@ -157,76 +156,64 @@ public class PlaceholderFragment extends Fragment {
      */
     public void getCollectedProducts(final int userId, final View view) {
 
-        // Define the URL endpoint for the HTTP operation.
-        Retrofit retrofit = NetworkClient.getRetrofitClient(getContext());
-        final DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
-
-        // Creation of a call object that will contain the response
-        Call<List<Order>> callClientOrders = djangoRestApi.getClientOrders(CollectActivity.token, userId);
-
-        // Asynchronous request
-        callClientOrders.enqueue(new Callback<List<Order>>() {
-            @Override
-            public void onResponse(Call<List<Order>> call, Response<List<Order>> response) {
-                Log.i("serverRequest", response.message());
-                if (response.isSuccessful()) {
-                    // Initialization of the productIdArrayList that will contain ids of collected products
-                    final ArrayList<Integer> productIdArrayList = new ArrayList<>();
-
-                    // Fill the id list
-                    for (Order order : response.body()) {
-                        productIdArrayList.add(order.getProduct());
-                    }
-
-                    getProductsByIds(view, productIdArrayList);
-                }
-                else {
-                    Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Order>> call, Throwable t) {
-                Log.i("serverRequest", t.getLocalizedMessage());
-            }
-        });
-    }
-
-    private void getProductsByIds(View view, ArrayList<Integer> productIdArrayList) {
-
         // Retrieve a reference on the listView defined in the xml file
         final ListView listViewCollectedProducts = view.findViewById(R.id.listViewCollectedProducts);
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(getContext());
-        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+        final DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callClientOrders = djangoRestApi.getProductsByIds(CollectActivity.token, productIdArrayList);
+        Call<Object> call = djangoRestApi.getOrdersByClient(CollectActivity.token, userId);
 
         // Asynchronous request
-        callClientOrders.enqueue(new Callback<List<Product>>() {
-
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 Log.i("serverRequest", response.message());
+
                 if (response.isSuccessful()) {
 
-                    // Initialization of the productArrayList that will contain collected products
-                    final ArrayList<Product> productArrayList = (ArrayList<Product>) response.body();
-                    Log.e("TAG",productArrayList.toString());
+                    ArrayList<Product> collectedProducts = new ArrayList<>();
+
+                    // Parsing the response.body() object
+                    Gson gson = new Gson();
+                    String json = gson.toJson(response.body());
+                    try {
+                        JSONArray jsonArr = new JSONArray(json);
+                        Log.e("TAG",jsonArr.toString());
+
+                        for (int i = 0; i < jsonArr.length(); i++)
+                        {
+                            JSONObject jsonObj = jsonArr.getJSONObject(i);
+                            JSONObject jsonProduct = jsonObj.getJSONObject("product");
+                            // Initialization of a product object to fill the collectedProducts ArrayList
+                            Product product = new Product(jsonProduct.getInt("id"),
+                                    jsonProduct.getString("name"),
+                                    jsonProduct.getBoolean("is_available"),
+                                    jsonProduct.getString("created_at"),
+                                    jsonProduct.getString("updated_at"),
+                                    jsonProduct.getString("product_picture"),
+                                    jsonProduct.getInt("supplier"));
+
+                            collectedProducts.add(product);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     // Attach the adapter to the listView
-                    CustomProductsAdapter adapterCollectedProducts = new CustomProductsAdapter(productArrayList,getActivity().getApplicationContext());
+                    CustomProductsAdapter adapterCollectedProducts = new CustomProductsAdapter(collectedProducts, getActivity().getApplicationContext());
                     listViewCollectedProducts.setAdapter(adapterCollectedProducts);
-                }
-                else{
+
+                } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Log.i("serverRequest", t.getLocalizedMessage());
             }
         });

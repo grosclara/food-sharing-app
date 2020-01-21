@@ -37,13 +37,22 @@ public class CollectActivity extends AppCompatActivity {
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
-    public static final String token = LauncherActivity.userCredits.getString("token",null);
-    public static int userId = LauncherActivity.userCredits.getInt("id",-1);
+    public static String token;
+    public static int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
+
+        Toast.makeText(getApplicationContext(),String.valueOf(userId),Toast.LENGTH_SHORT).show();
+
+        token = LauncherActivity.userCredits.getString("token",null);
+        userId = LauncherActivity.userCredits.getInt("id",-1);
+
+        if( userId==-1 | token == null){
+            Log.e("Log in error","Error while logging in for the first time");
+        }
 
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();

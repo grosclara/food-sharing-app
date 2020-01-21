@@ -35,10 +35,12 @@ public class LauncherActivity extends AppCompatActivity {
             Intent toCollectActivityIntent = new Intent();
             toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
             startActivity(toCollectActivityIntent);
+            finish();
         } else {
             Intent toSignInActivityIntent = new Intent();
             toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
             startActivity(toSignInActivityIntent);
+            finish();
         }
     }
 }

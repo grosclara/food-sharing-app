@@ -92,8 +92,16 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields='__all__'
 
-class OrderSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
+class OrderDetailsSerializer(serializers.ModelSerializer):
+
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model=Order
-        fields='__all__'
+        fields=('__all__')
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Order
+        fields=('__all__')

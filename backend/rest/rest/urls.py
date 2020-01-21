@@ -27,7 +27,7 @@ router=routers.DefaultRouter()
 # It also generates routes for optional .json style format suffixes.
 
 router.register(r'api/v1/product',views.ProductViewSet,base_name='product')
-router.register(r'api/v1/order',views.OrderViewSet)
+router.register(r'api/v1/order',views.OrderViewSet,base_name='order')
 router.register(r'api/v1/user',views.UserViewSet)
 
 urlpatterns = [

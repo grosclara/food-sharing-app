@@ -81,8 +81,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         final User user = new User(email,password);
 
-        final SharedPreferences.Editor editor = LauncherActivity.userCreditsEditor;
-
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
@@ -127,7 +125,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
             }
         });
-
 
         Intent toCollectActivityIntent = new Intent();
         toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);

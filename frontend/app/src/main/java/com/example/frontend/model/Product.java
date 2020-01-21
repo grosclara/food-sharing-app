@@ -22,12 +22,23 @@ public class Product implements Serializable {
     private String created_at;
     private String updated_at;
     private String product_picture;
+
     /*
      * Constructor of the Product class.
      * Only take a few attributes in argument because the server auto adds the others (id, is_available, created_at, updated_at)
      */
     public Product(String name, int supplier) {
         this.name = name;
+        this.supplier = supplier;
+    }
+
+    public Product(int id, String name, boolean is_available, String created_at, String updated_at, String product_picture, int supplier){
+        this.id = id;
+        this.name = name;
+        this.is_available = is_available;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.product_picture = product_picture;
         this.supplier = supplier;
     }
 
