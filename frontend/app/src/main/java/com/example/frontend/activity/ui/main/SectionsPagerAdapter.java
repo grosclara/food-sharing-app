@@ -14,6 +14,7 @@ import com.example.frontend.R;
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
+
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     int NUM_TABS;

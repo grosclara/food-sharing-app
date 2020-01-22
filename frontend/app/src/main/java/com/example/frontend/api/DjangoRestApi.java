@@ -145,6 +145,11 @@ public interface DjangoRestApi {
     Call<User> createUser(@Body User user);
 
     @POST("rest-auth/login/")
-    Call<Object> authUser(@Body User user);
+    Call<Object> login(@Body User user);
+
+    @POST("rest-auth/logout/")
+    Call<ResponseBody> logout(
+        @Header("Authorization") String token
+    );
 
 }

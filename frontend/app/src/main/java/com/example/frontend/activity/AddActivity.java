@@ -73,14 +73,14 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
     }
 
-    /**
-     * Get the product information from the editTextViews to create a Product object.
-     * Call the addProduct(Product) method.
-     * Eventually redirect to the CollectActivity when clicking the buttonSubmit.
-     * @param view buttonSubmit
-     * @see #addProduct(Product product)
-     */
     public void fromAddToCollectActivity(View view) {
+        /**
+         * Get the product information from the editTextViews to create a Product object.
+         * Call the addProduct(Product) method.
+         * Eventually redirect to the CollectActivity when clicking the buttonSubmit.
+         * @param view buttonSubmit
+         * @see #addProduct(Product product)
+         */
 
         // Retrieve the name of the product typed in the editText field
         editTextProductName = findViewById(R.id.editTextProductName);
@@ -178,12 +178,12 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Method that creates a file for the photo with a unique name
-     * @return
-     * @throws IOException
-     */
     private File createImageFile() throws IOException {
+        /**
+         * Method that creates a file for the photo with a unique name
+         * @return
+         * @throws IOException
+         */
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
@@ -199,16 +199,16 @@ public class AddActivity extends AppCompatActivity {
         return image;
     }
 
-    /**
-     * Return of the camera call (startActivityForResult)
-     * Get the picture and load it into the imageView to give the user a preview of the picture he took
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
+        /**
+         * Return of the camera call (startActivityForResult)
+         * Get the picture and load it into the imageView to give the user a preview of the picture he took
+         * @param requestCode
+         * @param resultCode
+         * @param data
+         */
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("file","Request code: "+String.valueOf(requestCode));
         Log.d("file","Result code: "+String.valueOf(resultCode));

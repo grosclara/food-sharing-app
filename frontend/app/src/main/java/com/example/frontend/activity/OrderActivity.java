@@ -31,6 +31,7 @@ import retrofit2.Retrofit;
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
+
 public class OrderActivity extends AppCompatActivity {
 
     private TextView textViewProductName;
@@ -41,14 +42,14 @@ public class OrderActivity extends AppCompatActivity {
 
     private Product product;
 
-    /**
-     * Retrieve the object product (Product) by a getExtra to the intent sent by the collectActivity
-     * Display the information of both the product and the supplier from the product variable and the getUserById method
-     * @param savedInstanceState
-     * @see #getUserById(int)
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /**
+         * Retrieve the object product (Product) by a getExtra to the intent sent by the collectActivity
+         * Display the information of both the product and the supplier from the product variable and the getUserById method
+         * @param savedInstanceState
+         * @see #getUserById(int)
+         */
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
@@ -77,11 +78,11 @@ public class OrderActivity extends AppCompatActivity {
         Picasso.get().load(product.getProduct_picture()).into(imageViewOrderProduct);
     }
 
-    /**
-     * Send a HTTP request to retrieve all information from the user
-     * @param userId
-     */
     public void getUserById(int userId){
+        /**
+         * Send a HTTP request to retrieve all information from the user
+         * @param userId
+         */
 
         // Retrieve a reference on the textViews defined in the xml layout file
         textViewSupplierFirstName = findViewById(R.id.textViewSupplierFirstName);
@@ -113,16 +114,17 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * When clicking the Button buttonOrder:
-     * Call the method to update the product (updateProduct) in the remote db
-     * Create an order object to post to the remote db calling the addOrder method
-     * Redirect to the CollectActivity when clicking the buttonOrder
-     * @param view buttonOrder
-     * @see #addOrder(Order)
-     * @see #updateProduct(Product)
-     */
     public void fromOrderToCollectActivity(View view) {
+        /**
+         * When clicking the Button buttonOrder:
+         * Call the method to update the product (updateProduct) in the remote db
+         * Create an order object to post to the remote db calling the addOrder method
+         * Redirect to the CollectActivity when clicking the buttonOrder
+         * @param view buttonOrder
+         * @see #addOrder(Order)
+         * @see #updateProduct(Product)
+         */
+
         // Create the order object
         Order order = new Order(CollectActivity.userId, product.getId());
         // Post order
@@ -137,11 +139,11 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Take into param an order and add it to the remote database asynchronously
-     * @param order
-     */
     public void addOrder(Order order){
+        /**
+         * Take into param an order and add it to the remote database asynchronously
+         * @param order
+         */
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
@@ -168,12 +170,12 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-    // PB WITH THE PICTURE FIELD
-    /**
-     * Take into param a product and update it in the remote database asynchronously
-     * @param product
-     */
     public void updateProduct(Product product){
+        // PB WITH THE PICTURE FIELD
+        /**
+         * Take into param a product and update it in the remote database asynchronously
+         * @param product
+         */
 
         // Retrieve the id of the product
         int productId = product.getId();

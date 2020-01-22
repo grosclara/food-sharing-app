@@ -7,7 +7,6 @@ from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
 from rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import authenticate
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -76,6 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)  
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
+
 
 
 

@@ -84,7 +84,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        Call<Object> call = djangoRestApi.authUser(user);
+        Call<Object> call = djangoRestApi.login(user);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
