@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:app2="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schema.android.com/apk/res-auto">
 
-    <item android:id="@+id/signOut"
+    <item android:title="Item" />
+    <item
+        android:id="@+id/signOut"
         android:icon="@drawable/ic_power_settings_new_black_24dp"
         android:title="Log out"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 </menu>
