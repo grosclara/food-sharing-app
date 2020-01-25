@@ -4,7 +4,7 @@ from .managers import CustomUserManager
 from django.utils import timezone
 from django.conf import settings
 
-# Constantes
+# Constants
 GIF = 'G'
 RENNES = 'R'
 METZ = 'M'
@@ -14,6 +14,28 @@ CAMPUS_CHOICES = [
         (RENNES, 'Rennes'),
         (METZ,'Metz')
     ]
+
+FECULENTS = 'feculent'
+FRUITS_LEGUMES = 'fruit_legume'
+CONSERVES_PLATS_CUISINES = "conserve_plat_cuisine"
+PRODUITS_LAITIERS = "produit_laitier"
+DESSERTS_PAIN = "dessert_pain"
+VIANDES_OEUFS = 'viande_oeuf'
+PRODUITS_HYIGENE = "hygiene"
+PRODUITS_ENTRETIEN = "entretien"
+AUTRES_PRODUITS = "autre"
+
+PRODUCT_CHOICES = [
+    (FECULENTS, 'Féculents'),
+    (FRUITS_LEGUMES, 'Fruits/Légumes'),
+    (CONSERVES_PLATS_CUISINES, 'Conserves/Plats cuisinés'),
+    (PRODUITS_LAITIERS, 'Produits laitiers'),
+    (DESSERTS_PAIN, 'Dessserts/Pain'),
+    (VIANDES_OEUFS, 'Viandes/Oeufs'),
+    (PRODUITS_HYIGENE, "Produits d'hygiène"),
+    (PRODUITS_ENTRETIEN, "Produits d'entretien"),
+    (AUTRES_PRODUITS, 'Autres')
+]
 
 # Django models to create our SQL tables
 
@@ -31,7 +53,7 @@ class User(AbstractBaseUser):
     profile_picture = models.ImageField(upload_to="media/user/", default='media/user/android.png')
     room_number = models.CharField(max_length = 50)
     campus = models.CharField(
-        max_length=1,
+        max_length=10,
         choices=CAMPUS_CHOICES)
     
     USERNAME_FIELD = 'email'
@@ -48,6 +70,9 @@ class Product(models.Model): # Product table
     supplier = models.ForeignKey(settings.AUTH_USER_MODEL , on_delete=models.CASCADE)   # equivalent to the sql constraint ON DELETE CASCADE
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    category = models.CharField(
+        max_length=50,
+        choices=PRODUCT_CHOICES)
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
     objects = models.Manager()
 

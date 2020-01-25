@@ -46,6 +46,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         queryset = Product.objects.all()
         supplier = self.request.query_params.get('supplier', None)
         is_available = self.request.query_params.get('is_available', None)
+        category = self.request.query_params.get('category',None)
         id = self.request.query_params.get('id',None)
         if supplier is not None:
             queryset = queryset.filter(supplier=supplier)
@@ -53,6 +54,8 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(is_available=is_available)
         if id is not None:
             queryset = queryset.filter(id=id)
+        if category is not None:
+            queryset = queryset.filter(category=category)
         return queryset
 
 class OrderViewSet(viewsets.ModelViewSet):
