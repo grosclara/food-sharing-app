@@ -132,6 +132,7 @@ public class AddActivity extends AppCompatActivity {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month++;
                 expiration_date = String.format("%1$d-%2$d-%3$d",year,month,dayOfMonth);
                 textViewExpirationDate.setText(expiration_date);
                 Log.d("TAG",expiration_date);

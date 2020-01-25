@@ -131,6 +131,8 @@ public class OrderActivity extends AppCompatActivity {
         addOrder(order);
         // Change the is_available attribute of the product object to not available
         updateProduct(product);
+
+        //NEED TO DO ASYNCHRONOUS CALCULATION TO CHANGE ACTIVITY AFTER THE PRODUCT IS ORDERED AND AFTER THE PRODUCT STATUS IS UPDATED
         // Redirect to the CollectActivity
         Intent toCollectActivityIntent = new Intent();
         toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
@@ -183,6 +185,9 @@ public class OrderActivity extends AppCompatActivity {
         product.setProduct_picture(null);
         product.setCreated_at(null);
         product.setName(null);
+        product.setQuantity(null);
+        product.setCategory(null);
+        product.setExpiration_date(null);
         // Set its is_available attribute to false as it has just been order by someone
         product.setIs_available(false);
 

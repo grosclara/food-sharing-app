@@ -54,6 +54,8 @@ Link to our Postman working directory : https://app.getpostman.com/join-team?inv
 
 TO DO:
 
+Asynchronous work on Order activity
+
 User : -> Menu index
 Log out
 Delete
