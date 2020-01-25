@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frontend.R;
@@ -27,11 +30,20 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText editTextEmailSignUp;
     private EditText editTextPasswordSignUp;
     private EditText editTextPasswordConfirm;
-    private EditText editTextCampus;
+    private Spinner spinnerCampus;
     private EditText editTextRoomNumber;
 
     private Button buttonSignUp;
     private Button buttonAlreadyHaveAnAccount;
+
+    private String[] campusArray;
+    private String email;
+    private String lastName;
+    private String firstName;
+    private String password1;
+    private String password2;
+    private String campus;
+    private String room_number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +56,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         editTextFirstName = findViewById(R.id.editTextFirstName);
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextPasswordSignUp = findViewById(R.id.editTextPasswordSignUp);
-        editTextCampus = findViewById(R.id.editTextCampus);
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
 
         // Buttons
@@ -52,6 +63,25 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
         buttonSignUp.setOnClickListener(this);
         buttonAlreadyHaveAnAccount.setOnClickListener(this);
+
+        // Spinner
+        campusArray = getResources().getStringArray(R.array.campus_array);
+        spinnerCampus = findViewById(R.id.spinnerCampus);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
+        // Apply the adapter to the spinner
+        spinnerCampus.setAdapter(adapterSpinner);
+        spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                campus = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
@@ -71,16 +101,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void createAccount() {
 
-        String email = editTextEmailSignUp.getText().toString().trim();
-        String lastName = editTextLastName.getText().toString().trim();
-        String firstName = editTextFirstName.getText().toString().trim();
-        String password1 = editTextPasswordSignUp.getText().toString().trim();
-        String password2 = editTextPasswordConfirm.getText().toString().trim();
-        String campus = editTextCampus.getText().toString().trim();
-        String room_number = editTextRoomNumber.getText().toString().trim();
+        email = editTextEmailSignUp.getText().toString().trim();
+        lastName = editTextLastName.getText().toString().trim();
+        firstName = editTextFirstName.getText().toString().trim();
+        password1 = editTextPasswordSignUp.getText().toString().trim();
+        password2 = editTextPasswordConfirm.getText().toString().trim();
+        room_number = editTextRoomNumber.getText().toString().trim();
 
         // Call to a field validation method before registering the user
-
         User user = new User(email, lastName, firstName, password1, password2, campus, room_number);
 
         // Define the URL endpoint for the HTTP operation.

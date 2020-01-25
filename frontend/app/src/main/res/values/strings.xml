@@ -3,4 +3,20 @@
     <string name="title_activity_cart">CartActivity</string>
     <string name="tab_text_1">Given</string>
     <string name="tab_text_2">Collected</string>
+    <string-array name="product_categories_array">
+        <item>Féculents</item>
+        <item>Fruits/Légumes</item>
+        <item>Conserves/Plats cuisinés</item>
+        <item>Produits laitiers</item>
+        <item>Desserts/Pain</item>
+        <item>Viandes/Oeufs</item>
+        <item>Produits d\'hygiène</item>
+        <item>Produits d\'entretien</item>
+        <item>Autres</item>
+    </string-array>
+    <string-array name="campus_array">
+        <item>Gif</item>
+        <item>Rennes</item>
+        <item>Metz</item>
+    </string-array>
 </resources>

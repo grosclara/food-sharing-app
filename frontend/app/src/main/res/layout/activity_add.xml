@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".activity.AddActivity">
 
+    <TextView
+        android:id="@+id/textViewAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:text="Fill in the form to give your product: "
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editTextProductName"
         android:layout_width="match_parent"
@@ -14,13 +22,42 @@
         android:inputType="textPersonName"
         app:layout_constraintTop_toBottomOf="@id/textViewAdd" />
 
-    <TextView
-        android:id="@+id/textViewAdd"
+    <Spinner
+        android:id="@+id/spinnerProductCategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:text="Fill in the form to give your product: "
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/editTextProductName" />
+
+    <EditText
+        android:id="@+id/editTextQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantity"
+        app:layout_constraintTop_toBottomOf="@id/spinnerProductCategories" />
+
+    <TextView
+        android:id="@+id/textViewExpirationDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Expiration Date"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/editTextQuantity"/>
+
+    <Button
+        android:id="@+id/buttonPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="openCameraIntent"
+        android:text="Take a photo"
+        app:layout_constraintTop_toBottomOf="@id/textViewExpirationDate" />
+
+    <ImageView
+        android:id="@+id/imageViewPreviewProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonPhoto"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/buttonSubmit"
@@ -30,21 +67,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:onClick="fromAddToCollectActivity"/>
-
-    <Button
-        android:id="@+id/buttonPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="openCameraIntent"
-        android:text="Take a photo"
-        app:layout_constraintTop_toBottomOf="@id/editTextProductName" />
-
-    <ImageView
-        android:id="@+id/imageViewPreviewProduct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonPhoto"
-        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

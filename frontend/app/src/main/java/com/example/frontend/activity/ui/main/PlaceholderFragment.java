@@ -182,7 +182,10 @@ public class PlaceholderFragment extends Fragment {
                                     jsonProduct.getString("created_at"),
                                     jsonProduct.getString("updated_at"),
                                     jsonProduct.getString("product_picture"),
-                                    jsonProduct.getInt("supplier"));
+                                    jsonProduct.getInt("supplier"),
+                                    jsonProduct.getString("category"),
+                                    jsonProduct.getString("quantity"),
+                                    jsonProduct.getString("expiration_date"));
 
                             collectedProducts.add(product);
                         }

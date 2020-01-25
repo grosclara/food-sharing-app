@@ -5,9 +5,9 @@ from django.utils import timezone
 from django.conf import settings
 
 # Constants
-GIF = 'G'
-RENNES = 'R'
-METZ = 'M'
+GIF = 'Gif'
+RENNES = 'Rennes'
+METZ = 'Metz'
 
 CAMPUS_CHOICES = [
         (GIF, 'Gif'),
@@ -15,22 +15,22 @@ CAMPUS_CHOICES = [
         (METZ,'Metz')
     ]
 
-FECULENTS = 'feculent'
-FRUITS_LEGUMES = 'fruit_legume'
-CONSERVES_PLATS_CUISINES = "conserve_plat_cuisine"
-PRODUITS_LAITIERS = "produit_laitier"
-DESSERTS_PAIN = "dessert_pain"
-VIANDES_OEUFS = 'viande_oeuf'
-PRODUITS_HYIGENE = "hygiene"
-PRODUITS_ENTRETIEN = "entretien"
-AUTRES_PRODUITS = "autre"
+FECULENTS = 'Féculents'
+FRUITS_LEGUMES = 'Fruits/Légumes'
+CONSERVES_PLATS_CUISINES = "Conserves/Plats cuisinés"
+PRODUITS_LAITIERS = "Produits laitiers"
+DESSERTS_PAIN = "Desserts/Pain"
+VIANDES_OEUFS = 'Viandes/Oeufs'
+PRODUITS_HYIGENE = "Produits d'hygiène"
+PRODUITS_ENTRETIEN = "Produits d'entretien"
+AUTRES_PRODUITS = "Autres"
 
 PRODUCT_CHOICES = [
     (FECULENTS, 'Féculents'),
     (FRUITS_LEGUMES, 'Fruits/Légumes'),
     (CONSERVES_PLATS_CUISINES, 'Conserves/Plats cuisinés'),
     (PRODUITS_LAITIERS, 'Produits laitiers'),
-    (DESSERTS_PAIN, 'Dessserts/Pain'),
+    (DESSERTS_PAIN, 'Desserts/Pain'),
     (VIANDES_OEUFS, 'Viandes/Oeufs'),
     (PRODUITS_HYIGENE, "Produits d'hygiène"),
     (PRODUITS_ENTRETIEN, "Produits d'entretien"),
@@ -74,6 +74,8 @@ class Product(models.Model): # Product table
         max_length=50,
         choices=PRODUCT_CHOICES)
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
+    quantity = models.CharField(max_length=50)
+    expiration_date = models.DateField()
     objects = models.Manager()
 
 class Order(models.Model): # Order table

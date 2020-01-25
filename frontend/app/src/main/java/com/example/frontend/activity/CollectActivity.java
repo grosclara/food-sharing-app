@@ -53,15 +53,17 @@ public class CollectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
-        Toast.makeText(getApplicationContext(), String.valueOf(userId), Toast.LENGTH_SHORT).show();
-
         token = "Token "+LauncherActivity.userCredits.getString("token", null);
         userId = LauncherActivity.userCredits.getInt("id", -1);
 
         if (userId == -1 | token == null) {
             Log.e("Log in error", "Error while logging in for the first time");
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
     }
@@ -211,4 +213,5 @@ public class CollectActivity extends AppCompatActivity {
         toCartActivityIntent.setClass(getApplicationContext(), CartActivity.class);
         startActivity(toCartActivityIntent);
     }
+
 }

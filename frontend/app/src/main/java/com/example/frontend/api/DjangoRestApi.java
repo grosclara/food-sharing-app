@@ -5,6 +5,7 @@ import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -88,6 +89,8 @@ public interface DjangoRestApi {
      *
      * @param product_picture
      * @param name
+     * @param quantity
+     * @param expiration_date
      * @param supplier
      * @param is_available
      * @return
@@ -101,7 +104,9 @@ public interface DjangoRestApi {
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") RequestBody name,
-          //  @Part("name") String productName,
+            @Part("category") RequestBody category,
+            @Part("quantity") String quantity,
+            @Part("expiration_date") String expiration_date,
             @Part("supplier") int supplier,
             @Part("is_available") boolean is_available
     );
