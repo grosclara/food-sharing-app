@@ -125,6 +125,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d("serverRequest", response.message());
                 if (response.isSuccessful()){
 
+                    Toast.makeText(getApplicationContext(), "You are now redirected to the Sign In page",Toast.LENGTH_SHORT).show();
+
                     Intent toSignInActivityIntent = new Intent();
                     toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
                     startActivity(toSignInActivityIntent);

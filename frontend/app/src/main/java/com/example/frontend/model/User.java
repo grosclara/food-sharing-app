@@ -14,6 +14,7 @@ public class User {
     private int id;
     private String email;
     private String password;
+    private String password1;
     private String password2;
     private String last_name;
     private String first_name;
@@ -31,7 +32,7 @@ public class User {
         this.email = email;
         this.last_name = last_name;
         this.first_name = first_name;
-        this.password = password1;
+        this.password1 = password1;
         this.password2 = password2;
         this.campus = campus;
         this.room_number = room_number;

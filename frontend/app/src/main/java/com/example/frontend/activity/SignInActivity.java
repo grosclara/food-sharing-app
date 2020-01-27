@@ -71,7 +71,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         } else if (v == buttonSignIn) {
             //Validate the signing up
-            // Need to call the sign in function and the redirect to the create activity
             signIn();
         }
     }
@@ -131,10 +130,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d("serverRequest", t.getLocalizedMessage());
 
             }
-        });/*
-
-        Intent toCollectActivityIntent = new Intent();
-        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
-        startActivity(toCollectActivityIntent);*/
+        });
     }
 }
