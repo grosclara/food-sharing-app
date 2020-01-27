@@ -3,7 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schema.android.com/apk/res-auto">
 
-    <item android:title="Item" />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="See profile"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/signOut"
         android:icon="@drawable/ic_power_settings_new_black_24dp"

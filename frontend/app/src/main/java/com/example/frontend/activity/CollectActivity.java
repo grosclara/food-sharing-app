@@ -90,9 +90,13 @@ public class CollectActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.settings:
+                fromMenuToSettingsActivity();
             case R.id.signOut:
                 alertDialogLogOut();
                 return true;
+            case R.id.profile:
+                fromMenuToProfileActivity();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -225,5 +229,21 @@ public class CollectActivity extends AppCompatActivity {
         toCartActivityIntent.setClass(getApplicationContext(), CartActivity.class);
         startActivity(toCartActivityIntent);
     }
+
+
+    private void fromMenuToProfileActivity() {
+        /**
+         * Redirect to the ProfileActivity when clicking the item See Profile
+         * @param item See Profile
+         */
+        Intent toProfileActivityIntent = new Intent();
+        toProfileActivityIntent.setClass(getApplicationContext(), ProfileActivity.class);
+        startActivity(toProfileActivityIntent);
+    }
+
+    private void fromMenuToSettingsActivity() {
+    }
+
+
 
 }
