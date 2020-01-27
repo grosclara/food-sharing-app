@@ -59,6 +59,9 @@ public class CollectActivity extends AppCompatActivity {
         if (userId == -1 | token == null) {
             Log.e("Log in error", "Error while logging in for the first time");
         }
+
+        Toast.makeText(getApplicationContext(), "create", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
