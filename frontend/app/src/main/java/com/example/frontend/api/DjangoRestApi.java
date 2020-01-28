@@ -5,6 +5,7 @@ import com.example.frontend.model.Product;
 import com.example.frontend.model.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -88,6 +89,8 @@ public interface DjangoRestApi {
      *
      * @param product_picture
      * @param name
+     * @param quantity
+     * @param expiration_date
      * @param supplier
      * @param is_available
      * @return
@@ -101,7 +104,9 @@ public interface DjangoRestApi {
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") RequestBody name,
-          //  @Part("name") String productName,
+            @Part("category") RequestBody category,
+            @Part("quantity") String quantity,
+            @Part("expiration_date") String expiration_date,
             @Part("supplier") int supplier,
             @Part("is_available") boolean is_available
     );
@@ -123,16 +128,16 @@ public interface DjangoRestApi {
      * @return
      */
     @GET("order/")
-    Call<List<Order>> getClientOrders(
+    Call<Object> getOrdersByClient(
             @Header("Authorization") String token,
             @Query("client")  int userId
     );
 
 
-    @GET("product/")
-    Call<List<Product>> getProductsByIds(
+    @GET("product/{id}/")
+    Call<Product> getProductById(
             @Header("Authorization") String token,
-            @Query("id") ArrayList<Integer> productIdArrayList
+            @Path("id") int productId
     );
 
     /**
@@ -145,6 +150,11 @@ public interface DjangoRestApi {
     Call<User> createUser(@Body User user);
 
     @POST("rest-auth/login/")
-    Call<User> authUser(@Body User user);
+    Call<Object> login(@Body User user);
+
+    @POST("rest-auth/logout/")
+    Call<ResponseBody> logout(
+        @Header("Authorization") String token
+    );
 
 }

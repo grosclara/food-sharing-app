@@ -5,18 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.frontend.R;
@@ -27,7 +35,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.net.URL;
 import java.util.Locale;
@@ -41,18 +51,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.frontend.activity.MainActivity.pref;
-import static com.example.frontend.activity.MainActivity.token;
-import static com.example.frontend.activity.MainActivity.userId;
-
-// PHOTOS PB
-
 /**
  * AddActivity Class.
  * Give the possibility to the user to add a product in the database.
  * The form to fill the product includes EditTexts.
  * Allows to take a picture of the product by opening the camera clicking on the buttonPicture.
- * After having added the product, the user is redirected to the MainActivity.
+ * After having added the product, the user is redirected to the CollectActivity.
+ *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
@@ -61,11 +66,19 @@ public class AddActivity extends AppCompatActivity {
 
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
+    private Spinner spinnerProductCategories;
+    private TextView textViewExpirationDate;
+    private EditText editTextQuantity;
 
-    private Product product;
     private String productName;
-    private int supplierId;
     private boolean is_available;
+    private String[] productCategoriesArray;
+    private String productCategory;
+    private String expiration_date;
+    private String quantity;
+
+    // Date picker
+    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     // Path to the location of the picture taken by the phone
     private String imageFilePath;
@@ -79,163 +92,206 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        token = pref.getString("token",null);
-        MainActivity.userId = pref.getInt("id", -1);
-    }
-
-    /**
-     * Get the product information from the editTextViews to create a Product object.
-     * Call the addProduct(Product) method.
-     * Eventually redirect to the MainActivity when clicking the buttonSubmit.
-     * @param view buttonSubmit
-     * @see #addProduct(Product product)
-     */
-    public void fromAddToMainActivity(View view) {
-
-        // Retrieve the name of the product typed in the editText field
-        editTextProductName = findViewById(R.id.editTextProductName);
-        productName = String.valueOf(editTextProductName.getText());
-        supplierId = 1; //default value before having set the log in module
-        is_available = true; // By default, when creating a product, this attribute must equals true
-
-        // Creation of a new product with its attribute
-        // While the login module isn't set, we provide a default supplier id
-        product = new Product(productName, MainActivity.userId);
-
-        // Call for the addProduct(Product) method to transfer data to the server
-        addProduct(product);
-
-        // Go back to the mainActivity
-        Intent toMainActivityIntent = new Intent();
-        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-        startActivity(toMainActivityIntent);
-        finish(); // Disable the "going back functionality" from the MainActivity to the AddActivity
-    }
-
-    public void addProduct(Product product) {
-        /**
-         * Send a HTTP request to post the Product product taken in param
-         * @param product
-         */
-
-        // Define the URL endpoint for the HTTP operation.
-        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
-
-        // Create a file object using file path
-        File file = new File(imageFilePath);
-
-        // Create RequestBody instance from file
-        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), productName);
-
-
-        // Asynchronous request
-        Call<Product> call = djangoRestApi.addProduct(token, body, name, userId, is_available);
-        call.enqueue(new Callback<Product>() {
+        productCategoriesArray = getResources().getStringArray(R.array.product_categories_array);
+        spinnerProductCategories = findViewById(R.id.spinnerProductCategories);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, productCategoriesArray);
+        // Apply the adapter to the spinner
+        spinnerProductCategories.setAdapter(adapterSpinner);
+        spinnerProductCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
-                Log.d("serverRequest",response.message()+' '+String.valueOf(response.code()));
-                if (response.isSuccessful()) {
-                    // In case of success, toast "Submit!"
-                    Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
-                }
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                productCategory = parent.getItemAtPosition(position).toString();
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-                Log.d("serverRequest",t.getLocalizedMessage());
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-    }
 
-    public void openCameraIntent(View view) {
-        /**
-         * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
-         * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
-         * We create a URI (Uniform Resource Identifier) for this file.
-         * Eventually the intent call for the onActivityResult method.
-         * @param view ButtonGallery to pick a picture
-         * @see #onActivityResult(int, int, Intent)
-         * @see #createImageFile()
-         */
-        Intent pictureIntent = new Intent(
-                MediaStore.ACTION_IMAGE_CAPTURE);
-        if(pictureIntent.resolveActivity(getPackageManager()) != null){
-            //Create a file to store the image
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-                Log.d("file", "File was successfully created");
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                Log.d("file", "An error occurred while creating the file");
-            }
-            if (photoFile != null) {
-                fileUri = FileProvider.getUriForFile(
+        textViewExpirationDate = findViewById(R.id.textViewExpirationDate);
+        textViewExpirationDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
                         AddActivity.this,
-                        AddActivity.this.getApplicationContext().getPackageName()+".provider",
-                        photoFile
-                );
-                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        fileUri);
-                startActivityForResult(pictureIntent,
-                        REQUEST_CAPTURE_IMAGE);
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        dateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month++;
+                expiration_date = String.format("%1$d-%2$d-%3$d",year,month,dayOfMonth);
+                textViewExpirationDate.setText(expiration_date);
+                Log.d("TAG",expiration_date);
+            }
+        };
+    }
+
+        public void fromAddToCollectActivity (View view){
+            /**
+             * Get the product information from the editTextViews to create a Product object.
+             * Call the addProduct(Product) method.
+             * Eventually redirect to the CollectActivity when clicking the buttonSubmit.
+             * @param view buttonSubmit
+             * @see #addProduct(Product product)
+             */
+
+            // Retrieve the name of the product typed in the editText field
+            editTextProductName = findViewById(R.id.editTextProductName);
+            productName = String.valueOf(editTextProductName.getText());
+
+            // Retrieve the quantity of the product typed in the editText field
+            editTextQuantity = findViewById(R.id.editTextQuantity);
+            quantity = String.valueOf(editTextQuantity.getText());
+
+            is_available = true; // By default, when creating a product, this attribute must equals true
+
+            // Call for the addProduct(Product) method to transfer data to the server
+            addProduct(productName);
+
+            // Go back to the CollectActivity
+            Intent toCollectActivityIntent = new Intent();
+            toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+            startActivity(toCollectActivityIntent);
+            finish(); // Disable the "going back functionality" from the CollectActivity to the AddActivity
+        }
+
+        public void addProduct (String productName){
+            /**
+             * Send a HTTP request to post the Product product taken in param
+             * @param productName
+             */
+
+            // Define the URL endpoint for the HTTP operation.
+            Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+            DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+            // Create a file object using file path
+            File file = new File(imageFilePath);
+
+            // Create RequestBody instance from file
+            RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part body = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
+            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), productName);
+            RequestBody category = RequestBody.create(MediaType.parse("text/plain"), productCategory);
+
+
+            // Asynchronous request
+            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, name, category, quantity, expiration_date, CollectActivity.userId, is_available);
+            call.enqueue(new Callback<Product>() {
+                @Override
+                public void onResponse(Call<Product> call, Response<Product> response) {
+                    Log.d("serverRequest", response.message() + ' ' + String.valueOf(response.code()));
+                    if (response.isSuccessful()) {
+                        // In case of success, toast "Submit!"
+                        Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Product> call, Throwable t) {
+                    Log.d("serverRequest", t.getLocalizedMessage());
+                }
+            });
+        }
+
+        public void openCameraIntent (View view){
+            /**
+             * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
+             * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
+             * We create a URI (Uniform Resource Identifier) for this file.
+             * Eventually the intent call for the onActivityResult method.
+             * @param view ButtonGallery to pick a picture
+             * @see #onActivityResult(int, int, Intent)
+             * @see #createImageFile()
+             */
+            Intent pictureIntent = new Intent(
+                    MediaStore.ACTION_IMAGE_CAPTURE);
+            if (pictureIntent.resolveActivity(getPackageManager()) != null) {
+                //Create a file to store the image
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                    Log.d("file", "File was successfully created");
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                    Log.d("file", "An error occurred while creating the file");
+                }
+                if (photoFile != null) {
+                    fileUri = FileProvider.getUriForFile(
+                            AddActivity.this,
+                            AddActivity.this.getApplicationContext().getPackageName() + ".provider",
+                            photoFile
+                    );
+                    pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            fileUri);
+                    startActivityForResult(pictureIntent,
+                            REQUEST_CAPTURE_IMAGE);
+                }
+            }
+        }
+
+        private File createImageFile () throws IOException {
+            /**
+             * Method that creates a file for the photo with a unique name
+             * @return
+             * @throws IOException
+             */
+            String timeStamp =
+                    new SimpleDateFormat("yyyyMMdd_HHmmss",
+                            Locale.getDefault()).format(new Date());
+            String imageFileName = "IMG_" + timeStamp + "_";
+            File storageDir =
+                    getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+            imageFilePath = image.getAbsolutePath();
+            return image;
+        }
+
+        @Override
+        protected void onActivityResult ( int requestCode, int resultCode,
+        Intent data){
+            /**
+             * Return of the camera call (startActivityForResult)
+             * Get the picture and load it into the imageView to give the user a preview of the picture he took
+             * @param requestCode
+             * @param resultCode
+             * @param data
+             */
+            super.onActivityResult(requestCode, resultCode, data);
+            Log.d("file", "Request code: " + String.valueOf(requestCode));
+            Log.d("file", "Result code: " + String.valueOf(resultCode));
+            if (requestCode == REQUEST_CAPTURE_IMAGE) {
+                // Handle the case where the user cancelled the camera intent without taking a picture like,
+                // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
+                if (resultCode == Activity.RESULT_OK) {
+                    // Load with the imageFilePath we obtained before opening the cameraIntent
+                    imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
+                    Bitmap imageBitmap = BitmapFactory.decodeFile(imageFilePath);
+                    imageViewPreviewProduct.setImageBitmap(imageBitmap);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    // User Cancelled the action
+                }
             }
         }
     }
-
-    /**
-     * Method that creates a file for the photo with a unique name
-     * @return
-     * @throws IOException
-     */
-    private File createImageFile() throws IOException {
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss",
-                        Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        imageFilePath = image.getAbsolutePath();
-        return image;
-    }
-
-    /**
-     * Return of the camera call (startActivityForResult)
-     * Get the picture and load it into the imageView to give the user a preview of the picture he took
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("file","Request code: "+String.valueOf(requestCode));
-        Log.d("file","Result code: "+String.valueOf(resultCode));
-        if (requestCode == REQUEST_CAPTURE_IMAGE) {
-            // Handle the case where the user cancelled the camera intent without taking a picture like,
-            // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
-            if (resultCode == Activity.RESULT_OK) {
-                // Load with the imageFilePath we obtained before opening the cameraIntent
-                imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
-                Bitmap imageBitmap = BitmapFactory.decodeFile(imageFilePath);
-                imageViewPreviewProduct.setImageBitmap(imageBitmap);
-            }
-            else if(resultCode == Activity.RESULT_CANCELED) {
-                // User Cancelled the action
-            }
-        }
-    }
-}

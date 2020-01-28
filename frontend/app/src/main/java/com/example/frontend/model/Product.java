@@ -1,6 +1,7 @@
 package com.example.frontend.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Class of the Product table that implements Serializable.
@@ -22,13 +23,50 @@ public class Product implements Serializable {
     private String created_at;
     private String updated_at;
     private String product_picture;
+    private String category;
+    private String quantity;
+    private String expiration_date;
+
     /*
      * Constructor of the Product class.
-     * Only take a few attributes in argument because the server auto adds the others (id, is_available, created_at, updated_at)
+     * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
      */
-    public Product(String name, int supplier) {
+
+    public Product(int id, String name, boolean is_available, String created_at, String updated_at, String product_picture, int supplier, String category, String quantity, String expiration_date){
+        this.id = id;
         this.name = name;
+        this.is_available = is_available;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.product_picture = product_picture;
         this.supplier = supplier;
+        this.category = category;
+        this.quantity = quantity;
+        this.expiration_date = expiration_date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getExpiration_date() {
+        return expiration_date;
+    }
+
+    public void setExpiration_date(String expiration_date) {
+        this.expiration_date = expiration_date;
     }
 
     public int getId() {

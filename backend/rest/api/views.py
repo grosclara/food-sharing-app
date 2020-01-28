@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .models import Product, Order, User
-from .serializers import ProductSerializer, OrderSerializer, CustomUserDetailsSerializer
+from .serializers import ProductSerializer, OrderSerializer, OrderDetailsSerializer, CustomUserDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
 from rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import authenticate
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -28,7 +27,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     model = Product
     lookup_field = 'id'
 
-    queryset = Product.objects.all()
     filter_backends = [filters.OrderingFilter]
     # Explicitly specify which fields the API may be ordered against
     ordering_fields = ['created_at','updated_at']
@@ -40,15 +38,47 @@ class ProductViewSet(viewsets.ModelViewSet):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `supplier` or a 'is_available' query parameter in the URL.
+        """
+        queryset = Product.objects.all()
+        supplier = self.request.query_params.get('supplier', None)
+        is_available = self.request.query_params.get('is_available', None)
+        category = self.request.query_params.get('category',None)
+        id = self.request.query_params.get('id',None)
+        if supplier is not None:
+            queryset = queryset.filter(supplier=supplier)
+        if is_available is not None:
+            queryset = queryset.filter(is_available=is_available)
+        if id is not None:
+            queryset = queryset.filter(id=id)
+        if category is not None:
+            queryset = queryset.filter(category=category)
+        return queryset
+
 class OrderViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)  
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return OrderDetailsSerializer
+        else:
+            return OrderSerializer
+    
+    def get_queryset(self):
+        queryset = Order.objects.all()
+        client = self.request.query_params.get('client', None)
+        if client is not None:
+            queryset = queryset.filter(client=client)
+        return queryset
 
 class UserViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)  
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
+
 
 
 

@@ -146,8 +146,12 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  
-    ]
+        'rest_framework.authentication.TokenAuthentication', 
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 AUTH_USER_MODEL = 'api.User'
@@ -161,7 +165,8 @@ ACCOUNT_USER_EMAIL_FIELD = 'email'
 ACCOUNT_LOGOUT_ON_GET = False
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api.serializers.CustomUserDetailsSerializer'
+    'USER_DETAILS_SERIALIZER': 'api.serializers.CustomUserDetailsSerializer',
+    'TOKEN_SERIALIZER': 'api.serializers.CustomTokenSerializer'
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "api.serializers.CustomRegisterSerializer",
