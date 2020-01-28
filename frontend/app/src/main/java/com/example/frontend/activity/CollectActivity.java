@@ -53,7 +53,7 @@ public class CollectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
-        token = "Token "+LauncherActivity.userCredits.getString("token", null);
+        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
         userId = LauncherActivity.userCredits.getInt("id", -1);
 
         if (userId == -1 | token == null) {
@@ -69,15 +69,6 @@ public class CollectActivity extends AppCompatActivity {
         super.onStart();
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
-        Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        // Call for the getAvailableProducts() in the onCreate method.
-        getAvailableProducts();
-        Toast.makeText(getApplicationContext(), "restart", Toast.LENGTH_SHORT).show();
     }
 
     @Override

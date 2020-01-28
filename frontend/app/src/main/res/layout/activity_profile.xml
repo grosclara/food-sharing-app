@@ -17,20 +17,16 @@
 
     <TextView
         android:id="@+id/textViewFirstName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="First Name"
-        app:layout_constraintLeft_toRightOf="@id/imageViewProfilePicture"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/imageViewProfilePicture" />
 
     <TextView
         android:id="@+id/textViewLastName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
         android:hint="Last Name"
-        app:layout_constraintLeft_toRightOf="@id/imageViewProfilePicture"
         app:layout_constraintTop_toBottomOf="@id/textViewFirstName" />
 
     <TextView
@@ -38,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        app:layout_constraintTop_toBottomOf="@id/imageViewProfilePicture" />
+        app:layout_constraintTop_toBottomOf="@id/textViewLastName" />
 
     <TextView
         android:id="@+id/textViewCampus"
@@ -53,5 +49,20 @@
         android:layout_height="wrap_content"
         android:hint="Room Number"
         app:layout_constraintTop_toBottomOf="@id/textViewCampus" />
+
+    <Button
+        android:id="@+id/buttonDeleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete account"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/buttonEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit profile"
+        app:layout_constraintBottom_toTopOf="@id/buttonDeleteAccount"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

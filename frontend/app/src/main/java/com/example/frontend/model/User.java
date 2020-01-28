@@ -22,7 +22,7 @@ public class User {
     private String campus;
     private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
-    private String profile_picture_url;
+    private String profile_picture;
 
     /*
      * Constructor of the User class.
@@ -72,17 +72,26 @@ public class User {
         this.first_name = first_name;
     }
 
-    public String getProfile_picture_url() {
-        return profile_picture_url;
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
-    public void setProfile_picture_url(String profile_picture_url) {
-        this.profile_picture_url = profile_picture_url;
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 
     public String getEmail() {
         return email;
     }
+
+    public String getCampus() {
+        return campus;
+    }
+
+    public String getRoom_number() {
+        return room_number;
+    }
+
 
     public void setEmail(String email) {
         this.email = email;

@@ -13,6 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -40,9 +41,9 @@ public interface DjangoRestApi {
      */
     @GET("product/")
     Call<List<Product>> getAvailableProducts(
-           // @Header("Authorization") String idToken,
-           @Header("Authorization") String token,
-           @Query("is_available")  int is_available
+            // @Header("Authorization") String idToken,
+            @Header("Authorization") String token,
+            @Query("is_available") int is_available
     );
 
     /**
@@ -119,7 +120,7 @@ public interface DjangoRestApi {
     @GET("product/")
     Call<List<Product>> getGivenProducts(
             @Header("Authorization") String token,
-            @Query("supplier")  int userId
+            @Query("supplier") int userId
     );
 
     /**
@@ -130,7 +131,7 @@ public interface DjangoRestApi {
     @GET("order/")
     Call<Object> getOrdersByClient(
             @Header("Authorization") String token,
-            @Query("client")  int userId
+            @Query("client") int userId
     );
 
 
@@ -154,7 +155,18 @@ public interface DjangoRestApi {
 
     @POST("rest-auth/logout/")
     Call<ResponseBody> logout(
-        @Header("Authorization") String token
+            @Header("Authorization") String token
+    );
+
+    @GET("rest-auth/user/")
+    Call<User> getProfileInfo(
+            @Header("Authorization") String token
+    );
+
+    @DELETE("user/{id}/")
+    Call<ResponseBody> deleteUserById(
+            @Header("Authorization") String token,
+            @Path("id") int userId
     );
 
 }
