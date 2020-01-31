@@ -86,14 +86,14 @@ public class PlaceholderFragment extends Fragment {
         return null;
     }
 
-    /**
-     * Send a HTTP request to retrieve all the products given by the user in the db in a ArrayList.
-     * Then display them in a listView through the CustomProductAdapter
-     * Set a onItemClickListener to the listView :
-     *
-     * @see CustomProductsAdapter
-     */
     public void getGivenProducts(int userId, View view) {
+        /**
+         * Send a HTTP request to retrieve all the products given by the user in the db in a ArrayList.
+         * Then display them in a listView through the CustomProductAdapter
+         * Set a onItemClickListener to the listView :
+         *
+         * @see CustomProductsAdapter
+         */
 
         // Retrieve a reference on the listView defined in the xml file
         final ListView listViewGivenProducts = view.findViewById(R.id.listViewGivenProducts);
@@ -133,16 +133,16 @@ public class PlaceholderFragment extends Fragment {
         });
     }
 
-    /**
-     * Send a HTTP request to retrieve all the orders made by the user.
-     * Then retrieve the product id in each order to store it in a list.
-     * For each product id, send a HTTP request to retrieve the product data and to store it to an arrayList
-     * Then display them in a listView through the CustomProductAdapter
-     * Set a onItemClickListener to the listView :
-     *
-     * @see CustomProductsAdapter
-     */
     public void getCollectedProducts(final int userId, final View view) {
+        /**
+         * Send a HTTP request to retrieve all the orders made by the user.
+         * Then retrieve the product id in each order to store it in a list.
+         * For each product id, send a HTTP request to retrieve the product data and to store it to an arrayList
+         * Then display them in a listView through the CustomProductAdapter
+         * Set a onItemClickListener to the listView :
+         *
+         * @see CustomProductsAdapter
+         */
 
         // Retrieve a reference on the listView defined in the xml file
         final ListView listViewCollectedProducts = view.findViewById(R.id.listViewCollectedProducts);
@@ -182,7 +182,10 @@ public class PlaceholderFragment extends Fragment {
                                     jsonProduct.getString("created_at"),
                                     jsonProduct.getString("updated_at"),
                                     jsonProduct.getString("product_picture"),
-                                    jsonProduct.getInt("supplier"));
+                                    jsonProduct.getInt("supplier"),
+                                    jsonProduct.getString("category"),
+                                    jsonProduct.getString("quantity"),
+                                    jsonProduct.getString("expiration_date"));
 
                             collectedProducts.add(product);
                         }

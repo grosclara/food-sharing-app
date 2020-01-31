@@ -84,7 +84,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        Call<Object> call = djangoRestApi.authUser(user);
+        Call<Object> call = djangoRestApi.login(user);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
@@ -97,21 +97,26 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
                         String token = JsonResponse.getString("key");
                         int userId = userCredits.getInt("id");
-                        String email = userCredits.getString("email");
+
+                        /*String email = userCredits.getString("email");
                         String first_name = userCredits.getString("first_name");
                         String last_name = userCredits.getString("last_name");
                         String room_number = userCredits.getString("room_number");
-                        String campus = userCredits.getString("campus");
+                        String campus = userCredits.getString("campus");*/
 
                         LauncherActivity.userCreditsEditor.putBoolean("logStatus",true);
                         LauncherActivity.userCreditsEditor.putString("token", token);
                         LauncherActivity.userCreditsEditor.putInt("id",userId);
-                        LauncherActivity.userCreditsEditor.putString("email",userCredits.getString("email"));
+                        /*LauncherActivity.userCreditsEditor.putString("email",userCredits.getString("email"));
                         LauncherActivity.userCreditsEditor.putString("first_name",userCredits.getString("first_name"));
                         LauncherActivity.userCreditsEditor.putString("last_name",userCredits.getString("last_name"));
                         LauncherActivity.userCreditsEditor.putString("room_number",userCredits.getString("room_number"));
-                        LauncherActivity.userCreditsEditor.putString("campus",userCredits.getString("campus"));
+                        LauncherActivity.userCreditsEditor.putString("campus",userCredits.getString("campus"));*/
                         LauncherActivity.userCreditsEditor.apply();
+
+                        Intent toCollectActivityIntent = new Intent();
+                        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+                        startActivity(toCollectActivityIntent);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -125,9 +130,5 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
             }
         });
-
-        Intent toCollectActivityIntent = new Intent();
-        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
-        startActivity(toCollectActivityIntent);
     }
 }

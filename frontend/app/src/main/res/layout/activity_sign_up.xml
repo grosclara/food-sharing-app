@@ -53,12 +53,10 @@
         android:hint="Confirm password"
         app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignUp"/>
 
-    <EditText
-        android:id="@+id/editTextCampus"
+    <Spinner
+        android:id="@+id/spinnerCampus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Campus"
         app:layout_constraintTop_toBottomOf="@id/editTextPasswordConfirm"/>
 
     <EditText
@@ -67,7 +65,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="Room Number"
-        app:layout_constraintTop_toBottomOf="@id/editTextCampus"/>
+        app:layout_constraintTop_toBottomOf="@id/spinnerCampus"/>
 
     <Button
         android:id="@+id/buttonSignUp"

@@ -68,7 +68,6 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id','email','first_name','last_name','room_number','campus','profile_picture','is_active','last_login','date_joined')
-        read_only_fields = ('email',)
 
 class CustomTokenSerializer(serializers.ModelSerializer):
     """

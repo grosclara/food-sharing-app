@@ -25,7 +25,7 @@ public class NetworkClient {
 
     private static Retrofit retrofit;
     // Constant that contains the base url of the remote server
-    private static final String BASE_URL = "http://10.0.2.2:8000/api/v1/";
+    public static final String BASE_URL = "http://10.0.2.2:8000/api/v1/";
 
     /*
      * This public static method that takes in param the context of the current activity returns
