@@ -178,6 +178,10 @@ public class CollectActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+                                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
+                                LauncherActivity.userCreditsEditor.apply();
+
                                 Intent toSignInActivityIntent = new Intent();
                                 toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
                                 startActivity(toSignInActivityIntent);

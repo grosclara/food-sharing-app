@@ -2,7 +2,9 @@ package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,9 +35,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText editTextPasswordConfirm;
     private Spinner spinnerCampus;
     private EditText editTextRoomNumber;
+    private ImageView imageViewGallery;
 
     private Button buttonSignUp;
     private Button buttonAlreadyHaveAnAccount;
+    private Button buttonGallery;
 
     private String[] campusArray;
     private String email;
@@ -44,6 +49,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private String password2;
     private String campus;
     private String room_number;
+
+    public static final int PICK_IMAGE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +65,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextPasswordSignUp = findViewById(R.id.editTextPasswordSignUp);
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
+        imageViewGallery = findViewById(R.id.imageViewGallery);
 
         // Buttons
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
+        buttonGallery = findViewById(R.id.buttonGallery);
         buttonSignUp.setOnClickListener(this);
         buttonAlreadyHaveAnAccount.setOnClickListener(this);
+        buttonGallery.setOnClickListener(this);
 
         // Spinner
         campusArray = getResources().getStringArray(R.array.campus_array);
@@ -96,6 +107,39 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
         else if (v == buttonSignUp){
             createAccount();
+        }
+        else if (v == buttonGallery){
+
+            choosePictureFromGallery();
+        }
+    }
+
+    private void choosePictureFromGallery() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE) {
+            // Result code is RESULT_OK only if the user selects an Image
+            if (resultCode == Activity.RESULT_OK)
+                switch (requestCode){
+                    case PICK_IMAGE:
+                        //data.getData returns the content URI for the selected Image
+                        Uri selectedImage = data.getData();
+                        imageViewGallery.setImageURI(selectedImage);
+                        break;
+                }
         }
     }
 
