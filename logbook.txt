@@ -48,8 +48,9 @@
 "22/01 - CG : Logout Android, 2h00"
 "25/01 - CG : Add category / expiration_date / quantity fields to Android and backend,
 	      Add campus spinner to Android,
-	      Override the onStart method on CollectACtivity to update results each time the act is changed 3h00"
-"31/01 - CG : Modify the Order Activity to display Alert Dialog to see the pieces of information of a selected product
+	      Override the onStart method on CollectACtivity to update results each time the act is changed, 3h00"
+"31/01 - CG : Modify the Order Activity to display Alert Dialog to see the pieces of information of a selected product (issue 6)
+	      Requests issues n° 9 and 10 solved, 4h00"
 
 
 TO DO :
@@ -63,8 +64,6 @@ Modify
 
 Functionality :
 Chat
-Menu index
-Pop up when clicking on a product
 trier par date de péremption ?
 supprimer les produits dont la date de péremption est dépassée ?
 
