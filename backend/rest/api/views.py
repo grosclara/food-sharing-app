@@ -23,7 +23,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
-    #permission_classes = (IsAuthenticated,)   we will add this when the login will be setup properly
     model = Product
     lookup_field = 'id'
 
@@ -31,7 +30,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     # Explicitly specify which fields the API may be ordered against
     ordering_fields = ['created_at','updated_at']
     # This will be used as the default ordering
-    ordering = ('-created_at')
+    ordering = ('-updated_at')
     serializer_class = ProductSerializer
 
     # Defines the function to call for a PATCH request
@@ -59,7 +58,12 @@ class ProductViewSet(viewsets.ModelViewSet):
         return queryset
 
 class OrderViewSet(viewsets.ModelViewSet):
-    #permission_classes = (IsAuthenticated,)  
+    
+    filter_backends = [filters.OrderingFilter]
+    # Explicitly specify which fields the API may be ordered against
+    ordering_fields = ['created_at','updated_at']
+    # This will be used as the default ordering
+    ordering = ('-updated_at')  
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
