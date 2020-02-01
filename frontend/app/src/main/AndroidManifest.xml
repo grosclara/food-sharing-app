@@ -43,13 +43,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.OrderActivity"
-            android:label="OrderActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.CollectActivity"
             android:label="CollectActivity">
             <intent-filter>
