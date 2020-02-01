@@ -2,6 +2,7 @@ package com.example.frontend.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.frontend.activity.ui.main.OrderProductDialogFragment;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
@@ -94,7 +97,7 @@ public class CollectActivity extends AppCompatActivity {
         /**
          * Send a HTTP request to retrieve all the available products in the db in a ArrayList.
          * Then display them in a listView through the CustomProductAdapter
-         * Set a onItemClickListener to the listView : clicking on an item, the user will be redirected to the OrderActivity and the intent will contain the product information.
+         * Set a onItemClickListener to the listView : clicking on an item, an alertDialog will pop up to access the product and the supplier information.
          *
          * @see CustomProductsAdapter
          */
@@ -132,12 +135,8 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            // Redirect to the OrderActivity
-                            Intent toOrderActivityIntent = new Intent();
-                            toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
-                            // Send the product information to the OrderActivity
-                            toOrderActivityIntent.putExtra("product", product);
-                            startActivity(toOrderActivityIntent);
+                            DialogFragment newFragment = new OrderProductDialogFragment(getApplicationContext(), product);
+                            newFragment.show(getSupportFragmentManager(), "order");
                         }
                     });
                 } else {

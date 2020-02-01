@@ -54,6 +54,8 @@
 
 TO DO :
 
+CLEAN AND COMMENT CODE
+
 User : -> Menu index
 Log out
 Delete
