@@ -65,10 +65,25 @@ public class CollectActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(getApplicationContext(),"restart",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
+        Toast.makeText(getApplicationContext(),"start",Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
