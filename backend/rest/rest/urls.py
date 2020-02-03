@@ -26,8 +26,8 @@ router=routers.DefaultRouter()
 # that returns a response containing hyperlinks to all the list views.
 # It also generates routes for optional .json style format suffixes.
 
-router.register(r'api/v1/product',views.ProductViewSet,base_name='product')
-router.register(r'api/v1/order',views.OrderViewSet,base_name='order')
+router.register(r'api/v1/product',views.ProductViewSet,basename='product')
+router.register(r'api/v1/order',views.OrderViewSet,basename='order')
 router.register(r'api/v1/user',views.UserViewSet)
 
 urlpatterns = [
