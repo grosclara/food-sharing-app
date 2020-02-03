@@ -5,10 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -120,6 +122,18 @@ public class PlaceholderFragment extends Fragment {
                     // Attach the adapter to the listView
                     CustomProductsAdapter adapterGivenProducts = new CustomProductsAdapter(productArrayList, getActivity().getApplicationContext());
                     listViewGivenProducts.setAdapter(adapterGivenProducts);
+
+                    // The current object handles the event "click on a listView item"
+                    listViewGivenProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Product product = productArrayList.get(position);
+
+                            DialogFragment newFragment = new ProductDialogFragment(getContext(), product,"given");
+                            newFragment.show(getFragmentManager(), "given");
+                        }
+                    });
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);

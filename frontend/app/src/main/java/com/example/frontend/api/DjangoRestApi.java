@@ -169,4 +169,10 @@ public interface DjangoRestApi {
             @Path("id") int userId
     );
 
+    @DELETE("product/{id}/")
+    Call<ResponseBody> deleteProductById(
+            @Header("Authorization") String token,
+            @Path("id") int productId
+    );
+
 }

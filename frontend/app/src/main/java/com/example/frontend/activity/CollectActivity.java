@@ -15,10 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.frontend.activity.ui.main.OrderProductDialogFragment;
+import com.example.frontend.activity.ui.main.ProductDialogFragment;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
@@ -65,25 +64,10 @@ public class CollectActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        Toast.makeText(getApplicationContext(),"restart",Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
-        Toast.makeText(getApplicationContext(),"start",Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -150,7 +134,7 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            DialogFragment newFragment = new OrderProductDialogFragment(getApplicationContext(), product);
+                            DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, "order");
                             newFragment.show(getSupportFragmentManager(), "order");
                         }
                     });
