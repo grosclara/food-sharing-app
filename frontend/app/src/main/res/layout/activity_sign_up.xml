@@ -68,17 +68,32 @@
         app:layout_constraintTop_toBottomOf="@id/spinnerCampus"/>
 
     <Button
-        android:id="@+id/buttonSignUp"
+        android:id="@+id/buttonGallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Select a profile picture"
         app:layout_constraintTop_toBottomOf="@+id/editTextRoomNumber"/>
+
+    <ImageView
+        android:id="@+id/imageViewGallery"
+        android:layout_width="75dp"
+        android:layout_height="76dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonGallery"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/buttonAlreadyHaveAnAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Already have an account?"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSignUp"/>
+        app:layout_constraintBottom_toTopOf="@+id/buttonSignUp"/>
+
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

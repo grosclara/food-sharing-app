@@ -75,7 +75,7 @@ public class PlaceholderFragment extends Fragment {
         switch (index) {
             case 1:
                 rootView = inflater.inflate(R.layout.cart_tab1, container, false);
-                getGivenProducts(CollectActivity.userId, rootView);
+                getGivenProducts(rootView);
                 return rootView;
 
             case 2:
@@ -86,7 +86,7 @@ public class PlaceholderFragment extends Fragment {
         return null;
     }
 
-    public void getGivenProducts(int userId, View view) {
+    public void getGivenProducts(View view) {
         /**
          * Send a HTTP request to retrieve all the products given by the user in the db in a ArrayList.
          * Then display them in a listView through the CustomProductAdapter

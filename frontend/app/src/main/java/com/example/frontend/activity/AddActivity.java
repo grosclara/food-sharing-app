@@ -161,12 +161,6 @@ public class AddActivity extends AppCompatActivity {
 
             // Call for the addProduct(Product) method to transfer data to the server
             addProduct(productName);
-
-            // Go back to the CollectActivity
-            Intent toCollectActivityIntent = new Intent();
-            toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
-            startActivity(toCollectActivityIntent);
-            finish(); // Disable the "going back functionality" from the CollectActivity to the AddActivity
         }
 
         public void addProduct (String productName){
@@ -199,6 +193,11 @@ public class AddActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         // In case of success, toast "Submit!"
                         Toast.makeText(getApplicationContext(), "Submit!", Toast.LENGTH_SHORT).show();
+                        // Go back to the CollectActivity
+                        Intent toCollectActivityIntent = new Intent();
+                        toCollectActivityIntent.setClass(getApplicationContext(), CollectActivity.class);
+                        startActivity(toCollectActivityIntent);
+                        finish(); // Disable the "going back functionality" from the CollectActivity to the AddActivity
                     } else {
                         Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
                     }
@@ -279,8 +278,6 @@ public class AddActivity extends AppCompatActivity {
              * @param data
              */
             super.onActivityResult(requestCode, resultCode, data);
-            Log.d("file", "Request code: " + String.valueOf(requestCode));
-            Log.d("file", "Result code: " + String.valueOf(resultCode));
             if (requestCode == REQUEST_CAPTURE_IMAGE) {
                 // Handle the case where the user cancelled the camera intent without taking a picture like,
                 // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.

@@ -2,6 +2,7 @@ package com.example.frontend.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.frontend.activity.ui.main.OrderProductDialogFragment;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
@@ -59,8 +62,18 @@ public class CollectActivity extends AppCompatActivity {
         if (userId == -1 | token == null) {
             Log.e("Log in error", "Error while logging in for the first time");
         }
+    }
 
-        Toast.makeText(getApplicationContext(), "create", Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(getApplicationContext(),"restart",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -69,6 +82,8 @@ public class CollectActivity extends AppCompatActivity {
         super.onStart();
         // Call for the getAvailableProducts() in the onCreate method.
         getAvailableProducts();
+        Toast.makeText(getApplicationContext(),"start",Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -97,7 +112,7 @@ public class CollectActivity extends AppCompatActivity {
         /**
          * Send a HTTP request to retrieve all the available products in the db in a ArrayList.
          * Then display them in a listView through the CustomProductAdapter
-         * Set a onItemClickListener to the listView : clicking on an item, the user will be redirected to the OrderActivity and the intent will contain the product information.
+         * Set a onItemClickListener to the listView : clicking on an item, an alertDialog will pop up to access the product and the supplier information.
          *
          * @see CustomProductsAdapter
          */
@@ -135,12 +150,8 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            // Redirect to the OrderActivity
-                            Intent toOrderActivityIntent = new Intent();
-                            toOrderActivityIntent.setClass(getApplicationContext(), OrderActivity.class);
-                            // Send the product information to the OrderActivity
-                            toOrderActivityIntent.putExtra("product", product);
-                            startActivity(toOrderActivityIntent);
+                            DialogFragment newFragment = new OrderProductDialogFragment(getApplicationContext(), product);
+                            newFragment.show(getSupportFragmentManager(), "order");
                         }
                     });
                 } else {
@@ -178,6 +189,10 @@ public class CollectActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+                                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
+                                LauncherActivity.userCreditsEditor.apply();
+
                                 Intent toSignInActivityIntent = new Intent();
                                 toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
                                 startActivity(toSignInActivityIntent);
