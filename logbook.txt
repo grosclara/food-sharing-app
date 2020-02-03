@@ -51,7 +51,8 @@
 	      Override the onStart method on CollectACtivity to update results each time the act is changed, 3h00"
 "31/01 - CG : Modify the Order Activity to display Alert Dialog to see the pieces of information of a selected product (issue 6)
 	      Requests issues n° 9 and 10 solved, 4h00"
-
+"01/02 - CG : Extend the concept of the pop up product details to given and collected tabs in the cart activity, 30mn"
+"03/02 - CG : Edit Profile with Patch HTTP request implemented, 2h00"
 
 TO DO :
 

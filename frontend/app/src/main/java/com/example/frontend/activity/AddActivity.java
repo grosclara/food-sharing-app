@@ -180,12 +180,10 @@ public class AddActivity extends AppCompatActivity {
             RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
             // MultipartBody.Part is used to send also the actual file name
             MultipartBody.Part body = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
-            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), productName);
-            RequestBody category = RequestBody.create(MediaType.parse("text/plain"), productCategory);
 
 
             // Asynchronous request
-            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, name, category, quantity, expiration_date, CollectActivity.userId, is_available);
+            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, productName, productCategory, quantity, expiration_date, CollectActivity.userId, is_available);
             call.enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {

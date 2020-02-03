@@ -20,6 +20,8 @@ import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +50,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private Button buttonDeleteAccount;
     private Button buttonEditProfile;
+
+    private User profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
 
-                    User profile = response.body();
+                    profile = response.body();
 
                     textViewFirstName.setText(profile.getFirst_name());
                     textViewLastName.setText(profile.getLast_name());
@@ -115,9 +119,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         if (v == buttonEditProfile) {
 
-            Intent toSignInActivityIntent = new Intent();
-            toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
-            startActivity(toSignInActivityIntent);
+            Intent toEditProfileActivityIntent = new Intent();
+            toEditProfileActivityIntent.setClass(getApplicationContext(), EditProfileActivity.class);
+            toEditProfileActivityIntent.putExtra("profile", (Serializable) profile);
+            startActivity(toEditProfileActivityIntent);
 
         } else if (v == buttonDeleteAccount) {
             deleteAccount();

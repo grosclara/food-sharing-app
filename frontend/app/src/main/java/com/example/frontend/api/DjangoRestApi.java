@@ -89,7 +89,8 @@ public interface DjangoRestApi {
      * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
      *
      * @param product_picture
-     * @param name
+     * @param productCategory
+     * @param productName
      * @param quantity
      * @param expiration_date
      * @param supplier
@@ -104,8 +105,8 @@ public interface DjangoRestApi {
     Call<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
-            @Part("name") RequestBody name,
-            @Part("category") RequestBody category,
+            @Part("name") String productName,
+            @Part("category") String productCategory,
             @Part("quantity") String quantity,
             @Part("expiration_date") String expiration_date,
             @Part("supplier") int supplier,
@@ -173,6 +174,14 @@ public interface DjangoRestApi {
     Call<ResponseBody> deleteProductById(
             @Header("Authorization") String token,
             @Path("id") int productId
+    );
+
+    // PATCH allows to update a profile modifying only one column in the db
+    @PATCH("user/{id}/")
+    Call<User> updateProfile(
+            @Header("Authorization") String token,
+            @Path("id") int id,
+            @Body User profile
     );
 
 }
