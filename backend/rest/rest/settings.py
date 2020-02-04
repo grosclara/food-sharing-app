@@ -148,12 +148,15 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication', 
+        'rest_framework.authentication.BasicAuthentication',
     ],
 
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+
 
 AUTH_USER_MODEL = 'api.User'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
