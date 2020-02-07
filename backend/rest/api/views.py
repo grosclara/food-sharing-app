@@ -79,7 +79,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         return queryset
 
 class UserViewSet(viewsets.ModelViewSet):
-    #permission_classes = (IsAuthenticated,)  
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
 
