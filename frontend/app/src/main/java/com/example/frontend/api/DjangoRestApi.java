@@ -145,11 +145,32 @@ public interface DjangoRestApi {
     /**
      * Return a call object containing the current user
      *
-     * @param user
+     * @param profile_picture
+     * @param firstName
+     * @param lastName
+     * @param roomNumber
+     * @param email
+     * @param campus
+     * @param password1
+     * @param password2
      * @return
      */
+
+    @Multipart
+    // Denotes that the request body is multi-part.
+    // Parts should be declared as parameters and annotated with @Part.
+
     @POST("rest-auth/registration/")
-    Call<User> createUser(@Body User user);
+    Call<User> createUser(
+            @Part MultipartBody.Part profile_picture,
+            @Part("first_name") String firstName,
+            @Part("last_name") String lastName,
+            @Part("room_number") String roomNumber,
+            @Part("campus") String campus,
+            @Part("email") String email,
+            @Part("password1") String password1,
+            @Part("password2") String password2
+    );
 
     @POST("rest-auth/login/")
     Call<Object> login(@Body User user);

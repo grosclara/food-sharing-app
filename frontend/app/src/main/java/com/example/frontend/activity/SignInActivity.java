@@ -80,6 +80,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         String password = editTextPasswordSignIn.getText().toString().trim();
 
         final User user = new User(email,password);
+        Log.d("TAG",String.valueOf(user.getId()));
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
