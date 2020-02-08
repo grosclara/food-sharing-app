@@ -49,13 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Choose a profile picture"
-        app:layout_constraintBottom_toTopOf="@id/buttonModifyEmail" />
-
-    <Button
-        android:id="@+id/buttonModifyEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Modify email"
         app:layout_constraintBottom_toTopOf="@id/buttonChangePassword" />
 
     <Button
