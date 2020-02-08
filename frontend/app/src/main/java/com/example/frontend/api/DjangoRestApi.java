@@ -213,4 +213,10 @@ public interface DjangoRestApi {
             @Part("is_active") Boolean isActive
     );
 
+    @POST("rest-auth/password/change/")
+    Call<User> resetPassword(
+            @Header("Authorization") String token,
+            @Body User user
+    );
+
 }

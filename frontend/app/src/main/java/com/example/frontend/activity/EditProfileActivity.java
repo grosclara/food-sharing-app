@@ -2,6 +2,7 @@ package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frontend.R;
+import com.example.frontend.activity.ui.main.ProductDialogFragment;
+import com.example.frontend.activity.ui.main.ResetPasswordFragment;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
@@ -52,6 +55,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private Button buttonSubmit;
     private Button buttonGallery;
+    private Button buttonResetPassword;
 
     private User profile;
 
@@ -96,6 +100,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         buttonSubmit.setOnClickListener(this);
         buttonGallery = findViewById(R.id.buttonGallery);
         buttonGallery.setOnClickListener(this);
+        buttonResetPassword = findViewById(R.id.buttonResetPassword);
+        buttonResetPassword.setOnClickListener(this);
 
         // Get the user info from the ProfileActivity intent
         Intent fromProfileActivityIntent = getIntent();
@@ -120,6 +126,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
         if (buttonGallery.equals(v)) {
             choosePictureFromGallery();
+        }
+        if (buttonResetPassword.equals(v)){
+            DialogFragment newFragment = new ResetPasswordFragment(getApplicationContext());
+            newFragment.show(getSupportFragmentManager(), "reset");
         }
     }
 

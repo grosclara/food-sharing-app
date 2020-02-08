@@ -18,6 +18,9 @@ public class User implements Serializable {
     private String password;
     private String password1;
     private String password2;
+    private String new_password1;
+    private String new_password2;
+    private String old_password;
     private String last_name;
     private String first_name;
     private String room_number;
@@ -43,6 +46,13 @@ public class User implements Serializable {
     public User(String email, String password){
         this.email = email;
         this.password = password;
+    }
+
+    public User(String oldPassword, String password1, String password2){
+        this.email = email;
+        this.new_password1 = password1;
+        this.new_password2 = password2;
+        this.old_password = oldPassword;
     }
 
 

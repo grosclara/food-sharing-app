@@ -54,6 +54,7 @@
 "01/02 - CG : Extend the concept of the pop up product details to given and collected tabs in the cart activity, 30mn"
 "03/02 - CG : Edit Profile with Patch HTTP request implemented, 2h00"
 "06/02 - CG : Try to fix pictures issues, 1h00'
+"08/02 - CG : Picture issues solved (issues 13&14), 4h00"
 
 TO DO :
 
