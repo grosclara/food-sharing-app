@@ -18,6 +18,8 @@ from django.contrib import admin
 from api import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.urls import include, path, re_path
+from rest_auth.views import PasswordResetConfirmView
 
 from rest_framework import routers
 
@@ -34,5 +36,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^',include(router.urls)),
     url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls'))
+    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    re_path(r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', PasswordResetConfirmView.as_view(),
+            name='password_reset_confirm')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

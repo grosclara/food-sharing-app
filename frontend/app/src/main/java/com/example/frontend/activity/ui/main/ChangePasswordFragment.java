@@ -19,21 +19,24 @@ import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ResetPasswordFragment extends DialogFragment {
+public class ChangePasswordFragment extends DialogFragment {
 
-    private EditText editTextEmail;
+    private EditText editTextNewPassword1;
+    private EditText editTextNewPassword2;
+    private EditText editTextOldPassword;
 
     private Context context;
 
-    private String email;
+    private String oldPassword;
+    private String newPassword1;
+    private String newPassword2;
 
-    public ResetPasswordFragment(Context context) {
+    public ChangePasswordFragment(Context context) {
         this.context = context;
     }
 
@@ -48,17 +51,21 @@ public class ResetPasswordFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.dialog_reset_password, null);
+        View view = inflater.inflate(R.layout.dialog_change_password, null);
         builder.setView(view);
 
-        editTextEmail = view.findViewById(R.id.editTextEmail);
+        editTextNewPassword1 = view.findViewById(R.id.editTextNewPassword1);
+        editTextOldPassword = view.findViewById(R.id.editTextOldPassword);
+        editTextNewPassword2 = view.findViewById(R.id.editTextNewPassword2);
 
-        builder.setTitle("Reset password")
+        builder.setTitle("Change password")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Reset the password
-                        email = editTextEmail.getText().toString().trim();
-                        resetPassword();
+                        newPassword1 = editTextNewPassword1.getText().toString();
+                        newPassword2 = editTextNewPassword2.getText().toString();
+                        oldPassword = editTextOldPassword.getText().toString();
+                        changePassword();
 
                     }
                 })
@@ -73,28 +80,29 @@ public class ResetPasswordFragment extends DialogFragment {
         return builder.create();
     }
 
-    private void resetPassword() {
+    private void changePassword() {
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(context);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        User user = new User(email);
+
+        User user = new User(oldPassword, newPassword1, newPassword2);
         // Creation of a call object that will contain the response
-        Call<User> call = djangoRestApi.resetPassword(user);
+        Call<User> call = djangoRestApi.changePassword(CollectActivity.token, user);
         // Asynchronous request
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
-                    Toast.makeText(context, "Password reset e-mail has been sent.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "New password has been saved.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(context, "An error occurred while resetting password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "An error occurred while changing password", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -55,20 +55,22 @@
 "03/02 - CG : Edit Profile with Patch HTTP request implemented, 2h00"
 "06/02 - CG : Try to fix pictures issues, 1h00'
 "08/02 - CG : Picture issues solved (issues 13&14), 4h00"
+"08/02 - CG : Add change and reset passwords functions to EditProfileActivity and SignInActivity, 2h00"
 
 TO DO :
 
 CLEAN AND COMMENT CODE
+add class picture handling
 
-User : -> Menu index
-Log out
-Delete
-Modify
 
 Functionality :
 Chat
 trier par date de péremption ?
 supprimer les produits dont la date de péremption est dépassée ?
+ne pas pouvoir order un de ses produits
+callback pour pop up lorsque l'on commande ou retire un produit
+modify pref to allow cshare to have access to storage
+override put request in django because put requests in drf set is_active to false
 
 
 

@@ -135,7 +135,6 @@ public class AddActivity extends AppCompatActivity {
                 month++;
                 expiration_date = String.format("%1$d-%2$d-%3$d",year,month,dayOfMonth);
                 textViewExpirationDate.setText(expiration_date);
-                Log.d("TAG",expiration_date);
             }
         };
     }

@@ -1,34 +1,26 @@
 package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
+import androidx.fragment.app.DialogFragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.textclassifier.TextClassifierEvent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.frontend.R;
+import com.example.frontend.activity.ui.main.ChangePasswordFragment;
+import com.example.frontend.activity.ui.main.ResetPasswordFragment;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,9 +30,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private Button buttonCreateAccount;
     private Button buttonSignIn;
+    private Button buttonResetPassword;
 
     private EditText editTextEmailSignIn;
     private EditText editTextPasswordSignIn;
+
+    private static final String state = "resetPassword";
 
 
     @Override
@@ -51,6 +46,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         // Buttons
         buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
         buttonSignIn = findViewById(R.id.buttonSignIn);
+        buttonResetPassword = findViewById(R.id.buttonResetPassword);
 
         //Views
         editTextEmailSignIn = findViewById(R.id.editTextEmailSignIn);
@@ -58,6 +54,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         buttonSignIn.setOnClickListener(this);
         buttonCreateAccount.setOnClickListener(this);
+        buttonResetPassword.setOnClickListener(this);
     }
 
 
@@ -69,9 +66,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             toSignUpActivityIntent.setClass(getApplicationContext(), SignUpActivity.class);
             startActivity(toSignUpActivityIntent);
 
-        } else if (v == buttonSignIn) {
+        }
+        if (v == buttonSignIn) {
             //Validate the signing up
             signIn();
+        }
+        if (v == buttonResetPassword) {
+            // Reset password
+            DialogFragment newFragment = new ResetPasswordFragment(getApplicationContext());
+            newFragment.show(getSupportFragmentManager(), state);
         }
     }
 
@@ -80,7 +83,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         String password = editTextPasswordSignIn.getText().toString().trim();
 
         final User user = new User(email,password);
-        Log.d("TAG",String.valueOf(user.getId()));
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);

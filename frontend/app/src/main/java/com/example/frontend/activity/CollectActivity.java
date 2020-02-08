@@ -50,6 +50,8 @@ public class CollectActivity extends AppCompatActivity {
     public static String token;
     public static int userId;
 
+    private static final String state = "order";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,8 +136,8 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, "order");
-                            newFragment.show(getSupportFragmentManager(), "order");
+                            DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, state);
+                            newFragment.show(getSupportFragmentManager(), state);
                         }
                     });
                 } else {

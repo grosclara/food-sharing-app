@@ -1,7 +1,6 @@
 package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
@@ -22,8 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frontend.R;
-import com.example.frontend.activity.ui.main.ProductDialogFragment;
-import com.example.frontend.activity.ui.main.ResetPasswordFragment;
+import com.example.frontend.activity.ui.main.ChangePasswordFragment;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
@@ -55,9 +53,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private Button buttonSubmit;
     private Button buttonGallery;
-    private Button buttonResetPassword;
+    private Button buttonChangePassword;
 
     private User profile;
+
+    private static final String state = "changePassword";
 
     // Path to the location of the picture taken by the phone
     private String imageFilePath;
@@ -100,8 +100,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         buttonSubmit.setOnClickListener(this);
         buttonGallery = findViewById(R.id.buttonGallery);
         buttonGallery.setOnClickListener(this);
-        buttonResetPassword = findViewById(R.id.buttonResetPassword);
-        buttonResetPassword.setOnClickListener(this);
+        buttonChangePassword = findViewById(R.id.buttonChangePassword);
+        buttonChangePassword.setOnClickListener(this);
 
         // Get the user info from the ProfileActivity intent
         Intent fromProfileActivityIntent = getIntent();
@@ -127,9 +127,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (buttonGallery.equals(v)) {
             choosePictureFromGallery();
         }
-        if (buttonResetPassword.equals(v)){
-            DialogFragment newFragment = new ResetPasswordFragment(getApplicationContext());
-            newFragment.show(getSupportFragmentManager(), "reset");
+        if (buttonChangePassword.equals(v)){
+            DialogFragment newFragment = new ChangePasswordFragment(getApplicationContext());
+            newFragment.show(getSupportFragmentManager(), state);
         }
     }
 

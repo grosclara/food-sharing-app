@@ -214,8 +214,16 @@ public interface DjangoRestApi {
     );
 
     @POST("rest-auth/password/change/")
-    Call<User> resetPassword(
+    Call<User> changePassword(
             @Header("Authorization") String token,
+            @Body User user
+    );
+
+    @POST("rest-auth/password/reset/")
+    /**
+     * uid and token are sent in email after calling /rest-auth/password/reset/
+     */
+    Call<User> resetPassword(
             @Body User user
     );
 

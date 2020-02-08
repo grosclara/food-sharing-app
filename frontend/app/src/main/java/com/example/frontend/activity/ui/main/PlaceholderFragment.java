@@ -43,6 +43,8 @@ public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private static final String state = "given";
+
     private PageViewModel pageViewModel;
 
     public static PlaceholderFragment newInstance(int index) {
@@ -130,8 +132,8 @@ public class PlaceholderFragment extends Fragment {
 
                             Product product = productArrayList.get(position);
 
-                            DialogFragment newFragment = new ProductDialogFragment(getContext(), product,"given");
-                            newFragment.show(getFragmentManager(), "given");
+                            DialogFragment newFragment = new ProductDialogFragment(getContext(), product, state);
+                            newFragment.show(getFragmentManager(), state);
                         }
                     });
 

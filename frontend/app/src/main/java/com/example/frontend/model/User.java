@@ -49,10 +49,13 @@ public class User implements Serializable {
     }
 
     public User(String oldPassword, String password1, String password2){
-        this.email = email;
         this.new_password1 = password1;
         this.new_password2 = password2;
         this.old_password = oldPassword;
+    }
+
+    public User(String email){
+        this.email = email;
     }
 
 
