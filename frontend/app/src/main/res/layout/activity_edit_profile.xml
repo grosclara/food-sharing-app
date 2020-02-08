@@ -38,12 +38,10 @@
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/editTextLastName" />
 
-    <EditText
-        android:id="@+id/editTextCampus"
+    <Spinner
+        android:id="@+id/spinnerCampus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Campus"
-        android:inputType="textAutoComplete"
         app:layout_constraintTop_toBottomOf="@id/editTextRoomNumber"/>
 
     <Button

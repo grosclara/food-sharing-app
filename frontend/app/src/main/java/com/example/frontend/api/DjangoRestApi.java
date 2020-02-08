@@ -197,12 +197,20 @@ public interface DjangoRestApi {
             @Path("id") int productId
     );
 
-    // PATCH allows to update a profile modifying only one column in the db
-    @PATCH("user/{id}/")
+    @Multipart
+    // Denotes that the request body is multi-part.
+    // Parts should be declared as parameters and annotated with @Part.
+    @PUT("user/{id}/")
     Call<User> updateProfile(
             @Header("Authorization") String token,
             @Path("id") int id,
-            @Body User profile
+            @Part MultipartBody.Part profile_picture,
+            @Part("first_name") String firstName,
+            @Part("last_name") String lastName,
+            @Part("room_number") String roomNumber,
+            @Part("campus") String campus,
+            @Part("email") String email,
+            @Part("is_active") Boolean isActive
     );
 
 }

@@ -67,9 +67,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     // Path to the location of the picture taken by the phone
     private String imageFilePath;
-    // Path to the location of the picture taken by the phone
     private Uri uriImage;
-
     public static final int PICK_IMAGE = 1;
 
     @Override
@@ -175,26 +173,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), PICK_IMAGE);
     }
 
-    private File createImageFile () throws IOException {
-        /**
-         * Method that creates a file for the photo with a unique name
-         * @return
-         * @throws IOException
-         */
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss",
-                        Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        imageFilePath = image.getAbsolutePath();
-        return image;
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
