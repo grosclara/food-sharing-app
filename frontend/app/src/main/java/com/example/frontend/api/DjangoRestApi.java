@@ -94,7 +94,6 @@ public interface DjangoRestApi {
      * @param quantity
      * @param expiration_date
      * @param supplier
-     * @param is_available
      * @return
      */
 
@@ -109,8 +108,7 @@ public interface DjangoRestApi {
             @Part("category") String productCategory,
             @Part("quantity") String quantity,
             @Part("expiration_date") String expiration_date,
-            @Part("supplier") int supplier,
-            @Part("is_available") boolean is_available
+            @Part("supplier") int supplier
     );
 
     /**

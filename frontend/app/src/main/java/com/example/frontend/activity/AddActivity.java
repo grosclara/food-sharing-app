@@ -71,7 +71,6 @@ public class AddActivity extends AppCompatActivity {
     private EditText editTextQuantity;
 
     private String productName;
-    private boolean is_available;
     private String[] productCategoriesArray;
     private String productCategory;
     private String expiration_date;
@@ -156,8 +155,6 @@ public class AddActivity extends AppCompatActivity {
             editTextQuantity = findViewById(R.id.editTextQuantity);
             quantity = String.valueOf(editTextQuantity.getText());
 
-            is_available = true; // By default, when creating a product, this attribute must equals true
-
             // Call for the addProduct(Product) method to transfer data to the server
             addProduct(productName);
         }
@@ -182,7 +179,7 @@ public class AddActivity extends AppCompatActivity {
 
 
             // Asynchronous request
-            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, productName, productCategory, quantity, expiration_date, CollectActivity.userId, is_available);
+            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, productName, productCategory, quantity, expiration_date, CollectActivity.userId);
             call.enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
