@@ -16,8 +16,8 @@ public class Product implements Serializable {
 
     private int id;
     private String name;
-    // Its value is automatically set to True by the server when a product is being created
-    private Boolean is_available;
+    // Its value is automatically set to Available by the server when a product is being created
+    private String status;
     // Reference to the (User) supplier id
     private int supplier;
     private String created_at;
@@ -32,10 +32,10 @@ public class Product implements Serializable {
      * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
      */
 
-    public Product(int id, String name, boolean is_available, String created_at, String updated_at, String product_picture, int supplier, String category, String quantity, String expiration_date){
+    public Product(int id, String name, String status, String created_at, String updated_at, String product_picture, int supplier, String category, String quantity, String expiration_date){
         this.id = id;
         this.name = name;
-        this.is_available = is_available;
+        this.status = status;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.product_picture = product_picture;
@@ -85,14 +85,6 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public Boolean getIs_available() {
-        return is_available;
-    }
-
-    public void setIs_available(Boolean is_available) {
-        this.is_available = is_available;
-    }
-
     public int getSupplier() {
         return supplier;
     }
@@ -123,5 +115,13 @@ public class Product implements Serializable {
 
     public void setProduct_picture(String product_picture) {
         this.product_picture = product_picture;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
