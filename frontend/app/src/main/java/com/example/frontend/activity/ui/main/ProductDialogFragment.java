@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,7 +85,20 @@ public class ProductDialogFragment extends DialogFragment {
         textViewProductCategory = view.findViewById(R.id.textViewProductCategory);
         textViewProductCategory.setText(product.getCategory());
         textViewProductStatus = view.findViewById(R.id.textViewProductStatus);
-        textViewProductStatus.setText(String.valueOf(product.getIs_available()));
+
+        textViewProductStatus.setText(product.getStatus());
+        switch (product.getStatus()) {
+            case "Available":
+                textViewProductStatus.setTextColor(Color.parseColor("#5CB85C"));
+                break;
+            case "Collected":
+                textViewProductStatus.setTextColor(Color.parseColor("#f0960c"));
+                break;
+            case "Delivered":
+                textViewProductStatus.setTextColor(Color.parseColor("#f0230c"));
+                break;
+            default:
+        }
         textViewExpirationDate = view.findViewById(R.id.textViewExpirationDate);
         textViewExpirationDate.setText(product.getExpiration_date());
         imageViewProduct = view.findViewById(R.id.imageViewProduct);
@@ -97,11 +111,13 @@ public class ProductDialogFragment extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Order the product
                                 // Create the order object
-                                Order order = new Order(CollectActivity.userId, product.getId());
-                                // Post order
-                                addOrder(order);
-                                // Change the is_available attribute of the product object to not available
-                                updateProduct(product);
+                                if (product.getStatus() == "Available") {
+                                    Order order = new Order(CollectActivity.userId, product.getId());
+                                    // Post order
+                                    addOrder(order);
+                                    // Change the is_available attribute of the product object to not available
+                                    updateProduct(product);
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -115,16 +131,12 @@ public class ProductDialogFragment extends DialogFragment {
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Check the status
-
-                                // if still available, delete the product from the database
-                                deleteProductById(product);
-                                // Order the product
-                                // Create the order object
-                                Order order = new Order(CollectActivity.userId, product.getId());
-                                // Post order
-                                addOrder(order);
-                                // Change the is_available attribute of the product object to not available
-                                updateProduct(product);
+                                if (product.getStatus() == "Available") {
+                                    // if still available, delete the product from the database
+                                    deleteProductById(product);
+                                } else {
+                                    Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -147,35 +159,29 @@ public class ProductDialogFragment extends DialogFragment {
 
     private void deleteProductById(Product product) {
 
-        // Check the status to see whether the product hasn't been ordered yet
-        if (product.getIs_available()) {
-            // Define the URL endpoint for the HTTP operation.
-            Retrofit retrofit = NetworkClient.getRetrofitClient(context);
-            DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(context);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-            // Creation of a call object that will contain the response
-            Call<ResponseBody> call = djangoRestApi.deleteProductById(CollectActivity.token, product.getId());
-            // Asynchronous request
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Log.i("serverRequest", response.message());
-                    if (response.isSuccessful()) {
-                        Toast.makeText(context, "Product deleted successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
-                    }
+        // Creation of a call object that will contain the response
+        Call<ResponseBody> call = djangoRestApi.deleteProductById(CollectActivity.token, product.getId());
+        // Asynchronous request
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Product deleted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.i("serverRequest", t.getMessage());
-                }
-            });
-        } else{
-            Toast.makeText(getContext(), "This product has already been ordred by someone!", Toast.LENGTH_SHORT).show();
-        }
-
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
     }
 
     public void getUserById(View view, int supplierId) {
@@ -261,7 +267,7 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Retrieve the id of the product
         int productId = product.getId();
-        // Set attributes to null so that they are not changed in the db by the HTTP PATCH request
+        // Set attributes to null so that they are not changed in the db by the HTTP PATCH request ??
         product.setProduct_picture(null);
         product.setCreated_at(null);
         product.setName(null);
@@ -269,7 +275,7 @@ public class ProductDialogFragment extends DialogFragment {
         product.setCategory(null);
         product.setExpiration_date(null);
         // Set its is_available attribute to false as it has just been order by someone
-        product.setIs_available(false);
+        product.setStatus("Collected");
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(context);

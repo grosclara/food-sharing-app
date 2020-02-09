@@ -194,7 +194,7 @@ public class PlaceholderFragment extends Fragment {
                             // Initialization of a product object to fill the collectedProducts ArrayList
                             Product product = new Product(jsonProduct.getInt("id"),
                                     jsonProduct.getString("name"),
-                                    jsonProduct.getBoolean("is_available"),
+                                    jsonProduct.getString("status"),
                                     jsonProduct.getString("created_at"),
                                     jsonProduct.getString("updated_at"),
                                     jsonProduct.getString("product_picture"),

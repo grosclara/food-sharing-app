@@ -43,7 +43,7 @@ public interface DjangoRestApi {
     Call<List<Product>> getAvailableProducts(
             // @Header("Authorization") String idToken,
             @Header("Authorization") String token,
-            @Query("is_available") int is_available
+            @Query("status") String status
     );
 
     /**
@@ -80,10 +80,9 @@ public interface DjangoRestApi {
     @PATCH("product/{id}/")
     Call<Product> updateProduct(
             @Header("Authorization") String token,
-            @Path("id") int id, @Body Product product);
-
-    // POST METHOD USING MULTIPART TO UPDATE A PRODUCT
-    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
+            @Path("id") int id,
+            @Body Product product
+    );
 
     /**
      * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
