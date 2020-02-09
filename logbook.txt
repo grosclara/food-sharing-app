@@ -56,6 +56,7 @@
 "06/02 - CG : Try to fix pictures issues, 1h00'
 "08/02 - CG : Picture issues solved (issues 13&14), 4h00"
 "08/02 - CG : Add change and reset passwords functions to EditProfileActivity and SignInActivity, 3h00"
+"09/02 - CG : Runtime permission implemented in the Sign Up Activity to grant the app access to the phone gallery, 30mn"
 
 TO DO :
 
