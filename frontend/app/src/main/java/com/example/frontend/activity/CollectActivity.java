@@ -140,6 +140,7 @@ public class CollectActivity extends AppCompatActivity {
                             newFragment.show(getSupportFragmentManager(), state);
                         }
                     });
+
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }

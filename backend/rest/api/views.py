@@ -44,13 +44,13 @@ class ProductViewSet(viewsets.ModelViewSet):
         """
         queryset = Product.objects.all()
         supplier = self.request.query_params.get('supplier', None)
-        is_available = self.request.query_params.get('is_available', None)
+        status = self.request.query_params.get('status', None)
         category = self.request.query_params.get('category',None)
         id = self.request.query_params.get('id',None)
         if supplier is not None:
             queryset = queryset.filter(supplier=supplier)
-        if is_available is not None:
-            queryset = queryset.filter(is_available=is_available)
+        if status is not None:
+            queryset = queryset.filter(status=status)
         if id is not None:
             queryset = queryset.filter(id=id)
         if category is not None:

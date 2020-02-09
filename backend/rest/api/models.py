@@ -13,7 +13,17 @@ CAMPUS_CHOICES = [
         (GIF, 'Gif'),
         (RENNES, 'Rennes'),
         (METZ,'Metz')
-    ]
+]
+
+AVAILABLE = 'Available'
+COLLECTED = 'Collected'
+DELIVERED = 'Delivered'
+
+STATUS_CHOICES = [
+        (AVAILABLE, 'Available'),
+        (COLLECTED, 'Collected'),
+        (DELIVERED,'Delivered')
+]
 
 FECULENTS = 'Féculents'
 FRUITS_LEGUMES = 'Fruits/Légumes'
@@ -66,13 +76,20 @@ class User(AbstractBaseUser):
 
 class Product(models.Model): # Product table
     name = models.CharField(max_length=200)
-    is_available = models.BooleanField(default=True)
+   # is_available = models.BooleanField(default=True)
     supplier = models.ForeignKey(settings.AUTH_USER_MODEL , on_delete=models.CASCADE)   # equivalent to the sql constraint ON DELETE CASCADE
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.CharField(
         max_length=50,
-        choices=PRODUCT_CHOICES)
+        choices=PRODUCT_CHOICES,
+        default=GIF
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default=AVAILABLE
+    )
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
     quantity = models.CharField(max_length=50)
     expiration_date = models.DateField()

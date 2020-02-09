@@ -64,24 +64,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
         return user 
 
-class CustomUserDetailsSerializer(serializers.ModelSerializer):
-
-    def put(self, request):
-        user = adapter.new_user(request)
-        self.cleaned_data = self.get_cleaned_data() 
-        adapter.save_user(request, user, self)
-        setup_user_email(request, user, [])
-
-        user.email = self.cleaned_data.get('email')
-        user.first_name = self.cleaned_data.get('first_name')
-        user.last_name = self.cleaned_data.get('last_name')
-        user.profile_picture = self.cleaned_data.get('profile_picture')
-        user.campus = self.cleaned_data.get('campus')
-        user.room_number = self.cleaned_data.get('room_number')
-        user.is_active = True
-
-        user.save()
-        return user 
+class CustomUserDetailsSerializer(serializers.ModelSerializer): 
 
     class Meta:
         model = User
