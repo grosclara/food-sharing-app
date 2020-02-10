@@ -7,6 +7,7 @@ import com.example.frontend.model.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -14,6 +15,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -41,8 +45,8 @@ public interface DjangoRestApi {
      */
     @GET("product/")
     Call<List<Product>> getAvailableProducts(
-            // @Header("Authorization") String idToken,
             @Header("Authorization") String token,
+            @Query("campus") String campus,
             @Query("status") String status
     );
 
@@ -72,16 +76,27 @@ public interface DjangoRestApi {
      * Return a call object containing the product selected by its id to update in the api
      *
      * @param id
-     * @param product
+     * @param status
      * @return
      */
 
+    @FormUrlEncoded
+
     // PATCH allows to update a product modifying only one column in the db
     @PATCH("product/{id}/")
-    Call<Product> updateProduct(
+    Call<Product> updateProductStatus(
             @Header("Authorization") String token,
             @Path("id") int id,
-            @Body Product product
+            @FieldMap Map<String, String> status
+    );
+
+    @FormUrlEncoded
+    // PATCH allows to update a product modifying only one column in the db
+    @PATCH("user/{id}/")
+    Call<User> changeUserCampus(
+            @Header("Authorization") String token,
+            @Path("id") int id,
+            @FieldMap Map<String, String> campus
     );
 
     /**

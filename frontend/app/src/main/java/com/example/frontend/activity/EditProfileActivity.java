@@ -7,6 +7,8 @@ import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -25,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frontend.R;
+import com.example.frontend.activity.ui.main.CampusSpinnerDialogFragment;
 import com.example.frontend.activity.ui.main.ChangePasswordFragment;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -46,18 +49,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditText editTextFirstName;
     private EditText editTextLastName;
     private EditText editTextRoomNumber;
-    private Spinner spinnerCampus;
     private ImageView imageViewProfilePicture;
 
     private String firstName;
     private String lastName;
     private String roomNumber;
-    private String[] campusArray;
     private String campus;
 
     private Button buttonSubmit;
     private Button buttonGallery;
     private Button buttonChangePassword;
+    private Button buttonCampus;
 
     private User profile;
 
@@ -79,26 +81,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
         imageViewProfilePicture = findViewById(R.id.imageViewProfilePicture);
 
-        // Spinner
-        campusArray = getResources().getStringArray(R.array.campus_array);
-        spinnerCampus = findViewById(R.id.spinnerCampus);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
-        // Apply the adapter to the spinner
-        spinnerCampus.setAdapter(adapterSpinner);
-        spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // An item was selected. You can retrieve the selected item using
-                campus = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         // Buttons
         buttonSubmit = findViewById(R.id.buttonSubmit);
         buttonSubmit.setOnClickListener(this);
@@ -106,6 +88,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         buttonGallery.setOnClickListener(this);
         buttonChangePassword = findViewById(R.id.buttonChangePassword);
         buttonChangePassword.setOnClickListener(this);
+        buttonCampus = findViewById(R.id.buttonCampus);
+        buttonCampus.setOnClickListener(this);
 
         // Get the user info from the ProfileActivity intent
         Intent fromProfileActivityIntent = getIntent();
@@ -131,9 +115,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (buttonGallery.equals(v)) {
             choosePictureFromGallery();
         }
-        if (buttonChangePassword.equals(v)){
-            DialogFragment newFragment = new ChangePasswordFragment(getApplicationContext());
-            newFragment.show(getSupportFragmentManager(), state);
+        if (buttonChangePassword.equals(v)) {
+            DialogFragment changePasswordFragment = new ChangePasswordFragment(getApplicationContext());
+            changePasswordFragment.show(getSupportFragmentManager(), state);
+        }
+        if (buttonCampus.equals(v)) {
+            DialogFragment campusSpinnerDialogFragment = new CampusSpinnerDialogFragment(getApplicationContext());
+            campusSpinnerDialogFragment.show(getSupportFragmentManager(), "campus");
         }
     }
 
@@ -204,7 +192,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
-        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         // Create a chooser in case there are third parties app and launch the Intent
         startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), PICK_IMAGE);

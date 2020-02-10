@@ -92,6 +92,15 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields='__all__'
 
+class ProductDetailsSerializer(serializers.ModelSerializer):
+
+    supplier = CustomUserDetailsSerializer(read_only=True)
+    
+    class Meta:
+        model=Product
+        fields=('__all__')
+
+
 class OrderDetailsSerializer(serializers.ModelSerializer):
 
     product = ProductSerializer(read_only=True)

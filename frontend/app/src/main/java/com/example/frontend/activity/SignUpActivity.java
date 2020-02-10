@@ -158,31 +158,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String[] mimeTypes = {"image/jpeg", "image/png"};
         pickIntent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
 
-        /*Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
-        if (chooserIntent.resolveActivity(getPackageManager()) != null) {
-            //Create a file to store the image
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-                Log.d("file", "File was successfully created");
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                Log.d("file", "An error occurred while creating the file");
-            }
-            if (photoFile != null) {
-                fileUri = FileProvider.getUriForFile(
-                        SignUpActivity.this,
-                        SignUpActivity.this.getApplicationContext().getPackageName() + ".provider",
-                        photoFile
-                );
-                chooserIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        fileUri);
-                startActivityForResult(chooserIntent, PICK_IMAGE);
-            }
-        }*/
-
         // Create a chooser in case there are third parties app and launch the Intent
         startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), PICK_IMAGE);
     }

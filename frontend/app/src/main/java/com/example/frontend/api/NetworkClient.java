@@ -31,7 +31,7 @@ public class NetworkClient {
     public static final String BASE_URL = "http://10.0.2.2:8000/api/v1/";
 
     // Constant that contains the base url of the remote server (device)
-    //public static final String BASE_URL = "http://192.168.1.25:5040/api/v1/";
+    //public static final String BASE_URL = "http://138.195.50.22:5040/api/v1/";
 
     /*
      * This public static method that takes in param the context of the current activity returns

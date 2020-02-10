@@ -1,5 +1,7 @@
 package com.example.frontend.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -43,6 +45,11 @@ public class Product implements Serializable {
         this.category = category;
         this.quantity = quantity;
         this.expiration_date = expiration_date;
+    }
+
+    public Product(String status){
+        this.status = status;
+        // this.supplier = supplier;
     }
 
     public String getCategory() {

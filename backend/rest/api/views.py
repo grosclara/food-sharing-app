@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .models import Product, Order, User
-from .serializers import ProductSerializer, OrderSerializer, OrderDetailsSerializer, CustomUserDetailsSerializer
+from .serializers import ProductSerializer, ProductDetailsSerializer, OrderSerializer, OrderDetailsSerializer, CustomUserDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
@@ -31,6 +31,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at','updated_at']
     # This will be used as the default ordering
     ordering = ('-updated_at')
+
     serializer_class = ProductSerializer
 
     # Defines the function to call for a PATCH request
@@ -40,13 +41,17 @@ class ProductViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Optionally restricts the returned purchases to a given user,
-        by filtering against a `supplier` or a 'is_available' query parameter in the URL.
+        by filtering against a `supplier` or a 'status' query parameter in the URL.
         """
         queryset = Product.objects.all()
         supplier = self.request.query_params.get('supplier', None)
         status = self.request.query_params.get('status', None)
+        campus = self.request.query_params.get('campus',None)
         category = self.request.query_params.get('category',None)
         id = self.request.query_params.get('id',None)
+
+        if campus is not None :
+            queryset = Product.objects.filter(supplier__campus=campus)
         if supplier is not None:
             queryset = queryset.filter(supplier=supplier)
         if status is not None:
@@ -55,6 +60,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(id=id)
         if category is not None:
             queryset = queryset.filter(category=category)
+
         return queryset
 
 class OrderViewSet(viewsets.ModelViewSet):

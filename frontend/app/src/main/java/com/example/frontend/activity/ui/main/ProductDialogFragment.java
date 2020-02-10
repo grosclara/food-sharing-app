@@ -32,6 +32,10 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,14 +113,13 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+
                                 // Order the product
                                 // Create the order object
-                                if (product.getStatus() == "Available") {
-                                    Order order = new Order(CollectActivity.userId, product.getId());
-                                    // Post order
-                                    addOrder(order);
-                                    // Change the is_available attribute of the product object to not available
-                                    updateProduct(product);
+                                if (product.getStatus().equals("Available")) {
+
+                                    // Change the status attribute of the product object to not available
+                                    updateProductStatus(product);
                                 }
                             }
                         })
@@ -131,7 +134,7 @@ public class ProductDialogFragment extends DialogFragment {
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Check the status
-                                if (product.getStatus() == "Available") {
+                                if (product.getStatus().equals("Available")) {
                                     // if still available, delete the product from the database
                                     deleteProductById(product);
                                 } else {
@@ -151,10 +154,6 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Create the AlertDialog object and return it
         return builder.create();
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
     }
 
     private void deleteProductById(Product product) {
@@ -258,7 +257,7 @@ public class ProductDialogFragment extends DialogFragment {
         });
     }
 
-    public void updateProduct(Product product) {
+    public void updateProductStatus(final Product product) {
         // PB WITH THE PICTURE FIELD
         /**
          * Take into param a product and update it in the remote database asynchronously
@@ -267,30 +266,31 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Retrieve the id of the product
         int productId = product.getId();
-        // Set attributes to null so that they are not changed in the db by the HTTP PATCH request ??
-        product.setProduct_picture(null);
-        product.setCreated_at(null);
-        product.setName(null);
-        product.setQuantity(null);
-        product.setCategory(null);
-        product.setExpiration_date(null);
+
         // Set its is_available attribute to false as it has just been order by someone
         product.setStatus("Collected");
+
+        Map<String, String> status = new HashMap<>();
+        status.put("status","Collected");
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(context);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Product> call = djangoRestApi.updateProduct(CollectActivity.token, productId, product);
+        Call<Product> call = djangoRestApi.updateProductStatus(CollectActivity.token, productId, status);
         // Asynchronous request
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
-                    // In case of success, toast "Submit!"
-                    Toast.makeText(context, "Submit!", Toast.LENGTH_SHORT);
+
+                    // If the product has successfully been updated, we can send the order to the server
+                    Order order = new Order(CollectActivity.userId, product.getId());
+                    // Post order
+
+                    addOrder(order);
                 } else {
                     Toast.makeText(context, "An error occurred!", Toast.LENGTH_SHORT);
                 }

@@ -38,11 +38,12 @@
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/editTextLastName" />
 
-    <Spinner
-        android:id="@+id/spinnerCampus"
+    <Button
+        android:id="@+id/buttonCampus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/editTextRoomNumber"/>
+        android:text="Changing of campus?"
+        app:layout_constraintBottom_toTopOf="@id/buttonGallery" />
 
     <Button
         android:id="@+id/buttonGallery"

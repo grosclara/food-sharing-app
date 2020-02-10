@@ -47,10 +47,11 @@ public class CollectActivity extends AppCompatActivity {
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
+    public static String state;
+
     public static String token;
     public static int userId;
-
-    private static final String state = "order";
+    public static String campus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +60,8 @@ public class CollectActivity extends AppCompatActivity {
 
         token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
         userId = LauncherActivity.userCredits.getInt("id", -1);
+        campus = LauncherActivity.userCredits.getString("campus", "Gif");
 
-        if (userId == -1 | token == null) {
-            Log.e("Log in error", "Error while logging in for the first time");
-        }
     }
 
     @Override
@@ -111,7 +110,7 @@ public class CollectActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(token, "Available");
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(token, campus, "Available");
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
@@ -135,6 +134,13 @@ public class CollectActivity extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             Product product = productArrayList.get(position);
+
+                            if(product.getSupplier() == CollectActivity.userId){
+                                state = "given";
+                            }
+                            else{
+                                state = "order";
+                            }
 
                             DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, state);
                             newFragment.show(getSupportFragmentManager(), state);
@@ -165,31 +171,8 @@ public class CollectActivity extends AppCompatActivity {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button -> logout the user
+                        logOut();
 
-                        Retrofit retrofit = NetworkClient.getRetrofitClient(getApplicationContext());
-                        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
-
-                        Call<ResponseBody> call = djangoRestApi.logout(token);
-                        call.enqueue(new Callback<ResponseBody>() {
-
-
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
-
-                                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
-                                LauncherActivity.userCreditsEditor.apply();
-
-                                Intent toSignInActivityIntent = new Intent();
-                                toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
-                                startActivity(toSignInActivityIntent);
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(), "Fail to log out", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -201,6 +184,33 @@ public class CollectActivity extends AppCompatActivity {
         // Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void logOut(){
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getApplicationContext());
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        Call<ResponseBody> call = djangoRestApi.logout(token);
+        call.enqueue(new Callback<ResponseBody>() {
+
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
+                LauncherActivity.userCreditsEditor.apply();
+
+                Intent toSignInActivityIntent = new Intent();
+                toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+                startActivity(toSignInActivityIntent);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Fail to log out", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void fromCollectToAddActivity(View view) {
