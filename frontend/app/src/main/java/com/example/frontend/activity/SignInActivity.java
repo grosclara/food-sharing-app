@@ -100,12 +100,10 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
                         String token = JsonResponse.getString("key");
                         int userId = userCredits.getInt("id");
-                        String campus = userCredits.getString("campus");
 
                         LauncherActivity.userCreditsEditor.putBoolean("logStatus",true);
                         LauncherActivity.userCreditsEditor.putString("token", token);
                         LauncherActivity.userCreditsEditor.putInt("id",userId);
-                        LauncherActivity.userCreditsEditor.putString("campus", campus);
 
                         LauncherActivity.userCreditsEditor.apply();
 

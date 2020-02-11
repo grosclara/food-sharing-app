@@ -137,13 +137,13 @@ public class PlaceholderFragment extends Fragment {
                             ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
-                                    finish();
-                                    overridePendingTransition(0,0);
-                                    startActivity(getIntent());
-                                    overridePendingTransition(0,0);
+                                    getActivity().finish();
+                                    getActivity().overridePendingTransition(0,0);
+                                    startActivity(getActivity().getIntent());
+                                    getActivity().overridePendingTransition(0,0);
                                 }
                             });
-                            newFragment.show(getFragmentManager(), state);
+                            newFragment.show(getChildFragmentManager(), state);
                         }
                     });
 

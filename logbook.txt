@@ -59,8 +59,12 @@
 "09/02 - CG : Runtime permission implemented in the Sign Up Activity to grant the app access to the phone gallery, 30mn
 	      Attempt to fix dialog fragment issue to refresh the activity, 1h00
 	      Delete the is_available field and create the status field in the Product model in Django and in Postman, 30mn"
-"10/02 - CG : Filter the request by campus 45mn,
+"10/02 - CG : Filter the request by campus (still some issues) 45mn,
 	      Try to solve some EditProfile pb (not finished yet), 1h00"
+"11/02 - CG : Refresh the parent activity when a dialog is dismissed, 1h00
+	      Campus filtering done, 30mn"
+
+
 TO DO :
 
 CLEAN AND COMMENT CODE

@@ -1,16 +1,10 @@
 package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -27,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frontend.R;
-import com.example.frontend.activity.ui.main.CampusSpinnerDialogFragment;
 import com.example.frontend.activity.ui.main.ChangePasswordFragment;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -35,6 +28,8 @@ import com.example.frontend.model.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -50,16 +45,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditText editTextLastName;
     private EditText editTextRoomNumber;
     private ImageView imageViewProfilePicture;
+    private Spinner spinnerCampus;
 
     private String firstName;
     private String lastName;
     private String roomNumber;
     private String campus;
+    private String[] campusArray;
 
     private Button buttonSubmit;
     private Button buttonGallery;
     private Button buttonChangePassword;
-    private Button buttonCampus;
 
     private User profile;
 
@@ -79,6 +75,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         editTextFirstName = findViewById(R.id.editTextFirstName);
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
+        spinnerCampus = findViewById(R.id.spinnerCampus);
         imageViewProfilePicture = findViewById(R.id.imageViewProfilePicture);
 
         // Buttons
@@ -88,8 +85,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         buttonGallery.setOnClickListener(this);
         buttonChangePassword = findViewById(R.id.buttonChangePassword);
         buttonChangePassword.setOnClickListener(this);
-        buttonCampus = findViewById(R.id.buttonCampus);
-        buttonCampus.setOnClickListener(this);
 
         // Get the user info from the ProfileActivity intent
         Intent fromProfileActivityIntent = getIntent();
@@ -105,6 +100,25 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         editTextFirstName.setHint(firstName);
         editTextLastName.setHint(lastName);
         editTextRoomNumber.setHint(roomNumber);
+
+        campusArray = getResources().getStringArray(R.array.campus_array);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
+        // Apply the adapter to the spinner
+        spinnerCampus.setAdapter(adapterSpinner);
+        spinnerCampus.setSelection(adapterSpinner.getPosition(campus));
+        spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                profile.setCampus(parent.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -119,10 +133,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             DialogFragment changePasswordFragment = new ChangePasswordFragment(getApplicationContext());
             changePasswordFragment.show(getSupportFragmentManager(), state);
         }
-        if (buttonCampus.equals(v)) {
-            DialogFragment campusSpinnerDialogFragment = new CampusSpinnerDialogFragment(getApplicationContext());
-            campusSpinnerDialogFragment.show(getSupportFragmentManager(), "campus");
-        }
     }
 
     public void editProfile() {
@@ -136,8 +146,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (!editTextRoomNumber.getText().toString().isEmpty()) {
             profile.setRoom_number(editTextRoomNumber.getText().toString().trim());
         }
-        profile.setCampus(campus);
-
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
@@ -170,6 +178,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 Intent toProfileActivityIntent = new Intent();
                 toProfileActivityIntent.setClass(getApplicationContext(), ProfileActivity.class);
                 startActivity(toProfileActivityIntent);
+                finish();
             }
 
             @Override
