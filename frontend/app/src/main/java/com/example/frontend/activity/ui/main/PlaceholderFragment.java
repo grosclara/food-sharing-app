@@ -1,5 +1,6 @@
 package com.example.frontend.activity.ui.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -133,6 +134,15 @@ public class PlaceholderFragment extends Fragment {
                             Product product = productArrayList.get(position);
 
                             DialogFragment newFragment = new ProductDialogFragment(getContext(), product, state);
+                            ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    finish();
+                                    overridePendingTransition(0,0);
+                                    startActivity(getIntent());
+                                    overridePendingTransition(0,0);
+                                }
+                            });
                             newFragment.show(getFragmentManager(), state);
                         }
                     });

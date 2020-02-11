@@ -143,6 +143,15 @@ public class CollectActivity extends AppCompatActivity {
                             }
 
                             DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, state);
+                            ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    finish();
+                                    overridePendingTransition(0,0);
+                                    startActivity(getIntent());
+                                    overridePendingTransition(0,0);
+                                }
+                            });
                             newFragment.show(getSupportFragmentManager(), state);
                         }
                     });

@@ -156,6 +156,20 @@ public class ProductDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    private DialogInterface.OnDismissListener onDismissListener;
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
+        }
+    }
+
     private void deleteProductById(Product product) {
 
         // Define the URL endpoint for the HTTP operation.
@@ -244,6 +258,7 @@ public class ProductDialogFragment extends DialogFragment {
             public void onResponse(Call<Order> call, Response<Order> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
+
                     Toast.makeText(context, "You order the product!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -256,6 +271,9 @@ public class ProductDialogFragment extends DialogFragment {
             }
         });
     }
+
+    // Create a method to recreate the parent activity
+
 
     public void updateProductStatus(final Product product) {
         // PB WITH THE PICTURE FIELD
