@@ -4,6 +4,8 @@ from .managers import CustomUserManager
 from django.utils import timezone
 from django.conf import settings
 
+from django.contrib.auth.models import PermissionsMixin
+
 # Constants
 GIF = 'Gif'
 RENNES = 'Rennes'
@@ -49,13 +51,14 @@ PRODUCT_CHOICES = [
 
 # Django models to create our SQL tables
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
 
     username = None
     email = models.EmailField(('email'), unique=True)
     date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     
     # custom fields for user
     first_name = models.CharField(max_length = 50)
