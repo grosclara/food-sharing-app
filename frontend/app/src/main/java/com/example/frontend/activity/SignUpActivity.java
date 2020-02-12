@@ -65,8 +65,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Button buttonAlreadyHaveAnAccount;
     private Button buttonGallery;
 
-    private boolean withPicture = false;
-
     private String[] campusArray;
     private String email;
     private String lastName;
@@ -77,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private String room_number;
 
     // Path to the location of the picture taken by the phone
+    private boolean withPicture = false;
     private String imageFilePath;
     private Uri uriImage;
     public static final int PICK_IMAGE = 1;
@@ -141,7 +140,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
             startActivity(toSignInActivityIntent);
 
-        } else if (v == buttonSignUp) {
+        } else if(v == buttonSignUp) {
 
             email = editTextEmailSignUp.getText().toString().trim();
             lastName = editTextLastName.getText().toString().trim();
@@ -150,13 +149,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             password2 = editTextPasswordConfirm.getText().toString().trim();
             room_number = editTextRoomNumber.getText().toString().trim();
 
-            if (withPicture){
+            if(withPicture){
                 createAccountWithPicture();
             }
             else{
                 createAccountWithoutPicture();
             }
-        } else if (v == buttonGallery) {
+        } else if(v == buttonGallery) {
             choosePictureFromGallery();
         }
     }
