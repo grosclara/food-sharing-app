@@ -173,7 +173,7 @@ public interface DjangoRestApi {
     // Parts should be declared as parameters and annotated with @Part.
 
     @POST("rest-auth/registration/")
-    Call<User> createUser(
+    Call<User> createUserWithPicture(
             @Part MultipartBody.Part profile_picture,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
@@ -182,6 +182,11 @@ public interface DjangoRestApi {
             @Part("email") String email,
             @Part("password1") String password1,
             @Part("password2") String password2
+    );
+
+    @POST("rest-auth/registration/")
+    Call<User> createUserWithoutPicture(
+            @Body User user
     );
 
     @POST("rest-auth/login/")

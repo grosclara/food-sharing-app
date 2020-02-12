@@ -37,8 +37,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -62,6 +64,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Button buttonSignUp;
     private Button buttonAlreadyHaveAnAccount;
     private Button buttonGallery;
+
+    private boolean withPicture = false;
 
     private String[] campusArray;
     private String email;
@@ -138,9 +142,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(toSignInActivityIntent);
 
         } else if (v == buttonSignUp) {
-            createAccount();
-        } else if (v == buttonGallery) {
 
+            email = editTextEmailSignUp.getText().toString().trim();
+            lastName = editTextLastName.getText().toString().trim();
+            firstName = editTextFirstName.getText().toString().trim();
+            password1 = editTextPasswordSignUp.getText().toString().trim();
+            password2 = editTextPasswordConfirm.getText().toString().trim();
+            room_number = editTextRoomNumber.getText().toString().trim();
+
+            if (withPicture){
+                createAccountWithPicture();
+            }
+            else{
+                createAccountWithoutPicture();
+            }
+        } else if (v == buttonGallery) {
             choosePictureFromGallery();
         }
     }
@@ -171,6 +187,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             if (resultCode == Activity.RESULT_OK)
                 switch (requestCode) {
                     case PICK_IMAGE:
+                        withPicture = true;
                         // data.getData returns the content URI for the selected Image
                         uriImage = data.getData();
 
@@ -201,16 +218,44 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return path;
     }
 
-    private void createAccount() {
+    private void createAccountWithoutPicture(){
 
-        Toast.makeText(getApplicationContext(), String.valueOf(PICK_IMAGE), Toast.LENGTH_SHORT).show();
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        email = editTextEmailSignUp.getText().toString().trim();
-        lastName = editTextLastName.getText().toString().trim();
-        firstName = editTextFirstName.getText().toString().trim();
-        password1 = editTextPasswordSignUp.getText().toString().trim();
-        password2 = editTextPasswordConfirm.getText().toString().trim();
-        room_number = editTextRoomNumber.getText().toString().trim();
+        User user = new User(email, lastName, firstName, password1, password2, campus,room_number);
+
+        // Creation of a call object that will contain the response
+        Call<User> callNewUser = djangoRestApi.createUserWithoutPicture(user);
+
+        // Asynchronous request
+        callNewUser.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("serverRequest", response.message());
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(getApplicationContext(), "You are now redirected to the Sign In page", Toast.LENGTH_SHORT).show();
+
+                    Intent toSignInActivityIntent = new Intent();
+                    toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+                    startActivity(toSignInActivityIntent);
+
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("serverRequest", t.getLocalizedMessage());
+            }
+        });
+
+
+    }
+
+    private void createAccountWithPicture() {
 
         // Create a file object using file path
         File file = new File(imageFilePath);
@@ -226,7 +271,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<User> callNewUser = djangoRestApi.createUser(body, firstName, lastName, room_number, campus, email, password1, password2);
+        Call<User> callNewUser = djangoRestApi.createUserWithPicture(body, firstName, lastName, room_number, campus, email, password1, password2);
 
         // Asynchronous request
         callNewUser.enqueue(new Callback<User>() {
