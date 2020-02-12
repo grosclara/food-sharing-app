@@ -18,6 +18,8 @@ from django.contrib import admin
 from api import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.urls import include, path, re_path
+from rest_auth.views import PasswordResetConfirmView
 
 from rest_framework import routers
 
@@ -26,13 +28,15 @@ router=routers.DefaultRouter()
 # that returns a response containing hyperlinks to all the list views.
 # It also generates routes for optional .json style format suffixes.
 
-router.register(r'api/v1/product',views.ProductViewSet,base_name='product')
-router.register(r'api/v1/order',views.OrderViewSet,base_name='order')
+router.register(r'api/v1/product',views.ProductViewSet,basename='product')
+router.register(r'api/v1/order',views.OrderViewSet,basename='order')
 router.register(r'api/v1/user',views.UserViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^',include(router.urls)),
     url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls'))
+    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    re_path(r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', PasswordResetConfirmView.as_view(),
+            name='password_reset_confirm')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

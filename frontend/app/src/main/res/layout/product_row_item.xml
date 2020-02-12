@@ -17,6 +17,15 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
 
+    <TextView
+        android:id="@+id/textViewProductStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewProductName"
+        android:text="Status"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
     <ImageView
         android:id="@+id/imageViewProduct"
         android:layout_width="75dp"

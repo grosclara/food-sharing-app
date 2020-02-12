@@ -1,5 +1,7 @@
 package com.example.frontend.model;
 
+import java.io.Serializable;
+
 /**
  * Class of the User table.
  * The attributes defined corresponds to the ones of the remote database.
@@ -9,13 +11,16 @@ package com.example.frontend.model;
  * @version 1.0
  */
 
-public class User {
+public class User implements Serializable {
 
     private int id;
     private String email;
     private String password;
     private String password1;
     private String password2;
+    private String new_password1;
+    private String new_password2;
+    private String old_password;
     private String last_name;
     private String first_name;
     private String room_number;
@@ -43,6 +48,16 @@ public class User {
         this.password = password;
     }
 
+    public User(String oldPassword, String password1, String password2){
+        this.new_password1 = password1;
+        this.new_password2 = password2;
+        this.old_password = oldPassword;
+    }
+
+    public User(String email){
+        this.email = email;
+    }
+
 
     public String getToken() {
         return token;
@@ -50,6 +65,14 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public void setRoom_number(String room_number) {
+        this.room_number = room_number;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 
     public void setId(int id) {

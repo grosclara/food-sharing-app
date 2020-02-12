@@ -71,7 +71,6 @@ public class AddActivity extends AppCompatActivity {
     private EditText editTextQuantity;
 
     private String productName;
-    private boolean is_available;
     private String[] productCategoriesArray;
     private String productCategory;
     private String expiration_date;
@@ -135,7 +134,6 @@ public class AddActivity extends AppCompatActivity {
                 month++;
                 expiration_date = String.format("%1$d-%2$d-%3$d",year,month,dayOfMonth);
                 textViewExpirationDate.setText(expiration_date);
-                Log.d("TAG",expiration_date);
             }
         };
     }
@@ -156,8 +154,6 @@ public class AddActivity extends AppCompatActivity {
             // Retrieve the quantity of the product typed in the editText field
             editTextQuantity = findViewById(R.id.editTextQuantity);
             quantity = String.valueOf(editTextQuantity.getText());
-
-            is_available = true; // By default, when creating a product, this attribute must equals true
 
             // Call for the addProduct(Product) method to transfer data to the server
             addProduct(productName);
@@ -180,12 +176,10 @@ public class AddActivity extends AppCompatActivity {
             RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
             // MultipartBody.Part is used to send also the actual file name
             MultipartBody.Part body = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
-            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), productName);
-            RequestBody category = RequestBody.create(MediaType.parse("text/plain"), productCategory);
 
 
             // Asynchronous request
-            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, name, category, quantity, expiration_date, CollectActivity.userId, is_available);
+            Call<Product> call = djangoRestApi.addProduct(CollectActivity.token, body, productName, productCategory, quantity, expiration_date, CollectActivity.userId);
             call.enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {

@@ -1,6 +1,8 @@
 package com.example.frontend.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +31,13 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
     private LayoutInflater inflater;
 
-    /**
-     * Constructor that received two arguments in param that are saved in private variables as they are used to inflate and add data into the view.
-     *
-     * @param productArrayList
-     * @param context
-     */
     public CustomProductsAdapter(ArrayList<Product> productArrayList, Context context) {
+        /**
+         * Constructor that received two arguments in param that are saved in private variables as they are used to inflate and add data into the view.
+         *
+         * @param productArrayList
+         * @param context
+         */
         super(context, R.layout.product_row_item, productArrayList);
         // Create the inflater that will later on populate the view
         this.inflater = LayoutInflater.from(context);
@@ -44,17 +46,20 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
     // View lookup cache
     static class ProductViewHolder {
         private TextView textViewProductName;
+        private TextView textViewProductStatus;
         private ImageView imageViewProduct;
 
-        /**
-         * Constructor to instantiate a viewHolder object, which is an object of a class that can store the widgets present in the layout.
-         *
-         * @param textViewProductName
-         * @param imageViewProduct
-         */
 
-        public ProductViewHolder(TextView textViewProductName, ImageView imageViewProduct) {
+        public ProductViewHolder(TextView textViewProductName, TextView textViewProductStatus, ImageView imageViewProduct) {
+            /**
+             * Constructor to instantiate a viewHolder object, which is an object of a class that can store the widgets present in the layout.
+             *
+             * @param textViewProductName
+             * @param textViewProductStatus
+             * @param imageViewProduct
+             */
             this.textViewProductName = textViewProductName;
+            this.textViewProductStatus = textViewProductStatus;
             this.imageViewProduct = imageViewProduct;
         }
     }
@@ -82,10 +87,11 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
             // Set the data into the views.
             TextView textViewProductName = convertView.findViewById(R.id.textViewProductName);
+            TextView textViewProductStatus = convertView.findViewById(R.id.textViewProductStatus);
             ImageView imageViewProduct = convertView.findViewById(R.id.imageViewProduct);
 
             // Save the viewHolder into the memory of that convertView(setTag).
-            convertView.setTag(new ProductViewHolder(textViewProductName, imageViewProduct));
+            convertView.setTag(new ProductViewHolder(textViewProductName, textViewProductStatus, imageViewProduct));
 
         }
 
@@ -97,6 +103,20 @@ public class CustomProductsAdapter extends ArrayAdapter<Product> {
 
         // Update the widgets inside it.
         productViewHolder.textViewProductName.setText(product.getName());
+        productViewHolder.textViewProductStatus.setText(product.getStatus());
+
+        switch(product.getStatus()) {
+            case "Available":
+                productViewHolder.textViewProductStatus.setTextColor(Color.parseColor("#5CB85C"));
+                break;
+            case "Collected":
+                productViewHolder.textViewProductStatus.setTextColor(Color.parseColor("#f0960c"));
+                break;
+            case "Delivered":
+                productViewHolder.textViewProductStatus.setTextColor(Color.parseColor("#f0230c"));
+                break;
+            default:
+        }
         Picasso.get().load(product.getProduct_picture()).into(productViewHolder.imageViewProduct);
 
         return convertView;

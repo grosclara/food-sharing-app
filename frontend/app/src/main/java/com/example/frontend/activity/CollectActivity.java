@@ -15,15 +15,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.frontend.activity.ui.main.OrderProductDialogFragment;
+import com.example.frontend.activity.ui.main.ProductDialogFragment;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.Product;
+import com.example.frontend.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,11 @@ public class CollectActivity extends AppCompatActivity {
     private ListView listViewAvailableProducts;
     private CustomProductsAdapter adapterAvailableProducts;
 
+    public static String state;
+
     public static String token;
     public static int userId;
+    public String campus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,32 +62,47 @@ public class CollectActivity extends AppCompatActivity {
 
         token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
         userId = LauncherActivity.userCredits.getInt("id", -1);
-
-        if (userId == -1 | token == null) {
-            Log.e("Log in error", "Error while logging in for the first time");
-        }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Toast.makeText(getApplicationContext(),"restart",Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Call for the getAvailableProducts() in the onCreate method.
-        getAvailableProducts();
-        Toast.makeText(getApplicationContext(),"start",Toast.LENGTH_SHORT).show();
 
+        // Retrieve the campus of the user and call for the getAvailableProducts method
+        getUserCampus();
+    }
+
+    public void getUserCampus() {
+        /**
+         * Send a HTTP request to retrieve all information from the user
+         */
+
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        // Creation of a call object that will contain the response
+        Call<User> call = djangoRestApi.getProfileInfo(CollectActivity.token);
+        // Asynchronous request
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+
+                    campus = response.body().getCampus();
+                    getAvailableProducts();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
     }
 
     @Override
@@ -125,7 +144,7 @@ public class CollectActivity extends AppCompatActivity {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(token, 1);
+        Call<List<Product>> callAvailableProducts = djangoRestApi.getAvailableProducts(token, campus, "Available");
 
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<List<Product>>() {
@@ -150,10 +169,27 @@ public class CollectActivity extends AppCompatActivity {
 
                             Product product = productArrayList.get(position);
 
-                            DialogFragment newFragment = new OrderProductDialogFragment(getApplicationContext(), product);
-                            newFragment.show(getSupportFragmentManager(), "order");
+                            if(product.getSupplier() == CollectActivity.userId){
+                                state = "given";
+                            }
+                            else{
+                                state = "order";
+                            }
+
+                            DialogFragment newFragment = new ProductDialogFragment(getApplicationContext(), product, state);
+                            ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    finish();
+                                    overridePendingTransition(0,0);
+                                    startActivity(getIntent());
+                                    overridePendingTransition(0,0);
+                                }
+                            });
+                            newFragment.show(getSupportFragmentManager(), state);
                         }
                     });
+
                 } else {
                     Toast.makeText(getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
@@ -178,31 +214,8 @@ public class CollectActivity extends AppCompatActivity {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button -> logout the user
+                        logOut();
 
-                        Retrofit retrofit = NetworkClient.getRetrofitClient(getApplicationContext());
-                        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
-
-                        Call<ResponseBody> call = djangoRestApi.logout(token);
-                        call.enqueue(new Callback<ResponseBody>() {
-
-
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
-
-                                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
-                                LauncherActivity.userCreditsEditor.apply();
-
-                                Intent toSignInActivityIntent = new Intent();
-                                toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
-                                startActivity(toSignInActivityIntent);
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(), "Fail to log out", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -214,6 +227,33 @@ public class CollectActivity extends AppCompatActivity {
         // Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void logOut(){
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getApplicationContext());
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        Call<ResponseBody> call = djangoRestApi.logout(token);
+        call.enqueue(new Callback<ResponseBody>() {
+
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(getApplicationContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+                LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
+                LauncherActivity.userCreditsEditor.apply();
+
+                Intent toSignInActivityIntent = new Intent();
+                toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+                startActivity(toSignInActivityIntent);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Fail to log out", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void fromCollectToAddActivity(View view) {

@@ -1,22 +1,27 @@
 package com.example.frontend.activity.ui.main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.frontend.R;
+import com.example.frontend.activity.CartActivity;
 import com.example.frontend.activity.CollectActivity;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -27,15 +32,23 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class OrderProductDialogFragment extends DialogFragment {
+import static android.content.Intent.getIntent;
+
+public class ProductDialogFragment extends DialogFragment {
 
     public Product product;
     public Context context;
+    public String state;
 
     private TextView textViewProductName;
     private TextView textViewProductStatus;
@@ -49,9 +62,10 @@ public class OrderProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public OrderProductDialogFragment(Context context, Product product) {
+    public ProductDialogFragment(Context context, Product product, String state) {
         this.context = context;
         this.product = product;
+        this.state = state;
     }
 
     @Override
@@ -75,39 +89,112 @@ public class OrderProductDialogFragment extends DialogFragment {
         textViewProductCategory = view.findViewById(R.id.textViewProductCategory);
         textViewProductCategory.setText(product.getCategory());
         textViewProductStatus = view.findViewById(R.id.textViewProductStatus);
-        textViewProductStatus.setText(String.valueOf(product.getIs_available()));
+
+        textViewProductStatus.setText(product.getStatus());
+        switch (product.getStatus()) {
+            case "Available":
+                textViewProductStatus.setTextColor(Color.parseColor("#5CB85C"));
+                break;
+            case "Collected":
+                textViewProductStatus.setTextColor(Color.parseColor("#f0960c"));
+                break;
+            case "Delivered":
+                textViewProductStatus.setTextColor(Color.parseColor("#f0230c"));
+                break;
+            default:
+        }
         textViewExpirationDate = view.findViewById(R.id.textViewExpirationDate);
         textViewExpirationDate.setText(product.getExpiration_date());
         imageViewProduct = view.findViewById(R.id.imageViewProduct);
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
 
-        builder.setTitle("Order the product")
-                .setPositiveButton("Order", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Order the product
-                        // Create the order object
-                        Order order = new Order(CollectActivity.userId, product.getId());
-                        // Post order
-                        addOrder(order);
-                        // Change the is_available attribute of the product object to not available
-                        updateProduct(product);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
+        switch (state) {
+            case "order":
+                builder.setTitle("Order the product")
+                        .setPositiveButton("Order", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                // Order the product
+                                // Create the order object
+                                if (product.getStatus().equals("Available")) {
+
+                                    // Change the status attribute of the product object to not available
+                                    updateProductStatus(product);
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                break;
+            case "given":
+                builder.setTitle("Product given")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Check the status
+                                if (product.getStatus().equals("Available")) {
+                                    // if still available, delete the product from the database
+                                    deleteProductById(product);
+                                } else {
+                                    Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                break;
+            default:
+                // code block
+        }
+
         // Create the AlertDialog object and return it
         return builder.create();
     }
 
+    private DialogInterface.OnDismissListener onDismissListener;
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        Intent toCollectActivityIntent = new Intent();
-        toCollectActivityIntent.setClass(context, CollectActivity.class);
-        startActivity(toCollectActivityIntent);
+    public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
+        }
+    }
+
+    private void deleteProductById(Product product) {
+
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(context);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        // Creation of a call object that will contain the response
+        Call<ResponseBody> call = djangoRestApi.deleteProductById(CollectActivity.token, product.getId());
+        // Asynchronous request
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Product deleted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "An error occurred to retrieve the supplier info!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
     }
 
     public void getUserById(View view, int supplierId) {
@@ -171,6 +258,7 @@ public class OrderProductDialogFragment extends DialogFragment {
             public void onResponse(Call<Order> call, Response<Order> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
+
                     Toast.makeText(context, "You order the product!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -184,7 +272,10 @@ public class OrderProductDialogFragment extends DialogFragment {
         });
     }
 
-    public void updateProduct(Product product) {
+    // Create a method to recreate the parent activity
+
+
+    public void updateProductStatus(final Product product) {
         // PB WITH THE PICTURE FIELD
         /**
          * Take into param a product and update it in the remote database asynchronously
@@ -193,30 +284,31 @@ public class OrderProductDialogFragment extends DialogFragment {
 
         // Retrieve the id of the product
         int productId = product.getId();
-        // Set attributes to null so that they are not changed in the db by the HTTP PATCH request
-        product.setProduct_picture(null);
-        product.setCreated_at(null);
-        product.setName(null);
-        product.setQuantity(null);
-        product.setCategory(null);
-        product.setExpiration_date(null);
+
         // Set its is_available attribute to false as it has just been order by someone
-        product.setIs_available(false);
+        product.setStatus("Collected");
+
+        Map<String, String> status = new HashMap<>();
+        status.put("status","Collected");
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(context);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<Product> call = djangoRestApi.updateProduct(CollectActivity.token, productId, product);
+        Call<Product> call = djangoRestApi.updateProductStatus(CollectActivity.token, productId, status);
         // Asynchronous request
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
                 Log.i("serverRequest", response.message());
                 if (response.isSuccessful()) {
-                    // In case of success, toast "Submit!"
-                    Toast.makeText(context, "Submit!", Toast.LENGTH_SHORT);
+
+                    // If the product has successfully been updated, we can send the order to the server
+                    Order order = new Order(CollectActivity.userId, product.getId());
+                    // Post order
+
+                    addOrder(order);
                 } else {
                     Toast.makeText(context, "An error occurred!", Toast.LENGTH_SHORT);
                 }

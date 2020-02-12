@@ -23,6 +23,7 @@ except ImportError:
 # Also provide deserialization, allowing parsed data to be converted back into complex types
 
 class CustomRegisterSerializer(RegisterSerializer):
+
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     first_name = serializers.CharField(required=True)
@@ -31,18 +32,17 @@ class CustomRegisterSerializer(RegisterSerializer):
     campus = serializers.CharField(required=True)
     room_number = serializers.CharField(required=True)
 
-    print(room_number)
-
     def get_cleaned_data(self):
         super(CustomRegisterSerializer, self).get_cleaned_data()
-        print(self.validated_data.get('room_number'))
+        print(self.validated_data)
         return {
             'email': self.validated_data.get('email', ''),
             'password1': self.validated_data.get('password1', ''),
             'is_active' : True,
             'first_name': self.validated_data.get('first_name'),
             'last_name': self.validated_data.get('last_name'),
-            'profile_picture': self.validated_data.get('profile_picture'),
+            'profile_picture': self.validated_data.get('profile_picture','media/user/android.png'), 
+            # set the default value when a profile picture is not provided
             'campus': self.validated_data.get('campus'),
             'room_number' : self.validated_data.get('room_number'),
         }
@@ -64,10 +64,11 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
         return user 
 
-class CustomUserDetailsSerializer(serializers.ModelSerializer):
+class CustomUserDetailsSerializer(serializers.ModelSerializer): 
+
     class Meta:
         model = User
-        fields = ('id','email','first_name','last_name','room_number','campus','profile_picture','is_active','last_login','date_joined')
+        fields = ('id','email','first_name','last_name','room_number','campus','profile_picture','is_active','is_staff','last_login','date_joined')
 
 class CustomTokenSerializer(serializers.ModelSerializer):
     """
@@ -90,6 +91,15 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model=Product
         fields='__all__'
+
+class ProductDetailsSerializer(serializers.ModelSerializer):
+
+    supplier = CustomUserDetailsSerializer(read_only=True)
+    
+    class Meta:
+        model=Product
+        fields=('__all__')
+
 
 class OrderDetailsSerializer(serializers.ModelSerializer):
 

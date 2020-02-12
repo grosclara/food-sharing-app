@@ -7,6 +7,7 @@ import com.example.frontend.model.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -14,6 +15,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -41,9 +45,9 @@ public interface DjangoRestApi {
      */
     @GET("product/")
     Call<List<Product>> getAvailableProducts(
-            // @Header("Authorization") String idToken,
             @Header("Authorization") String token,
-            @Query("is_available") int is_available
+            @Query("campus") String campus,
+            @Query("status") String status
     );
 
     /**
@@ -72,28 +76,38 @@ public interface DjangoRestApi {
      * Return a call object containing the product selected by its id to update in the api
      *
      * @param id
-     * @param product
+     * @param status
      * @return
      */
 
+    @FormUrlEncoded
+
     // PATCH allows to update a product modifying only one column in the db
     @PATCH("product/{id}/")
-    Call<Product> updateProduct(
+    Call<Product> updateProductStatus(
             @Header("Authorization") String token,
-            @Path("id") int id, @Body Product product);
+            @Path("id") int id,
+            @FieldMap Map<String, String> status
+    );
 
-    // POST METHOD USING MULTIPART TO UPDATE A PRODUCT
-    // DOESN'T WORK BECAUSE OF THE IMAGE FIELD
+    @FormUrlEncoded
+    // PATCH allows to update a product modifying only one column in the db
+    @PATCH("user/{id}/")
+    Call<User> changeUserCampus(
+            @Header("Authorization") String token,
+            @Path("id") int id,
+            @FieldMap Map<String, String> campus
+    );
 
     /**
      * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
      *
      * @param product_picture
-     * @param name
+     * @param productCategory
+     * @param productName
      * @param quantity
      * @param expiration_date
      * @param supplier
-     * @param is_available
      * @return
      */
 
@@ -104,12 +118,11 @@ public interface DjangoRestApi {
     Call<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
-            @Part("name") RequestBody name,
-            @Part("category") RequestBody category,
+            @Part("name") String productName,
+            @Part("category") String productCategory,
             @Part("quantity") String quantity,
             @Part("expiration_date") String expiration_date,
-            @Part("supplier") int supplier,
-            @Part("is_available") boolean is_available
+            @Part("supplier") int supplier
     );
 
     /**
@@ -144,11 +157,32 @@ public interface DjangoRestApi {
     /**
      * Return a call object containing the current user
      *
-     * @param user
+     * @param profile_picture
+     * @param firstName
+     * @param lastName
+     * @param roomNumber
+     * @param email
+     * @param campus
+     * @param password1
+     * @param password2
      * @return
      */
+
+    @Multipart
+    // Denotes that the request body is multi-part.
+    // Parts should be declared as parameters and annotated with @Part.
+
     @POST("rest-auth/registration/")
-    Call<User> createUser(@Body User user);
+    Call<User> createUser(
+            @Part MultipartBody.Part profile_picture,
+            @Part("first_name") String firstName,
+            @Part("last_name") String lastName,
+            @Part("room_number") String roomNumber,
+            @Part("campus") String campus,
+            @Part("email") String email,
+            @Part("password1") String password1,
+            @Part("password2") String password2
+    );
 
     @POST("rest-auth/login/")
     Call<Object> login(@Body User user);
@@ -167,6 +201,42 @@ public interface DjangoRestApi {
     Call<ResponseBody> deleteUserById(
             @Header("Authorization") String token,
             @Path("id") int userId
+    );
+
+    @DELETE("product/{id}/")
+    Call<ResponseBody> deleteProductById(
+            @Header("Authorization") String token,
+            @Path("id") int productId
+    );
+
+    @Multipart
+    // Denotes that the request body is multi-part.
+    // Parts should be declared as parameters and annotated with @Part.
+    @PUT("user/{id}/")
+    Call<User> updateProfile(
+            @Header("Authorization") String token,
+            @Path("id") int id,
+            @Part MultipartBody.Part profile_picture,
+            @Part("first_name") String firstName,
+            @Part("last_name") String lastName,
+            @Part("room_number") String roomNumber,
+            @Part("campus") String campus,
+            @Part("email") String email,
+            @Part("is_active") Boolean isActive
+    );
+
+    @POST("rest-auth/password/change/")
+    Call<User> changePassword(
+            @Header("Authorization") String token,
+            @Body User user
+    );
+
+    @POST("rest-auth/password/reset/")
+    /**
+     * uid and token are sent in email after calling /rest-auth/password/reset/
+     */
+    Call<User> resetPassword(
+            @Body User user
     );
 
 }

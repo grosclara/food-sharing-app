@@ -1,18 +1,12 @@
 package com.example.frontend.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.frontend.R;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 public class LauncherActivity extends AppCompatActivity {
 

@@ -1,14 +1,17 @@
 package com.example.frontend.activity.ui.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -40,6 +43,8 @@ import retrofit2.Retrofit;
 public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private static final String state = "given";
 
     private PageViewModel pageViewModel;
 
@@ -121,6 +126,27 @@ public class PlaceholderFragment extends Fragment {
                     CustomProductsAdapter adapterGivenProducts = new CustomProductsAdapter(productArrayList, getActivity().getApplicationContext());
                     listViewGivenProducts.setAdapter(adapterGivenProducts);
 
+                    // The current object handles the event "click on a listView item"
+                    listViewGivenProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Product product = productArrayList.get(position);
+
+                            DialogFragment newFragment = new ProductDialogFragment(getContext(), product, state);
+                            ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    getActivity().finish();
+                                    getActivity().overridePendingTransition(0,0);
+                                    startActivity(getActivity().getIntent());
+                                    getActivity().overridePendingTransition(0,0);
+                                }
+                            });
+                            newFragment.show(getChildFragmentManager(), state);
+                        }
+                    });
+
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
                 }
@@ -178,7 +204,7 @@ public class PlaceholderFragment extends Fragment {
                             // Initialization of a product object to fill the collectedProducts ArrayList
                             Product product = new Product(jsonProduct.getInt("id"),
                                     jsonProduct.getString("name"),
-                                    jsonProduct.getBoolean("is_available"),
+                                    jsonProduct.getString("status"),
                                     jsonProduct.getString("created_at"),
                                     jsonProduct.getString("updated_at"),
                                     jsonProduct.getString("product_picture"),
