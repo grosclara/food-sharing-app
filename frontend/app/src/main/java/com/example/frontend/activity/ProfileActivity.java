@@ -123,6 +123,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             toEditProfileActivityIntent.setClass(getApplicationContext(), EditProfileActivity.class);
             toEditProfileActivityIntent.putExtra("profile", (Serializable) profile);
             startActivity(toEditProfileActivityIntent);
+            finish();
 
         } else if (v == buttonDeleteAccount) {
             deleteAccount();
