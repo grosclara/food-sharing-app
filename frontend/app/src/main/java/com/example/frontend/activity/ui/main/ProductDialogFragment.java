@@ -123,7 +123,7 @@ public class ProductDialogFragment extends DialogFragment {
                                 }
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                             }
@@ -142,28 +142,30 @@ public class ProductDialogFragment extends DialogFragment {
                                 }
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                             }
                         });
                 break;
             case "collected":
-                builder.setTitle("Confirm delivery or cancel")
+                builder.setTitle("What to do with this product?")
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
                         .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //set status to delivered and send request to update in database
+                                // Set status to delivered and send request to update in database
                                 product.setStatus("Delivered");
                                 updateProductStatus(product, "Delivered");
                             }
                         })
-                        .setNegativeButton("Cancel order", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Cancel the order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //set status to available and send request to update in database
+                                // Set status to available and send request to update in database
                                 updateProductStatus(product, "Available");
-                                // delete order
-                                int productId = product.getId();
-                                deleteOrderByProductId(productId);
                             }
                         });
                 break;
@@ -291,7 +293,7 @@ public class ProductDialogFragment extends DialogFragment {
         });
     }
 
-    public void deleteOrderByProductId(int productId){
+    public void deleteOrderByProductId(){
         /**
          * Take into param a product and delete the corresponding order in the remote database asynchronously
          * @param productId
@@ -359,8 +361,14 @@ public class ProductDialogFragment extends DialogFragment {
                     if (NewStatus.equals("Collected")) {
                         Order order = new Order(CollectActivity.userId, product.getId());
                         // Post order
-
                         addOrder(order);
+                    }
+                    else if (NewStatus.equals("Available")){
+                        // Delete order
+                        deleteOrderByProductId();
+                    }
+                    else if (NewStatus.equals("Delivered")){
+                        Toast.makeText(context, "Hope you'll enjoy your food!",Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(context, "An error occurred!", Toast.LENGTH_SHORT);
