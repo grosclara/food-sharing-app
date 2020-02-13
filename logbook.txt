@@ -55,16 +55,21 @@
 "03/02 - CG : Edit Profile with Patch HTTP request implemented, 2h00"
 "06/02 - CG : Try to fix pictures issues, 1h00'
 "08/02 - CG : Picture issues solved (issues 13&14), 4h00"
+"07/02 - BT : cannot create superuser whithout filling name, etc, 4h00"
 "08/02 - CG : Add change and reset passwords functions to EditProfileActivity and SignInActivity, 3h00"
 "09/02 - CG : Runtime permission implemented in the Sign Up Activity to grant the app access to the phone gallery, 30mn
 	      Attempt to fix dialog fragment issue to refresh the activity, 1h00
 	      Delete the is_available field and create the status field in the Product model in Django and in Postman, 30mn"
+"09/02 - BT : set up django command to create superuser automatically, 2h"
 "10/02 - CG : Filter the request by campus (still some issues) 45mn,
 	      Try to solve some EditProfile pb (not finished yet), 1h00"
+"10/02 - BT : documentation on search bar and new branch (first try) to implement a search bar, 1h30"
 "11/02 - CG : Refresh the parent activity when a dialog is dismissed, 1h00
 	      Campus filtering done, 30mn"
+"12/02 - BT : Change django admin model so the admin can create users from the admin interface, 2h30"
 "12/02 - CG + BT : Briefing to review all issues, 2h00"
 "13/02 - CG : Field validators for SignIn, SignUp, Add and EditProfile activities, 3h00"
+"13/02 - BT : popup for collectactivity that enable the user to confirm delivery and cancel order, 3h00" 
 
 TO DO :
 
