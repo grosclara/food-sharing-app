@@ -64,7 +64,8 @@
 "11/02 - CG : Refresh the parent activity when a dialog is dismissed, 1h00
 	      Campus filtering done, 30mn"
 "12/02 - CG + BT : Briefing to review all issues, 2h00"
-"13/02 - CG : Field validators for SignIn, SignUp, Add and EditProfile activities, 3h00"
+"13/02 - CG : Field validators for SignIn, SignUp, Add and EditProfile activities, 3h00
+	      Try to select the right tab when the OnCreate method is called on the PlaceHolderFragment, 2h00"
 
 TO DO :
 

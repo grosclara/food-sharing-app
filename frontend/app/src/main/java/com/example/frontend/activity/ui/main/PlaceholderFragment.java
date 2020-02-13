@@ -63,6 +63,7 @@ public class PlaceholderFragment extends Fragment {
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
+            Log.d("TAG",String.valueOf(index));
         }
         pageViewModel.setIndex(index);
     }
@@ -230,10 +231,14 @@ public class PlaceholderFragment extends Fragment {
 
                             Product product = collectedProducts.get(position);
 
-
-
                             String state = product.getStatus().toLowerCase();
+
+                            // When reloading the Activity, it will open by default on the Collected tab
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(ARG_SECTION_NUMBER, 1);
+
                             DialogFragment newFragment = new ProductDialogFragment(getContext(), product, state);
+                            newFragment.setArguments(bundle);
                             ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
