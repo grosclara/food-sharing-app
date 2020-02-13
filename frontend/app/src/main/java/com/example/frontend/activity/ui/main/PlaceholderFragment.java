@@ -188,7 +188,7 @@ public class PlaceholderFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-                    ArrayList<Product> collectedProducts = new ArrayList<>();
+                    final ArrayList<Product> collectedProducts = new ArrayList<>();
 
                     // Parsing the response.body() object
                     Gson gson = new Gson();
@@ -223,6 +223,31 @@ public class PlaceholderFragment extends Fragment {
                     // Attach the adapter to the listView
                     CustomProductsAdapter adapterCollectedProducts = new CustomProductsAdapter(collectedProducts, getActivity().getApplicationContext());
                     listViewCollectedProducts.setAdapter(adapterCollectedProducts);
+
+                    listViewCollectedProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Product product = collectedProducts.get(position);
+
+
+
+                            String state = product.getStatus().toLowerCase();
+                            DialogFragment newFragment = new ProductDialogFragment(getContext(), product, state);
+                            ((ProductDialogFragment) newFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    getActivity().finish();
+                                    getActivity().overridePendingTransition(0,0);
+                                    startActivity(getActivity().getIntent());
+                                    getActivity().overridePendingTransition(0,0);
+                                }
+                            });
+                            newFragment.show(getChildFragmentManager(), state);
+
+
+                        }
+                    });
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);

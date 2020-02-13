@@ -65,6 +65,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class OrderViewSet(viewsets.ModelViewSet):
     
+    lookup_field = 'product'
+
     filter_backends = [filters.OrderingFilter]
     # Explicitly specify which fields the API may be ordered against
     ordering_fields = ['created_at','updated_at']

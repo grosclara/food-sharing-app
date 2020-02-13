@@ -119,7 +119,7 @@ public class ProductDialogFragment extends DialogFragment {
                                 if (product.getStatus().equals("Available")) {
 
                                     // Change the status attribute of the product object to not available
-                                    updateProductStatus(product);
+                                    updateProductStatus(product, "Collected");
                                 }
                             }
                         })
@@ -145,6 +145,25 @@ public class ProductDialogFragment extends DialogFragment {
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
+                            }
+                        });
+                break;
+            case "collected":
+                builder.setTitle("Confirm delivery or cancel")
+                        .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //set status to delivered and send request to update in database
+                                product.setStatus("Delivered");
+                                updateProductStatus(product, "Delivered");
+                            }
+                        })
+                        .setNegativeButton("Cancel order", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //set status to available and send request to update in database
+                                updateProductStatus(product, "Available");
+                                // delete order
+                                int productId = product.getId();
+                                deleteOrderByProductId(productId);
                             }
                         });
                 break;
@@ -215,7 +234,7 @@ public class ProductDialogFragment extends DialogFragment {
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<User> call = djangoRestApi.getUserByID(CollectActivity.token, CollectActivity.userId);
+        Call<User> call = djangoRestApi.getUserByID(CollectActivity.token, supplierId);
         // Asynchronous request
         call.enqueue(new Callback<User>() {
             @Override
@@ -272,10 +291,41 @@ public class ProductDialogFragment extends DialogFragment {
         });
     }
 
+    public void deleteOrderByProductId(int productId){
+        /**
+         * Take into param a product and delete the corresponding order in the remote database asynchronously
+         * @param productId
+         */
+
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(context);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        // Creation of a call object that will contain the response
+        Call<ResponseBody> call = djangoRestApi.deleteOrderByProductId(CollectActivity.token, product.getId());
+        // Asynchronous request
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.i("serverRequest", response.message());
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Order cancelled successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "An error occurred!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.i("serverRequest", t.getMessage());
+            }
+        });
+    }
+
     // Create a method to recreate the parent activity
 
 
-    public void updateProductStatus(final Product product) {
+    public void updateProductStatus(final Product product, final String NewStatus) {
         // PB WITH THE PICTURE FIELD
         /**
          * Take into param a product and update it in the remote database asynchronously
@@ -286,10 +336,10 @@ public class ProductDialogFragment extends DialogFragment {
         int productId = product.getId();
 
         // Set its is_available attribute to false as it has just been order by someone
-        product.setStatus("Collected");
+        product.setStatus(NewStatus);
 
         Map<String, String> status = new HashMap<>();
-        status.put("status","Collected");
+        status.put("status", NewStatus);
 
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(context);
@@ -305,10 +355,13 @@ public class ProductDialogFragment extends DialogFragment {
                 if (response.isSuccessful()) {
 
                     // If the product has successfully been updated, we can send the order to the server
-                    Order order = new Order(CollectActivity.userId, product.getId());
-                    // Post order
+                    // if the new status is collected
+                    if (NewStatus.equals("Collected")) {
+                        Order order = new Order(CollectActivity.userId, product.getId());
+                        // Post order
 
-                    addOrder(order);
+                        addOrder(order);
+                    }
                 } else {
                     Toast.makeText(context, "An error occurred!", Toast.LENGTH_SHORT);
                 }
