@@ -11,43 +11,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign in to CShare"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextEmailSignIn"
+    <LinearLayout
+        android:id="@+id/linearLayoutCredentials"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Email"
-        app:layout_constraintTop_toBottomOf="@id/editTextSignIn"/>
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/editTextSignIn">
 
-    <EditText
-        android:id="@+id/editTextPasswordSignIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="Password"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmailSignIn" />
+        <TextView
+            android:id="@+id/textViewWrongCredentials"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unable to log in with provided credentials"
+            android:visibility="invisible"
+            android:textStyle="bold"
+            android:textColor="#FF0000"
+            />
+
+        <EditText
+            android:id="@+id/editTextEmailSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextPasswordSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign In"
-        app:layout_constraintTop_toBottomOf="@id/editTextPasswordSignIn"/>
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutCredentials" />
 
     <Button
         android:id="@+id/buttonCreateAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Account"
-        app:layout_constraintTop_toBottomOf="@id/buttonSignIn"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonSignIn" />
 
     <Button
         android:id="@+id/buttonResetPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Password forgotten?"
-        app:layout_constraintTop_toBottomOf="@id/buttonCreateAccount"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonCreateAccount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
