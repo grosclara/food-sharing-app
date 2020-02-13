@@ -4,11 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.frontend.R;
 import com.example.frontend.activity.ui.main.ChangePasswordFragment;
@@ -17,9 +22,16 @@ import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
 import com.google.gson.Gson;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,11 +44,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private Button buttonSignIn;
     private Button buttonResetPassword;
 
+    private LinearLayout linearLayoutCredentials;
     private EditText editTextEmailSignIn;
     private EditText editTextPasswordSignIn;
+    private TextView textViewWrongCredentials;
 
     private static final String state = "resetPassword";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         //Views
         editTextEmailSignIn = findViewById(R.id.editTextEmailSignIn);
         editTextPasswordSignIn = findViewById(R.id.editTextPasswordSignIn);
+        linearLayoutCredentials = findViewById(R.id.linearLayoutCredentials);
+        textViewWrongCredentials = findViewById(R.id.textViewWrongCredentials);
 
         buttonSignIn.setOnClickListener(this);
         buttonCreateAccount.setOnClickListener(this);
@@ -68,7 +83,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         }
         if (v == buttonSignIn) {
-            //Validate the signing up
+            // Sign in
             signIn();
         }
         if (v == buttonResetPassword) {
@@ -82,7 +97,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         String email = editTextEmailSignIn.getText().toString().trim();
         String password = editTextPasswordSignIn.getText().toString().trim();
 
-        final User user = new User(email,password);
+        final User user = new User(email, password);
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
@@ -92,7 +107,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 Log.d("serverRequest", response.message());
-                if (response.isSuccessful()){
+
+                if (response.isSuccessful()) {
 
                     try {
                         JSONObject JsonResponse = new JSONObject(new Gson().toJson(response.body()));
@@ -101,9 +117,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         String token = JsonResponse.getString("key");
                         int userId = userCredits.getInt("id");
 
-                        LauncherActivity.userCreditsEditor.putBoolean("logStatus",true);
+                        LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
                         LauncherActivity.userCreditsEditor.putString("token", token);
-                        LauncherActivity.userCreditsEditor.putInt("id",userId);
+                        LauncherActivity.userCreditsEditor.putInt("id", userId);
 
                         LauncherActivity.userCreditsEditor.apply();
 
@@ -114,6 +130,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Unable to log in with provided credentials",Toast.LENGTH_SHORT).show();
+                    textViewWrongCredentials.setVisibility(View.VISIBLE);
+                    linearLayoutCredentials.setBackgroundColor(Color.parseColor("#33FF0000"));
+
                 }
             }
 

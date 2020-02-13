@@ -3,7 +3,6 @@ package com.example.frontend.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -29,16 +27,19 @@ import com.example.frontend.R;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
 import com.example.frontend.model.User;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.Select;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -48,14 +49,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
 
+    // Form validation
+    protected Validator validator;
+    private boolean validated;
+
+    @NotEmpty
     private EditText editTextLastName;
+    @NotEmpty
     private EditText editTextFirstName;
+    @Email
     private EditText editTextEmailSignUp;
+    @Password
     private EditText editTextPasswordSignUp;
+    @ConfirmPassword
     private EditText editTextPasswordConfirm;
     private Spinner spinnerCampus;
+    @NotEmpty
     private EditText editTextRoomNumber;
     private ImageView imageViewGallery;
 
@@ -73,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private String room_number;
 
     // Path to the location of the picture taken by the phone
+    private boolean withPicture = false;
     private String imageFilePath;
     private Uri uriImage;
     public static final int PICK_IMAGE = 1;
@@ -86,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         checkPermissions();
         setContentView(R.layout.activity_sign_up);
 
@@ -127,6 +140,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
+        // Instantiate a new Validator
+        validator = new Validator((this));
+        validator.setValidationListener(this);
+
     }
 
     @Override
@@ -137,12 +154,35 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
             startActivity(toSignInActivityIntent);
 
-        } else if (v == buttonSignUp) {
-            createAccount();
-        } else if (v == buttonGallery) {
+        } else if(v == buttonSignUp) {
 
+            // Validate the field
+            validator.validate();
+
+            if(validated) {
+
+                email = editTextEmailSignUp.getText().toString().trim();
+                lastName = editTextLastName.getText().toString().trim();
+                firstName = editTextFirstName.getText().toString().trim();
+                password1 = editTextPasswordSignUp.getText().toString().trim();
+                password2 = editTextPasswordConfirm.getText().toString().trim();
+                room_number = editTextRoomNumber.getText().toString().trim();
+
+                if (withPicture) {
+                    createAccountWithPicture();
+                } else {
+                    createAccountWithoutPicture();
+                }
+            }
+        } else if(v == buttonGallery) {
             choosePictureFromGallery();
         }
+    }
+
+    protected boolean validate() {
+        if (validator != null)
+            validator.validate();
+        return validated;           // would be set in one of the callbacks below
     }
 
     private void choosePictureFromGallery() {
@@ -171,6 +211,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             if (resultCode == Activity.RESULT_OK)
                 switch (requestCode) {
                     case PICK_IMAGE:
+                        withPicture = true;
                         // data.getData returns the content URI for the selected Image
                         uriImage = data.getData();
 
@@ -201,16 +242,44 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return path;
     }
 
-    private void createAccount() {
+    private void createAccountWithoutPicture(){
 
-        Toast.makeText(getApplicationContext(), String.valueOf(PICK_IMAGE), Toast.LENGTH_SHORT).show();
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        email = editTextEmailSignUp.getText().toString().trim();
-        lastName = editTextLastName.getText().toString().trim();
-        firstName = editTextFirstName.getText().toString().trim();
-        password1 = editTextPasswordSignUp.getText().toString().trim();
-        password2 = editTextPasswordConfirm.getText().toString().trim();
-        room_number = editTextRoomNumber.getText().toString().trim();
+        User user = new User(email, lastName, firstName, password1, password2, campus,room_number);
+
+        // Creation of a call object that will contain the response
+        Call<User> callNewUser = djangoRestApi.createUserWithoutPicture(user);
+
+        // Asynchronous request
+        callNewUser.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("serverRequest", response.message());
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(getApplicationContext(), "You are now redirected to the Sign In page", Toast.LENGTH_SHORT).show();
+
+                    Intent toSignInActivityIntent = new Intent();
+                    toSignInActivityIntent.setClass(getApplicationContext(), SignInActivity.class);
+                    startActivity(toSignInActivityIntent);
+
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("serverRequest", t.getLocalizedMessage());
+            }
+        });
+
+
+    }
+
+    private void createAccountWithPicture() {
 
         // Create a file object using file path
         File file = new File(imageFilePath);
@@ -226,7 +295,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
 
         // Creation of a call object that will contain the response
-        Call<User> callNewUser = djangoRestApi.createUser(body, firstName, lastName, room_number, campus, email, password1, password2);
+        Call<User> callNewUser = djangoRestApi.createUserWithPicture(body, firstName, lastName, room_number, campus, email, password1, password2);
 
         // Asynchronous request
         callNewUser.enqueue(new Callback<User>() {
@@ -274,6 +343,30 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
             onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
                     grantResults);
+        }
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        //Called when all your views pass all validations.
+        validated = true;
+        Toast.makeText(this, "Yay! we got it right!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        //Called when there are validation error(s).
+        validated = false;
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

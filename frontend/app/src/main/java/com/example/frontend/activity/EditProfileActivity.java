@@ -62,6 +62,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private static final String state = "changePassword";
 
     // Path to the location of the picture taken by the phone
+    private boolean withPicture = false;
     private String imageFilePath;
     private Uri uriImage;
     public static final int PICK_IMAGE = 1;
@@ -124,7 +125,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         if (buttonSubmit.equals(v)) {
-            editProfile();
+            if (!editTextFirstName.getText().toString().isEmpty()) {
+                profile.setFirst_name(editTextFirstName.getText().toString().trim());
+            }
+            if (!editTextLastName.getText().toString().isEmpty()) {
+                profile.setLast_name(editTextLastName.getText().toString().trim());
+            }
+            if (!editTextRoomNumber.getText().toString().isEmpty()) {
+                profile.setRoom_number(editTextRoomNumber.getText().toString().trim());
+            }
+            if(withPicture){editProfileWithPicture();}
+            else{editProfileWithoutPicture();}
         }
         if (buttonGallery.equals(v)) {
             choosePictureFromGallery();
@@ -135,17 +146,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    public void editProfile() {
+    public void editProfileWithPicture() {
 
-        if (!editTextFirstName.getText().toString().isEmpty()) {
-            profile.setFirst_name(editTextFirstName.getText().toString().trim());
-        }
-        if (!editTextLastName.getText().toString().isEmpty()) {
-            profile.setLast_name(editTextLastName.getText().toString().trim());
-        }
-        if (!editTextRoomNumber.getText().toString().isEmpty()) {
-            profile.setRoom_number(editTextRoomNumber.getText().toString().trim());
-        }
         // Define the URL endpoint for the HTTP operation.
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
@@ -159,9 +161,45 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         MultipartBody.Part body = MultipartBody.Part.createFormData("profile_picture", file.getName(), requestFile);
 
         // Creation of a call object that will contain the response
-        Call<User> call = djangoRestApi.updateProfile(CollectActivity.token,
+        Call<User> call = djangoRestApi.updateProfileWithPicture(CollectActivity.token,
                 profile.getId(),
                 body,
+                profile.getFirst_name(),
+                profile.getLast_name(),
+                profile.getRoom_number(),
+                profile.getCampus(),
+                profile.getEmail(),
+                true);
+        // Asynchronous request
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.i("serverRequest", response.message());
+                Toast.makeText(getApplicationContext(), "profile editted", Toast.LENGTH_SHORT).show();
+
+                Intent toProfileActivityIntent = new Intent();
+                toProfileActivityIntent.setClass(getApplicationContext(), ProfileActivity.class);
+                startActivity(toProfileActivityIntent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "profile error", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    public void editProfileWithoutPicture() {
+
+        // Define the URL endpoint for the HTTP operation.
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        DjangoRestApi djangoRestApi = retrofit.create(DjangoRestApi.class);
+
+        // Creation of a call object that will contain the response
+        Call<User> call = djangoRestApi.updateProfileWithoutPicture(CollectActivity.token,
+                profile.getId(),
                 profile.getFirst_name(),
                 profile.getLast_name(),
                 profile.getRoom_number(),
@@ -215,6 +253,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             if (resultCode == Activity.RESULT_OK)
                 switch (requestCode) {
                     case PICK_IMAGE:
+                        withPicture = true;
                         // data.getData returns the content URI for the selected Image
                         uriImage = data.getData();
 

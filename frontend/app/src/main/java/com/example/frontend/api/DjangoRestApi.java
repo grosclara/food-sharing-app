@@ -90,15 +90,6 @@ public interface DjangoRestApi {
             @FieldMap Map<String, String> status
     );
 
-    @FormUrlEncoded
-    // PATCH allows to update a product modifying only one column in the db
-    @PATCH("user/{id}/")
-    Call<User> changeUserCampus(
-            @Header("Authorization") String token,
-            @Path("id") int id,
-            @FieldMap Map<String, String> campus
-    );
-
     /**
      * Return a call object containing a ResponseBody object (the type of the object inside the call is not much important because we won't use it in the method
      *
@@ -173,7 +164,7 @@ public interface DjangoRestApi {
     // Parts should be declared as parameters and annotated with @Part.
 
     @POST("rest-auth/registration/")
-    Call<User> createUser(
+    Call<User> createUserWithPicture(
             @Part MultipartBody.Part profile_picture,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
@@ -182,6 +173,11 @@ public interface DjangoRestApi {
             @Part("email") String email,
             @Part("password1") String password1,
             @Part("password2") String password2
+    );
+
+    @POST("rest-auth/registration/")
+    Call<User> createUserWithoutPicture(
+            @Body User user
     );
 
     @POST("rest-auth/login/")
@@ -213,10 +209,24 @@ public interface DjangoRestApi {
     // Denotes that the request body is multi-part.
     // Parts should be declared as parameters and annotated with @Part.
     @PUT("user/{id}/")
-    Call<User> updateProfile(
+    Call<User> updateProfileWithPicture(
             @Header("Authorization") String token,
             @Path("id") int id,
             @Part MultipartBody.Part profile_picture,
+            @Part("first_name") String firstName,
+            @Part("last_name") String lastName,
+            @Part("room_number") String roomNumber,
+            @Part("campus") String campus,
+            @Part("email") String email,
+            @Part("is_active") Boolean isActive
+    );
+
+    @Multipart
+
+    @PUT("user/{id}/")
+    Call<User> updateProfileWithoutPicture(
+            @Header("Authorization") String token,
+            @Path("id") int id,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
             @Part("room_number") String roomNumber,

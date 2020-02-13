@@ -63,7 +63,8 @@
 	      Try to solve some EditProfile pb (not finished yet), 1h00"
 "11/02 - CG : Refresh the parent activity when a dialog is dismissed, 1h00
 	      Campus filtering done, 30mn"
-
+"12/02 - CG + BT : Briefing to review all issues, 2h00"
+"13/02 - CG : Field validators for SignIn, SignUp, Add and EditProfile activities, 3h00"
 
 TO DO :
 
@@ -75,7 +76,6 @@ Functionality :
 Chat
 trier par date de péremption ?
 supprimer les produits dont la date de péremption est dépassée ?
-callback pour pop up lorsque l'on commande ou retire un produit
 override put request in django because put requests in drf set is_active to false
 
 
