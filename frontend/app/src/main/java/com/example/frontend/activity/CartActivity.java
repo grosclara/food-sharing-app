@@ -40,12 +40,20 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+
+        // Get the current intent
+        Intent intent = getIntent();
+        // Get the attached extras from the intent
+        int tab = intent.getIntExtra("TAB", 0);
+
         // Create the adapter that will return a fragment for each of the two primary sections of this activity;
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
+
+        viewPager.setCurrentItem(tab);
 
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
