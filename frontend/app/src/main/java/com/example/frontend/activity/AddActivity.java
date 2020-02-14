@@ -161,6 +161,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
+                                expiration_date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 editTextExpirationDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                                 editTextExpirationDate.setBackgroundColor(Color.WHITE);
 
