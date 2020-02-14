@@ -1,6 +1,7 @@
 package com.example.frontend.activity.ui.main;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.frontend.R;
 import com.example.frontend.activity.CartActivity;
 import com.example.frontend.activity.CollectActivity;
+import com.example.frontend.activity.SignInActivity;
 import com.example.frontend.adapter.CustomProductsAdapter;
 import com.example.frontend.api.DjangoRestApi;
 import com.example.frontend.api.NetworkClient;
@@ -42,17 +44,21 @@ import retrofit2.Retrofit;
  */
 public class PlaceholderFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public static final String ARG_SECTION_NUMBER = "section_number";
 
     private static final String state = "given";
 
     private PageViewModel pageViewModel;
 
     public static PlaceholderFragment newInstance(int index) {
+
         PlaceholderFragment fragment = new PlaceholderFragment();
+
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
+
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -60,7 +66,8 @@ public class PlaceholderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        int index = 1;
+
+        int index = 0;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
@@ -188,7 +195,7 @@ public class PlaceholderFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-                    ArrayList<Product> collectedProducts = new ArrayList<>();
+                    final ArrayList<Product> collectedProducts = new ArrayList<>();
 
                     // Parsing the response.body() object
                     Gson gson = new Gson();
@@ -223,6 +230,37 @@ public class PlaceholderFragment extends Fragment {
                     // Attach the adapter to the listView
                     CustomProductsAdapter adapterCollectedProducts = new CustomProductsAdapter(collectedProducts, getActivity().getApplicationContext());
                     listViewCollectedProducts.setAdapter(adapterCollectedProducts);
+
+                    listViewCollectedProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Product product = collectedProducts.get(position);
+
+                            String state = product.getStatus().toLowerCase();
+
+                            DialogFragment dialogFragment = new ProductDialogFragment(getContext(), product, state);
+                            ((ProductDialogFragment) dialogFragment).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    getActivity().finish();
+                                    getActivity().overridePendingTransition(0,0);
+
+                                    // Creating and initializing an Intent object
+                                    Intent toCartActivityIntent = new Intent(getContext(), CartActivity.class);
+                                    // Attach the key value pair using putExtra to this intent
+                                    int tab = 1;
+                                    toCartActivityIntent.putExtra("TAB", tab);
+                                    // Starting the activity
+                                    startActivity(toCartActivityIntent);
+
+                                    getActivity().overridePendingTransition(0,0);
+                                }
+                            });
+                            dialogFragment.show(getChildFragmentManager(), state);
+
+                        }
+                    });
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "An error occurred!", Toast.LENGTH_SHORT);
