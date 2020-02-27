@@ -76,20 +76,13 @@
 
 TO DO :
 
-COMMENT
-generate javadoc
-CLEAN
+CLEAN AND COMMENT CODE
 add class picture handling
-add request handling
-ORGANIZE
-diagramme architecture (classe / séquence / usecase)
-
-RAPPORT : state of the art + powerpoint improved + rapport écrit ? + architecture + javadoc + wireframe + MVP + database modeling
 
 
 Functionality :
 Chat
-refresh activity
+trier par date de péremption ?
 supprimer les produits dont la date de péremption est dépassée ?
 override put request in django because put requests in drf set is_active to false
 
