@@ -72,20 +72,9 @@
 	      Try to select the right tab when the OnCreate method is called on the PlaceHolderFragment, 2h00"
 "13/02 - CG : Field validators for SignIn, SignUp, Add and EditProfile activities, 3h00"
 "13/02 - BT : popup for collectactivity that enable the user to confirm delivery and cancel order, 3h00"
-"14/02 - CG + BT : presentation prep, 3h00" 
-
-TO DO :
-
-CLEAN AND COMMENT CODE
-add class picture handling
-
-
-Functionality :
-Chat
-trier par date de péremption ?
-supprimer les produits dont la date de péremption est dépassée ?
-override put request in django because put requests in drf set is_active to false
-
+"14/02 - CG + BT : presentation prep, 3h00"
+"21/02 - 28/02 - CG + BT : review of the project (what we've done so far, successes, failures, what's left to do, scheduling) & writing of the mid term report, see mid_term_project folder"
+"28/02 - 03/03 - CG + BT : panel of potential users interviewed to refine the needs, see feedback.docx"
 
 
 
