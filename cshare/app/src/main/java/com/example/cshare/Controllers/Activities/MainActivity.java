@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     // FOR DESIGN
-    @BindView(R.id.bottom_navigation)
+    //@BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNav;
    // @BindView(R.id.fragment_container)
     //Fragment fragment;
@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
         // Binding views
-        ButterKnife.bind(this);
+        //ButterKnife.bind(this);
+        // find
+        bottomNav = findViewById(R.id.bottom_navigation);
+
 
         // Call all our configuration methods from the onCreate() method of our activity
         // Configure all views
@@ -72,26 +75,36 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         int id = menuItem.getItemId();
+        Fragment selectedFragment = null;
 
         // Show fragment after user clicked on a menu item
+        // Create each fragment page and show it
         switch (id) {
             case R.id.nav_profile:
-                this.showFragment(FRAGMENT_PROFILE);
+                selectedFragment = new ProfileFragment();
                 break;
             case R.id.nav_home:
-                this.showFragment(FRAGMENT_HOME);
+                selectedFragment = new HomeFragment();
                 break;
             case R.id.nav_cart:
-                this.showFragment(FRAGMENT_CART);
+                selectedFragment = new CartFragment();
                 break;
             case R.id.nav_shared:
-                this.showFragment(FRAGMENT_SHARED);
+                selectedFragment = new SharedFragment();
                 break;
             case R.id.nav_add:
-                this.showFragment(FRAGMENT_ADD);
+                selectedFragment = new AddFragment();
                 break;
         }
+        // Generic method that will replace and show a fragment inside the HomeActivity Frame Layout
 
+        // Get our FragmentManager & FragmentTransaction (Inside an activity)
+        // Use of SupportFragmentManager instead of FragmentManager to support
+        // Android versions lower than 3.0
+        getSupportFragmentManager().beginTransaction()
+                // Add it to FrameLayout container
+                .replace(R.id.fragment_container,
+                selectedFragment).commit();
         return true;
     }
 
@@ -104,49 +117,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new HomeFragment()).commit();
-        }
-    }
-
-    // Create each fragment page and show it
-    private void showFragment(int fragmentId) {
-        // Try to find existing instance of fragment in FrameLayout container
-        // If no fragments are displayed in our FrameLayout, we create a new one.
-        // To do this, we instantiate a new Fragment object.
-        switch (fragmentId) {
-            case FRAGMENT_HOME:
-                if (this.fragmentHome == null) this.fragmentHome = new HomeFragment();
-                this.startTransactionFragment(this.fragmentHome);
-                break;
-            case FRAGMENT_PROFILE:
-                if (this.fragmentProfile == null) this.fragmentProfile = new ProfileFragment();
-                this.startTransactionFragment(this.fragmentProfile);
-                break;
-            case FRAGMENT_CART:
-                if (this.fragmentCart == null) this.fragmentCart = new CartFragment();
-                this.startTransactionFragment(this.fragmentHome);
-                break;
-            case FRAGMENT_SHARED:
-                if (this.fragmentShared == null) this.fragmentShared = new SharedFragment();
-                this.startTransactionFragment(this.fragmentHome);
-                break;
-            case FRAGMENT_ADD:
-                if (this.fragmentAdd == null) this.fragmentAdd = new AddFragment();
-                this.startTransactionFragment(this.fragmentAdd);
-                break;
-            default:
-                break;
-        }
-    }
-
-    // Generic method that will replace and show a fragment inside the HomeActivity Frame Layout
-    private void startTransactionFragment(Fragment fragment) {
-        if (!fragment.isVisible()) {
-            // Get our FragmentManager & FragmentTransaction (Inside an activity)
-            // Use of SupportFragmentManager instead of FragmentManager to support
-            // Android versions lower than 3.0
-            getSupportFragmentManager().beginTransaction()
-                    // Add it to FrameLayout container
-                    .replace(R.id.fragment_container, fragment).commit();
         }
     }
 
