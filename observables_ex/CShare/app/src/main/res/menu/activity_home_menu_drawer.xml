@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/activity_home_drawer_collect"
+            android:icon="@drawable/ic_dashboard_white_24dp"
+            android:title="@string/menu_collect_item" />
+    </group>
+
+
+    <item android:title="@string/menu_product">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/activity_home_drawer_given_products"
+                    android:icon="@drawable/ic_kitchen_black_24dp"
+                    android:title="@string/menu_product_given_item" />
+                <item
+                    android:id="@+id/activity_home_drawer_collected_products"
+                    android:icon="@drawable/ic_shopping_cart_white_24dp"
+                    android:title="@string/menu_product_collected_item" />
+            </group>
+        </menu>
+    </item>
+
+
+    <item android:title="@string/menu_setup">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/activity_home_drawer_profile"
+                    android:icon="@drawable/ic_account_box_white_24dp"
+                    android:title="@string/menu_profile_item" />
+                <item
+                    android:id="@+id/activity_home_drawer_settings"
+                    android:icon="@drawable/ic_settings_applications_white_24dp"
+                    android:title="@string/menu_settings_item" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- It represents the main root view of our NavigationDrawer since it will contain all the
+     sub-views necessary for the operation of our NavigationDrawer, such as the Toolbar, the
+     FrameLayout and the NavigationView -->
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_home_drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    tools:context=".Controllers.Activities.HomeActivity">
+
+    <!-- 1 | HomeActivity RootView -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <!-- Toolbar -->
+        <!-- Allows, among other things, the display and management of the navigation
+             button called "Hamburger". -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/activity_home_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ToolBarStyle"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Controllers.Activities.HomeActivity">
+
+            <!-- FrameLayout for our fragments -->
+            <!-- Layout that will serve as a container to display our fragments.
+                 These will be called and created from the activity (via the FragmentManager),
+                 and then displayed in a well defined FrameLayout.> -->
+            <FrameLayout
+                android:id="@+id/activity_home_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_product_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:srcCompat="@drawable/ic_add_circle_pink_24dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <!-- 2 | NavigationView -->
+    <!-- represents the menu itself, which will be displayed or hidden when you press the
+         Hamburger button of the Toolbar, and which will contain the list of all the fragments
+          accessible on our application. -->
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/activity_home_nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/activity_home_nav_header"
+        app:menu="@menu/activity_home_menu_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
