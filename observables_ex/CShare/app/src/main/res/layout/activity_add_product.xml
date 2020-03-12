@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Controllers.Activities.AddProductActivity">
+
+    <!-- FrameLayout for our fragments -->
+    <!-- Layout that will serve as a container to display our fragments.
+         These will be called and created from the activity (via the FragmentManager),
+         and then displayed in a well defined FrameLayout.> -->
+    <FrameLayout
+        android:id="@+id/activity_add_product_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

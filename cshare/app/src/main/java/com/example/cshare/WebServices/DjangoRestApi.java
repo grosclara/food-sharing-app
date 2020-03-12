@@ -2,7 +2,6 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.User;
 
 import java.util.List;
 import java.util.Map;
@@ -41,27 +40,27 @@ public interface DjangoRestApi {
     // ---------------------
 
     @GET("product/{id}/")
-    Observable<Product> getProductById(
+    Call<Product> getProductById(
             @Header("Authorization") String token,
             @Path("id") int productId
     );
 
     @GET("product/")
-    Observable<List<Product>> getAvailableProducts(
+    Call<List<Product>> getAvailableProducts(
             @Header("Authorization") String token,
             @Query("campus") String campus,
             @Query("status") String status
     );
 
     @GET("product/")
-    Observable<List<Product>> getGivenProducts(
+    Call<List<Product>> getGivenProducts(
             @Header("Authorization") String token,
             @Query("supplier") int userId
     );
 
     @Multipart
     @POST("product/")
-    Observable<Product> addProduct(
+    Call<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String productName,
@@ -85,7 +84,7 @@ public interface DjangoRestApi {
             @Path("id") int productId
     );
 
-    // ---------------------
+    /*// ---------------------
     // USER
     // ---------------------
 
@@ -126,17 +125,17 @@ public interface DjangoRestApi {
             @Header("Authorization") String token,
             @Path("id") int userId
     );
-
+*/
     // ---------------------
     // ORDER
     // ---------------------
 
     @GET("order/")
-    Observable<List<Order>> getOrdersByClient(
+    Call<Object> getOrdersByClient(
             @Header("Authorization") String token,
             @Query("client") int userId
     );
-
+/*
     @POST("order/")
     Call<Order> addOrder(
             @Header("Authorization") String token,
@@ -190,5 +189,5 @@ public interface DjangoRestApi {
     @POST("rest-auth/password/reset/")
     Call<User> resetPassword(
             @Body User user
-    );
+    );*/
 }

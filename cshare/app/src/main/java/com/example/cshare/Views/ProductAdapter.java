@@ -53,4 +53,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
         // Return the total count of items in the list
         return this.products.size();
     }
+
+    public void updateProducts(List<Product> products){
+        /**
+         * If the product list has changed, update it
+         */
+        this.products = products;
+        notifyDataSetChanged();
+    }
 }
