@@ -25,6 +25,8 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void updateDesign();
 
+    protected abstract void configureViewModel();
+
     // -----------------
     // METHODS OVERRIDE
     // -----------------
@@ -38,6 +40,7 @@ public abstract class BaseFragment extends Fragment {
         // allow our child fragments not to have to redefine the onCreateView( ) method,
         // but instead to call configureDesign()
         this.configureDesign(view);
+        this.configureViewModel();
         return (view);
     }
 

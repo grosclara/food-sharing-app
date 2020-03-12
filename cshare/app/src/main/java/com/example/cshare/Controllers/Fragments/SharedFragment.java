@@ -12,11 +12,10 @@ import android.view.ViewGroup;
 
 import com.example.cshare.R;
 
-public class SharedFragment extends Fragment {
+public class SharedFragment extends ProductListFragment {
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shared, container, false);
+    protected BaseFragment newInstance() {
+        return null;
     }
 }

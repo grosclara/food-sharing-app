@@ -32,7 +32,7 @@ public abstract class ProductListFragment extends BaseFragment {
     // protected Disposable disposable;
     // Declare list of products (Product) & Adapter
     private List<Product> products;
-    private ProductAdapter adapter;
+    protected ProductAdapter adapter;
 
     // --------------
     // BASE METHODS

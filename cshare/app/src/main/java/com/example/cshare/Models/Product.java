@@ -21,6 +21,19 @@ public class Product {
         this.supplier = supplier;
     }
 
+    public Product(int id, String name, String status, String created_at, String updated_at, String product_picture, int supplier, String category, String quantity, String expiration_date){
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.product_picture = product_picture;
+        this.category = category;
+        this.quantity = quantity;
+        this.expiration_date = expiration_date;
+        this.supplier = supplier;
+    }
+
     public Product(String status){
         this.status = status;
     }

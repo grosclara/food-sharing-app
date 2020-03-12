@@ -27,7 +27,7 @@ import retrofit2.Retrofit;
 
 public class ApiStreams {
 
-    public static Observable<List<Product>> streamFetchAvailableProductsFollowingCampus(
+    /*public static Observable<List<Product>> streamFetchAvailableProductsFollowingCampus(
             String token, String campus, String status) {
 
         // Define the URL endpoint for the HTTP operation.
@@ -45,7 +45,7 @@ public class ApiStreams {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS);
-    }
+    }*/
 
     /*public static Observable<User> streamLogin(
             User user) {
