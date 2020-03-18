@@ -18,4 +18,9 @@ public class SharedFragment extends ProductListFragment {
     protected BaseFragment newInstance() {
         return null;
     }
+
+    @Override
+    protected void configureViewModel() {
+
+    }
 }
