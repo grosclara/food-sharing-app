@@ -1,4 +1,4 @@
-package com.example.cshare.Repositories;
+package com.example.cshare.RequestManager;
 
 import android.util.Log;
 
@@ -21,19 +21,19 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
- * CartRepository is a class that sends api calls and holds cart data as attributes
+ * CartRequestManager is a class that sends api calls and holds cart data as attributes
  *
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
 
-public class CartRepository {
+public class CartRequestManager {
     private Retrofit retrofit ;
-    private DjangoRestApi djangoRestApi;
+    //private DjangoRestApi djangoRestApi;
     private MutableLiveData<List<Product>> cartProductsLiveData;
-    private static CartRepository cartRepository;
+    private static CartRequestManager cartRepository;
 
-    public CartRepository (){
+    public CartRequestManager(){
         /**
          * Constructor that fetch all the list of collected products and store it in the
          * products attributes
@@ -41,37 +41,37 @@ public class CartRepository {
 
         // Define the URL endpoint for the HTTP operation.
         retrofit = NetworkClient.getRetrofitClient();
-        djangoRestApi = retrofit.create(DjangoRestApi.class);
+        //djangoRestApi = retrofit.create(DjangoRestApi.class);
 
-        cartProductsLiveData = getCartProducts("token 11d882f91e4bf9b410287932404186a7919c4ec1", 5);
+       // cartProductsLiveData = getCartProducts("token 11d882f91e4bf9b410287932404186a7919c4ec1", 5);
     }
     public MutableLiveData<List<Product>> getProducts() {
         return cartProductsLiveData;
     }
 
-    public synchronized static CartRepository getInstance() {
+    public synchronized static CartRequestManager getInstance() {
         /**
          * Method that return the current repository object if it exists
          * else it creates new repository and returns it
          */
         if (cartRepository == null) {
             if (cartRepository == null) {
-                cartRepository = new CartRepository();
+                cartRepository = new CartRequestManager();
             }
         }
         return cartRepository;
     }
 
-
-    public MutableLiveData<List<Product>> getCartProducts(String token, int userId){
+/*
+    public MutableLiveData<List<Product>> getCartProducts(String token, int userId){*/
         /**
          * request to the API to get cart products list
          */
-
+/*
         //creation of cartProducts live data
         MutableLiveData<List<Product>> cartProducts = new MutableLiveData<>();
         // Creation of a call object that will contain the response
-        Call<Object> callAvailableProducts = djangoRestApi.getOrdersByClient(token, userId);
+        //Call<Object> callAvailableProducts = djangoRestApi.getOrdersByClient(token, userId);
         // Asynchronous request
         callAvailableProducts.enqueue(new Callback<Object>() {
 
@@ -124,4 +124,5 @@ public class CartRepository {
         });
         return cartProducts;
     }
+    */
 }

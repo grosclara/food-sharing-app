@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Repositories.CartRepository;
+import com.example.cshare.RequestManager.CartRequestManager;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class CartViewModel extends ViewModel {
          * Constructor that receives application as argument
          */
         // Retrieve collected products list from repository
-        cartMutableLiveData = CartRepository.getInstance().getProducts();
+        cartMutableLiveData = CartRequestManager.getInstance().getProducts();
     }
 
     // Getter method
