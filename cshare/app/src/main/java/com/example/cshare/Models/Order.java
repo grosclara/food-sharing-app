@@ -14,7 +14,7 @@ public class Order {
     private int client;
     // Reference to the id of the product
     private int productID;
-
+    // Reference to the product ( this is only used for requests)
     private Product product;
 
     /*
