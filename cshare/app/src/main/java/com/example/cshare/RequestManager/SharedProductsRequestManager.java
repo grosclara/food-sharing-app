@@ -51,6 +51,8 @@ public class SharedProductsRequestManager {
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
+
+        getSharedProducts(Constants.TOKEN, Constants.USERID);
     }
 
     // Getter method

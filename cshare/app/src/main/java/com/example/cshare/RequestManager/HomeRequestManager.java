@@ -46,6 +46,8 @@ public class HomeRequestManager {
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
+
+        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
     }
 
     // Getter method
