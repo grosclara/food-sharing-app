@@ -1,4 +1,4 @@
-package com.example.cshare.ViewModels;
+package com.example.cshare.RequestManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,9 +8,9 @@ import com.example.cshare.WebServices.NetworkError;
 
 import java.util.List;
 
-import static com.example.cshare.ViewModels.Status.ERROR;
-import static com.example.cshare.ViewModels.Status.LOADING;
-import static com.example.cshare.ViewModels.Status.SUCCESS;
+import static com.example.cshare.RequestManager.Status.ERROR;
+import static com.example.cshare.RequestManager.Status.LOADING;
+import static com.example.cshare.RequestManager.Status.SUCCESS;
 
 public class ResponseProductList {
 

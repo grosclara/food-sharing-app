@@ -1,4 +1,4 @@
-package com.example.cshare.ViewModels;
+package com.example.cshare.RequestManager;
 
 /**
  * Possible status types of a response provided to the UI
