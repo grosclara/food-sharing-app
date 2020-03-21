@@ -4,9 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.WebServices.DjangoRestApi;
 import com.example.cshare.WebServices.NetworkClient;
 import com.google.gson.Gson;
 
