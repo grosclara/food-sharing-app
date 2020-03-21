@@ -7,11 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
+import com.example.cshare.WebServices.NetworkError;
 import com.example.cshare.WebServices.ProductAPI;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -51,16 +54,16 @@ public class SharedProductsRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<List<Product>> getProductList(){
+    public MutableLiveData<List<Product>> getProductList() {
         return productList;
     }
 
-    public void getSharedProducts(String token, int userID){
+    public void getSharedProducts(String token, int userID) {
         /**
-         * Request to the API to fill the MutableLiveData attribute sharedProductsLiveData with the list of shared products
+         * Request to the API to fill the MutableLiveData attribute productList with the list of shared products
          */
 
-        Single<List<Product>> products;
+        Observable<List<Product>> products;
         products = productAPI.getProductsByUserID(token, userID);
         products
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -73,11 +76,38 @@ public class SharedProductsRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new SingleObserver<List<Product>>() {
+                .subscribe(new Observer<List<Product>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                        // productList.setValue((List<Product>) ResponseProductList.loading());
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        String msg = String.format("new data received %s", productList.toString());
+                        Log.d(Constants.TAG, msg);
+                        //productList.setValue((List<Product>) ResponseProductList.success(products));
+                        productList.setValue(products);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "error");
+                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "All data received");
+                    }
+                });
+
+        /*new SingleObserver<List<Product>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG,"On start subscription");
-                        //sharedProductsLiveData.setValue((List<Product>) ResponseProductList.loading());
+                        //productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
@@ -93,8 +123,8 @@ public class SharedProductsRequestManager {
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
 
                     }
-                });
-     }
+        }*/
+    }
 
     public synchronized static SharedProductsRequestManager getInstance() {
         /**
