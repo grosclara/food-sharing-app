@@ -2,26 +2,16 @@ package com.example.cshare.RequestManager;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.ResponseProductList;
-import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.example.cshare.WebServices.NetworkClient;
-import com.example.cshare.WebServices.NetworkError;
 import com.example.cshare.WebServices.ProductAPI;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -42,7 +32,7 @@ public class SharedProductsRequestManager {
     private static SharedProductsRequestManager sharedProductsRequestManager;
 
     // MutableLiveData object that contains the list of shared products
-    private MutableLiveData<List<Product>> sharedProductsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Product>> productList = new MutableLiveData<>();
 
     private Retrofit retrofit;
     // Insert API interface dependency here
@@ -61,11 +51,11 @@ public class SharedProductsRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<List<Product>> getSharedProducts(){
-        return sharedProductsLiveData;
+    public MutableLiveData<List<Product>> getProductList(){
+        return productList;
     }
 
-    private void getSharedProducts(String token, int userID){
+    public void getSharedProducts(String token, int userID){
         /**
          * Request to the API to fill the MutableLiveData attribute sharedProductsLiveData with the list of shared products
          */
@@ -87,20 +77,20 @@ public class SharedProductsRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG,"On start subscription");
-                        sharedProductsLiveData.setValue((List<Product>) ResponseProductList.loading());
+                        //sharedProductsLiveData.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
                     public void onSuccess(List<Product> products) {
                         Log.d(Constants.TAG,"All data received");
-                        // sharedProductsLiveData.setValue(products);
-                        sharedProductsLiveData.setValue((List<Product>) ResponseProductList.success(products));
+                        productList.setValue(products);
+                        //productList.setValue((List<Product>) ResponseProductList.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG,"error");
-                        sharedProductsLiveData.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
 
                     }
                 });
