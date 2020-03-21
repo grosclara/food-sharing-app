@@ -33,8 +33,4 @@ public class SharedFragment extends ProductListFragment {
 
     }
 
-    @Override
-    protected void configureViewModel() {
-
-    }
 }

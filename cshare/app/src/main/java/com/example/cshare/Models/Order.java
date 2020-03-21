@@ -15,6 +15,8 @@ public class Order {
     // Reference to the id of the product
     private int productID;
 
+    private Product product;
+
     /*
      * Constructor of the Order class.
      * Only take a few attributes in argument because the server auto adds the id
@@ -22,6 +24,11 @@ public class Order {
     public Order(int client, int productID) {
         this.client = client;
         this.productID = productID;
+    }
+
+    public Order(int id, Product product) {
+        this.id = id;
+        this.product= product;
     }
 
     public int getId() {
@@ -42,6 +49,10 @@ public class Order {
 
     public int getProductID() {
         return productID;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public void setProductID(int productID) {

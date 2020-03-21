@@ -43,8 +43,4 @@ public class HomeFragment extends ProductListFragment {
 
     }
 
-    @Override
-    protected void configureViewModel() {
-
-    }
 }
