@@ -3,27 +3,6 @@ package com.example.cshare.Utils;
 //  list all streams related to Django API
 // These will all return an Observable so that our controllers (Fragments/Activities) can subscribe to them (Subscriber) and retrieve their data stream
 
-import android.content.Context;
-import android.net.Uri;
-
-import com.example.cshare.Models.Product;
-import com.example.cshare.WebServices.DjangoRestApi;
-import com.example.cshare.WebServices.NetworkClient;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Retrofit;
-
 
 public class ApiStreams {
 
