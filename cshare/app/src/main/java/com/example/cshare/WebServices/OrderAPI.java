@@ -2,7 +2,10 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Order;
 
+import java.util.List;
+
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -15,7 +18,7 @@ import retrofit2.http.Query;
 public interface OrderAPI {
 
     @GET("order/")
-    Observable<ResponseBody> getOrdersByClient(
+    Observable<List<Order>> getOrdersByCustomerID(
             @Header("Authorization") String token,
             @Query("client") int userId
     );
