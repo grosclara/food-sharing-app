@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.DELETE;
@@ -23,7 +24,7 @@ import retrofit2.http.Query;
 public interface ProductAPI {
 
     @GET("product/{id}/")
-    Observable<Product> getProductById(
+    Single<Product> getProductById(
             @Header("Authorization") String token,
             @Path("id") int productId
     );
@@ -36,9 +37,9 @@ public interface ProductAPI {
     );
 
     @GET("product/")
-    Observable<List<Product>> getGivenProducts(
+    Single<List<Product>> getProductsByUserID(
             @Header("Authorization") String token,
-            @Query("supplier") int userId
+            @Query("supplier") int userID
     );
 
     @Multipart
