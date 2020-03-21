@@ -13,16 +13,12 @@ public class CartViewModel extends ViewModel {
     private MutableLiveData<List<Product>> cartMutableLiveData;
 
     public CartViewModel() {
-        /**
-         * Constructor that receives application as argument
-         */
-        // Retrieve collected products list from repository
-        cartMutableLiveData = CartRequestManager.getInstance().getProducts();
+        // Retrieve a list of the in-cart products from the request manager
+        cartMutableLiveData = CartRequestManager.getInstance().getProductList();
     }
 
     // Getter method
-    public MutableLiveData<List<Product>> getCartMutableLiveData() {
+    public MutableLiveData<List<Product>> getCartMutableLiveData(String token, int customerID) {
         return cartMutableLiveData;
     }
-
 }
