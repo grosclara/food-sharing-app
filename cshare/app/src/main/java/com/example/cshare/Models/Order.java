@@ -14,6 +14,8 @@ public class Order {
     private int client;
     // Reference to the id of the product
     private int productID;
+    // Reference to the product ( this is only used for requests)
+    private Product product;
 
     /*
      * Constructor of the Order class.
@@ -22,6 +24,11 @@ public class Order {
     public Order(int client, int productID) {
         this.client = client;
         this.productID = productID;
+    }
+
+    public Order(int id, Product product) {
+        this.id = id;
+        this.product= product;
     }
 
     public int getId() {
@@ -42,6 +49,10 @@ public class Order {
 
     public int getProductID() {
         return productID;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public void setProductID(int productID) {

@@ -54,6 +54,9 @@ public class CartRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
         orderAPI = retrofit.create(OrderAPI.class);
+
+        // retrieve products in cart
+        getInCartProducts(Constants.TOKEN,Constants.USERID);
     }
 
     // Getter method
@@ -127,7 +130,7 @@ public class CartRequestManager {
         return Observable
                 .fromIterable(orders)
                 .concatMap(order -> streamFetchProductFollowingId(
-                        token, order.getProductID())
+                        token, order.getProduct().getId())
                 )
                 .toList(); // Items in the list have the same order of initial list
     }

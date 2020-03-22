@@ -22,16 +22,15 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     //@BindView(R.id.fragment_product_list_item_name)
     TextView textViewProductName;
-    @BindView(R.id.product_list_item_status)
     TextView textViewStatus;
-    @BindView(R.id.product_list_item_image)
     ImageView imageViewProduct;
 
     public ProductViewHolder(@NonNull View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
 
+        textViewStatus = itemView.findViewById(R.id.product_list_item_status);
         textViewProductName = itemView.findViewById(R.id.product_list_item_name);
+        imageViewProduct = itemView.findViewById(R.id.product_list_item_image);
     }
 
     // Public method that will allow us to modify this view based on a Product object passed
