@@ -24,7 +24,7 @@ public class SharedFragment extends ProductListFragment {
         // Retrieve data for view model
         sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
        // Set data
-        sharedProductsViewModel.getSharedProductsMutableLiveData(Constants.TOKEN, Constants.USERID).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        sharedProductsViewModel.getSharedProductsMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 adapter.updateProducts(products);

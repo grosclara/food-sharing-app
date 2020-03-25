@@ -5,20 +5,37 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.HomeRequestManager;
+import com.example.cshare.Utils.Constants;
 
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+import okhttp3.MultipartBody;
 
+public class HomeViewModel extends ViewModel {
+    private HomeRequestManager homeRequestManager;
     private MutableLiveData<List<Product>> homeMutableLiveData;
 
     public HomeViewModel() {
+        // Get request manager instance
+        homeRequestManager = HomeRequestManager.getInstance();
         // Retrieve available products list from request manager
-        homeMutableLiveData = HomeRequestManager.getInstance().getProductList();
+        homeMutableLiveData = homeRequestManager.getProductList();
+
     }
 
     // Getter method
     public MutableLiveData<List<Product>> getHomeMutableLiveData() {
         return homeMutableLiveData;
+    }
+
+    // Insert product method
+    public boolean insert(MultipartBody.Part product_picture, String productName, String productCategory, String quantity, String expiration_date){
+        homeRequestManager.insert(product_picture, productName, productCategory, quantity, expiration_date);
+        return true;
+    }
+
+    // Update requestManger
+    public void updateRequestManager() {
+        homeRequestManager.getAvailableProducts(Constants.TOKEN,Constants.CAMPUS, Constants.STATUS);
     }
 }

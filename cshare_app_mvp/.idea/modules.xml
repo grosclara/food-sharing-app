@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/cshare_app_mvp-app.iml" filepath="$PROJECT_DIR$/app/cshare_app_mvp-app.iml" group="frontend/app" />
+      <module fileurl="file://$PROJECT_DIR$/cshare_app_mvp-frontend.iml" filepath="$PROJECT_DIR$/cshare_app_mvp-frontend.iml" group="frontend" />
       <module fileurl="file://$PROJECT_DIR$/frontend.iml" filepath="$PROJECT_DIR$/frontend.iml" />
     </modules>
   </component>

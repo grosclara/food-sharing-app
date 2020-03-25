@@ -21,7 +21,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ProductAPI {
+public interface  ProductAPI {
 
     @GET("product/{id}/")
     Observable<Product> getProductById(

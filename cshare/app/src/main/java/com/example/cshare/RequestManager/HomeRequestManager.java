@@ -1,6 +1,8 @@
 package com.example.cshare.RequestManager;
 
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,6 +19,10 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -121,6 +127,53 @@ public class HomeRequestManager {
 
                     }
         }*/
+    }
+
+    public void insert(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
+        /**
+         * Request to the API to post the product taken in param and update the repository
+         * @param productName
+         * @param body
+         * @param productCategory
+         * @param quantity
+         * @param expiration_date
+         */
+        Observable<Product> product;
+        product = productAPI.addProduct(Constants.TOKEN ,body, productName, productCategory, quantity, expiration_date, Constants.USERID);
+        product
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<Product>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                        // productList.setValue((List<Product>) ResponseProductList.loading());
+                    }
+
+                    @Override
+                    public void onNext(Product product) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Product received successfully");
+                    }
+                });
+
     }
 
     public synchronized static HomeRequestManager getInstance() {
