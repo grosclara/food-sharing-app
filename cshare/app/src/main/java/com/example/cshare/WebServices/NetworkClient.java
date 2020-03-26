@@ -12,8 +12,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class NetworkClient {
 
     private static Retrofit retrofit;
-    public static final String BASE_URL = "http://10.0.2.2:8000/api/v1/";
-    //public static final String BASE_URL = "http://138.195.50.22:5040/api/v1/";
+    //public static final String BASE_URL = "http://10.0.2.2:8000/api/v1/";
+    public static final String BASE_URL = "http://192.168.1.29:8000/api/v1/";
 
     public static Retrofit getRetrofitClient(){
         if (retrofit == null) {
