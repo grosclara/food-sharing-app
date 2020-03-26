@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Camera;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -106,12 +108,6 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
         return view;
     }
 
-    @Override
-    public void onPause() {
-        homeViewModel.updateRequestManager();
-        sharedProductsViewModel.updateRequestManager();
-        super.onPause();
-    }
 
     private void configureView() {
 
@@ -218,9 +214,10 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
                 // Send to API and update repositories
-                homeViewModel.insert(product_picture,productName, productCategory, quantity, expiration_date);
-                homeViewModel.updateRequestManager();
-                sharedProductsViewModel.updateRequestManager();
+                homeViewModel.postToApi(product_picture,productName, productCategory, quantity, expiration_date);
+                String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
+                Product product = new Product(productName, Constants.STATUS,imageFileName,Constants.USERID, productCategory,quantity,expiration_date);
+                homeViewModel.insert(product);
             }
             else if(!pictureSelected){
 

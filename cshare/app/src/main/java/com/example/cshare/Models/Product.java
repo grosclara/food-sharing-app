@@ -34,6 +34,16 @@ public class Product {
         this.supplier = supplier;
     }
 
+    public Product(String name, String status, String product_picture, int supplier, String category, String quantity, String expiration_date){
+        this.name = name;
+        this.status = status;
+        this.product_picture = product_picture;
+        this.category = category;
+        this.quantity = quantity;
+        this.expiration_date = expiration_date;
+        this.supplier = supplier;
+    }
+
     public Product(String status){
         this.status = status;
     }

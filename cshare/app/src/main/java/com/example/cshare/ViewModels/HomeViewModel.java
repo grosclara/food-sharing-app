@@ -29,13 +29,14 @@ public class HomeViewModel extends ViewModel {
     }
 
     // Insert product method
-    public boolean insert(MultipartBody.Part product_picture, String productName, String productCategory, String quantity, String expiration_date){
-        homeRequestManager.insert(product_picture, productName, productCategory, quantity, expiration_date);
+    public boolean postToApi(MultipartBody.Part product_picture, String productName, String productCategory, String quantity, String expiration_date){
+        homeRequestManager.postToApi(product_picture, productName, productCategory, quantity, expiration_date);
         return true;
     }
 
-    // Update requestManger
-    public void updateRequestManager() {
-        homeRequestManager.getAvailableProducts(Constants.TOKEN,Constants.CAMPUS, Constants.STATUS);
+    // Insert product in request manager
+    public void insert(Product product) {
+        homeRequestManager.insert(product);
     }
+
 }

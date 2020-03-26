@@ -61,6 +61,23 @@ public class HomeRequestManager {
         return productList;
     }
 
+    // Setter method
+    public void setProductList(MutableLiveData<List<Product>> productList) {
+        this.productList = productList;
+    }
+
+    // Insert product
+    public void insert(Product product){
+        //Create new product list
+        List productList = getProductList().getValue();
+        productList.add(0, product);
+        // Create live data of this new list
+        MutableLiveData<List<Product>> productListLiveData = getProductList();
+        productListLiveData.setValue(productList);
+        // Set live data in request manager
+        setProductList(productListLiveData);
+    }
+
     public void getAvailableProducts(String token, String campus, String status) {
         /**
          * Request to the API to fill the MutableLiveData attribute productList with the list of available products
@@ -129,7 +146,7 @@ public class HomeRequestManager {
         }*/
     }
 
-    public void insert(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
+    public void postToApi(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productName
