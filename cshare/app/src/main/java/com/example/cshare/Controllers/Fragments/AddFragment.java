@@ -218,6 +218,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
                 String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
                 Product product = new Product(productName, Constants.STATUS,imageFileName,Constants.USERID, productCategory,quantity,expiration_date);
                 homeViewModel.insert(product);
+                sharedProductsViewModel.insert(product);
             }
             else if(!pictureSelected){
 

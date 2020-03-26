@@ -55,9 +55,25 @@ public class SharedProductsRequestManager {
         getSharedProducts(Constants.TOKEN, Constants.USERID);
     }
 
+    public void setProductList(MutableLiveData<List<Product>> productList) {
+        this.productList = productList;
+    }
+
     // Getter method
     public MutableLiveData<List<Product>> getProductList() {
         return productList;
+    }
+
+    // Insert product
+    public void insert(Product product){
+        //Create new product list
+        List productList = getProductList().getValue();
+        productList.add(0, product);
+        // Create live data of this new list
+        MutableLiveData<List<Product>> productListLiveData = getProductList();
+        productListLiveData.setValue(productList);
+        // Set live data in request manager
+        setProductList(productListLiveData);
     }
 
     public void getSharedProducts(String token, int userID) {
@@ -140,4 +156,5 @@ public class SharedProductsRequestManager {
         }
         return sharedProductsRequestManager;
     }
+
 }

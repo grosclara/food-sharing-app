@@ -25,8 +25,8 @@ public class SharedProductsViewModel extends ViewModel {
         return sharedProductsMutableLiveData;
     }
 
-    // Update repo
-    public  void updateRequestManager() {
-        sharedProductsRequestManager.getSharedProducts(Constants.TOKEN, Constants.USERID);
+    // Insert product in request manager
+    public void insert(Product product) {
+        sharedProductsRequestManager.insert(product);
     }
 }
