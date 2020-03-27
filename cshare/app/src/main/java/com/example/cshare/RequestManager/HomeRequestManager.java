@@ -1,6 +1,8 @@
 package com.example.cshare.RequestManager;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -44,7 +46,6 @@ public class HomeRequestManager {
          * Constructor that fetch all the list of available products and store it in the
          * products attributes
          */
-
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
@@ -186,6 +187,7 @@ public class HomeRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
+
                         Log.d(Constants.TAG, "error");
                     }
 

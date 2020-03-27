@@ -3,8 +3,11 @@ package com.example.cshare.Controllers.Fragments;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.RequestManager.HomeRequestManager;
+import com.example.cshare.RequestManager.SharedProductsRequestManager;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
 
@@ -14,10 +17,6 @@ public class SharedFragment extends ProductListFragment {
 
     private SharedProductsViewModel sharedProductsViewModel;
 
-    @Override
-    protected void configureSwipeRefreshLayout() {
-
-    }
 
     @Override
     protected BaseFragment newInstance() {
@@ -28,7 +27,7 @@ public class SharedFragment extends ProductListFragment {
     protected void configureViewModel() {
         // Retrieve data for view model
         sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
-       // Set data
+        // Set data
         sharedProductsViewModel.getSharedProductsMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
@@ -38,4 +37,18 @@ public class SharedFragment extends ProductListFragment {
 
     }
 
+    @Override
+    protected void configureSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                SharedProductsRequestManager sharedProductsRequestManager = sharedProductsViewModel.getSharedProductsRequestManager();
+                sharedProductsRequestManager.updateRequestManager();
+                // Stop refreshing and clear actual list of users
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+    }
 }

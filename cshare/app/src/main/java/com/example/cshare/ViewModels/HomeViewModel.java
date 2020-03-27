@@ -1,5 +1,8 @@
 package com.example.cshare.ViewModels;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,6 +20,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Product>> homeMutableLiveData;
 
     public HomeViewModel() {
+
         // Get request manager instance
         homeRequestManager = HomeRequestManager.getInstance();
         // Retrieve available products list from request manager
