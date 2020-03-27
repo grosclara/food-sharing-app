@@ -61,5 +61,4 @@ dependencies {
     // For form validation
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-
 }

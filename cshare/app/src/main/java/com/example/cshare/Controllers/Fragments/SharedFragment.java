@@ -15,6 +15,11 @@ public class SharedFragment extends ProductListFragment {
     private SharedProductsViewModel sharedProductsViewModel;
 
     @Override
+    protected void configureSwipeRefreshLayout() {
+
+    }
+
+    @Override
     protected BaseFragment newInstance() {
         return new SharedFragment();
     }

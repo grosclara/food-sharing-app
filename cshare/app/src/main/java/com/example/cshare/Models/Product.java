@@ -13,27 +13,7 @@ public class Product {
     private String quantity;
     private String expiration_date;
 
-    public Product(String name, String category, String quantity, String expiration_date, int supplier){
-        this.name = name;
-        this.category = category;
-        this.quantity = quantity;
-        this.expiration_date = expiration_date;
-        this.supplier = supplier;
-    }
-
-    public Product(int id, String name, String status, String created_at, String updated_at, String product_picture, int supplier, String category, String quantity, String expiration_date){
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.product_picture = product_picture;
-        this.category = category;
-        this.quantity = quantity;
-        this.expiration_date = expiration_date;
-        this.supplier = supplier;
-    }
-
+    // Constructor to add a new product to the VM in the add fragment
     public Product(String name, String status, String product_picture, int supplier, String category, String quantity, String expiration_date){
         this.name = name;
         this.status = status;

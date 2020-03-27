@@ -20,7 +20,11 @@ import com.example.cshare.Views.ProductAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ProductListFragment extends BaseFragment {
+public abstract class
+ProductListFragment extends BaseFragment {
+
+    // Force the developer to implement them in future children's classes.
+    protected abstract  void configureSwipeRefreshLayout();
 
     // FOR DESIGN
     // Declare RecyclerView
@@ -78,19 +82,6 @@ public abstract class ProductListFragment extends BaseFragment {
         this.recyclerView.setAdapter(this.adapter);
         // Set layout manager to position the items
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
-    // Configure the SwipeRefreshLayout
-    // We create a method that will allow us to configure our SwipeRefreshLayout and especially
-    // to add a listener to it. The latter will be launched when the user performs a
-    // "Pull To Refresh" and triggers the onRefresh() method which will launch our usual stream.
-    private void configureSwipeRefreshLayout() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Toast.makeText(getContext(), "Refresh", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 

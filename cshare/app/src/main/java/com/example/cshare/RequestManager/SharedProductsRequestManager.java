@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
-import com.example.cshare.WebServices.NetworkError;
 import com.example.cshare.WebServices.ProductAPI;
 
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;

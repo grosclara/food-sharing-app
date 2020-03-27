@@ -15,6 +15,11 @@ public class CartFragment extends ProductListFragment {
     private CartViewModel cartViewModel;
 
     @Override
+    protected void configureSwipeRefreshLayout() {
+
+    }
+
+    @Override
     protected BaseFragment newInstance() {
         return new CartFragment();
     }

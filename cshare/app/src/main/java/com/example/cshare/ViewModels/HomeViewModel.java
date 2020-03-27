@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.RequestManager.HomeRequestManager;
 import com.example.cshare.Utils.Constants;
 
@@ -23,14 +24,19 @@ public class HomeViewModel extends ViewModel {
 
     }
 
+    // Get request manager
+    public HomeRequestManager getHomeRequestManager() {
+        return homeRequestManager;
+    }
+
     // Getter method
     public MutableLiveData<List<Product>> getHomeMutableLiveData() {
         return homeMutableLiveData;
     }
 
     // Insert product method
-    public boolean postToApi(MultipartBody.Part product_picture, String productName, String productCategory, String quantity, String expiration_date){
-        homeRequestManager.postToApi(product_picture, productName, productCategory, quantity, expiration_date);
+    public boolean addProduct(ProductToPost productToPost){
+        homeRequestManager.addProduct(productToPost);
         return true;
     }
 

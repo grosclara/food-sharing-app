@@ -76,5 +76,12 @@
 "21/02 - 28/02 - CG + BT : review of the project (what we've done so far, successes, failures, what's left to do, scheduling) & writing of the mid term report, see mid_term_project folder"
 "28/02 - 02/03 - CG + BT : panel of potential users interviewed to refine the needs, see feedback.docx"
 "03/03 - CG + BT : pair programming to implement the app architecture structure, 3h00"
-"05/05 - CG : introduction to rxjava, 2h00"
+"05/03 - CG : introduction to rxjava, 2h00"
+"12/03 - CG + BT : pair programming to implement the app architecture structure & review of the charte projet (API), 3h00"
+"19/03 - CG + BT : interview with the API leader to provide an update on the status of our project: our difficulties and potential risks, review of our planning, 1h00"
+"21/03 - CG : creation of the viewmodels, request managers and of the rxjava stream to display the product lists in the cart, shared and home activity, 4h00"
+"22/03 - BT : review of code and test of clara's work on the shared, cart and home activities, merge branches, 1h00"
+"24/03 - BT : Creation of the add fragment, tests and merge request, 2h00"
+"26/03 - CG + BT : Meeting to assign functionalities to implement, 45mn"
+"27/03 - CG : Review of Babacar's work on Add Activity, merge branche, 2h00"
 

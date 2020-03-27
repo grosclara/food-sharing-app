@@ -32,10 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
+import com.example.cshare.WebServices.NetworkClient;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -51,21 +53,24 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class AddFragment extends Fragment implements View.OnClickListener, Validator.ValidationListener {
+public class AddFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
+
     // Form validation
     protected Validator validator;
     private boolean validated;
 
     private TextView textViewPictureError;
+
     @NotEmpty
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
-    private Spinner spinnerProductCategories;
     @NotEmpty
     @Future
     private EditText editTextExpirationDate;
     @NotEmpty
     private EditText editTextQuantity;
+
+    private Spinner spinnerProductCategories;
 
     private Button buttonPhoto;
     private Button buttonSubmit;
@@ -75,9 +80,6 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
     private String productCategory;
     private String expiration_date;
     private String quantity;
-
-    // Date picker
-    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     // Path to the location of the picture taken by the phone
     private String imageFilePath;
@@ -91,84 +93,61 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
     HomeViewModel homeViewModel;
     SharedProductsViewModel sharedProductsViewModel;
 
-    // View
-    View view;
-
-    // camera
+    // Camera
     Camera camera;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_add, container, false);
-        // Get ViewModels
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
+    protected BaseFragment newInstance() { return new AddFragment(); }
 
-        this.configureView();
-        return view;
-    }
+    @Override
+    protected int getFragmentLayout() { return R.layout.fragment_add; }
 
+    @Override
+    protected void configureDesign(View view) {
 
-    private void configureView() {
-
-        // Views
+        // Bind views
         editTextProductName = view.findViewById(R.id.editTextProductName);
         editTextQuantity = view.findViewById(R.id.editTextQuantity);
         editTextExpirationDate = view.findViewById(R.id.editTextExpirationDate);
         textViewPictureError = view.findViewById(R.id.textViewPictureError);
-
-        // Buttons
         buttonPhoto = view.findViewById(R.id.buttonPhoto);
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
+        spinnerProductCategories = view.findViewById(R.id.spinnerProductCategories);
+        imageViewPreviewProduct = view.findViewById(R.id.imageViewPreviewProduct);
+
+        // Validator
+        configureValidator();
+
+        // Click listeners
         buttonPhoto.setOnClickListener(this);
         buttonSubmit.setOnClickListener(this);
+        editTextExpirationDate.setOnClickListener(this);
 
         // Product spinner
         configureProductSpinner();
 
+    }
 
-        editTextExpirationDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    protected void updateDesign() {
 
-                // Get Current Date
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
+    }
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        new DatePickerDialog.OnDateSetListener() {
+    @Override
+    protected void configureViewModel() {
+        // Retrieve data from view model
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
+    }
 
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                expiration_date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                editTextExpirationDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                editTextExpirationDate.setBackgroundColor(Color.WHITE);
-
-                            }
-                        },
-                        year, month, day);
-                datePickerDialog.show();
-
-                datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                datePickerDialog.show();
-            }
-        });
-
+    private void configureValidator(){
         // Instantiate a new Validator
         validator = new Validator((this));
         validator.setValidationListener(this);
-        
     }
 
     private void configureProductSpinner() {
         productCategoriesArray = getResources().getStringArray(R.array.product_categories_array);
-        spinnerProductCategories = view.findViewById(R.id.spinnerProductCategories);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, productCategoriesArray);
         // Apply the adapter to the spinner
@@ -194,7 +173,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
             camera = new Camera(this,pictureSelected);
             camera.openCameraIntent();
 
-        } else if(v == buttonSubmit) {
+        } else if (v == buttonSubmit) {
 
             // Validate the field
             validator.validate();
@@ -203,30 +182,60 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
 
                 // Retrieve the name of the product typed in the editText field
                 productName = String.valueOf(editTextProductName.getText());
-
                 // Retrieve the quantity of the product typed in the editText field
                 quantity = String.valueOf(editTextQuantity.getText());
 
                 // Create a file object using file path
                 File file = new File(imageFilePath);
-
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileUri)), file);
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
-                // Send to API and update repositories
-                homeViewModel.postToApi(product_picture,productName, productCategory, quantity, expiration_date);
-                String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
-                Product product = new Product(productName, Constants.STATUS,imageFileName,Constants.USERID, productCategory,quantity,expiration_date);
+                String imageFileName = NetworkClient.BASE_URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
+                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
+
+
+                // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
+                ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
+                homeViewModel.addProduct(productToPost);
+
+                // Format the product to update view models
+                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
                 homeViewModel.insert(product);
                 sharedProductsViewModel.insert(product);
 
             }
-            else if(!pictureSelected){
 
+            else if(!pictureSelected){
                 Toast.makeText(getContext(), "You must choose a product picture",Toast.LENGTH_SHORT).show();
                 textViewPictureError.setVisibility(View.VISIBLE);
             }
+
+        } else if (v == editTextExpirationDate){
+            // Get Current Date
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            expiration_date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                            editTextExpirationDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            editTextExpirationDate.setBackgroundColor(Color.WHITE);
+
+                        }
+                    },
+                    year, month, day);
+            datePickerDialog.show();
+
+            datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            datePickerDialog.show();
         }
 
     }
@@ -255,7 +264,6 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
                 fileUri = camera.fileUri;
 
                 // Load with the imageFilePath we obtained before opening the cameraIntent
-                imageViewPreviewProduct = view.findViewById(R.id.imageViewPreviewProduct);
                 Bitmap imageBitmap = BitmapFactory.decodeFile(imageFilePath);
                 imageViewPreviewProduct.setImageBitmap(imageBitmap);
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -292,4 +300,5 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
             }
         }
     }
+
 }
