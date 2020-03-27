@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.ProductAPI;
@@ -143,17 +144,21 @@ public class HomeRequestManager {
         }*/
     }
 
-    public void addProduct(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
+    public void addProduct(ProductToPost productToPost){
         /**
          * Request to the API to post the product taken in param and update the repository
-         * @param productName
-         * @param body
-         * @param productCategory
-         * @param quantity
-         * @param expiration_date
+         * @param productToPost
          */
-        Observable<Product> product;
-        product = productAPI.addProduct(Constants.TOKEN ,body, productName, productCategory, quantity, expiration_date, Constants.USERID);
+
+        Observable<ProductToPost> product;
+        product = productAPI.addProduct(
+                Constants.TOKEN,
+                productToPost.getProductPicture(),
+                productToPost.getProductName(),
+                productToPost.getProductCategory(),
+                productToPost.getQuantity(),
+                productToPost.getExpirationDate(),
+                productToPost.getSupplierID());
         product
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -165,14 +170,14 @@ public class HomeRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
+                .subscribe(new Observer<ProductToPost>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "on start subscription");
                     }
 
                     @Override
-                    public void onNext(Product product) {
+                    public void onNext(ProductToPost product) {
                         Log.d(Constants.TAG, "Product added successfully");
                     }
 

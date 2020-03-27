@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
@@ -191,8 +192,10 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 String imageFileName = NetworkClient.BASE_URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
 
+
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
-                homeViewModel.addProduct(product_picture, productName, productCategory, quantity, expiration_date);
+                ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
+                homeViewModel.addProduct(productToPost);
 
                 // Format the product to update view models
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);

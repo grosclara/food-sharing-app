@@ -13,8 +13,6 @@ public class Product {
     private String quantity;
     private String expiration_date;
 
-    // Constructor of a created product that fit the post HTTP required format
-
     // Constructor to add a new product to the VM in the add fragment
     public Product(String name, String status, String product_picture, int supplier, String category, String quantity, String expiration_date){
         this.name = name;
