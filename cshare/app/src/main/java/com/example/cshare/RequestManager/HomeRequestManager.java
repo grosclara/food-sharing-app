@@ -68,7 +68,7 @@ public class HomeRequestManager {
 
     // Insert product
     public void insert(Product product){
-        //Create new product list
+        // New product list to which we add the new product
         List productList = getProductList().getValue();
         productList.add(0, product);
         // Create live data of this new list
@@ -172,12 +172,11 @@ public class HomeRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "on start subscription");
-                        // productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(Product product) {
-
+                        Log.d(Constants.TAG, "Product added successfully");
                     }
 
                     @Override
@@ -187,7 +186,7 @@ public class HomeRequestManager {
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Product received successfully");
+                        Log.d(Constants.TAG, "Request completed : Product added successfully");
                     }
                 });
 
