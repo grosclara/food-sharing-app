@@ -187,13 +187,13 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileUri)), file);
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", file.getName(), requestFile);
+                String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
+                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
 
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
                 homeViewModel.addProduct(product_picture, productName, productCategory, quantity, expiration_date);
 
                 // Format the product to update view models
-                String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
                 homeViewModel.insert(product);
                 sharedProductsViewModel.insert(product);
