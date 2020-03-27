@@ -9,17 +9,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
@@ -194,7 +187,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
 
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
-                ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
+                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
                 homeViewModel.addProduct(productToPost);
 
                 // Format the product to update view models

@@ -1,13 +1,11 @@
 package com.example.cshare.RequestManager;
 
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.ProductAPI;
@@ -20,7 +18,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MultipartBody;
 import retrofit2.Retrofit;
 
 /**
@@ -144,13 +141,13 @@ public class HomeRequestManager {
         }*/
     }
 
-    public void addProduct(ProductToPost productToPost){
+    public void addProduct(ProductForm productToPost){
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
          */
 
-        Observable<ProductToPost> product;
+        Observable<ProductForm> product;
         product = productAPI.addProduct(
                 Constants.TOKEN,
                 productToPost.getProductPicture(),
@@ -170,14 +167,14 @@ public class HomeRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ProductToPost>() {
+                .subscribe(new Observer<ProductForm>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "on start subscription");
                     }
 
                     @Override
-                    public void onNext(ProductToPost product) {
+                    public void onNext(ProductForm product) {
                         Log.d(Constants.TAG, "Product added successfully");
                     }
 
