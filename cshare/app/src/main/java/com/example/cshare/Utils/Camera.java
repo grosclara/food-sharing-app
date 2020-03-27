@@ -21,6 +21,7 @@ public class Camera {
 
     // Path to the location of the picture taken by the phone
     public String imageFilePath;
+    public String imageFileName;
     public Uri fileUri;
     // Ensures the intent to open the camera can be performed
     public static final int REQUEST_CAPTURE_IMAGE = 1;
@@ -42,7 +43,7 @@ public class Camera {
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
+        imageFileName = "IMG_" + timeStamp + "_";
         File storageDir =
                 fragment.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(

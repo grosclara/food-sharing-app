@@ -1,6 +1,7 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ProductAPI {
+public interface  ProductAPI {
 
     @GET("product/{id}/")
     Observable<Product> getProductById(
@@ -44,7 +45,7 @@ public interface ProductAPI {
 
     @Multipart
     @POST("product/")
-    Observable<Product> addProduct(
+    Observable<ProductToPost> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String productName,

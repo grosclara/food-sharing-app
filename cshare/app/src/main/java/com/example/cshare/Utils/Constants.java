@@ -8,8 +8,10 @@ public class Constants {
 
     // Temp variables
     public static final String TOKEN = "token e6d66444cb3970f8f85bc7c8eb0040b01c6de463";
-    public static final int USERID = 3;
+    public static final int USERID = 2;
     public static final String CAMPUS = "Gif";
     public static final String STATUS = "Available";
+
+    public static final String AVAILABLE = "Available";
 
 }

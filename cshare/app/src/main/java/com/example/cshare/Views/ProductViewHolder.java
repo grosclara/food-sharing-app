@@ -1,6 +1,7 @@
 package com.example.cshare.Views;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +53,10 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
                 break;
             default:
         }
+
+
+        Log.i("img", product.getProduct_picture() );
+
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 }

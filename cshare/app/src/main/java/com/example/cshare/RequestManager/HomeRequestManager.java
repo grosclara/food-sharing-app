@@ -1,10 +1,13 @@
 package com.example.cshare.RequestManager;
 
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.ProductAPI;
@@ -17,6 +20,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
 import retrofit2.Retrofit;
 
 /**
@@ -53,6 +57,23 @@ public class HomeRequestManager {
     // Getter method
     public MutableLiveData<List<Product>> getProductList() {
         return productList;
+    }
+
+    // Setter method
+    public void setProductList(MutableLiveData<List<Product>> productList) {
+        this.productList = productList;
+    }
+
+    // Insert product
+    public void insert(Product product){
+        // New product list to which we add the new product
+        List productList = getProductList().getValue();
+        productList.add(0, product);
+        // Create live data of this new list
+        MutableLiveData<List<Product>> productListLiveData = getProductList();
+        productListLiveData.setValue(productList);
+        // Set live data in request manager
+        setProductList(productListLiveData);
     }
 
     public void getAvailableProducts(String token, String campus, String status) {
@@ -121,6 +142,56 @@ public class HomeRequestManager {
 
                     }
         }*/
+    }
+
+    public void addProduct(ProductToPost productToPost){
+        /**
+         * Request to the API to post the product taken in param and update the repository
+         * @param productToPost
+         */
+
+        Observable<ProductToPost> product;
+        product = productAPI.addProduct(
+                Constants.TOKEN,
+                productToPost.getProductPicture(),
+                productToPost.getProductName(),
+                productToPost.getProductCategory(),
+                productToPost.getQuantity(),
+                productToPost.getExpirationDate(),
+                productToPost.getSupplierID());
+        product
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<ProductToPost>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(ProductToPost product) {
+                        Log.d(Constants.TAG, "Product added successfully");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Request completed : Product added successfully");
+                    }
+                });
+
     }
 
     public synchronized static HomeRequestManager getInstance() {

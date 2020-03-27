@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
-import com.example.cshare.WebServices.NetworkError;
 import com.example.cshare.WebServices.ProductAPI;
 
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -55,9 +52,25 @@ public class SharedProductsRequestManager {
         getSharedProducts(Constants.TOKEN, Constants.USERID);
     }
 
+    public void setProductList(MutableLiveData<List<Product>> productList) {
+        this.productList = productList;
+    }
+
     // Getter method
     public MutableLiveData<List<Product>> getProductList() {
         return productList;
+    }
+
+    // Insert product
+    public void insert(Product product){
+        //Create new product list
+        List productList = getProductList().getValue();
+        productList.add(0, product);
+        // Create live data of this new list
+        MutableLiveData<List<Product>> productListLiveData = getProductList();
+        productListLiveData.setValue(productList);
+        // Set live data in request manager
+        setProductList(productListLiveData);
     }
 
     public void getSharedProducts(String token, int userID) {
@@ -140,4 +153,5 @@ public class SharedProductsRequestManager {
         }
         return sharedProductsRequestManager;
     }
+
 }
