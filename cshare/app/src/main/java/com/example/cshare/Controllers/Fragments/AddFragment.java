@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -219,6 +220,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, Valid
                 Product product = new Product(productName, Constants.STATUS,imageFileName,Constants.USERID, productCategory,quantity,expiration_date);
                 homeViewModel.insert(product);
                 sharedProductsViewModel.insert(product);
+
             }
             else if(!pictureSelected){
 

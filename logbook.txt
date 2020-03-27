@@ -77,3 +77,4 @@
 "28/02 - 02/03 - CG + BT : panel of potential users interviewed to refine the needs, see feedback.docx"
 "03/03 - CG + BT : pair programming to implement the app architecture structure, 3h00"
 "05/05 - CG : introduction to rxjava, 2h00"
+

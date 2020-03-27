@@ -1,8 +1,6 @@
 package com.example.cshare.RequestManager;
 
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -20,9 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MultipartBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -172,7 +167,6 @@ public class HomeRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "on start subscription");
-                        // productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
@@ -188,6 +182,7 @@ public class HomeRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Product received successfully");
+
                     }
                 });
 
