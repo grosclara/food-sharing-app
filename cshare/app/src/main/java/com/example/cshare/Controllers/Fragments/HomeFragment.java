@@ -1,20 +1,10 @@
 package com.example.cshare.Controllers.Fragments;
 
-
-import android.os.Bundle;
-
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.cshare.Models.Product;
-import com.example.cshare.R;
-import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
 
 import java.util.List;

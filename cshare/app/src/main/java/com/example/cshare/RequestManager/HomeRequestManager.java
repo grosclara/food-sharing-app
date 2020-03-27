@@ -146,7 +146,7 @@ public class HomeRequestManager {
         }*/
     }
 
-    public void postToApi(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
+    public void addProduct(MultipartBody.Part body, String productName, String productCategory, String quantity, String expiration_date){
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productName
