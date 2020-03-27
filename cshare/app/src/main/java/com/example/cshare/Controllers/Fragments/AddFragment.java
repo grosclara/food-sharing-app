@@ -35,6 +35,7 @@ import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
+import com.example.cshare.WebServices.NetworkClient;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -187,7 +188,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileUri)), file);
                 // MultipartBody.Part is used to send also the actual file name
-                String imageFileName = Constants.URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
+                String imageFileName = NetworkClient.BASE_URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
 
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
