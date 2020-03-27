@@ -83,8 +83,7 @@
 "22/03 - BT : review of code and test of clara's work on the shared, cart and home activities, merge branches, 1h00"
 "24/03 - BT : Creation of the add fragment, tests and merge request, 2h00"
 "26/03 - CG + BT : Meeting to assign functionalities to implement, 45mn"
-"27/03 - CG : Review of Babacar's work on Add Activity, merge branche, 2h00"
-
+"27/03 - CG : Review of Babacar's work on Add Activity, merge branche, initialization of the login activity, 4h00"
 
 
 
