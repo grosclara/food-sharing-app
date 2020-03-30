@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.CartViewModel;
+import com.example.cshare.viewModels.CartViewModel;
 
 import java.util.List;
 

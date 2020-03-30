@@ -1,4 +1,4 @@
-package com.example.cshare.ViewModels;
+package com.example.cshare.viewModels;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
