@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.SharedProductsRequestManager;
-import com.example.cshare.Utils.Constants;
 
 import java.util.List;
 
