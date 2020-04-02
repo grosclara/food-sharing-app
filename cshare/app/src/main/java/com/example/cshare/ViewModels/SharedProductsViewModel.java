@@ -25,6 +25,10 @@ public class SharedProductsViewModel extends ViewModel {
         return sharedProductsMutableLiveData;
     }
 
+    public SharedProductsRequestManager getSharedProductsRequestManager() {
+        return sharedProductsRequestManager;
+    }
+
     // Insert product in request manager
     public void insert(Product product) {
         sharedProductsRequestManager.insert(product);

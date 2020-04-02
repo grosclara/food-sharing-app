@@ -61,6 +61,11 @@ public class SharedProductsRequestManager {
         return productList;
     }
 
+    // Update request manager
+    public void updateRequestManager(){
+        getSharedProducts(Constants.TOKEN, Constants.USERID);
+    }
+
     // Insert product
     public void insert(Product product){
         //Create new product list
