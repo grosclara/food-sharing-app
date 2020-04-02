@@ -84,4 +84,5 @@
 "24/03 - BT : Creation of the add fragment, tests and merge request, 2h00"
 "26/03 - CG + BT : Meeting to assign functionalities to implement, 45mn"
 "27/03 - CG : Review of Babacar's work on Add Activity, merge branch, initialization of the login activity, 4h00"
+"29/03 - BT : Implementation of the swipe up refresh functionality, 1h00"
 
