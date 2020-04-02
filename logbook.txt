@@ -85,4 +85,6 @@
 "26/03 - CG + BT : Meeting to assign functionalities to implement, 45mn"
 "27/03 - CG : Review of Babacar's work on Add Activity, merge branch, initialization of the login activity, 4h00"
 "29/03 - BT : Implementation of the swipe up refresh functionality, 1h00"
+"31/03 - BT : Implementation of the ProfileFragment along with its viewModel and requestManager, 1h00"
+"02/04 - CG : Review of Babacar's work on ProfileFragment and refresh functionality, 1h30"
 
