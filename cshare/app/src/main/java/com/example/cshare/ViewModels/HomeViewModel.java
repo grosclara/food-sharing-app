@@ -49,4 +49,7 @@ public class HomeViewModel extends ViewModel {
         homeRequestManager.insert(product);
     }
 
+    // Update products in request manager
+    public void update() {homeRequestManager.updateRequestManager();}
+
 }
