@@ -1,30 +1,12 @@
 package com.example.cshare.Controllers.Fragments;
 
-
-import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.cshare.Models.User;
 import com.example.cshare.R;
-import com.example.cshare.ViewModels.ProfileViewModel;
-import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment {
-
-    //ViewModel
-    ProfileViewModel profileViewModel;
-
-    View view;
+public class ProfileFragment extends BaseFragment {
 
     //Views
     private TextView textViewFirstName;
@@ -35,12 +17,14 @@ public class ProfileFragment extends Fragment {
     private ImageView imageViewProfilePicture;
 
 
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //View
-        view =  inflater.inflate(R.layout.fragment_profile, container, false);
+    protected BaseFragment newInstance() { return new ProfileFragment(); }
+
+    @Override
+    protected int getFragmentLayout() { return R.layout.fragment_profile; }
+
+    @Override
+    protected void configureDesign(View view) {
 
         textViewFirstName = view.findViewById(R.id.textViewFirstName);
         textViewLastName = view.findViewById(R.id.textViewLastName);
@@ -49,13 +33,17 @@ public class ProfileFragment extends Fragment {
         textViewRoomNumber = view.findViewById(R.id.textViewRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
 
-
-        configureViewModel();
-        return view;
     }
 
+    @Override
+    protected void updateDesign() {
 
+    }
+
+    @Override
     protected void configureViewModel() {
+        /*
+
         // Retrieve data from view model
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
@@ -70,5 +58,7 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+         */
     }
 }
