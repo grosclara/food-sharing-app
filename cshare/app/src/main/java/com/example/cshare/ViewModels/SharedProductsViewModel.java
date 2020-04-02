@@ -33,4 +33,8 @@ public class SharedProductsViewModel extends ViewModel {
     public void insert(Product product) {
         sharedProductsRequestManager.insert(product);
     }
+
+    // Update products in request manager
+    public void update() {sharedProductsRequestManager.updateRequestManager();}
+
 }

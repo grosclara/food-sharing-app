@@ -45,14 +45,12 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HomeRequestManager homeRequestManager = homeViewModel.getHomeRequestManager();
-                homeRequestManager.updateRequestManager();
+                homeViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
             }
         });
     }
-
 
 }
