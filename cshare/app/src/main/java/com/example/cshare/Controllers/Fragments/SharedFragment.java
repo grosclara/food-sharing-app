@@ -41,8 +41,7 @@ public class SharedFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                SharedProductsRequestManager sharedProductsRequestManager = sharedProductsViewModel.getSharedProductsRequestManager();
-                sharedProductsRequestManager.updateRequestManager();
+                sharedProductsViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
