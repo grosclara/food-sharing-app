@@ -23,9 +23,11 @@ public class CartViewModel extends ViewModel {
         return cartRequestManager;
     }
 
-
     // Getter method
     public MutableLiveData<List<Product>> getCartMutableLiveData(String token, int customerID) {
         return cartMutableLiveData;
     }
+
+    // Update products in request manager
+    public void update() {cartRequestManager.updateRequestManager();}
 }

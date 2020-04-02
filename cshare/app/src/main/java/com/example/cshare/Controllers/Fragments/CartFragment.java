@@ -41,8 +41,7 @@ public class CartFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CartRequestManager cartRequestManager = cartViewModel.getCartRequestManager();
-                cartRequestManager.updateRequestManager();
+                cartViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
