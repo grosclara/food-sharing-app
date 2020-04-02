@@ -156,4 +156,9 @@ public class CartRequestManager {
         }
         return cartRequestManager;
     }
+
+    public void updateRequestManager() {
+        getInCartProducts(Constants.TOKEN, Constants.USERID);
+
+    }
 }

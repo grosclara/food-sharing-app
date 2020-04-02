@@ -1,6 +1,6 @@
 package com.example.cshare.RequestManager;
 
-import android.content.Intent;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,11 +46,15 @@ public class HomeRequestManager {
          * Constructor that fetch all the list of available products and store it in the
          * products attributes
          */
-
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
 
+        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
+    }
+
+    // Update request manager
+    public void updateRequestManager(){
         getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
     }
 
@@ -183,12 +187,13 @@ public class HomeRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
+
                         Log.d(Constants.TAG, "error");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Request completed : Product added successfully");
+                        Log.d(Constants.TAG, "Product received successfully");
                     }
                 });
 

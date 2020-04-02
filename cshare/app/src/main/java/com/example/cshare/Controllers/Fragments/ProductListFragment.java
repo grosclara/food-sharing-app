@@ -20,7 +20,8 @@ import com.example.cshare.Views.ProductAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ProductListFragment extends BaseFragment {
+public abstract class
+ProductListFragment extends BaseFragment {
 
     // FOR DESIGN
     // Declare RecyclerView
@@ -68,7 +69,7 @@ public abstract class ProductListFragment extends BaseFragment {
     // -----------------
 
     // Configure RecyclerView, Adapter, LayoutManager & glue it together
-    private void configureRecyclerView() {
+    protected void configureRecyclerView() {
         //recyclerView = findViewById
         // Reset list
         this.products = new ArrayList<Product>();
@@ -80,31 +81,7 @@ public abstract class ProductListFragment extends BaseFragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    // Configure the SwipeRefreshLayout
-    // We create a method that will allow us to configure our SwipeRefreshLayout and especially
-    // to add a listener to it. The latter will be launched when the user performs a
-    // "Pull To Refresh" and triggers the onRefresh() method which will launch our usual stream.
-    private void configureSwipeRefreshLayout() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Toast.makeText(getContext(), "Refresh", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    // ------------------
-    //  UPDATE UI
-    // ------------------
-
-    // Stop the SwipeRefreshLayout animation once our network request has ended correctly
-    // ( setRefreshing(false) )
-   protected void setProducts(List<Product> newProducts) {
-       // Stop refreshing and clear actual list of users
-       swipeRefreshLayout.setRefreshing(false);
-       this.products = newProducts;
-       adapter.notifyDataSetChanged();
-   }
+    // Configure SwipeRefreshLayout
+    protected abstract  void configureSwipeRefreshLayout();
 
 }

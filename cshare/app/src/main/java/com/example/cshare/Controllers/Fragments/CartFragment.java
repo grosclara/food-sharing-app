@@ -4,7 +4,10 @@ package com.example.cshare.Controllers.Fragments;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.cshare.Models.Product;
+import com.example.cshare.RequestManager.CartRequestManager;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.CartViewModel;
 
@@ -31,6 +34,21 @@ public class CartFragment extends ProductListFragment {
             }
         });
 
+    }
+
+    @Override
+    protected void configureSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                CartRequestManager cartRequestManager = cartViewModel.getCartRequestManager();
+                cartRequestManager.updateRequestManager();
+                // Stop refreshing and clear actual list of users
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+
+            }
+        });
     }
 
 }
