@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.RequestManager.CartRequestManager;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.CartViewModel;
 

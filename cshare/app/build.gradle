@@ -61,4 +61,7 @@ dependencies {
     // For form validation
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
+    //circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }
