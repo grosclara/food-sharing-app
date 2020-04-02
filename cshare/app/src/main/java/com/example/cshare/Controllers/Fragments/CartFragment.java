@@ -17,26 +17,24 @@ public class CartFragment extends ProductListFragment {
 
     private CartViewModel cartViewModel;
 
+    @Override
+    protected BaseFragment newInstance() {
+        return new CartFragment();
+    }
 
+    @Override
+    protected void configureViewModel() {
+        // Retrieve data for view model
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        // Set data
+        cartViewModel.getCartMutableLiveData(Constants.TOKEN, Constants.USERID).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
+                adapter.updateProducts(products);
+            }
+        });
 
-        @Override
-        protected BaseFragment newInstance () {
-            return new CartFragment();
-        }
-
-        @Override
-        protected void configureViewModel() {
-            // Retrieve data for view model
-            cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
-            // Set data
-            cartViewModel.getCartMutableLiveData(Constants.TOKEN, Constants.USERID).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
-                @Override
-                public void onChanged(@Nullable List<Product> products) {
-                    adapter.updateProducts(products);
-                }
-            });
-
-        }
+    }
 
     @Override
     protected void configureSwipeRefreshLayout() {
@@ -53,4 +51,4 @@ public class CartFragment extends ProductListFragment {
         });
     }
 
-    }
+}

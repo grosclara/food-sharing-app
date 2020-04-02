@@ -23,9 +23,6 @@ import java.util.List;
 public abstract class
 ProductListFragment extends BaseFragment {
 
-    // Force the developer to implement them in future children's classes.
-    protected abstract  void configureSwipeRefreshLayout();
-
     // FOR DESIGN
     // Declare RecyclerView
     RecyclerView recyclerView;
@@ -72,7 +69,7 @@ ProductListFragment extends BaseFragment {
     // -----------------
 
     // Configure RecyclerView, Adapter, LayoutManager & glue it together
-    private void configureRecyclerView() {
+    protected void configureRecyclerView() {
         //recyclerView = findViewById
         // Reset list
         this.products = new ArrayList<Product>();
@@ -84,18 +81,7 @@ ProductListFragment extends BaseFragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-
-    // ------------------
-    //  UPDATE UI
-    // ------------------
-
-    // Stop the SwipeRefreshLayout animation once our network request has ended correctly
-    // ( setRefreshing(false) )
-   protected void setProducts(List<Product> newProducts) {
-       // Stop refreshing and clear actual list of users
-       swipeRefreshLayout.setRefreshing(false);
-       this.products = newProducts;
-       adapter.notifyDataSetChanged();
-   }
+    // Configure SwipeRefreshLayout
+    protected abstract  void configureSwipeRefreshLayout();
 
 }

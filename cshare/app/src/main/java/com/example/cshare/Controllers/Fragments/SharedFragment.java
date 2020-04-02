@@ -17,7 +17,6 @@ public class SharedFragment extends ProductListFragment {
 
     private SharedProductsViewModel sharedProductsViewModel;
 
-
     @Override
     protected BaseFragment newInstance() {
         return new SharedFragment();
