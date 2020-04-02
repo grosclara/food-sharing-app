@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.RequestManager.HomeRequestManager;
-import com.example.cshare.RequestManager.SharedProductsRequestManager;
-import com.example.cshare.Utils.Constants;
+<<<<<<< HEAD
 import com.example.cshare.ViewModels.SharedProductsViewModel;
+=======
+>>>>>>> 38d299bfbb82a3c486889314e623fda60b6413ae
 
 import java.util.List;
 
