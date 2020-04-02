@@ -4,13 +4,11 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Product;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.UserAPI;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -27,19 +25,22 @@ import retrofit2.Retrofit;
  * @author Clara Gros, Babacar Toure
  * @version 1.0
  */
-public class ProfileRequestMananger {
-    private static ProfileRequestMananger profileRequestManager;
 
-    // MutableLiveData object that contains the list of shared products
+public class ProfileRequestManager {
+
+    private static ProfileRequestManager profileRequestManager;
+
+    // MutableLiveData object that contains the user data
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
 
     private Retrofit retrofit;
+
     // Insert API interface dependency here
     private UserAPI userAPI;
 
-    public ProfileRequestMananger() {
+    public ProfileRequestManager() {
         /**
-         * Constructor that fetch all the user profile and store it in the
+         * Constructor that fetch the user profile and store it in the
          * attributes
          */
 
@@ -47,8 +48,7 @@ public class ProfileRequestMananger {
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
 
-
-        getUserProfile(Constants.TOKEN,Constants.USERID);
+        getUserProfile(Constants.TOKEN, Constants.USERID);
     }
 
     // Getter method
@@ -56,13 +56,13 @@ public class ProfileRequestMananger {
         return userProfile;
     }
 
-    private void getUserProfile(String token, int userId) {
+    private void getUserProfile(String token, int userID) {
         /**
          * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
          */
 
         Observable<User> userObservable;
-        userObservable = userAPI.getUserByID(token, userId);
+        userObservable = userAPI.getUserByID(token, userID);
         userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -100,14 +100,14 @@ public class ProfileRequestMananger {
 
     }
 
-    public synchronized static ProfileRequestMananger getInstance() {
+    public synchronized static ProfileRequestManager getInstance() {
         /**
          * Method that return the current repository object if it exists
          * else it creates new repository and returns it
          */
         if (profileRequestManager == null) {
             if (profileRequestManager == null) {
-                profileRequestManager = new ProfileRequestMananger();
+                profileRequestManager = new ProfileRequestManager();
             }
         }
         return profileRequestManager;

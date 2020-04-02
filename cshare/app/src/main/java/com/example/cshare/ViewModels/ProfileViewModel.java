@@ -4,18 +4,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.User;
-import com.example.cshare.RequestManager.ProfileRequestMananger;
+import com.example.cshare.RequestManager.ProfileRequestManager;
 
 
 public class ProfileViewModel extends ViewModel {
-    private ProfileRequestMananger profileRequestMananger;
+    private ProfileRequestManager profileRequestManager;
     private MutableLiveData<User> userProfileMutableLiveData;
 
     public ProfileViewModel() {
         // Get request manager instance
-        profileRequestMananger = profileRequestMananger.getInstance();
+        profileRequestManager = profileRequestManager.getInstance();
         // Retrieve user profile list from request manager
-        userProfileMutableLiveData = profileRequestMananger.getUser();
+        userProfileMutableLiveData = profileRequestManager.getUser();
     }
 
     // Getter method

@@ -4,9 +4,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.cshare.Models.User;
 import com.example.cshare.R;
+import com.example.cshare.ViewModels.ProfileViewModel;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends BaseFragment {
+
+    // ViewModel
+    private ProfileViewModel profileViewModel;
 
     //Views
     private TextView textViewFirstName;
@@ -42,8 +51,6 @@ public class ProfileFragment extends BaseFragment {
 
     @Override
     protected void configureViewModel() {
-        /*
-
         // Retrieve data from view model
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
@@ -58,7 +65,5 @@ public class ProfileFragment extends BaseFragment {
 
             }
         });
-
-         */
     }
 }
