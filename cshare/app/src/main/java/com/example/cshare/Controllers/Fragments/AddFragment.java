@@ -3,6 +3,7 @@ package com.example.cshare.Controllers.Fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,8 +11,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,8 +42,14 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.example.cshare.R;
 import com.mobsandgeeks.saripaar.annotation.Future;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 
@@ -114,6 +126,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         buttonPhoto.setOnClickListener(this);
         buttonSubmit.setOnClickListener(this);
         editTextExpirationDate.setOnClickListener(this);
+        imageViewPreviewProduct.setOnClickListener(this);
 
         // Product spinner
         configureProductSpinner();
@@ -161,8 +174,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     @Override
     public void onClick(View v) {
 
-        if (v == buttonPhoto) {
-            camera = new Camera(this,pictureSelected);
+        if (v == buttonPhoto || v == imageViewPreviewProduct) {
+            camera = new Camera(this, pictureSelected);
             camera.openCameraIntent();
 
         } else if (v == buttonSubmit) {
@@ -232,9 +245,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode,
-                                 Intent data) {
+                                  Intent data) {
         /**
          * Return of the camera call (startActivityForResult)
          * Get the picture and load it into the imageView to give the user a preview of the picture he took
@@ -242,6 +254,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
          * @param resultCode
          * @param data
          */
+
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAPTURE_IMAGE) {
             // Handle the case where the user cancelled the camera intent without taking a picture like,
@@ -251,18 +264,83 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 pictureSelected = true;
                 textViewPictureError.setVisibility(View.GONE);
 
+                Bitmap bitmap = null;
+
+                try {
+                    bitmap = Camera.getImageFromResult(getActivity(), resultCode, data);
+                    saveBitmapToFile(bitmap, requestCode);
+                } catch (Exception e) {
+                    e.printStackTrace();
+               /*     AlertDialogUtils alertDialogUtils = new AlertDialogUtils();
+                    alertDialogUtils.errorAlert(getActivity(), "Camera Application Error", "There seems to be some issue " +
+                            "with the Camera Application.\nPlease select the image file from Photo Gallery");*/
+                }
+
                 // Get image file and fileUri
-                imageFilePath = camera.imageFilePath;
-                fileUri = camera.fileUri;
+                //imageFilePath = camera.imageFilePath;
+                //fileUri = camera.fileUri;
+/*
+                try {
+                    Camera.handleSamplingAndRotationBitmap(getContext(), fileUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
 
                 // Load with the imageFilePath we obtained before opening the cameraIntent
-                Bitmap imageBitmap = BitmapFactory.decodeFile(imageFilePath);
-                imageViewPreviewProduct.setImageBitmap(imageBitmap);
+                Picasso.get().load("file:" + imageFilePath).into(imageViewPreviewProduct);
+
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User Cancelled the action
             }
         }
     }
+
+    private void saveBitmapToFile(final Bitmap bitmap, final int position) throws Exception {
+        Log.d("file ", "saveBitmapToFile   == " + bitmap);
+
+        final String fileName = position + "_" + System.currentTimeMillis() + ".jpeg";
+
+        File file = new File(getActivity().getCacheDir(), fileName);
+        file.createNewFile();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+        byte[] bitmapData = byteArrayOutputStream.toByteArray();
+
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(bitmapData);
+        fos.flush();
+        fos.close();
+        imageViewPreviewProduct.setImageBitmap(bitmap);
+        Log.d("file ", "file   == " + file);
+
+        //  RequestBody requestBody = RequestBody.create(MediaType.parse("**/*//*"), file);
+    /*    MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+        IRetrofitWebservice getResponse = AppConfig.getRetrofit().create(IRetrofitWebservice.class);
+        Call<ServerResponse> call = getResponse.uploadFile(fileToUpload, filename);
+        call.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                ServerResponse serverResponse = response.body();
+                if (serverResponse != null) {
+                    if (serverResponse.getSuccess()) {
+                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    assert serverResponse != null;
+                    Log.v("Response", serverResponse.toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+            }
+        });*/
+    }
+
+
 
     @Override
     public void onValidationSucceeded() {
@@ -292,5 +370,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             }
         }
     }
+    }
 
-}
+

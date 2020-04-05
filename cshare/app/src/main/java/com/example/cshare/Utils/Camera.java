@@ -9,12 +9,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 
+import com.example.cshare.Controllers.Fragments.AddFragment;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +34,15 @@ public class Camera {
     public String imageFilePath;
     public String imageFileName;
     public Uri fileUri;
+
+    private static final String TEMP_IMAGE_NAME = "temp";
+
     // Ensures the intent to open the camera can be performed
     public static final int REQUEST_CAPTURE_IMAGE = 1;
     // Check whether a picture has been selected
     public boolean pictureSelected = false;
 
-    public Camera(Fragment fragment, Boolean pictureSelected){
+    public Camera(Fragment fragment, Boolean pictureSelected) {
         this.pictureSelected = pictureSelected;
         this.fragment = fragment;
     }
@@ -65,16 +72,21 @@ public class Camera {
     public void openCameraIntent() {
         /**
          * Creation of an Intent of type ACTION_IMAGE_CAPTURE to open the camera.
-                * The picture taken is then loaded in a temporary file from which we save its absolute path in the picturePath variable
+         * The picture taken is then loaded in a temporary file from which we save its absolute
+         * path in the picturePath variable
          * We create a URI (Uniform Resource Identifier) for this file.
-                * Eventually the intent call for the onActivityResult method.
-                * @see #onActivityResult(int, int, Intent)
+         * Eventually the intent call for the onActivityResult method.
+         * @see #onActivityResult(int, int, Intent)
          * @see #createImageFile()
-                */
-                Intent pictureIntent = new Intent(
-                MediaStore.ACTION_IMAGE_CAPTURE);
+         */
+
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        pictureIntent.putExtra("return-data", true);
+        Uri uri = FileProvider.getUriForFile(fragment.getContext(),fragment.getContext().getPackageName() + ".provider",
+                getTempFile(fragment.getContext()));
+        pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         if (pictureIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
-            //Create a file to store the image
+            /*//Create a file to store the image
             File photoFile = null;
             try {
                 photoFile = createImageFile();
@@ -84,17 +96,25 @@ public class Camera {
                 Log.d("file", "An error occurred while creating the file");
             }
             if (photoFile != null) {
+                fragment.startActivityForResult(pictureIntent, REQUEST_CAPTURE_IMAGE);
                 fileUri = FileProvider.getUriForFile(
                         fragment.getContext(),
                         fragment.getActivity().getPackageName() + ".provider",
                         photoFile
                 );
                 pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        fileUri);
-                fragment.startActivityForResult(pictureIntent,
-                        REQUEST_CAPTURE_IMAGE);
-            }
+                        fileUri); // Set the image file name
+                Log.d(Constants.TAG, pictureIntent.getExtras().toString());
+                // Rotate image blablabla*/
+            fragment.startActivityForResult(pictureIntent,
+                    REQUEST_CAPTURE_IMAGE);
         }
+    }
+
+    private static File getTempFile(Context context) {
+        File imageFile = new File(context.getExternalCacheDir(), TEMP_IMAGE_NAME);
+        imageFile.getParentFile().mkdirs();
+        return imageFile;
     }
 
     /**
@@ -212,8 +232,57 @@ public class Camera {
     private static Bitmap rotateImage(Bitmap img, int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        Bitmap rotatedImg = Bitmap.createBitmap(img,
+                0, 0, img.getWidth(), img.getHeight(), matrix, true);
         img.recycle();
         return rotatedImg;
     }
+
+    public String BitMapToString(Bitmap userImage1) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        userImage1.compress(Bitmap.CompressFormat.PNG, 60, baos);
+        byte[] b = baos.toByteArray();
+        String Document_img1 = Base64.encodeToString(b, Base64.DEFAULT);
+        return Document_img1;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    public static Bitmap getImageFromResult(Context context, int resultCode,
+                                            Intent imageReturnedIntent) throws IOException {
+        Log.d(Constants.TAG, "getImageFromResult, resultCode: " + resultCode);
+        Bitmap bm = null;
+        File imageFile = getTempFile(context);
+        Uri selectedImage = null;
+        boolean isCamera = imageReturnedIntent == null;
+        if (isCamera) {
+            selectedImage = FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
+                    imageFile);
+        } else {
+            if (imageReturnedIntent.getData() == null) {
+                selectedImage = Uri.fromFile(imageFile);
+            } else {
+                selectedImage = imageReturnedIntent.getData();
+            }
+        }
+        Log.d(Constants.TAG, "selectedImage: " + selectedImage);
+
+        bm = handleSamplingAndRotationBitmap(context, selectedImage);
+
+        return bm;
+    }
+
 }
