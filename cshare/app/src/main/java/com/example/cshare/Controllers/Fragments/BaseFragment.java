@@ -59,4 +59,6 @@ public abstract class BaseFragment extends Fragment {
         // Handling Bundle Save
         // Icepick.saveInstanceState(this, outState);
     }
+
+
 }

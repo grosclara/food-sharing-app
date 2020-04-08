@@ -1,12 +1,9 @@
 package com.example.cshare.Controllers.Fragments;
 
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -15,9 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,20 +37,18 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.example.cshare.R;
 import com.mobsandgeeks.saripaar.annotation.Future;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class AddFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
 
@@ -64,7 +57,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private boolean validated;
 
     private TextView textViewPictureError;
-
     @NotEmpty
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
@@ -73,9 +65,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private EditText editTextExpirationDate;
     @NotEmpty
     private EditText editTextQuantity;
-
     private Spinner spinnerProductCategories;
-
     private Button buttonPhoto;
     private Button buttonSubmit;
 
@@ -85,26 +75,27 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private String expiration_date;
     private String quantity;
 
-    // Path to the location of the picture taken by the phone
-    private String imageFilePath;
-    private Uri fileUri;
-    // Ensures the intent to open the camera can be performed
-    private static final int REQUEST_CAPTURE_IMAGE = 1;
     // Check whether a picture has been selected
     private boolean pictureSelected = false;
+
+    // Path to the location of the picture taken by the phone
+    private Uri pictureFileUri;
+    private File fileToUpload;
+    private Uri fileToUploadUri;
 
     // ViewModels
     HomeViewModel homeViewModel;
     SharedProductsViewModel sharedProductsViewModel;
 
-    // Camera
-    Camera camera;
+    @Override
+    protected BaseFragment newInstance() {
+        return new AddFragment();
+    }
 
     @Override
-    protected BaseFragment newInstance() { return new AddFragment(); }
-
-    @Override
-    protected int getFragmentLayout() { return R.layout.fragment_add; }
+    protected int getFragmentLayout() {
+        return R.layout.fragment_add;
+    }
 
     @Override
     protected void configureDesign(View view) {
@@ -134,9 +125,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
-    protected void updateDesign() {
-
-    }
+    protected void updateDesign() {}
 
     @Override
     protected void configureViewModel() {
@@ -145,7 +134,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
     }
 
-    private void configureValidator(){
+    private void configureValidator() {
         // Instantiate a new Validator
         validator = new Validator((this));
         validator.setValidationListener(this);
@@ -172,30 +161,65 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
+    public void onValidationSucceeded() {
+        //Called when all your views pass all validations.
+        validated = true;
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        //Called when there are validation error(s).
+        validated = false;
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(getContext());
+
+            // Display error messages
+            if (view == editTextExpirationDate) {
+                editTextExpirationDate.setHintTextColor(Color.parseColor("#FF0000"));
+                editTextExpirationDate.setBackgroundColor(Color.parseColor("#33FF0000"));
+                editTextExpirationDate.setHint(message);
+            } else if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
     public void onClick(View v) {
 
         if (v == buttonPhoto || v == imageViewPreviewProduct) {
-            camera = new Camera(this, pictureSelected);
-            camera.openCameraIntent();
+            // Capture picture
+            try {
+                captureImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         } else if (v == buttonSubmit) {
 
             // Validate the field
             validator.validate();
 
-            if(validated & pictureSelected) {
+            if (validated & pictureSelected) {
 
                 // Retrieve the name of the product typed in the editText field
                 productName = String.valueOf(editTextProductName.getText());
                 // Retrieve the quantity of the product typed in the editText field
                 quantity = String.valueOf(editTextQuantity.getText());
 
-                // Create a file object using file path
-                File file = new File(imageFilePath);
+                try {
+                    fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 // Create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileUri)), file);
+                RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
-                String imageFileName = NetworkClient.BASE_URL + "media/product/" + camera.imageFilePath.split("/")[camera.imageFilePath.split("/").length -1];
+                String imageFileName = NetworkClient.BASE_URL + "media/product/" + fileToUpload.getAbsolutePath();
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
 
 
@@ -208,14 +232,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 homeViewModel.insert(product);
                 sharedProductsViewModel.insert(product);
 
-            }
-
-            else if(!pictureSelected){
-                Toast.makeText(getContext(), "You must choose a product picture",Toast.LENGTH_SHORT).show();
+            } else if (!pictureSelected) {
+                Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
                 textViewPictureError.setVisibility(View.VISIBLE);
             }
 
-        } else if (v == editTextExpirationDate){
+        } else if (v == editTextExpirationDate) {
             // Get Current Date
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -245,131 +267,91 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
     }
 
+    /*
+      Here we store the file uri as it will be null after returning from camera app
+    */
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putParcelable("file_uri", pictureFileUri);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            // get the file url
+            pictureFileUri = savedInstanceState.getParcelable("file_uri");
+        }
+    }
+
+    public void captureImage() throws IOException {
+        // Launching camera app to capture image
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Create a file to store the picture taken
+        File pictureFile = Camera.createImageFile(getContext());
+        // Retrieve its Uri
+        pictureFileUri = Camera.getOutputMediaFileUri(getContext(), pictureFile);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFile);
+
+        // Checking whether device has camera hardware or not
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // start the image capture Intent
+            startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * Receiving activity result method will be called after closing the camera
+     */
     public void onActivityResult(int requestCode, int resultCode,
-                                  Intent data) {
-        /**
-         * Return of the camera call (startActivityForResult)
-         * Get the picture and load it into the imageView to give the user a preview of the picture he took
-         * @param requestCode
-         * @param resultCode
-         * @param data
-         */
-
+                                 Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CAPTURE_IMAGE) {
-            // Handle the case where the user cancelled the camera intent without taking a picture like,
-            // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
-            if (resultCode == Activity.RESULT_OK) {
 
-                pictureSelected = true;
-                textViewPictureError.setVisibility(View.GONE);
-
-                Bitmap bitmap = null;
-
-                try {
-                    bitmap = Camera.getImageFromResult(getActivity(), resultCode, data);
-                    saveBitmapToFile(bitmap, requestCode);
-                } catch (Exception e) {
-                    e.printStackTrace();
-               /*     AlertDialogUtils alertDialogUtils = new AlertDialogUtils();
-                    alertDialogUtils.errorAlert(getActivity(), "Camera Application Error", "There seems to be some issue " +
-                            "with the Camera Application.\nPlease select the image file from Photo Gallery");*/
-                }
-
-                // Get image file and fileUri
-                //imageFilePath = camera.imageFilePath;
-                //fileUri = camera.fileUri;
-/*
-                try {
-                    Camera.handleSamplingAndRotationBitmap(getContext(), fileUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
-
-                // Load with the imageFilePath we obtained before opening the cameraIntent
-                Picasso.get().load("file:" + imageFilePath).into(imageViewPreviewProduct);
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // User Cancelled the action
+        // Handle the case where the user cancelled the camera intent without taking a picture like,
+        // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
+        if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+            // successfully captured the image
+            try {
+                processPicture(pictureFileUri); // modify the raw picture taken
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+        } else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(getContext(),
+                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    .show();
+
+        } else {
+            // failed to capture image
+            Toast.makeText(getContext(),
+                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
-    private void saveBitmapToFile(final Bitmap bitmap, final int position) throws Exception {
-        Log.d("file ", "saveBitmapToFile   == " + bitmap);
+    private void processPicture(Uri uri) throws IOException {
+        if (uri != null) {
 
-        final String fileName = position + "_" + System.currentTimeMillis() + ".jpeg";
+            pictureSelected = true;
+            // Rotate if necessary and reduce size
+            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(getContext(), uri);
+            // Displaying the image or video on the screen
+            Camera.previewMedia(bitmap, imageViewPreviewProduct);
 
-        File file = new File(getActivity().getCacheDir(), fileName);
-        file.createNewFile();
+            // Save new picture to fileToUpload
+            fileToUpload = Camera.saveBitmap(getContext(), bitmap);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
-        byte[] bitmapData = byteArrayOutputStream.toByteArray();
-
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(bitmapData);
-        fos.flush();
-        fos.close();
-        imageViewPreviewProduct.setImageBitmap(bitmap);
-        Log.d("file ", "file   == " + file);
-
-        //  RequestBody requestBody = RequestBody.create(MediaType.parse("**/*//*"), file);
-    /*    MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
-        IRetrofitWebservice getResponse = AppConfig.getRetrofit().create(IRetrofitWebservice.class);
-        Call<ServerResponse> call = getResponse.uploadFile(fileToUpload, filename);
-        call.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                ServerResponse serverResponse = response.body();
-                if (serverResponse != null) {
-                    if (serverResponse.getSuccess()) {
-                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    assert serverResponse != null;
-                    Log.v("Response", serverResponse.toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-            }
-        });*/
-    }
-
-
-
-    @Override
-    public void onValidationSucceeded() {
-        //Called when all your views pass all validations.
-        validated = true;
-
-    }
-
-    @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        //Called when there are validation error(s).
-        validated = false;
-        for (ValidationError error : errors) {
-            View view = error.getView();
-            String message = error.getCollatedErrorMessage(getContext());
-
-            // Display error messages
-            if(view == editTextExpirationDate){
-                editTextExpirationDate.setHintTextColor(Color.parseColor("#FF0000"));
-                editTextExpirationDate.setBackgroundColor(Color.parseColor("#33FF0000"));
-                editTextExpirationDate.setHint(message);
-            }
-            else if (view instanceof EditText) {
-                ((EditText) view).setError(message);
-            } else {
-                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-            }
+        } else {
+            Toast.makeText(getContext(),
+                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
         }
     }
-    }
 
-
+}
