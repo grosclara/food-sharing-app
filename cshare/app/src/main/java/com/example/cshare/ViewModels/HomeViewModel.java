@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.RequestManager.HomeRequestManager;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     // Insert product method
-    public boolean addProduct(ProductToPost productToPost){
+    public boolean addProduct(ProductForm productToPost){
         homeRequestManager.addProduct(productToPost);
         return true;
     }

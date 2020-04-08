@@ -2,7 +2,7 @@ package com.example.cshare.Models;
 
 import okhttp3.MultipartBody;
 
-public class ProductToPost {
+public class ProductForm {
 
     // Constructor of a created product that fit the post HTTP required format
 
@@ -13,7 +13,7 @@ public class ProductToPost {
     private String expirationDate;
     private int supplierID;
 
-    public ProductToPost(MultipartBody.Part productPicture, String productName, String productCategory, String quantity, String expirationDate, int supplierID) {
+    public ProductForm(MultipartBody.Part productPicture, String productName, String productCategory, String quantity, String expirationDate, int supplierID) {
         this.productPicture = productPicture;
         this.productName = productName;
         this.productCategory = productCategory;

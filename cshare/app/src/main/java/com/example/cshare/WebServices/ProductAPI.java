@@ -1,13 +1,12 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.DELETE;
@@ -45,7 +44,7 @@ public interface  ProductAPI {
 
     @Multipart
     @POST("product/")
-    Observable<ProductToPost> addProduct(
+    Observable<ProductForm> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String productName,

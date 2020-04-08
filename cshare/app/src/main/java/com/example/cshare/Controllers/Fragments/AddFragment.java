@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
@@ -187,7 +187,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
 
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
-                ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
+                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
                 homeViewModel.addProduct(productToPost);
 
                 // Format the product to update view models

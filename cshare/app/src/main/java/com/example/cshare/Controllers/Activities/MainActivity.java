@@ -20,11 +20,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    // FOR DESIGN
-    //@BindView(R.id.bottom_navigation)
+
     BottomNavigationView bottomNav;
-   // @BindView(R.id.fragment_container)
-    //Fragment fragment;
 
     // FOR FRAGMENTS
     // Declare fragment handled by Navigation Drawer
