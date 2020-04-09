@@ -232,18 +232,19 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
-                String imageFileName = NetworkClient.BASE_URL + "media/product/" + fileToUpload.getAbsolutePath();
-                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", imageFileName, requestFile);
 
+                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
-                // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
+                // HTTP Post request
                 ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
                 homeViewModel.addProduct(productToPost);
 
                 // Format the product to update view models
+                Log.d("tag", fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1]);
+                String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1] ;
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
-                homeViewModel.insert(product);
-                sharedProductsViewModel.insert(product);
+
+                addProduct(product);
 
             } else if (!pictureSelected) {
                 Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
@@ -278,6 +279,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             datePickerDialog.show();
         }
 
+    }
+
+    private void addProduct(Product product){
+        homeViewModel.insert(product);
+        sharedProductsViewModel.insert(product);
     }
 
     /*
