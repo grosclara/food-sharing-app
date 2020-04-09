@@ -1,5 +1,6 @@
 package com.example.cshare.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,7 +8,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.core.content.FileProvider;
@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,17 +30,6 @@ public class Camera {
     public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
                 file);
-    }
-
-    public static File saveBitmap(Context context, Bitmap bmp) throws IOException {
-        File file = createImageFile(context);
-        try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
-            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
     }
 
     /**
@@ -82,12 +70,12 @@ public class Camera {
      * This method is responsible for solving the rotation issue if exist. Also scale the images to
      * 1024x1024 resolution
      *
-     * @param context       The current context
+     * @param contentResolver The current context.getContentResolver()
      * @param selectedImage The Image URI
      * @return Bitmap image results
      * @throws IOException
      */
-    public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage)
+    public static Bitmap handleSamplingAndRotationBitmap(ContentResolver contentResolver, Uri selectedImage)
             throws IOException {
         int MAX_HEIGHT = 1024;
         int MAX_WIDTH = 1024;
@@ -95,8 +83,7 @@ public class Camera {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-
-        InputStream imageStream = context.getContentResolver().openInputStream(selectedImage);
+        InputStream imageStream = contentResolver.openInputStream(selectedImage);
         BitmapFactory.decodeStream(imageStream, null, options);
         imageStream.close();
 
@@ -105,11 +92,21 @@ public class Camera {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        imageStream = context.getContentResolver().openInputStream(selectedImage);
-        Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
+        imageStream = contentResolver.openInputStream(selectedImage);
+        Bitmap bitmap = BitmapFactory.decodeStream(imageStream, null, options);
+        bitmap = rotateImageIfRequired(contentResolver, bitmap, selectedImage);
+        return bitmap;
+    }
 
-        img = rotateImageIfRequired(context, img, selectedImage);
-        return img;
+    public static File saveBitmap(Context context, Bitmap bmp) throws IOException {
+        File file = createImageFile(context);
+        try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
+            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     /**
@@ -168,9 +165,9 @@ public class Camera {
      * @param selectedImage Image URI
      * @return The resulted Bitmap after manipulation
      */
-    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
+    private static Bitmap rotateImageIfRequired(ContentResolver contentResolver, Bitmap img, Uri selectedImage) throws IOException {
 
-        InputStream input = context.getContentResolver().openInputStream(selectedImage);
+        InputStream input = contentResolver.openInputStream(selectedImage);
         ExifInterface ei;
         if (Build.VERSION.SDK_INT > 23)
             ei = new ExifInterface(input);

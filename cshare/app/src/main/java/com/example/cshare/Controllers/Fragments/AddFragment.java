@@ -1,18 +1,27 @@
 package com.example.cshare.Controllers.Fragments;
 
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,6 +49,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 
@@ -52,6 +62,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     // Form validation
     protected Validator validator;
     private boolean validated;
@@ -79,6 +90,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private boolean pictureSelected = false;
 
     // Path to the location of the picture taken by the phone
+    private String pictureFilePath;
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
@@ -125,7 +137,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
-    protected void updateDesign() {}
+    protected void updateDesign() {
+    }
 
     @Override
     protected void configureViewModel() {
@@ -191,6 +204,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     public void onClick(View v) {
 
         if (v == buttonPhoto || v == imageViewPreviewProduct) {
+
             // Capture picture
             try {
                 captureImage();
@@ -282,6 +296,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+        Log.d("tag", "onViewStateRestored");
         if (savedInstanceState != null) {
             // get the file url
             pictureFileUri = savedInstanceState.getParcelable("file_uri");
@@ -296,7 +311,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         File pictureFile = Camera.createImageFile(getContext());
         // Retrieve its Uri
         pictureFileUri = Camera.getOutputMediaFileUri(getContext(), pictureFile);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFile);
+        // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
 
         // Checking whether device has camera hardware or not
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -311,7 +327,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Handle the case where the user cancelled the camera intent without taking a picture like,
         // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
         if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -327,7 +342,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             Toast.makeText(getContext(),
                     "User cancelled image capture", Toast.LENGTH_SHORT)
                     .show();
-
         } else {
             // failed to capture image
             Toast.makeText(getContext(),
@@ -341,10 +355,9 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             pictureSelected = true;
             // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(getContext(), uri);
+            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(getActivity().getContentResolver(), uri);
             // Displaying the image or video on the screen
             Camera.previewMedia(bitmap, imageViewPreviewProduct);
-
             // Save new picture to fileToUpload
             fileToUpload = Camera.saveBitmap(getContext(), bitmap);
 
@@ -353,5 +366,4 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                     "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
         }
     }
-
 }
