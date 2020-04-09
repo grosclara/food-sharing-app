@@ -101,7 +101,7 @@ public class Camera {
     public static File saveBitmap(Context context, Bitmap bmp) throws IOException {
         File file = createImageFile(context);
         try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
-            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
+            bmp.compress(Bitmap.CompressFormat.JPEG, 60, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (IOException e) {
             e.printStackTrace();
