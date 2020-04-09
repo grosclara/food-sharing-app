@@ -90,7 +90,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private boolean pictureSelected = false;
 
     // Path to the location of the picture taken by the phone
-    private String pictureFilePath;
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
