@@ -87,4 +87,6 @@
 "29/03 - BT : Implementation of the swipe up refresh functionality, 1h00"
 "31/03 - BT : Implementation of the ProfileFragment along with its viewModel and requestManager, 1h00"
 "02/04 - CG : Review of Babacar's work on ProfileFragment and refresh functionality, 1h30"
+"05/04 - BT : Launch acitivity and storage of user in shared prefs, 1h00"
+"09/04 - BT : Login view model and login activity, 3h00"
 

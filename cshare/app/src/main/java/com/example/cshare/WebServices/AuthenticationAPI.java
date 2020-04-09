@@ -1,6 +1,7 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.LoginForm;
+import com.example.cshare.Models.LoginResponse;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
@@ -42,7 +43,7 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/login/")
-    Observable<LoginForm> login(@Body LoginForm loginForm);
+    Observable<LoginResponse> login(@Body LoginForm loginForm);
 
     @POST("rest-auth/logout/")
     Observable<ResponseBody> logout(

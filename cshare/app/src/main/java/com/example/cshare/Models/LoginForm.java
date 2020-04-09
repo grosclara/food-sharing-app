@@ -7,16 +7,16 @@ import android.util.Patterns;
  */
 public class LoginForm {
 
-    private String emailAddress;
+    private String email;
     private String password;
 
     public LoginForm(String emailAddress, String password) {
-        emailAddress = emailAddress;
-        password = password;
+        this.email = emailAddress;
+        this.password = password;
     }
 
     public String getEmailAddress() {
-        return emailAddress;
+        return email;
     }
 
     public String getPassword() {
