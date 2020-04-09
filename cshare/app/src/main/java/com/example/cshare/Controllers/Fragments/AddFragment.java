@@ -1,24 +1,19 @@
 package com.example.cshare.Controllers.Fragments;
 
 
-import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -39,7 +34,6 @@ import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
-import com.example.cshare.WebServices.NetworkClient;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -49,7 +43,6 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 
@@ -62,7 +55,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
 
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     // Form validation
     protected Validator validator;
     private boolean validated;
@@ -232,19 +224,48 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
-
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
                 // HTTP Post request
                 ProductToPost productToPost = new ProductToPost(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
-                homeViewModel.addProduct(productToPost);
 
                 // Format the product to update view models
-                Log.d("tag", fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1]);
-                String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1] ;
+                String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
 
-                addProduct(product);
+                addProduct(product, productToPost);
+
+                // Add an alert dialog box and go back home
+
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setMessage("Votre produit a été ajouté avec succès")
+                        .setTitle("Merci !")
+                        // Add the button
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button
+                                // Create fragment and give it an argument specifying the article it should show
+                                HomeFragment homeFragment = new HomeFragment();
+
+                                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                                // Replace whatever is in the fragment_container view with this fragment,
+                                // and add the transaction to the back stack so the user can navigate back
+                                transaction.replace(R.id.fragment_container, homeFragment);
+                                transaction.addToBackStack(null);
+
+                                // Commit the transaction
+                                transaction.commit();
+
+                            }
+                        });
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
 
             } else if (!pictureSelected) {
                 Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
@@ -281,9 +302,10 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
     }
 
-    private void addProduct(Product product){
+    private void addProduct(Product product, ProductToPost productToPost) {
         homeViewModel.insert(product);
         sharedProductsViewModel.insert(product);
+        homeViewModel.addProduct(productToPost);
     }
 
     /*
