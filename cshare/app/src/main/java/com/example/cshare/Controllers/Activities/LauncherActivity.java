@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.cshare.R;
 
@@ -23,6 +24,7 @@ public class LauncherActivity extends AppCompatActivity {
         userCredits = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         userCreditsEditor = userCredits.edit();
         Boolean logStatus = userCredits.getBoolean("logStatus", false);
+        Log.i("intent",""+logStatus);
 
         if(logStatus){
             Intent toMainActivityIntent = new Intent();

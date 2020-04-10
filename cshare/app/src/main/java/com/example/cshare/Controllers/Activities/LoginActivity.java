@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                 passwordEditText.setError("Enter at least 6 Digit password");
                 passwordEditText.requestFocus();
             } else {
+                Log.i("intent", "form validated ");
                 loginViewModel.submitValidForm(loginUser);
                 loginViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
                     @Override
@@ -69,10 +70,11 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                         String status = loginResponse.getRequestStatus();
                         LoginResponse.UserResponse user = loginResponse.getUserResponse();
                         String token = loginResponse.getKey();
+                        Log.i("intent", status);
+                        Log.i("intent", "gnnnn " + token);
+                        if (status.equals("success")) {
 
-                        if (loginResponse.getRequestStatus().equals("success")) {
 
-                            Log.i("intent", "gnnnn " + token);
 
                             int id = user.getId();
 

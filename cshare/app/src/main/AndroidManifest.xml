@@ -3,6 +3,12 @@
     package="com.example.cshare">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
 
     <application
         android:allowBackup="true"
@@ -19,14 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.Activities.LoginActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name=".Controllers.Activities.LoginActivity"
+                  android:label="LoginActivity"/>
 
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Controllers.Activities.MainActivity" />
+        <activity android:name=".Controllers.Activities.MainActivity"
+                  android:label="MainActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

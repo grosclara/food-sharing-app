@@ -78,7 +78,7 @@ public class LoginViewModel extends ViewModel {
                     public void onNext(LoginResponse loginResponse) {
                         String token = loginResponse.getKey();
                         LoginResponse.UserResponse user = loginResponse.getUserResponse();
-                        LoginResponse response = new LoginResponse("success",token,user);
+                        LoginResponse response = new LoginResponse(token,"success",user);
                         responseMutableLiveData.setValue(response);
                         Log.i("intent ", "value putted in view model");
                     }
