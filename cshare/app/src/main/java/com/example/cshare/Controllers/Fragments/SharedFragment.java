@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.ViewModels.ProductViewModel;
-import com.example.cshare.ViewModels.SharedProductsViewModel;
 
 import java.util.List;
 

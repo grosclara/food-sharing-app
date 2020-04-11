@@ -32,9 +32,7 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
-import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -232,7 +230,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
 
-                addProduct(product, productToPost);
+                productViewModel.addProduct(productToPost, product);
 
                 // Add an alert dialog box and go back home
 
@@ -299,10 +297,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             datePickerDialog.show();
         }
 
-    }
-
-    private void addProduct(Product product, ProductToPost productToPost) {
-        productViewModel.addProduct(productToPost, product);
     }
 
     /*
