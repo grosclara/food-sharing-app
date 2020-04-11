@@ -15,7 +15,7 @@ public class SharedProductsViewModel extends ViewModel {
 
     public SharedProductsViewModel() {
         // Retrieve collected products list from request manager
-        sharedProductsRequestManager =SharedProductsRequestManager.getInstance();
+        sharedProductsRequestManager = SharedProductsRequestManager.getInstance();
         sharedProductsMutableLiveData = sharedProductsRequestManager.getProductList();
     }
 
