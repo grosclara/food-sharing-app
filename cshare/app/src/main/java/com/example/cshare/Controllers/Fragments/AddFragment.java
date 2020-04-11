@@ -27,8 +27,6 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.HomeViewModel;
-import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.example.cshare.WebServices.NetworkClient;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;

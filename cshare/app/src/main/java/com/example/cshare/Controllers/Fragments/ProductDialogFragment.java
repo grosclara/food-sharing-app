@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModel;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.squareup.picasso.Picasso;
 
 public class ProductDialogFragment extends DialogFragment {
