@@ -73,7 +73,7 @@ public class HomeRequestManager {
         // New product list to which we add the new product
         List productList = getProductList().getValue();
         productList.add(0, product);
-        // Create live data of this new list
+        // Wrap this new list in live data
         MutableLiveData<List<Product>> productListLiveData = getProductList();
         productListLiveData.setValue(productList);
         // Set live data in request manager

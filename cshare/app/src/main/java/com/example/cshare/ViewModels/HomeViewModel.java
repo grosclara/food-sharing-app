@@ -10,6 +10,7 @@ import com.example.cshare.RequestManager.HomeRequestManager;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
+
     private HomeRequestManager homeRequestManager;
     private MutableLiveData<List<Product>> homeMutableLiveData;
 
