@@ -3,11 +3,13 @@ package com.example.cshare.Controllers.Fragments;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
+import com.example.cshare.Utils.Constants;
+import com.example.cshare.Utils.ItemClickSupport;
 import com.example.cshare.Views.ProductAdapter;
 
 import java.util.ArrayList;
@@ -79,9 +83,30 @@ ProductListFragment extends BaseFragment {
         this.recyclerView.setAdapter(this.adapter);
         // Set layout manager to position the items
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        configureOnItemClickedRecyclerView();
+
     }
 
+    protected void configureOnItemClickedRecyclerView() {
+
+        // Configure item click on RecyclerView
+        ItemClickSupport.addTo(recyclerView, R.layout.product_list_item)
+                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                                                // Get product from adapter
+                                                Product product = adapter.getProduct(position);
+                                                Log.d(Constants.TAG, product.getName());
+                                                click(product);
+                                            }
+                                        }
+
+                );
+    }
+
+    protected abstract void click(Product product);
+
     // Configure SwipeRefreshLayout
-    protected abstract  void configureSwipeRefreshLayout();
+    protected abstract void configureSwipeRefreshLayout();
 
 }

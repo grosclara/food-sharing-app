@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,5 +66,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
          */
         this.products = products;
         notifyDataSetChanged();
+    }
+
+    // Create a method that allows to get the product from the position of the item clicked
+    public Product getProduct(int position){
+        return this.products.get(position);
     }
 }
