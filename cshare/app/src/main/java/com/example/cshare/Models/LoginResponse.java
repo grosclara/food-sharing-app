@@ -1,7 +1,9 @@
 package com.example.cshare.Models;
 
-import com.google.gson.JsonObject;
-
+/**
+ * Login request response model
+ * It makes easy the parsing of the response to a login request
+ */
 public class LoginResponse {
     private String key;
     private String requestStatus;
@@ -42,6 +44,10 @@ public class LoginResponse {
         return user;
     }
 
+    /*
+     * Constructor of the LoginResponse class.
+     *
+     */
     public LoginResponse(String key, String requestStatus, UserResponse user) {
         this.key = key;
         this.requestStatus = requestStatus;

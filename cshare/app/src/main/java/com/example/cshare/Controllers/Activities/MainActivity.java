@@ -15,8 +15,7 @@ import com.example.cshare.Controllers.Fragments.SharedFragment;
 import com.example.cshare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 

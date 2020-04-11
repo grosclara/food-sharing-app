@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
@@ -35,6 +36,10 @@ public class ProfileRequestManager {
 
     private Retrofit retrofit;
 
+    //User credits
+    String token;
+    int userId;
+
     // Insert API interface dependency here
     private UserAPI userAPI;
 
@@ -48,7 +53,11 @@ public class ProfileRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
 
-        getUserProfile(Constants.TOKEN, Constants.USERID);
+        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
+        userId = LauncherActivity.userCredits.getInt("id", -1);
+
+
+        getUserProfile(token, userId);
     }
 
     // Getter method

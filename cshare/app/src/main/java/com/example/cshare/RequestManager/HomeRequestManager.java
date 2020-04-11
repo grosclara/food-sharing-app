@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Constants;
@@ -39,6 +40,10 @@ public class HomeRequestManager {
     // Insert API interface dependency here
     private ProductAPI productAPI;
 
+    //User credits
+    String token;
+    int userId;
+
     public HomeRequestManager() {
         /**
          * Constructor that fetch all the list of available products and store it in the
@@ -48,12 +53,16 @@ public class HomeRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
 
-        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
+        // user Credits
+        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
+        userId = LauncherActivity.userCredits.getInt("id", -1);
+
+        getAvailableProducts(token, Constants.CAMPUS, Constants.STATUS);
     }
 
     // Update request manager
     public void updateRequestManager(){
-        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
+        getAvailableProducts(token, Constants.CAMPUS, Constants.STATUS);
     }
 
     // Getter method

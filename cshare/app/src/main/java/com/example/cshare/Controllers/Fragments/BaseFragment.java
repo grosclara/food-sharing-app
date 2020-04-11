@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.R;
 
 public abstract class BaseFragment extends Fragment {
@@ -27,6 +28,10 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void configureViewModel();
 
+    // User credits
+    private String token;
+    private int userId;
+
     // -----------------
     // METHODS OVERRIDE
     // -----------------
@@ -39,6 +44,11 @@ public abstract class BaseFragment extends Fragment {
         // Configure Design (Developer will call this method instead of override onCreateView())
         // allow our child fragments not to have to redefine the onCreateView( ) method,
         // but instead to call configureDesign()
+
+        // Retrieve user credits from SP
+        token = "Token "+ LauncherActivity.userCredits.getString("token", null).trim();
+        userId = LauncherActivity.userCredits.getInt("id", -1);
+
         this.configureDesign(view);
         this.configureViewModel();
         return (view);

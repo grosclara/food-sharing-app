@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
@@ -43,6 +44,9 @@ public class CartRequestManager {
     private ProductAPI productAPI;
     private OrderAPI orderAPI;
 
+    //User credits
+    String token;
+    int userId;
 
     public CartRequestManager() {
         /**
@@ -55,8 +59,12 @@ public class CartRequestManager {
         productAPI = retrofit.create(ProductAPI.class);
         orderAPI = retrofit.create(OrderAPI.class);
 
+        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
+        userId = LauncherActivity.userCredits.getInt("id", -1);
+
+
         // retrieve products in cart
-        getInCartProducts(Constants.TOKEN,Constants.USERID);
+        getInCartProducts(token,userId);
     }
 
     // Getter method
@@ -158,7 +166,7 @@ public class CartRequestManager {
     }
 
     public void updateRequestManager() {
-        getInCartProducts(Constants.TOKEN, Constants.USERID);
+        getInCartProducts(token, userId);
 
     }
 }

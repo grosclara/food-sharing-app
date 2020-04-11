@@ -14,7 +14,7 @@ public class Constants {
     //public static final String CAMPUS = "Gif";
 
     // Babacar
-    public static final String TOKEN = "token 11d882f91e4bf9b410287932404186a7919c4ec1";
+    public static final String TOKEN = "token 531774b7e8a54588a246bda0dd55cb000c5b9644";
     public static  final  int USERID = 5; //
     public static final String CAMPUS = "Metz";
 

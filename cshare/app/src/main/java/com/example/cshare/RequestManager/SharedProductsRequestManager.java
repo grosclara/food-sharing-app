@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
@@ -38,6 +39,10 @@ public class SharedProductsRequestManager {
     // Insert API interface dependency here
     private ProductAPI productAPI;
 
+    // User credits
+    String token;
+    int userId;
+
 
     public SharedProductsRequestManager() {
         /**
@@ -49,7 +54,11 @@ public class SharedProductsRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
 
-        getSharedProducts(Constants.TOKEN, Constants.USERID);
+        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
+        userId = LauncherActivity.userCredits.getInt("id", -1);
+
+
+        getSharedProducts(token, userId);
     }
 
     public void setProductList(MutableLiveData<List<Product>> productList) {
@@ -63,7 +72,7 @@ public class SharedProductsRequestManager {
 
     // Update request manager
     public void updateRequestManager(){
-        getSharedProducts(Constants.TOKEN, Constants.USERID);
+        getSharedProducts(token, userId);
     }
 
     // Insert product

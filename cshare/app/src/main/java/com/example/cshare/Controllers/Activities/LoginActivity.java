@@ -15,14 +15,15 @@ import android.widget.EditText;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 import com.example.cshare.R;
-import com.example.cshare.ViewModels.LoginViewModel;
+import com.example.cshare.ViewModels.AuthViewModel;
 
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity  implements View.OnClickListener {
 
-    private LoginViewModel loginViewModel;
+    private AuthViewModel authViewModel;
 
+    // Views
     private EditText emailAddressEditText;
     private EditText passwordEditText;
     private Button buttonLogin;
@@ -34,18 +35,20 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Views
         emailAddressEditText = findViewById(R.id.emailAddressEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         buttonLogin = findViewById(R.id.buttonLogin);
 
         buttonLogin.setOnClickListener(this);
 
-        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
     }
 
     @Override
     public void onClick(View v) {
+        // Validate form and send Login request
         if (v == buttonLogin) {
             LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
                     passwordEditText.getText().toString().trim());
@@ -63,8 +66,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                 passwordEditText.requestFocus();
             } else {
                 Log.i("intent", "form validated ");
-                loginViewModel.submitValidForm(loginUser);
-                loginViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
+                authViewModel.submitValidForm(loginUser);
+                authViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
                     @Override
                     public void onChanged(LoginResponse loginResponse) {
                         String status = loginResponse.getRequestStatus();
