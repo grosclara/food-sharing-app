@@ -88,8 +88,9 @@ ProductListFragment extends BaseFragment {
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                             @Override
                                             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                                                // Click
-                                                Log.d(Constants.TAG, "click!");
+                                                // Get product from adapter
+                                                Product product = adapter.getProduct(position);
+                                                Log.d(Constants.TAG, product.getName());
                                             }
                                         }
 
