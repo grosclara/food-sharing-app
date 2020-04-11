@@ -8,14 +8,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.ViewModels.ProductViewModel;
 
 import java.util.List;
 
 
 public class HomeFragment extends ProductListFragment {
 
-    private HomeViewModel homeViewModel;
-    private static final String tag = "order";
+    private ProductViewModel productViewModel;
+
 
     @Override
     protected BaseFragment newInstance() {
@@ -24,16 +25,16 @@ public class HomeFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
-        productDetailsFragment.show(getChildFragmentManager(), tag);
+       // DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
+        //productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         // Set data
-        homeViewModel.getHomeMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 adapter.updateProducts(products);
@@ -50,7 +51,7 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                homeViewModel.update();
+                productViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();

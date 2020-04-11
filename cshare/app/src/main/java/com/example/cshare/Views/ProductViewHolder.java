@@ -54,9 +54,8 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
             default:
         }
 
-
         Log.i("img", product.getProduct_picture());
-
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
+
 }
