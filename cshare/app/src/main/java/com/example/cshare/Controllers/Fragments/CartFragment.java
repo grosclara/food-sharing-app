@@ -16,9 +16,17 @@ public class CartFragment extends ProductListFragment {
 
     private CartViewModel cartViewModel;
 
+    private static final String tag = "collected";
+
+
     @Override
     protected BaseFragment newInstance() {
         return new CartFragment();
+    }
+
+    @Override
+    protected void click(Product product) {
+
     }
 
     @Override

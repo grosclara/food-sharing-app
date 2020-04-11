@@ -1,7 +1,11 @@
 package com.example.cshare.Controllers.Fragments;
 
 
+import android.content.DialogInterface;
+
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -15,11 +19,17 @@ import java.util.List;
 public class HomeFragment extends ProductListFragment {
 
     private HomeViewModel homeViewModel;
-
+    private static final String tag = "order";
 
     @Override
     protected BaseFragment newInstance() {
         return new HomeFragment();
+    }
+
+    @Override
+    protected void click(Product product) {
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
     @Override

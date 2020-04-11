@@ -14,9 +14,17 @@ public class SharedFragment extends ProductListFragment {
 
     private SharedProductsViewModel sharedProductsViewModel;
 
+    private static final String tag = "shared";
+
+
     @Override
     protected BaseFragment newInstance() {
         return new SharedFragment();
+    }
+
+    @Override
+    protected void click(Product product) {
+
     }
 
     @Override

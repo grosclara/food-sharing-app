@@ -23,7 +23,7 @@ public class ProductDialogFragment extends DialogFragment {
 
     public Product product;
     public Context context;
-    public String state;
+    public String tag;
 
     // Bind views
     private TextView textViewProductName;
@@ -37,10 +37,10 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String state) {
+    public ProductDialogFragment(Context context, Product product, String tag) {
         this.context = context;
         this.product = product;
-        this.state = state;
+        this.tag = tag;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class ProductDialogFragment extends DialogFragment {
         // Bind product related views
         fillInProductDetails(view);
 
-        // Depending on the state of the dialog, display its title and buttons
-        switch (state) {
+        // Depending on the tag of the dialog, display its title and buttons
+        switch (tag) {
             case "order":
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {

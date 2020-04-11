@@ -3,6 +3,7 @@ package com.example.cshare.Controllers.Fragments;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,6 +83,11 @@ ProductListFragment extends BaseFragment {
         this.recyclerView.setAdapter(this.adapter);
         // Set layout manager to position the items
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        configureOnItemClickedRecyclerView();
+
+    }
+
+    protected void configureOnItemClickedRecyclerView() {
 
         // Configure item click on RecyclerView
         ItemClickSupport.addTo(recyclerView, R.layout.product_list_item)
@@ -91,11 +97,14 @@ ProductListFragment extends BaseFragment {
                                                 // Get product from adapter
                                                 Product product = adapter.getProduct(position);
                                                 Log.d(Constants.TAG, product.getName());
+                                                click(product);
                                             }
                                         }
 
                 );
     }
+
+    protected abstract void click(Product product);
 
     // Configure SwipeRefreshLayout
     protected abstract void configureSwipeRefreshLayout();
