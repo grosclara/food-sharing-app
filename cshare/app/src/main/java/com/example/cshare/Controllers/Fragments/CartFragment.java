@@ -2,6 +2,7 @@ package com.example.cshare.Controllers.Fragments;
 
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,7 +27,8 @@ public class CartFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
     @Override

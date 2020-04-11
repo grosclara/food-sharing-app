@@ -10,13 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.squareup.picasso.Picasso;
 
 public class ProductDialogFragment extends DialogFragment {
@@ -24,6 +27,7 @@ public class ProductDialogFragment extends DialogFragment {
     public Product product;
     public Context context;
     public String tag;
+    public ViewModel viewModel;
 
     // Bind views
     private TextView textViewProductName;
@@ -37,10 +41,11 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String tag) {
+    public ProductDialogFragment(Context context, Product product, String tag, ViewModel viewModel) {
         this.context = context;
         this.product = product;
         this.tag = tag;
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -82,6 +87,27 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
+            case "shared":
+                builder.setTitle("Product shared by you")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Check the status
+                                if (product.getStatus().equals("Available")) {
+                                    // if still available, delete the product from the database
+                                    Log.d(Constants.TAG, "Product deleted");
+
+                                } else {
+                                    Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                break;
+
             default:
                 // code block
         }
@@ -90,7 +116,7 @@ public class ProductDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    private void fillInProductDetails(View view){
+    private void fillInProductDetails(View view) {
 
         // Bind views
         textViewProductName = view.findViewById(R.id.textViewProductName);
@@ -118,7 +144,7 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails(View view, int supplierID){
+    private void fillInSupplierDetails(View view, int supplierID) {
         // Retrieve all information from the supplier and fill in the views
 
         // Bind views
@@ -136,7 +162,6 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(R.drawable.photo_cv).into(imageViewSupplierProfilePicture);
 
     }
-
 
 
 }

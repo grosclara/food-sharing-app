@@ -55,6 +55,12 @@ public interface  ProductAPI {
             @Part("supplier") int supplier
     );
 
+    @DELETE("product/{id}/")
+    Observable<Product> deleteProductById(
+            @Header("Authorization") String token,
+            @Path("id") int productID
+    );
+
     @FormUrlEncoded
     @PATCH("product/{id}/")
     Observable<Product> updateProductStatus(
@@ -63,10 +69,6 @@ public interface  ProductAPI {
             @FieldMap Map<String, String> status
     );
 
-    @DELETE("product/{id}/")
-    Observable<ResponseBody> deleteProductById(
-            @Header("Authorization") String token,
-            @Path("id") int productId
-    );
+
 
 }

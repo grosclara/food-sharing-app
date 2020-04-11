@@ -148,6 +148,50 @@ public class HomeRequestManager {
         }*/
     }
 
+
+    public void deleteProduct(Product productToDelete) {
+        /**
+         * Request to the API to delete the product taken in param and update the repository
+         * @param product
+         */
+        Observable<Product> product;
+        product = productAPI.deleteProductById(
+                Constants.TOKEN,
+                productToDelete.getId());
+        product
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<Product>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(Product product) {
+                        Log.d(Constants.TAG, "Product deleted successfully");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Product deleted successfully");
+                    }
+                });
+    }
+
     public void addProduct(ProductToPost productToPost){
         /**
          * Request to the API to post the product taken in param and update the repository

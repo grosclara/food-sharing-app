@@ -33,10 +33,15 @@ public class HomeViewModel extends ViewModel {
     }
 
     // Insert product method
-    public boolean addProduct(ProductToPost productToPost){
+    public void addProduct(ProductToPost productToPost){
         homeRequestManager.addProduct(productToPost);
-        return true;
     }
+
+    public void deleteProduct(Product product){
+        homeRequestManager.deleteProduct(product);
+    }
+
+
 
     // Insert product in request manager
     public void insert(Product product) {
