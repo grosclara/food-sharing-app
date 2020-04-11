@@ -90,3 +90,12 @@
 "08/04 - CG : Implementation of the Camera class composed of basic method to retrieve Bitmap from uri, compressing and rotating them if necessary, 6h00"
 "09/04 - CG : Fix size and rotation pictures issues when uploading them to the server from the Add Fragment, 2h00"
 "09/04 - CG : Fix issue #30 : the picture of added product displays itself correctly, 1h00"
+"10/04 - BT + CG : Review of has been done so far (merge branches), 30mn"
+"10/04 : BT : Login functionality implemented, 2h00"
+"11/04 : BT : Implementation of the other auth functionality (register/logout), 2h00"
+"11/04 : CG : Restructuration of the viewModels (merge the 3 products related viewmodels in one, 30mn
+Implementation of the dialogs to interact with products, 2h00"
+
+
+
+
