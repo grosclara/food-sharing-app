@@ -282,17 +282,12 @@ public class ProductRequestManager {
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue();
                         List oldShared = getSharedProductList().getValue();
-                        oldAvailable.add(0, product);
-                        oldShared.add(0, product);
+                        oldAvailable.add(0, productIns);
+                        oldShared.add(0, productIns);
 
                         // Wrap this new list in live data
                         availableProductList.setValue(oldAvailable);
                         sharedProductList.setValue(oldShared);
-                        //MutableLiveData<List<Product>> productListLiveData = getProductList();
-                        //newAvailableProductList.setValue(productList);
-                        // Set live data in request manager
-                        //setAvailableProductList(productListLiveData);
-
 
                     }
 
