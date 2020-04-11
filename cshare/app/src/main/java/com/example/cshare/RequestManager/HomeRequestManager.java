@@ -148,7 +148,7 @@ public class HomeRequestManager {
         }*/
     }
 
-    public void addProduct(ProductToPost productToPost){
+    public void addProduct(ProductToPost productToPost, Product productIns){
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
@@ -183,6 +183,15 @@ public class HomeRequestManager {
                     @Override
                     public void onNext(ProductToPost product) {
                         Log.d(Constants.TAG, "Product added successfully");
+                        // New product list to which we add the new product
+                        List productList = getProductList().getValue();
+                        productList.add(0, productIns);
+                        // Wrap this new list in live data
+                        MutableLiveData<List<Product>> productListLiveData = getProductList();
+                        productListLiveData.setValue(productList);
+                        // Set live data in request manager
+                        setProductList(productListLiveData);
+
                     }
 
                     @Override

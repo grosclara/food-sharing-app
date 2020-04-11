@@ -33,6 +33,7 @@ import com.example.cshare.Models.ProductToPost;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.HomeViewModel;
+import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.SharedProductsViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -87,8 +88,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private Uri fileToUploadUri;
 
     // ViewModels
-    HomeViewModel homeViewModel;
-    SharedProductsViewModel sharedProductsViewModel;
+    ProductViewModel productViewModel;
 
     @Override
     protected BaseFragment newInstance() {
@@ -134,8 +134,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     @Override
     protected void configureViewModel() {
         // Retrieve data from view model
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        sharedProductsViewModel = new ViewModelProvider(this).get(SharedProductsViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
     }
 
     private void configureValidator() {
@@ -303,9 +302,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     private void addProduct(Product product, ProductToPost productToPost) {
-        homeViewModel.insert(product);
-        sharedProductsViewModel.insert(product);
-        homeViewModel.addProduct(productToPost);
+        productViewModel.addProduct(productToPost, product);
     }
 
     /*
