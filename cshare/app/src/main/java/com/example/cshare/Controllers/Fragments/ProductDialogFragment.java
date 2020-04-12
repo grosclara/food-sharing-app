@@ -118,10 +118,10 @@ public class ProductDialogFragment extends DialogFragment {
 
             case Constants.INCART:
                 builder.setTitle("What to do with this product?")
-                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                        /*.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) { }
-                        })
+                        })*/
                         .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Set status to delivered and send request to update in database
@@ -132,7 +132,10 @@ public class ProductDialogFragment extends DialogFragment {
                         })
                         .setNegativeButton("Cancel the order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // Set status to available and send request to update in database
+                                // Delete order and set product status to available
+                                Map<String, String> status = new HashMap<>();
+                                status.put("status", Constants.AVAILABLE);
+                                productViewModel.cancelOrder(product.getId(), status);
                                 //updateProductStatus(product, "Available");
                             }
                         });

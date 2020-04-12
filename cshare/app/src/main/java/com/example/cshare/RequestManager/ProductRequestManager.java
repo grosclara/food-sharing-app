@@ -474,7 +474,6 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product productDel) {
-                        Log.d(Constants.TAG, productDel.getStatus());
                         // Change the status of the delivered product in the inCart list
                         List<Product> oldInCart = inCartProductList.getValue();
                         Product pDel = null;
@@ -488,6 +487,49 @@ public class ProductRequestManager {
                         }
                         oldInCart.set(index, productDel);
 
+                        inCartProductList.setValue(oldInCart);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void cancelOrder(int productID, Map status){
+        Observable<Product> product = updateStatus(Constants.TOKEN, productID, status);
+        product
+                .subscribe(new Observer<Product>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Product productAv) {
+                        // Remove the product from the inCart list and re add it to the available list
+                        List<Product> oldAvailable = availableProductList.getValue();
+                        List<Product> oldInCart = inCartProductList.getValue();
+
+                        Product pIC = null;
+                        ListIterator<Product> itIC = oldInCart.listIterator();
+                        while (itIC.hasNext() && pIC == null) {
+                            Product item = itIC.next();
+                            if (item.getId() == productAv.getId())
+                                pIC = item;
+                        }
+                        oldInCart.remove(pIC);
+
+                        oldAvailable.add(0, productAv);
+
+                        availableProductList.setValue(oldAvailable);
                         inCartProductList.setValue(oldInCart);
 
                     }

@@ -21,7 +21,6 @@ public class CartFragment extends ProductListFragment {
 
     private static String tag;
 
-
     @Override
     protected BaseFragment newInstance() {
         return new CartFragment();

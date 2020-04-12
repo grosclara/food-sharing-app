@@ -68,6 +68,10 @@ public class ProductViewModel extends ViewModel {
         productRequestManager.deliver(productID, status);
     }
 
+    public void cancelOrder(int productID, Map status){
+        productRequestManager.cancelOrder(productID, status);
+    }
+
     public void deleteProduct(Product product){
         productRequestManager.deleteProduct(product);
     }
