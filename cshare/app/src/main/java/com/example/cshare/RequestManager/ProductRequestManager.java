@@ -357,21 +357,24 @@ public class ProductRequestManager {
                         List<Product> oldAvailable = getAvailableProductList().getValue();
                         List<Product> oldShared = getSharedProductList().getValue();
 
-                        Log.d(Constants.TAG, "oldavailable " + oldAvailable.size());
-
-                        oldShared.remove(productToDelete);
-
-                        // productToDelete is an Product object from the shared list so the same
-                        // product in the available list will be considered as a different Product
-                        // object
-                        Product p = null;
-                        ListIterator<Product> it = oldAvailable.listIterator();
-                        while (it.hasNext() && p == null) {
-                            Product item = it.next();
+                        // Remove the productToDelete from both the shared and available product lists
+                        Product pAv = null;
+                        ListIterator<Product> itAv = oldAvailable.listIterator();
+                        while (itAv.hasNext() && pAv == null) {
+                            Product item = itAv.next();
                             if (item.getId() == productToDelete.getId())
-                                p = item;
+                                pAv = item;
                         }
-                        oldAvailable.remove(p);
+                        Product pSh = null;
+                        ListIterator<Product> itSh = oldShared.listIterator();
+                        while (itSh.hasNext() && pSh == null) {
+                            Product item = itSh.next();
+                            if (item.getId() == productToDelete.getId())
+                                pSh = item;
+                        }
+
+                        oldAvailable.remove(pAv);
+                        oldShared.remove(pSh);
 
                         // Wrap this new list in live data
                         availableProductList.setValue(oldAvailable);
