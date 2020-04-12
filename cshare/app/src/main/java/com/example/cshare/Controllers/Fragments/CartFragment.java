@@ -26,8 +26,8 @@ public class CartFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-       // DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
-        //productDetailsFragment.show(getChildFragmentManager(), tag);
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
     @Override

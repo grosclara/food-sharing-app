@@ -117,7 +117,7 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getInCartProducts : error");
-                        Log.d(Constants.TAG, e.getLocalizedMessage());
+                        Log.d(Constants.TAG, e.getMessage());
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
@@ -445,7 +445,6 @@ public class ProductRequestManager {
 
     public Single<List<Product>> streamFetchProductsFollowingOrders(
             String token, List<Order> orders) {
-        Log.d(Constants.TAG, String.valueOf(orders.get(0).getProductID()));
         // Get an Observable of the list
         return Observable
                 .fromIterable(orders)
@@ -457,12 +456,52 @@ public class ProductRequestManager {
 
     public Observable<Product> streamFetchProductFollowingId(
             String token, int productID) {
-        Log.d(Constants.TAG, String.valueOf(productID));
 
         return productAPI.getProductById(token, productID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
+    }
+
+    public void deliver(int productID, Map status){
+        Observable<Product> product = updateStatus(Constants.TOKEN, productID, status);
+        product
+                .subscribe(new Observer<Product>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Product productDel) {
+                        Log.d(Constants.TAG, productDel.getStatus());
+                        // Change the status of the delivered product in the inCart list
+                        List<Product> oldInCart = inCartProductList.getValue();
+                        Product pDel = null;
+                        int index = -1;
+                        ListIterator<Product> itDel = oldInCart.listIterator();
+                        while (itDel.hasNext() && pDel == null) {
+                            Product item = itDel.next();
+                            if (item.getId() == productDel.getId())
+                                pDel = item;
+                                index = oldInCart.indexOf(item);
+                        }
+                        oldInCart.set(index, productDel);
+
+                        inCartProductList.setValue(oldInCart);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     public Observable<Product> updateStatus(

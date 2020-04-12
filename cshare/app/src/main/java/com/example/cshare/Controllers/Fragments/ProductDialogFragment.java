@@ -116,6 +116,29 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
+            case "collected":
+                builder.setTitle("What to do with this product?")
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) { }
+                        })
+                        .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Set status to delivered and send request to update in database
+                                Map<String, String> status = new HashMap<>();
+                                status.put("status", "Delivered");
+                                productViewModel.deliver(product.getId(), status);
+                            }
+                        })
+                        .setNegativeButton("Cancel the order", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Set status to available and send request to update in database
+                                //updateProductStatus(product, "Available");
+                            }
+                        });
+                break;
+
+
             default:
                 // code block
         }

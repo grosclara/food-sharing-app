@@ -64,6 +64,10 @@ public class ProductViewModel extends ViewModel {
         productRequestManager.order(request, status);
     }
 
+    public void deliver(int productID, Map status){
+        productRequestManager.deliver(productID, status);
+    }
+
     public void deleteProduct(Product product){
         productRequestManager.deleteProduct(product);
     }

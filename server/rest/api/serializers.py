@@ -103,8 +103,6 @@ class ProductDetailsSerializer(serializers.ModelSerializer):
 
 class OrderDetailsSerializer(serializers.ModelSerializer):
 
-    product = ProductSerializer(read_only=True)
-
     class Meta:
         model=Order
         fields=('__all__')
