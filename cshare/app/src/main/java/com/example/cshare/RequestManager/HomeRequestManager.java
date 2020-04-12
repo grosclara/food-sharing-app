@@ -43,6 +43,7 @@ public class HomeRequestManager {
     //User credits
     String token;
     int userId;
+    String campus;
 
     public HomeRequestManager() {
         /**
@@ -56,13 +57,14 @@ public class HomeRequestManager {
         // user Credits
         token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
         userId = LauncherActivity.userCredits.getInt("id", -1);
+        campus = LauncherActivity.userCredits.getString("campus", null);
 
-        getAvailableProducts(token, Constants.CAMPUS, Constants.STATUS);
+        getAvailableProducts(token, campus, Constants.STATUS);
     }
 
     // Update request manager
     public void updateRequestManager(){
-        getAvailableProducts(token, Constants.CAMPUS, Constants.STATUS);
+        getAvailableProducts(token, campus, Constants.STATUS);
     }
 
     // Getter method
