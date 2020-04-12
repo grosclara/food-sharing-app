@@ -5,11 +5,13 @@ import com.example.cshare.Models.ProductToPost;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -56,7 +58,7 @@ public interface  ProductAPI {
     );
 
     @DELETE("product/{id}/")
-    Observable<Product> deleteProductById(
+    Observable<Response<Product>> deleteProductById(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

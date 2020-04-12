@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.ProductViewModel;
 import com.squareup.picasso.Picasso;
 
 public class ProductDialogFragment extends DialogFragment {
@@ -26,7 +27,7 @@ public class ProductDialogFragment extends DialogFragment {
     public Product product;
     public Context context;
     public String tag;
-    public ViewModel viewModel;
+    public ProductViewModel productViewModel;
 
     // Bind views
     private TextView textViewProductName;
@@ -40,11 +41,11 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String tag, ViewModel viewModel) {
+    public ProductDialogFragment(Context context, Product product, String tag, ProductViewModel productViewModel) {
         this.context = context;
         this.product = product;
         this.tag = tag;
-        this.viewModel = viewModel;
+        this.productViewModel = productViewModel;
     }
 
     @Override
@@ -94,7 +95,7 @@ public class ProductDialogFragment extends DialogFragment {
                                 if (product.getStatus().equals("Available")) {
                                     // if still available, delete the product from the database
                                     Log.d(Constants.TAG, "Product deleted");
-
+                                    productViewModel.deleteProduct(product);
                                 } else {
                                     Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
                                 }

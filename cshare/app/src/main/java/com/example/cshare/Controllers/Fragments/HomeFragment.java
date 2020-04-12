@@ -17,7 +17,6 @@ public class HomeFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
 
-
     @Override
     protected BaseFragment newInstance() {
         return new HomeFragment();

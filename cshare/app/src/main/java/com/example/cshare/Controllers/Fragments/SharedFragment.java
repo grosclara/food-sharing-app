@@ -25,8 +25,8 @@ public class SharedFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-      //  DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, sharedProductsViewModel);
-       // productDetailsFragment.show(getChildFragmentManager(), tag);
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
     @Override

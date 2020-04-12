@@ -47,6 +47,10 @@ public class ProductViewModel extends ViewModel {
     // Add a product and update every list
     public void addProduct(ProductToPost productToPost, Product product){
         productRequestManager.addProduct(productToPost, product);
-        update();
+        //update();
+    }
+
+    public void deleteProduct(Product product){
+        productRequestManager.deleteProduct(product);
     }
 }

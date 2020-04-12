@@ -13,6 +13,8 @@ import com.example.cshare.WebServices.OrderAPI;
 import com.example.cshare.WebServices.ProductAPI;
 
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -22,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ProductRequestManager {
@@ -52,7 +55,7 @@ public class ProductRequestManager {
         // Initialize the value of availableProductList
         getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
         // Initialize the value of inCartProductList
-        getInCartProducts(Constants.TOKEN,Constants.USERID);
+        getInCartProducts(Constants.TOKEN, Constants.USERID);
         // Initialize the value of sharedProductProductList
         getSharedProducts(Constants.TOKEN, Constants.USERID);
     }
@@ -61,15 +64,29 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getAvailableProductList() {
         return availableProductList;
     }
-    public MutableLiveData<List<Product>> getInCartProductList() { return  inCartProductList; }
-    public MutableLiveData<List<Product>> getSharedProductList() { return  sharedProductList; }
+
+    public MutableLiveData<List<Product>> getInCartProductList() {
+        return inCartProductList;
+    }
+
+    public MutableLiveData<List<Product>> getSharedProductList() {
+        return sharedProductList;
+    }
 
     // Setter method
-    public void setAvailableProductList(MutableLiveData<List<Product>> productList) { this.availableProductList = productList; }
-    public void setInCartProductList(MutableLiveData<List<Product>> productList) { this.inCartProductList = productList; }
-    public void setSharedProductList(MutableLiveData<List<Product>> productList) { this.sharedProductList = productList; }
+    public void setAvailableProductList(MutableLiveData<List<Product>> productList) {
+        this.availableProductList = productList;
+    }
 
-    public void updateRequestManager(){
+    public void setInCartProductList(MutableLiveData<List<Product>> productList) {
+        this.inCartProductList = productList;
+    }
+
+    public void setSharedProductList(MutableLiveData<List<Product>> productList) {
+        this.sharedProductList = productList;
+    }
+
+    public void updateRequestManager() {
         getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
         getInCartProducts(Constants.TOKEN, Constants.USERID);
         getSharedProducts(Constants.TOKEN, Constants.USERID);
@@ -104,13 +121,13 @@ public class ProductRequestManager {
                 .subscribe(new Observer<List<Product>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "getInCartProducts : on start subscription");
                         // productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
-                        String msg = String.format("new data received %s", inCartProductList.toString());
+                        String msg = String.format("inCart : new data received %s", inCartProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
                         inCartProductList.setValue(products);
@@ -118,13 +135,13 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "getInCartProducts : error");
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "All data received");
+                        Log.d(Constants.TAG, "getInCartProducts : All data received");
                     }
                 });
     }
@@ -151,13 +168,13 @@ public class ProductRequestManager {
                 .subscribe(new Observer<List<Product>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "getAvailableProducts : on start subscription");
                         // productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
-                        String msg = String.format("new data received %s", availableProductList.toString());
+                        String msg = String.format("getAvailableProducts : new data received %s", availableProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
                         availableProductList.setValue(products);
@@ -165,13 +182,13 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "getAvailableProducts : error");
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "All data received");
+                        Log.d(Constants.TAG, "getAvailableProducts : All data received");
                     }
                 });
 
@@ -219,13 +236,13 @@ public class ProductRequestManager {
                 .subscribe(new Observer<List<Product>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "getSharedProducts :  start subscription");
                         // productList.setValue((List<Product>) ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
-                        String msg = String.format("new data received %s", sharedProductList.toString());
+                        String msg = String.format("getSharedProducts :  new data received %s", sharedProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
                         sharedProductList.setValue(products);
@@ -233,18 +250,18 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "getSharedProducts :  error");
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "All data received");
+                        Log.d(Constants.TAG, "getSharedProducts :  All data received");
                     }
                 });
     }
 
-    public void addProduct(ProductToPost productToPost, Product productIns){
+    public void addProduct(ProductToPost productToPost, Product productIns) {
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
@@ -273,12 +290,12 @@ public class ProductRequestManager {
                 .subscribe(new Observer<ProductToPost>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "addProduct : on start subscription");
                     }
 
                     @Override
                     public void onNext(ProductToPost product) {
-                        Log.d(Constants.TAG, "Product added successfully");
+                        Log.d(Constants.TAG, "addProduct : Product added successfully");
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue();
                         List oldShared = getSharedProductList().getValue();
@@ -294,12 +311,81 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
 
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "addProduct : error");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Product received successfully");
+                        Log.d(Constants.TAG, "addProduct : Product received successfully");
+                    }
+                });
+    }
+
+    public void deleteProduct(Product productToDelete) {
+        /**
+         * Request to the API to delete the product taken in param and update the repository
+         * @param productToPost
+         */
+
+        Observable<Response<Product>> product;
+        product = productAPI.deleteProductById(
+                Constants.TOKEN,
+                productToDelete.getId());
+        Log.d(Constants.TAG, product.toString());
+        product
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<Response<Product>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "deleteProduct : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(Response<Product> product) {
+
+                        Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
+                        // New product list to which we add the new product
+                        List<Product> oldAvailable = getAvailableProductList().getValue();
+                        List<Product> oldShared = getSharedProductList().getValue();
+
+                        Log.d(Constants.TAG, "oldavailable " + oldAvailable.size());
+
+                        oldShared.remove(productToDelete);
+
+                        // productToDelete is an Product object from the shared list so the same
+                        // product in the available list will be considered as a different Product
+                        // object
+                        Product p = null;
+                        ListIterator<Product> it = oldAvailable.listIterator();
+                        while (it.hasNext() && p == null) {
+                            Product item = it.next();
+                            if (item.getId() == productToDelete.getId())
+                                p = item;
+                        }
+                        oldAvailable.remove(p);
+
+                        // Wrap this new list in live data
+                        availableProductList.setValue(oldAvailable);
+                        sharedProductList.setValue(oldShared);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "deleteProduct : error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "deleteProduct : Deletion completed");
                     }
                 });
     }
@@ -316,13 +402,6 @@ public class ProductRequestManager {
         }
         return productRequestManager;
     }
-
-
-
-
-
-
-
 
 
     public Single<List<Product>> streamFetchProductsFollowingOrders(
