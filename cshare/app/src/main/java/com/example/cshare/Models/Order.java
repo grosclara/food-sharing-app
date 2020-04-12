@@ -9,53 +9,20 @@ package com.example.cshare.Models;
  */
 
 public class Order {
-    private int id;
-    // Reference to the id of the client
     private int client;
-    // Reference to the id of the product
-    private int productID;
-    // Reference to the product ( this is only used for requests)
-    private Product product;
+    private int product;
 
     /*
      * Constructor of the Order class.
      * Only take a few attributes in argument because the server auto adds the id
      */
-    public Order(int client, int productID) {
-        this.client = client;
-        this.productID = productID;
-    }
 
-    public Order(int id, Product product) {
-        this.id = id;
-        this.product= product;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getClient() {
-        return client;
-    }
-
-    public void setClient(int client) {
-        this.client = client;
+    public Order(int clientID, int productID) {
+        this.client = clientID;
+        this.product = productID;
     }
 
     public int getProductID() {
-        return productID;
-    }
-
-    public Product getProduct() {
         return product;
-    }
-
-    public void setProductID(int productID) {
-        this.productID = productID;
     }
 }

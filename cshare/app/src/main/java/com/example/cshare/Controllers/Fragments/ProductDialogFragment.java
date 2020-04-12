@@ -16,11 +16,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDialogFragment extends DialogFragment {
 
@@ -70,12 +74,16 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
                                 // Order the product
-                                // Create the order object
                                 if (product.getStatus().equals("Available")) {
+                                    // Create the order object
+                                    Order request = new Order(Constants.USERID, product.getId());
                                     // Change the status attribute of the product object to not available
-                                    //updateProductStatus(product, "Collected");
+                                    Map<String, String> status = new HashMap<>();
+                                    status.put("status", "Collected");
+                                    productViewModel.order(request, status);
+
+                                    //updateProductStatus(product, status);
                                     Log.d(Constants.TAG, "Status updated");
                                 }
                             }

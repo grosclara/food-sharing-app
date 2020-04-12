@@ -14,10 +14,12 @@ import com.example.cshare.WebServices.ProductAPI;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -92,6 +94,75 @@ public class ProductRequestManager {
         getSharedProducts(Constants.TOKEN, Constants.USERID);
     }
 
+    public void order(Order request, Map status){
+        /**
+         * Request to the API to order a product and update its status from available to collected
+         */
+        Observable<Order> order;
+        order = orderAPI.addOrder(Constants.TOKEN, request);
+        order
+                .flatMap(new Function<Order, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> apply(Order order) throws Exception {
+                        return updateStatus(Constants.TOKEN, request.getProductID(), status);
+                    }
+                })
+
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+
+                .subscribe(new Observer<Product>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "addOrder : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(Product productIns) {
+                        String msg = String.format("addOrder : product status updated and order added");
+                        Log.d(Constants.TAG, msg);
+
+                        // Ordered product added to the cart
+                        List<Product> oldInCart = getInCartProductList().getValue();
+                        oldInCart.add(0, productIns);
+
+                        // Remove the product from the home available list
+                        List<Product> oldAvailable = getAvailableProductList().getValue();
+                        Product pAv = null;
+                        ListIterator<Product> itAv = oldAvailable.listIterator();
+                        while (itAv.hasNext() && pAv == null) {
+                            Product item = itAv.next();
+                            if (item.getId() == productIns.getId())
+                                pAv = item;
+                        }
+                        oldAvailable.remove(pAv);
+
+                        // Wrap these new lists in live data
+                        inCartProductList.setValue(oldInCart);
+                        availableProductList.setValue(oldAvailable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "addOrder : error");
+                        Log.d(Constants.TAG, e.getLocalizedMessage());
+                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "getInCartProducts : All data received");
+                    }
+                });
+    }
+
     public void getInCartProducts(String token, int userID) {
         /**
          * Request to the API to fill the MutableLiveData attribute productList with the list of products
@@ -136,6 +207,7 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getInCartProducts : error");
+                        Log.d(Constants.TAG, e.getLocalizedMessage());
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
@@ -409,19 +481,29 @@ public class ProductRequestManager {
 
     public Single<List<Product>> streamFetchProductsFollowingOrders(
             String token, List<Order> orders) {
+        Log.d(Constants.TAG, String.valueOf(orders.get(0).getProductID()));
         // Get an Observable of the list
         return Observable
                 .fromIterable(orders)
                 .concatMap(order -> streamFetchProductFollowingId(
-                        token, order.getProduct().getId())
+                        token, order.getProductID())
                 )
                 .toList(); // Items in the list have the same order of initial list
     }
 
     public Observable<Product> streamFetchProductFollowingId(
             String token, int productID) {
+        Log.d(Constants.TAG, String.valueOf(productID));
 
         return productAPI.getProductById(token, productID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS);
+    }
+
+    public Observable<Product> updateStatus(
+            String token, int productID, Map status) {
+        return productAPI.updateProductStatus(token, productID, status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);

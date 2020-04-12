@@ -70,7 +70,4 @@ public interface  ProductAPI {
             @Path("id") int id,
             @FieldMap Map<String, String> status
     );
-
-
-
 }
