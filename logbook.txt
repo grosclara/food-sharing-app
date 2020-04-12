@@ -89,4 +89,6 @@
 "02/04 - CG : Review of Babacar's work on ProfileFragment and refresh functionality, 1h30"
 "05/04 - BT : Launch acitivity and storage of user in shared prefs, 1h00"
 "09/04 - BT : Login view model and login activity, 3h00"
+"11/04 - BT : Logout and AuthViewModel, 1h30"
+"12/04 - BT : Register, 2h"
 
