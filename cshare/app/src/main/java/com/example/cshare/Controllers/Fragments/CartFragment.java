@@ -1,6 +1,8 @@
 package com.example.cshare.Controllers.Fragments;
 
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
@@ -8,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 
 import java.util.List;
@@ -16,7 +19,7 @@ public class CartFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
 
-    private static final String tag = "collected";
+    private static String tag;
 
 
     @Override
@@ -26,6 +29,8 @@ public class CartFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
+        if (product.getStatus().equals(Constants.COLLECTED)){
+            tag = Constants.INCART;} else {tag = Constants.ARCHIVED;}
         DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }

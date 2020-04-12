@@ -28,7 +28,7 @@ public class HomeFragment extends ProductListFragment {
     protected void click(Product product) {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
-        if (product.getSupplier() == Constants.USERID){ tag = "shared"; } else{ tag = "order";}
+        if (product.getSupplier() == Constants.USERID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
         DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }

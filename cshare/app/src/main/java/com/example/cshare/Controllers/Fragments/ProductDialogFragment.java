@@ -70,7 +70,7 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {
-            case "order":
+            case Constants.ORDER:
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -80,7 +80,7 @@ public class ProductDialogFragment extends DialogFragment {
                                     Order request = new Order(Constants.USERID, product.getId());
                                     // Change the status attribute of the product object to not available
                                     Map<String, String> status = new HashMap<>();
-                                    status.put("status", "Collected");
+                                    status.put("status", Constants.COLLECTED);
                                     productViewModel.order(request, status);
 
                                     //updateProductStatus(product, status);
@@ -95,12 +95,12 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
-            case "shared":
+            case Constants.SHARED:
                 builder.setTitle("Product shared by you")
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Check the status
-                                if (product.getStatus().equals("Available")) {
+                                if (product.getStatus().equals(Constants.AVAILABLE)) {
                                     // if still available, delete the product from the database
                                     Log.d(Constants.TAG, "Product deleted");
                                     productViewModel.deleteProduct(product);
@@ -116,7 +116,7 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
-            case "collected":
+            case Constants.INCART:
                 builder.setTitle("What to do with this product?")
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -126,7 +126,7 @@ public class ProductDialogFragment extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Set status to delivered and send request to update in database
                                 Map<String, String> status = new HashMap<>();
-                                status.put("status", "Delivered");
+                                status.put("status", Constants.DELIVERED);
                                 productViewModel.deliver(product.getId(), status);
                             }
                         })
@@ -138,6 +138,9 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
+            case Constants.ARCHIVED:
+                builder.setTitle("Transaction done, enjoy!");
+                break;
 
             default:
                 // code block
