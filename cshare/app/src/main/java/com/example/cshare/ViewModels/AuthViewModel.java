@@ -8,6 +8,8 @@ import android.util.Log;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 
+import com.example.cshare.Models.User;
+import com.example.cshare.Models.UserWithPicture;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
@@ -48,14 +50,57 @@ public class AuthViewModel extends ViewModel {
         authAPI = retrofit.create(AuthenticationAPI.class);
     }
 
+    public void registerWithoutPicture(User user){
+        /**
+         * Request to the API to register
+         */
+        Observable<User> userObservable;
+        userObservable = authAPI.createUserWithoutPicture(user);
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(User userInfo) {
+                        Log.d(Constants.TAG, "Registered out successfully");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Completed");
+                    }
+                });
+
+        }
+
+
+
     public void logout(String token){
         /**
          * Request to the API to logout
          */
         loggedOutMutableLiveData = new MutableLiveData<>();
-        Observable<ResponseBody> key;
-        key = authAPI.logout(token);
-        key
+        Observable<ResponseBody> details;
+        details = authAPI.logout(token);
+        details
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -148,4 +193,48 @@ public class AuthViewModel extends ViewModel {
 
 }
 
+    public void registerWithPicture(UserWithPicture newUser) {
+        /**
+         * Request to the API to post the product taken in param and update the repository
+         * @param productToPost
+         */
+
+        Observable<UserWithPicture> userWithPictureObservable;
+        userWithPictureObservable = authAPI.createUserWithPicture(
+                newUser.getProfilePicture(),newUser.getFirstName(),newUser.getLastName(),newUser.getRoom_number(),
+                newUser.getCampus(),newUser.getEmail(),newUser.getPassword1(),newUser.getPassword2());
+        userWithPictureObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<UserWithPicture>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(UserWithPicture newUser ) {
+                        Log.d(Constants.TAG, "Product added successfully");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Product received successfully");
+                    }
+                });
+    }
 }

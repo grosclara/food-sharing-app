@@ -27,6 +27,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     private EditText emailAddressEditText;
     private EditText passwordEditText;
     private Button buttonLogin;
+    private Button buttonCreateAccount;
+    //private Button buttonChangePassword;
 
     boolean success;
 
@@ -39,8 +41,13 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         emailAddressEditText = findViewById(R.id.emailAddressEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         buttonLogin = findViewById(R.id.buttonLogin);
+        buttonCreateAccount =findViewById(R.id.buttonCreateAccount);
+        // buttonChangePassword = findViewById(R.id.buttonChangePassword);
 
+        //  Set click listeners
         buttonLogin.setOnClickListener(this);
+        buttonCreateAccount.setOnClickListener(this);
+        //buttonChangePassword.setOnClickListener(this);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
@@ -48,57 +55,66 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        int id = v.getId();
         // Validate form and send Login request
-        if (v == buttonLogin) {
-            LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
-                    passwordEditText.getText().toString().trim());
-            if (TextUtils.isEmpty(Objects.requireNonNull(emailAddressEditText.getText()))){
-                emailAddressEditText.setError("Enter an E-Mail Address");
-                emailAddressEditText.requestFocus();
-            } else if (!loginUser.isEmailValid()) {
-                emailAddressEditText.setError("Enter a Valid E-mail Address");
-                emailAddressEditText.requestFocus();
-            } else if (TextUtils.isEmpty(Objects.requireNonNull(loginUser).getPassword())) {
-                passwordEditText.setError("Enter a Password");
-                passwordEditText.requestFocus();
-            } else if (!loginUser.isPasswordLengthGreaterThan5()) {
-                passwordEditText.setError("Enter at least 6 Digit password");
-                passwordEditText.requestFocus();
-            } else {
-                Log.i("intent", "form validated ");
-                authViewModel.submitValidForm(loginUser);
-                authViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
-                    @Override
-                    public void onChanged(LoginResponse loginResponse) {
-                        String status = loginResponse.getRequestStatus();
-                        LoginResponse.UserResponse user = loginResponse.getUserResponse();
-                        String token = loginResponse.getKey();
-                        Log.i("intent", status);
-                        Log.i("intent", "gnnnn " + token);
-                        if (status.equals("success")) {
+        switch(id) {
+            case(R.id.buttonLogin):
+                LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
+                        passwordEditText.getText().toString().trim());
+                if (TextUtils.isEmpty(Objects.requireNonNull(emailAddressEditText.getText()))){
+                    emailAddressEditText.setError("Enter an E-Mail Address");
+                    emailAddressEditText.requestFocus();
+                } else if (!loginUser.isEmailValid()) {
+                    emailAddressEditText.setError("Enter a Valid E-mail Address");
+                    emailAddressEditText.requestFocus();
+                } else if (TextUtils.isEmpty(Objects.requireNonNull(loginUser).getPassword())) {
+                    passwordEditText.setError("Enter a Password");
+                    passwordEditText.requestFocus();
+                } else if (!loginUser.isPasswordLengthGreaterThan5()) {
+                    passwordEditText.setError("Enter at least 6 Digit password");
+                    passwordEditText.requestFocus();
+                } else {
+                    Log.i("intent", "form validated ");
+                    authViewModel.submitValidForm(loginUser);
+                    authViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
+                        @Override
+                        public void onChanged(LoginResponse loginResponse) {
+                            String status = loginResponse.getRequestStatus();
+                            LoginResponse.UserResponse user = loginResponse.getUserResponse();
+                            String token = loginResponse.getKey();
+                            Log.i("intent", status);
+                            Log.i("intent", "gnnnn " + token);
+                            if (status.equals("success")) {
 
 
 
-                            int id = user.getId();
+                                int id = user.getId();
 
-                            LauncherActivity.userCreditsEditor.putString("token", token);
-                            LauncherActivity.userCreditsEditor.apply();
-                            LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
-                            LauncherActivity.userCreditsEditor.putInt("id", id);
-                            LauncherActivity.userCreditsEditor.apply();
+                                LauncherActivity.userCreditsEditor.putString("token", token);
+                                LauncherActivity.userCreditsEditor.apply();
+                                LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
+                                LauncherActivity.userCreditsEditor.putInt("id", id);
+                                LauncherActivity.userCreditsEditor.apply();
 
-                            Intent toMainActivityIntent = new Intent();
-                            toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                            startActivity(toMainActivityIntent);
+                                Intent toMainActivityIntent = new Intent();
+                                toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+                                startActivity(toMainActivityIntent);
+
+                            }
+                            else {success = false;}
+
 
                         }
-                        else {success = false;}
+                    });
 
+                }
+                break;
+            case (R.id.buttonCreateAccount):
+                Intent toRegisterActivityIntent = new Intent();
+                toRegisterActivityIntent.setClass(getApplicationContext(), RegisterActivity.class);
+                startActivity(toRegisterActivityIntent);
+                break;
 
-                    }
-                });
-
-            }
         }
     }
 
