@@ -38,10 +38,14 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private Button logOutButton;
 
     @Override
-    protected BaseFragment newInstance() {return new ProfileFragment();}
+    protected BaseFragment newInstance() {
+        return new ProfileFragment();
+    }
 
     @Override
-    protected int getFragmentLayout() {return R.layout.fragment_profile;}
+    protected int getFragmentLayout() {
+        return R.layout.fragment_profile;
+    }
 
     @Override
     protected void configureDesign(View view) {
@@ -61,7 +65,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
-    protected void updateDesign() {}
+    protected void updateDesign() {
+    }
 
     @Override
     protected void configureViewModel() {
@@ -71,17 +76,19 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User profile) {
-                textViewFirstName.setText(profile.getFirstName());
-                textViewLastName.setText(profile.getLastName());
-                textViewCampus.setText(profile.getCampus());
-                textViewEmail.setText(profile.getEmail());
-                textViewRoomNumber.setText(profile.getRoomNumber());
-                Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
 
-            }
+            @Override
+            public void onChanged(User profile) { updateUserDetails(profile); }
         });
+    }
+
+    private void updateUserDetails(User profile) {
+        textViewFirstName.setText(profile.getFirstName());
+        textViewLastName.setText(profile.getLastName());
+        textViewCampus.setText(profile.getCampus());
+        textViewEmail.setText(profile.getEmail());
+        textViewRoomNumber.setText(profile.getRoomNumber());
+        Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
     }
 
     @Override
