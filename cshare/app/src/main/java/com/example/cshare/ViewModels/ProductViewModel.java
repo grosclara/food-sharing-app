@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.RequestManager.ProductRequestManager;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class ProductViewModel extends ViewModel {
     }
 
     // Add a product and update every list
-    public void addProduct(ProductToPost productToPost, Product product) {
+    public void addProduct(ProductForm productToPost, Product product) {
         productRequestManager.addProduct(productToPost, product);
         //update();
     }

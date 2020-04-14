@@ -25,6 +25,7 @@ public class Camera {
 
     // Camera activity request codes
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+    public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
 
     // Creating file uri to store image
     public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
@@ -34,6 +35,10 @@ public class ProfileRequestManager {
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
 
     private Retrofit retrofit;
+
+    //User credits
+    String token;
+    int userID;
 
     // Insert API interface dependency here
     private UserAPI userAPI;
@@ -77,24 +82,24 @@ public class ProfileRequestManager {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "getUser : on start subscription");
                     }
 
                     @Override
                     public void onNext(User user) {
-                        Log.d(Constants.TAG,"live data filled");
+                        Log.d(Constants.TAG,"getUser : live data filled");
                         userProfile.setValue(user);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "getUser : error");
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Data received");
+                        Log.d(Constants.TAG, "getUser : Data received");
                     }
                 });
 

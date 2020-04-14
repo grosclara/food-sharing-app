@@ -2,6 +2,8 @@ package com.example.cshare.Models;
 
 import java.io.Serializable;
 
+import okhttp3.MultipartBody;
+
 /**
  * Class of the User table.
  * The attributes defined corresponds to the ones of the remote database.
@@ -29,19 +31,32 @@ public class User implements Serializable {
     private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
     private String profile_picture;
+    private MultipartBody.Part profilePictureBody;
+
+
+    public User(MultipartBody.Part profilePictureBody, String firstName, String lastName, String roomNumber, String campus, String email, String password1, String password2) {
+        this.profilePictureBody = profilePictureBody;
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.room_number = roomNumber;
+        this.campus = campus;
+        this.email = email;
+        this.password1 = password1;
+        this.password2 = password2;
+    }
 
     /*
      * Constructor of the User class.
      * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
      */
-    public User(String email, String last_name, String first_name, String password1, String password2, String campus, String room_number) {
+    public User(String email, String lastName, String firstName, String password1, String password2, String campus, String roomNumber) {
         this.email = email;
-        this.last_name = last_name;
-        this.first_name = first_name;
+        this.last_name = lastName;
+        this.first_name = firstName;
         this.password1 = password1;
         this.password2 = password2;
         this.campus = campus;
-        this.room_number = room_number;
+        this.room_number = roomNumber;
     }
 
     public User(String email, String password) {
@@ -59,66 +74,38 @@ public class User implements Serializable {
         this.email = email;
     }
 
-
-    public String getToken() {
-        return token;
+    public String getEmail() {
+        return email;
     }
 
-    public int getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRoom_number(String room_number) {
-        this.room_number = room_number;
-    }
+    public String getLastName() { return last_name; }
 
-    public void setCampus(String campus) {
-        this.campus = campus;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getFirst_name() {
+    public String getFirstName() {
         return first_name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
-    }
-
-    public String getEmail() {
-        return email;
+    public String getRoomNumber() {
+        return room_number;
     }
 
     public String getCampus() {
         return campus;
     }
 
-    public String getRoom_number() {
-        return room_number;
+    public String getProfilePictureURL() {
+        return profile_picture;
     }
 
-
-    public void setEmail(String email) {
-        this.email = email;
+    public MultipartBody.Part getProfilePictureBody() {
+        return profilePictureBody;
     }
+
+    public String getPassword1() { return password1; }
+
+    public String getPassword2() { return password2; }
 }
 
