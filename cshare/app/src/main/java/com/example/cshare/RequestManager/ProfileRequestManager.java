@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Controllers.Activities.LauncherActivity;
+import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
@@ -35,13 +36,12 @@ public class ProfileRequestManager {
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
 
     private Retrofit retrofit;
-
-    //User credits
-    String token;
-    int userID;
-
     // Insert API interface dependency here
     private UserAPI userAPI;
+
+    private String token = MainActivity.token;
+    private String campus = MainActivity.campus;
+    private int userID = MainActivity.userID;
 
     public ProfileRequestManager() {
         /**
@@ -52,8 +52,7 @@ public class ProfileRequestManager {
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
-
-        getUserProfile(Constants.TOKEN, Constants.USERID);
+        getUser();
     }
 
     // Getter method
@@ -61,7 +60,7 @@ public class ProfileRequestManager {
         return userProfile;
     }
 
-    private void getUserProfile(String token, int userID) {
+    private void getUserProfile() {
         /**
          * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
          */
@@ -102,7 +101,6 @@ public class ProfileRequestManager {
                         Log.d(Constants.TAG, "getUser : Data received");
                     }
                 });
-
     }
 
     public synchronized static ProfileRequestManager getInstance() {

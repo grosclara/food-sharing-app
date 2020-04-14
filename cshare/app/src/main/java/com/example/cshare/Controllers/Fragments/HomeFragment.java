@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
@@ -28,7 +29,7 @@ public class HomeFragment extends ProductListFragment {
     protected void click(Product product) {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
-        if (product.getSupplier() == Constants.USERID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
+        if (product.getSupplier() == MainActivity.userID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
         DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
