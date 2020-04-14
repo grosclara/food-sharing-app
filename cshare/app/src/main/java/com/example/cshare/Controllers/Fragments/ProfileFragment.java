@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
@@ -104,6 +105,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                             // Update the Shared preferences
                                             LauncherActivity.userCreditsEditor.putBoolean("logStatus", false);
                                             LauncherActivity.userCreditsEditor.apply();
+
+                                            Toast.makeText(getContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
                                             // Go back to the Launcher Activity
                                             Intent toLoginActivityIntent = new Intent();
                                             toLoginActivityIntent.setClass(getContext(), LoginActivity.class);

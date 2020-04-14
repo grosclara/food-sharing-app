@@ -83,13 +83,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String password1;
     private String password2;
     private String campus;
-    private String room_number;
+    private String roomNumber;
 
     // Check whether a picture has been selected
     private boolean pictureSelected = false;
 
     // Path to the location of the picture taken by the phone
-    private boolean withPicture = false;
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
@@ -172,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             // Validate the field
             validator.validate();
 
-            if (validated && pictureSelected) {
+            if (validated) {
 
                 // Retrieve user details from the edit text
                 email = editTextEmailSignUp.getText().toString().trim();
@@ -180,21 +179,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 firstName = editTextFirstName.getText().toString().trim();
                 password1 = editTextPasswordSignUp.getText().toString().trim();
                 password2 = editTextPasswordConfirm.getText().toString().trim();
-                room_number = editTextRoomNumber.getText().toString().trim();
+                roomNumber = editTextRoomNumber.getText().toString().trim();
 
-                try {
-                    fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (pictureSelected) {
+
+                    try {
+                        fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Create RequestBody instance from file
+                    RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
+
+                    User user = new User(profilePictureBody, firstName, lastName, roomNumber, campus, email, password1, password2);
+                    authViewModel.registerWithPicture(user);
+                } else {
+                    User user = new User(email, lastName, firstName, password1, password2, campus, roomNumber);
+                    authViewModel.registerWithoutPicture(user);
                 }
 
-                // Create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
-                // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
-
-                User user = new User(profilePictureBody, firstName, lastName, room_number, campus, email, password1, password2);
-                authViewModel.register(user);
+                Toast.makeText(this, "Account created successfully, please sign in", Toast.LENGTH_SHORT).show();
 
                 Intent toLoginActivityIntent = new Intent();
                 toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
@@ -234,7 +241,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // Result code is RESULT_OK only if the user selects an Image
         if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
 
-            withPicture = true;
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
 

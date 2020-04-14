@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
@@ -64,27 +65,26 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Registration : on start subscription");
                     }
 
                     @Override
                     public void onNext(User userInfo) {
-                        Log.d(Constants.TAG, "Registered out successfully");
+                        Log.d(Constants.TAG, "Registered successfully");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "Registration : error");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Completed");
+                        Log.d(Constants.TAG, "Registration : Completed");
                     }
                 });
 
         }
-        
         
     public void logOut(String token){
         /**
@@ -183,14 +183,14 @@ public class AuthViewModel extends ViewModel {
 
 }
 
-    public void register(User user) {
+    public void registerWithPicture(User user) {
         /**
          * Request to the API to create an account with a profile picture
-         * @param UserWithPicture
+         * @param User
          */
 
         Observable<User> userObservable;
-        userObservable = authAPI.createUser(
+        userObservable = authAPI.createUserWithPicture(
                 user.getProfilePictureBody(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -213,7 +213,7 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Register : on start subscription");
                     }
                     @Override
                     public void onNext(User newUser) {
@@ -221,11 +221,11 @@ public class AuthViewModel extends ViewModel {
                     }
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "Register : error");
                     }
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Completed");
+                        Log.d(Constants.TAG, "Register : Completed");
                     }
                 });
     }

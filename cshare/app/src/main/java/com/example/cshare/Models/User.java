@@ -24,9 +24,9 @@ public class User implements Serializable {
     private String new_password1;
     private String new_password2;
     private String old_password;
-    private String lastName;
-    private String firstName;
-    private String roomNumber;
+    private String last_name;
+    private String first_name;
+    private String room_number;
     private String campus;
     private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
@@ -36,9 +36,9 @@ public class User implements Serializable {
 
     public User(MultipartBody.Part profilePictureBody, String firstName, String lastName, String roomNumber, String campus, String email, String password1, String password2) {
         this.profilePictureBody = profilePictureBody;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.roomNumber = roomNumber;
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.room_number = roomNumber;
         this.campus = campus;
         this.email = email;
         this.password1 = password1;
@@ -51,12 +51,12 @@ public class User implements Serializable {
      */
     public User(String email, String lastName, String firstName, String password1, String password2, String campus, String roomNumber) {
         this.email = email;
-        this.lastName = lastName;
-        this.firstName = firstName;
+        this.last_name = lastName;
+        this.first_name = firstName;
         this.password1 = password1;
         this.password2 = password2;
         this.campus = campus;
-        this.roomNumber = roomNumber;
+        this.room_number = roomNumber;
     }
 
     public User(String email, String password) {
@@ -83,15 +83,15 @@ public class User implements Serializable {
     }
 
     public String getLastName() {
-        return lastName;
+        return last_name;
     }
 
     public String getFirstName() {
-        return firstName;
+        return first_name;
     }
 
     public String getRoomNumber() {
-        return roomNumber;
+        return room_number;
     }
 
     public String getCampus() {
