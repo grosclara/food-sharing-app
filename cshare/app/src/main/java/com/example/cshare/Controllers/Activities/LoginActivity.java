@@ -79,7 +79,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             String status = loginResponse.getRequestStatus();
                             LoginResponse.UserResponse user = loginResponse.getUserResponse();
                             String token = loginResponse.getKey();
-                            String campus = user.getCampus();
                             if (status.equals(Constants.SUCCESS)) {
 
 
@@ -87,8 +86,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                                 int id = user.getId();
 
                                 LauncherActivity.userCreditsEditor.putString("token", token);
-                                LauncherActivity.userCreditsEditor.apply();
-                                LauncherActivity.userCreditsEditor.putString("campus",campus);
                                 LauncherActivity.userCreditsEditor.apply();
                                 LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
                                 LauncherActivity.userCreditsEditor.putInt("id", id);

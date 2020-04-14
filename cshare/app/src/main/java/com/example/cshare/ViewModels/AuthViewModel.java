@@ -195,8 +195,8 @@ public class AuthViewModel extends ViewModel {
 
     public void registerWithPicture(UserWithPicture newUser) {
         /**
-         * Request to the API to post the product taken in param and update the repository
-         * @param productToPost
+         * Request to the API to create an account with a profile picture
+         * @param UserWithPicture
          */
 
         Observable<UserWithPicture> userWithPictureObservable;
@@ -221,8 +221,8 @@ public class AuthViewModel extends ViewModel {
                     }
 
                     @Override
-                    public void onNext(UserWithPicture newUser ) {
-                        Log.d(Constants.TAG, "Product added successfully");
+                    public void onNext(UserWithPicture newUser) {
+                        Log.d(Constants.TAG, "Account created successfully");
                     }
 
                     @Override
@@ -233,7 +233,7 @@ public class AuthViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Product received successfully");
+                        Log.d(Constants.TAG, "Completed");
                     }
                 });
     }
