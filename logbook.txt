@@ -98,4 +98,17 @@
 "11/04 - CG : Restructuration of the viewModels (merge the 3 products related viewmodels in one, 30mn
 Implementation of the dialogs to interact with products, 2h00"
 "12/04 - CG : Implementation of every request that allow the user to interact with the products (order/deliver/cancel/delete), 4h00"
+"14/04 - CG : Review of Babacar's work on auth, 3h00"
+
+
+
+
+
+
+
+
+
+
+
+
 
