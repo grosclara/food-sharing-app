@@ -26,6 +26,9 @@ public class LoginResponse {
             return id;
         }
 
+        public String getCampus() {
+            return campus;
+        }
     }
 
     public LoginResponse(String requestStatus) {

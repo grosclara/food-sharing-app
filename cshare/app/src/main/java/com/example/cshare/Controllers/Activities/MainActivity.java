@@ -27,26 +27,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
+    public static String token;
+    public static int userID;
+    public static String campus;
+
     // FOR DESIGN
-    //@BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNav;
-
-    // FOR FRAGMENTS
-    // Declare fragment handled by Navigation Drawer
-    private Fragment fragmentShared;
-    private Fragment fragmentProfile;
-    private Fragment fragmentCart;
-    private Fragment fragmentHome;
-    private Fragment fragmentAdd;
-
-    // FOR DATAS
-    // Identify each fragment with a number
-    private static final int FRAGMENT_HOME = 0;
-    private static final int FRAGMENT_PROFILE = 1;
-    private static final int FRAGMENT_SHARED = 2;
-    private static final int FRAGMENT_CART = 3;
-    private static final int FRAGMENT_ADD = 4;
-
 
     // --------------
     // BASE METHODS
@@ -57,9 +43,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        token = "token "+LauncherActivity.userCredits.getString("token", "Invalid token");
+        userID = LauncherActivity.userCredits.getInt("id", -1);
+        campus = LauncherActivity.userCredits.getString("campus", "Gif");
+
         // Binding views
-        //ButterKnife.bind(this);
-        // find
+        // ButterKnife.bind(this);
         bottomNav = findViewById(R.id.bottom_navigation);
 
 
