@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Controllers.Activities.RegisterActivity"></activity>
         <activity android:name=".Controllers.Activities.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +27,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.Activities.LoginActivity"
-                  android:label="LoginActivity"/>
-
-        <activity android:name=".Controllers.Activities.MainActivity"
-                  android:label="MainActivity"/>
+        <activity
+            android:name=".Controllers.Activities.LoginActivity"
+            android:label="LoginActivity" />
+        <activity
+            android:name=".Controllers.Activities.MainActivity"
+            android:label="MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

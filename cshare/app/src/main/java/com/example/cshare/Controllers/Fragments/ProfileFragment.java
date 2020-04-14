@@ -71,12 +71,13 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User profile) {
-                textViewFirstName.setText(profile.getFirst_name());
-                textViewLastName.setText(profile.getLast_name());
+                textViewFirstName.setText(profile.getFirstName());
+                textViewLastName.setText(profile.getLastName());
                 textViewCampus.setText(profile.getCampus());
                 textViewEmail.setText(profile.getEmail());
-                textViewRoomNumber.setText(profile.getRoom_number());
-                Picasso.get().load(profile.getProfile_picture()).into(imageViewProfilePicture);
+                textViewRoomNumber.setText(profile.getRoomNumber());
+                Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
+
             }
         });
     }
