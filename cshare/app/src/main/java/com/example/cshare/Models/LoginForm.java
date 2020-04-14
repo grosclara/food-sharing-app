@@ -27,7 +27,6 @@ public class LoginForm {
         return Patterns.EMAIL_ADDRESS.matcher(getEmailAddress()).matches();
     }
 
-
     public boolean isPasswordLengthGreaterThan5() {
         return getPassword().length() > 5;
     }

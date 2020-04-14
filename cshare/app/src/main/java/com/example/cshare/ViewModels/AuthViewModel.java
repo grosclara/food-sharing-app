@@ -87,13 +87,10 @@ public class AuthViewModel extends ViewModel {
 
     public void submitValidForm(LoginForm loginForm) {
         responseMutableLiveData = new MutableLiveData<>();
-
         loggedOutMutableLiveData = new MutableLiveData<>();
         loginFormMutableLiveData = new MutableLiveData<>();
         loginFormMutableLiveData.setValue(loginForm);
 
-
-        // request
         Observable<LoginResponse> loginResponseObservable;
         loginResponseObservable = authAPI.login(
             loginFormMutableLiveData.getValue());
