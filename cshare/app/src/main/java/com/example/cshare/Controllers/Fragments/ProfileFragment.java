@@ -33,45 +33,41 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private TextView textViewCampus;
     private TextView textViewRoomNumber;
     private ImageView imageViewProfilePicture;
-
-    private Button logoutButton;
-
-    @Override
-    protected BaseFragment newInstance() {
-        return new ProfileFragment();
-    }
+    private Button logOutButton;
 
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_profile;
-    }
+    protected BaseFragment newInstance() {return new ProfileFragment();}
+
+    @Override
+    protected int getFragmentLayout() {return R.layout.fragment_profile;}
 
     @Override
     protected void configureDesign(View view) {
 
+        // Bind views
         textViewFirstName = view.findViewById(R.id.textViewFirstName);
         textViewLastName = view.findViewById(R.id.textViewLastName);
         textViewEmail = view.findViewById(R.id.textViewEmail);
         textViewCampus = view.findViewById(R.id.textViewCampus);
         textViewRoomNumber = view.findViewById(R.id.textViewRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
+        logOutButton = view.findViewById(R.id.buttonLogOut);
 
-        logoutButton = view.findViewById(R.id.buttonLogOut);
-
-        logoutButton.setOnClickListener(this);
+        // Activate buttons
+        logOutButton.setOnClickListener(this);
 
     }
 
     @Override
-    protected void updateDesign() {
-    }
+    protected void updateDesign() {}
 
     @Override
     protected void configureViewModel() {
-        // Retrieve data from view model
+        // Retrieve auth data from view model (log out, change password)
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
+        // Retrieve user details from profile view model
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User profile) {
@@ -81,7 +77,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 textViewEmail.setText(profile.getEmail());
                 textViewRoomNumber.setText(profile.getRoom_number());
                 Picasso.get().load(profile.getProfile_picture()).into(imageViewProfilePicture);
-
             }
         });
     }
@@ -100,18 +95,18 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button -> logout the user
-                                authViewModel.logout(Constants.TOKEN);
+                                authViewModel.logOut(Constants.TOKEN);
                                 authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                                     @Override
                                     public void onChanged(Boolean loggedOut) {
                                         if (loggedOut) {
+                                            // Update the Shared preferences
                                             LauncherActivity.userCreditsEditor.putBoolean("logStatus", false);
                                             LauncherActivity.userCreditsEditor.apply();
-
+                                            // Go back to the Launcher Activity
                                             Intent toLoginActivityIntent = new Intent();
                                             toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
                                             startActivity(toLoginActivityIntent);
-
                                         }
                                     }
                                 });
@@ -120,7 +115,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
-                                //finish();
                             }
                         });
                 // Get the AlertDialog from create()

@@ -32,13 +32,9 @@ public class AuthViewModel extends ViewModel {
     // Insert API interface dependency here
     private AuthenticationAPI authAPI;
 
-    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {
-        return responseMutableLiveData;
-    }
+    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {return responseMutableLiveData;}
 
-    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {
-        return loggedOutMutableLiveData;
-    }
+    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {return loggedOutMutableLiveData;}
 
     public AuthViewModel() {
         // Define the URL endpoint for the HTTP request.
@@ -46,13 +42,12 @@ public class AuthViewModel extends ViewModel {
         authAPI = retrofit.create(AuthenticationAPI.class);
     }
 
-    public void logout(String token){
+    public void logOut(String token){
         /**
          * Request to the API to logout
          */
         loggedOutMutableLiveData = new MutableLiveData<>();
-        Observable<ResponseBody> key;
-        key = authAPI.logout(token);
+        Observable<ResponseBody> key = authAPI.logout(token);
         key
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
