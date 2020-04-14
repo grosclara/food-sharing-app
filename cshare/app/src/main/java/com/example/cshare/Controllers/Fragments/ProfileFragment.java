@@ -78,7 +78,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 textViewCampus.setText(profile.getCampus());
                 textViewEmail.setText(profile.getEmail());
                 textViewRoomNumber.setText(profile.getRoomNumber());
-                // Log.d(Constants.TAG, profile.getProfilePictureURL());
                 Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
 
             }
