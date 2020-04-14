@@ -27,8 +27,8 @@ public interface AuthenticationAPI {
 
     @Multipart
     @POST("rest-auth/registration/")
-    Observable<UserWithPicture> createUserWithPicture(
-            @Part MultipartBody.Part profile_picture,
+    Observable<User> createUser(
+            @Part MultipartBody.Part profilePictureBody,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
             @Part("room_number") String roomNumber,

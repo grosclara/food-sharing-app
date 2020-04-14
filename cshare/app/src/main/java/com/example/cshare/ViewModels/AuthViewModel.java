@@ -91,8 +91,6 @@ public class AuthViewModel extends ViewModel {
 
         }
 
-
-
     public void logout(String token){
         /**
          * Request to the API to logout
@@ -193,17 +191,23 @@ public class AuthViewModel extends ViewModel {
 
 }
 
-    public void registerWithPicture(UserWithPicture newUser) {
+    public void register(User user) {
         /**
          * Request to the API to create an account with a profile picture
          * @param UserWithPicture
          */
 
-        Observable<UserWithPicture> userWithPictureObservable;
-        userWithPictureObservable = authAPI.createUserWithPicture(
-                newUser.getProfilePicture(),newUser.getFirstName(),newUser.getLastName(),newUser.getRoom_number(),
-                newUser.getCampus(),newUser.getEmail(),newUser.getPassword1(),newUser.getPassword2());
-        userWithPictureObservable
+        Observable<User> userObservable;
+        userObservable = authAPI.createUser(
+                user.getProfilePictureBody(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRoomNumber(),
+                user.getCampus(),
+                user.getEmail(),
+                user.getPassword1(),
+                user.getPassword2());
+        userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -214,23 +218,19 @@ public class AuthViewModel extends ViewModel {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<UserWithPicture>() {
+                .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "on start subscription");
                     }
-
                     @Override
-                    public void onNext(UserWithPicture newUser) {
+                    public void onNext(User newUser) {
                         Log.d(Constants.TAG, "Account created successfully");
                     }
-
                     @Override
                     public void onError(Throwable e) {
-
                         Log.d(Constants.TAG, "error");
                     }
-
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Completed");

@@ -1,5 +1,7 @@
 package com.example.cshare.Controllers.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,9 +9,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,6 +42,7 @@ import com.mobsandgeeks.saripaar.annotation.Password;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +51,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener{
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
 
     // Form validation
     protected Validator validator;
@@ -127,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
     }
 
-    private void configureCampusSpinner(){
+    private void configureCampusSpinner() {
         campusArray = getResources().getStringArray(R.array.campus_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
@@ -147,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void configureValidator(){
+    private void configureValidator() {
         // Instantiate a new Validator
         validator = new Validator((this));
         validator.setValidationListener(this);
@@ -162,13 +167,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             startActivity(toLoginActivityIntent);
         }
 
-        if(v == buttonSignUp) {
+        if (v == buttonSignUp) {
 
             // Validate the field
             validator.validate();
 
-            if(validated) {
+            if (validated && pictureSelected) {
 
+                // Retrieve user details from the edit text
                 email = editTextEmailSignUp.getText().toString().trim();
                 lastName = editTextLastName.getText().toString().trim();
                 firstName = editTextFirstName.getText().toString().trim();
@@ -176,22 +182,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 password2 = editTextPasswordConfirm.getText().toString().trim();
                 room_number = editTextRoomNumber.getText().toString().trim();
 
-                if (withPicture) {
-                    // Create a file object using file path
-                    File file = new File(imageFilePath);
-
-                    // Create RequestBody instance from file
-                    RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(uriImage)), file);
-                    // MultipartBody.Part is used to send also the actual file name
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("profile_picture", file.getName(), requestFile);
-
-                    UserWithPicture newUser = new UserWithPicture(body, firstName, lastName, room_number, campus, email, password1, password2);
-                    authViewModel.registerWithPicture(newUser);
-                } else {
-                    User user = new User(email, lastName, firstName, password1, password2, campus,room_number);
-                    authViewModel.registerWithoutPicture(user);
-
+                try {
+                    fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+                // Create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
+                // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
+
+                User user = new User(profilePictureBody, firstName, lastName, room_number, campus, email, password1, password2);
+                authViewModel.register(user);
+
                 Intent toLoginActivityIntent = new Intent();
                 toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
                 startActivity(toLoginActivityIntent);
@@ -202,7 +206,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             choosePictureFromGallery();
         }
     }
-
 
     private void choosePictureFromGallery() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -215,57 +218,60 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
-        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         // Create a chooser in case there are third parties app and launch the Intent
         startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
-
+    /**
+     * Receiving activity result method will be called after closing the gallery
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE) {
-            // Result code is RESULT_OK only if the user selects an Image
-            if (resultCode == Activity.RESULT_OK)
-                switch (requestCode) {
-                    case PICK_IMAGE:
-                        withPicture = true;
-                        // data.getData returns the content URI for the selected Image
-                        uriImage = data.getData();
 
-                        // Content URI is not same as absolute file path. Need to retrieve the absolute file path from the content URI
-                        // Get the path from the Uri
-                        imageFilePath = getPathFromURI(uriImage);
-                        Log.d("TAG",imageFilePath);
+        // Result code is RESULT_OK only if the user selects an Image
+        if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
 
+            withPicture = true;
+            // data.getData returns the content URI for the selected Image
+            pictureFileUri = data.getData();
 
-                        imageViewGallery.setImageBitmap(BitmapFactory.decodeFile(imageFilePath));
-                        break;
-                }
+            try {
+                processPicture(this, pictureFileUri); // modify the raw picture taken
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(this,
+                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // failed to capture image
+            Toast.makeText(this,
+                    "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
-    public String getPathFromURI(Uri contentUri) {
-        String path = null;
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        // Get the cursor
-        Cursor cursor = getContentResolver().query(contentUri, filePathColumn, null, null, null);
-        // Move to first row
+    private void processPicture(Context context, Uri uri) throws IOException {
+        if (uri != null) {
 
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            path = cursor.getString(columnIndex);
+            pictureSelected = true;
+            // Rotate if necessary and reduce size
+            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
+            // Displaying the image or video on the screen
+            Camera.previewMedia(bitmap, imageViewGallery);
+            // Save new picture to fileToUpload
+            fileToUpload = Camera.saveBitmap(context, bitmap);
+
+        } else {
+            Toast.makeText(context,
+                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
         }
-        cursor.close();
-        return path;
-    }
-
-
-    protected boolean validate() {
-        if (validator != null)
-            validator.validate();
-        return validated;           // would be set in one of the callbacks below
     }
 
     @Override
@@ -290,4 +296,27 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
+    /*
+      Here we store the file uri as it will be null after returning from camera app
+    */
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putParcelable("file_uri", pictureFileUri);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d("tag", "onRestoreInstanceState");
+        if (savedInstanceState != null) {
+            // get the file url
+            pictureFileUri = savedInstanceState.getParcelable("file_uri");
+        }
+    }
+
 }
