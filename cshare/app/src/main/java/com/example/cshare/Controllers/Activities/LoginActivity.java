@@ -81,14 +81,12 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             String token = loginResponse.getKey();
                             if (status.equals(Constants.SUCCESS)) {
 
-
-
                                 int id = user.getId();
 
                                 LauncherActivity.userCreditsEditor.putString("token", token);
-                                LauncherActivity.userCreditsEditor.apply();
                                 LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
                                 LauncherActivity.userCreditsEditor.putInt("id", id);
+
                                 LauncherActivity.userCreditsEditor.apply();
 
                                 Intent toMainActivityIntent = new Intent();
