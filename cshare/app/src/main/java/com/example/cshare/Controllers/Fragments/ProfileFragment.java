@@ -78,11 +78,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
 
             @Override
-            public void onChanged(User profile) {
-
-                updateUserDetails(profile);
-
-            }
+            public void onChanged(User profile) { updateUserDetails(profile); }
         });
     }
 

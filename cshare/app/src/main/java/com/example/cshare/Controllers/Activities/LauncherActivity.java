@@ -24,7 +24,6 @@ public class LauncherActivity extends AppCompatActivity {
         userCredits = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         userCreditsEditor = userCredits.edit();
         Boolean logStatus = userCredits.getBoolean("logStatus", false);
-        Log.i("intent",""+logStatus);
 
         if(logStatus){
             Intent toMainActivityIntent = new Intent();
