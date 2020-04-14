@@ -30,7 +30,7 @@ public class User implements Serializable {
     private String campus;
     private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
-    private String profilePictureURL;
+    private String profile_picture;
     private MultipartBody.Part profilePictureBody;
 
 
@@ -82,9 +82,7 @@ public class User implements Serializable {
         return password;
     }
 
-    public String getLastName() {
-        return last_name;
-    }
+    public String getLastName() { return last_name; }
 
     public String getFirstName() {
         return first_name;
@@ -99,19 +97,15 @@ public class User implements Serializable {
     }
 
     public String getProfilePictureURL() {
-        return profilePictureURL;
+        return profile_picture;
     }
 
     public MultipartBody.Part getProfilePictureBody() {
         return profilePictureBody;
     }
 
-    public String getPassword1() {
-        return password1;
-    }
+    public String getPassword1() { return password1; }
 
-    public String getPassword2() {
-        return password2;
-    }
+    public String getPassword2() { return password2; }
 }
 

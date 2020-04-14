@@ -3,7 +3,6 @@ package com.example.cshare.WebServices;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 import com.example.cshare.Models.User;
-import com.example.cshare.Models.UserWithPicture;
 
 import io.reactivex.Observable;
 

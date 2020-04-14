@@ -4,13 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 
 import com.example.cshare.Models.User;
-import com.example.cshare.Models.UserWithPicture;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;

@@ -14,7 +14,7 @@ public class Constants {
     // Temp variables
 
     // Clara
-    public static final String TOKEN = "token 065dd4930acd5645fe215898fb3319ce6d693cfb";
+    public static final String TOKEN = "token a608ee6801124d256c515fc5328da9d9da0beea1";
     public static final int USERID = 7;
     public static final String CAMPUS = "Gif";
 

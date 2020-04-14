@@ -1,23 +1,14 @@
 package com.example.cshare.Controllers.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.cshare.Models.User;
-import com.example.cshare.Models.UserWithPicture;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.ViewModels.AuthViewModel;
@@ -43,8 +33,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.MediaType;
