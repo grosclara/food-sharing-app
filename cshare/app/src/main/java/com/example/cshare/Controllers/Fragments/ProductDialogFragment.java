@@ -182,7 +182,8 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails(View view, int supplierID) {
+    private void
+    fillInSupplierDetails(View view, int supplierID) {
         // Retrieve all information from the supplier and fill in the views
 
         // Bind views

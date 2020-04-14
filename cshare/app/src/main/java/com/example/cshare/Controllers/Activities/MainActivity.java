@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static String token = LauncherActivity.userCredits.getString("token", "Invalid token");
-    public static int userID = LauncherActivity.userCredits.getInt("id", -1);
-    public static String campus = LauncherActivity.userCredits.getString("campus", "Gif");
+    public static String token;
+    public static int userID;
+    public static String campus;
 
     // FOR DESIGN
     BottomNavigationView bottomNav;
@@ -43,12 +43,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("tag", token);
-        Log.d("tag", String.valueOf(userID));
+        token = "token "+LauncherActivity.userCredits.getString("token", "Invalid token");
+        userID = LauncherActivity.userCredits.getInt("id", -1);
+        campus = LauncherActivity.userCredits.getString("campus", "Gif");
 
         // Binding views
-        //ButterKnife.bind(this);
-        // find
+        // ButterKnife.bind(this);
         bottomNav = findViewById(R.id.bottom_navigation);
 
 
