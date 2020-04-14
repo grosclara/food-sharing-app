@@ -10,20 +10,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModel;
 
+import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.ProductViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDialogFragment extends DialogFragment {
 
     public Product product;
     public Context context;
     public String tag;
+    public ProductViewModel productViewModel;
 
     // Bind views
     private TextView textViewProductName;
@@ -37,10 +45,11 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String tag) {
+    public ProductDialogFragment(Context context, Product product, String tag, ProductViewModel productViewModel) {
         this.context = context;
         this.product = product;
         this.tag = tag;
+        this.productViewModel = productViewModel;
     }
 
     @Override
@@ -61,16 +70,20 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {
-            case "order":
+            case Constants.ORDER:
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
                                 // Order the product
-                                // Create the order object
                                 if (product.getStatus().equals("Available")) {
+                                    // Create the order object
+                                    Order request = new Order(Constants.USERID, product.getId());
                                     // Change the status attribute of the product object to not available
-                                    //updateProductStatus(product, "Collected");
+                                    Map<String, String> status = new HashMap<>();
+                                    status.put("status", Constants.COLLECTED);
+                                    productViewModel.order(request, status);
+
+                                    //updateProductStatus(product, status);
                                     Log.d(Constants.TAG, "Status updated");
                                 }
                             }
@@ -82,6 +95,56 @@ public class ProductDialogFragment extends DialogFragment {
                         });
                 break;
 
+            case Constants.SHARED:
+                builder.setTitle("Product shared by you")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Check the status
+                                if (product.getStatus().equals(Constants.AVAILABLE)) {
+                                    // if still available, delete the product from the database
+                                    Log.d(Constants.TAG, "Product deleted");
+                                    productViewModel.deleteProduct(product);
+                                } else {
+                                    Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                break;
+
+            case Constants.INCART:
+                builder.setTitle("What to do with this product?")
+                        /*.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) { }
+                        })*/
+                        .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Set status to delivered and send request to update in database
+                                Map<String, String> status = new HashMap<>();
+                                status.put("status", Constants.DELIVERED);
+                                productViewModel.deliver(product.getId(), status);
+                            }
+                        })
+                        .setNegativeButton("Cancel the order", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Delete order and set product status to available
+                                Map<String, String> status = new HashMap<>();
+                                status.put("status", Constants.AVAILABLE);
+                                productViewModel.cancelOrder(product.getId(), status);
+                                //updateProductStatus(product, "Available");
+                            }
+                        });
+                break;
+
+            case Constants.ARCHIVED:
+                builder.setTitle("Transaction done, enjoy!");
+                break;
+
             default:
                 // code block
         }
@@ -90,7 +153,7 @@ public class ProductDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    private void fillInProductDetails(View view){
+    private void fillInProductDetails(View view) {
 
         // Bind views
         textViewProductName = view.findViewById(R.id.textViewProductName);
@@ -118,7 +181,7 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails(View view, int supplierID){
+    private void fillInSupplierDetails(View view, int supplierID) {
         // Retrieve all information from the supplier and fill in the views
 
         // Bind views
@@ -136,7 +199,6 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(R.drawable.photo_cv).into(imageViewSupplierProfilePicture);
 
     }
-
 
 
 }

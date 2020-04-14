@@ -1,16 +1,14 @@
 package com.example.cshare.Controllers.Fragments;
 
 
-import android.content.DialogInterface;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.List;
 public class HomeFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
-
+    private static String tag;
 
     @Override
     protected BaseFragment newInstance() {
@@ -28,7 +26,10 @@ public class HomeFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag);
+        // Check whether the current user is the supplier of the product or not
+        // (if yes, he won't be able to order it)
+        if (product.getSupplier() == Constants.USERID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 

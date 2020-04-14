@@ -20,7 +20,7 @@ public interface OrderAPI {
     @GET("order/")
     Observable<List<Order>> getOrdersByCustomerID(
             @Header("Authorization") String token,
-            @Query("client") int userId
+            @Query("client") int userID
     );
 
     @POST("order/")

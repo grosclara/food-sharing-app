@@ -24,6 +24,16 @@ public class Constants {
     //public static final String CAMPUS = "Metz";
 
     public static final String STATUS = "Available";
+
+    // Different product statuses
     public static final String AVAILABLE = "Available";
+    public static final String COLLECTED = "Collected";
+    public static final String DELIVERED = "Delivered";
+
+    // State of the productDialogFragment
+    public static final String SHARED = "shared";
+    public static final String ORDER = "order";
+    public static final String INCART = "inCart";
+    public static final String ARCHIVED = "archived";
 
 }
