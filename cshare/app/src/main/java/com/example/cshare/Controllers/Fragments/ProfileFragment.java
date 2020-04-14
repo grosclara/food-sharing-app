@@ -1,21 +1,28 @@
 package com.example.cshare.Controllers.Fragments;
 
+import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.cshare.Controllers.Activities.LauncherActivity;
+import com.example.cshare.Controllers.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
+import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends BaseFragment {
+public class ProfileFragment extends BaseFragment implements View.OnClickListener{
 
     // ViewModel
     private ProfileViewModel profileViewModel;
+    private AuthViewModel authViewModel;
 
     //Views
     private TextView textViewFirstName;
@@ -25,6 +32,11 @@ public class ProfileFragment extends BaseFragment {
     private TextView textViewRoomNumber;
     private ImageView imageViewProfilePicture;
 
+    //User credits
+    String token;
+    int userId;
+
+    private Button logoutButton;
 
     @Override
     protected BaseFragment newInstance() { return new ProfileFragment(); }
@@ -42,6 +54,10 @@ public class ProfileFragment extends BaseFragment {
         textViewRoomNumber = view.findViewById(R.id.textViewRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
 
+        logoutButton =view.findViewById(R.id.buttonLogOut);
+
+        logoutButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -52,6 +68,8 @@ public class ProfileFragment extends BaseFragment {
     @Override
     protected void configureViewModel() {
         // Retrieve data from view model
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
@@ -65,5 +83,30 @@ public class ProfileFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.buttonLogOut:
+                authViewModel.logout(token);
+                authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean loggedOut) {
+                        if (loggedOut = true){
+                            LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
+                            LauncherActivity.userCreditsEditor.apply();
+
+                            Intent toLoginActivityIntent = new Intent();
+                            toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                            startActivity(toLoginActivityIntent);
+
+                        }
+                    }
+                });
+
+
+
+        }
     }
 }

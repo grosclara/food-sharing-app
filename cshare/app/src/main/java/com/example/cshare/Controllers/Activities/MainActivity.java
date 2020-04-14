@@ -20,8 +20,7 @@ import com.example.cshare.Controllers.Fragments.SharedFragment;
 import com.example.cshare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -31,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // FOR DESIGN
     //@BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNav;
-   // @BindView(R.id.fragment_container)
-    //Fragment fragment;
 
     // FOR FRAGMENTS
     // Declare fragment handled by Navigation Drawer
