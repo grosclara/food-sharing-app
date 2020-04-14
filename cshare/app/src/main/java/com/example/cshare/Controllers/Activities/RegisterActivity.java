@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.cshare.Models.User;
 import com.example.cshare.Models.UserWithPicture;
 import com.example.cshare.R;
+import com.example.cshare.Utils.Camera;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -79,30 +80,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String campus;
     private String room_number;
 
+    // Check whether a picture has been selected
+    private boolean pictureSelected = false;
+
     // Path to the location of the picture taken by the phone
     private boolean withPicture = false;
-    private String imageFilePath;
-    private Uri uriImage;
-    public static final int PICK_IMAGE = 1;
-
-    // Permissions request code
-    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
-    // Permissions that need to be explicitly requested from end user
-    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    private Uri pictureFileUri;
+    private File fileToUpload;
+    private Uri fileToUploadUri;
 
     // ViewModel
     AuthViewModel authViewModel;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermission();
         setContentView(R.layout.activity_register);
 
-        // Views
+        // Bind views
         editTextPasswordConfirm = findViewById(R.id.editTextPasswordConfirm);
         editTextEmailSignUp = findViewById(R.id.editTextEmailSignUp);
         editTextFirstName = findViewById(R.id.editTextFirstName);
@@ -111,18 +106,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
         imageViewGallery = findViewById(R.id.imageViewGallery);
         Picasso.get().load(R.drawable.test).into(imageViewGallery);
-
-        // Buttons
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
         buttonGallery = findViewById(R.id.buttonGallery);
+        spinnerCampus = findViewById(R.id.spinnerCampus);
+
+        // Activate buttons
         buttonSignUp.setOnClickListener(this);
         buttonAlreadyHaveAnAccount.setOnClickListener(this);
         buttonGallery.setOnClickListener(this);
+        imageViewGallery.setOnClickListener(this);
 
-        // Spinner
+        // Campus spinner
+        configureCampusSpinner();
+
+        // Validator
+        configureValidator();
+
+        //ViewModel
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+    }
+
+    private void configureCampusSpinner(){
         campusArray = getResources().getStringArray(R.array.campus_array);
-        spinnerCampus = findViewById(R.id.spinnerCampus);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
         // Apply the adapter to the spinner
@@ -139,26 +145,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+    }
 
+    private void configureValidator(){
         // Instantiate a new Validator
         validator = new Validator((this));
         validator.setValidationListener(this);
-
-        //ViewModel
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
-
     }
 
     @Override
     public void onClick(View v) {
-        if (v == buttonAlreadyHaveAnAccount) {
 
+        if (v == buttonAlreadyHaveAnAccount) {
             Intent toLoginActivityIntent = new Intent();
             toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toLoginActivityIntent);
+        }
 
-        } else if(v == buttonSignUp) {
+        if(v == buttonSignUp) {
 
             // Validate the field
             validator.validate();
@@ -192,7 +196,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
                 startActivity(toLoginActivityIntent);
             }
-        } else if(v == buttonGallery) {
+        }
+
+        if (v == buttonGallery || v == imageViewGallery) {
             choosePictureFromGallery();
         }
     }
@@ -212,7 +218,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         pickIntent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
 
         // Create a chooser in case there are third parties app and launch the Intent
-        startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), PICK_IMAGE);
+        startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
 
@@ -262,39 +268,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return validated;           // would be set in one of the callbacks below
     }
 
-
-
-    private void checkPermission() {
-        /**
-         * Checks the dynamically-controlled permissions and requests missing permissions from end user.
-         */
-        final List<String> missingPermissions = new ArrayList<String>();
-        // check all required dynamic permissions
-        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
-            final int result = ContextCompat.checkSelfPermission(this, permission);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(permission);
-            }
-        }
-        if (!missingPermissions.isEmpty()) {
-            // request all missing permissions
-            final String[] permissions = missingPermissions
-                    .toArray(new String[missingPermissions.size()]);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
-        } else {
-            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
-            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
-            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
-                    grantResults);
-        }
-
-    }
-
     @Override
     public void onValidationSucceeded() {
         //Called when all your views pass all validations.
         validated = true;
-        Toast.makeText(this, "Yay! we got it right!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -305,7 +282,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             View view = error.getView();
             String message = error.getCollatedErrorMessage(this);
 
-            // Display error messages ;)
+            // Display error messages
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
@@ -313,5 +290,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
 }

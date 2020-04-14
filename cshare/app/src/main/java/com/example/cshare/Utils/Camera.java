@@ -25,6 +25,9 @@ public class Camera {
     public Uri fileUri;
     // Ensures the intent to open the camera can be performed
     public static final int REQUEST_CAPTURE_IMAGE = 1;
+
+    public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
+
     // Check whether a picture has been selected
     public boolean pictureSelected = false;
 
