@@ -44,6 +44,8 @@ public class User implements Serializable {
         this.room_number = room_number;
     }
 
+
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
@@ -100,9 +102,7 @@ public class User implements Serializable {
         return profile_picture;
     }
 
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
-    }
+    public void setProfile_picture(String profile_picture) {this.profile_picture = profile_picture;}
 
     public String getEmail() {
         return email;
@@ -115,7 +115,6 @@ public class User implements Serializable {
     public String getRoom_number() {
         return room_number;
     }
-
 
     public void setEmail(String email) {
         this.email = email;

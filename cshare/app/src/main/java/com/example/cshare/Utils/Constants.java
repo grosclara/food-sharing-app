@@ -20,5 +20,6 @@ public class Constants {
 
     public static final String STATUS = "Available";
     public static final String AVAILABLE = "Available";
+    public static final String SUCCESS = "success";
 
 }

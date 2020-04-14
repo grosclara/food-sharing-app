@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 import com.example.cshare.R;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 
 import java.util.Objects;
@@ -28,9 +29,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     private EditText passwordEditText;
     private Button buttonLogin;
     private Button buttonCreateAccount;
-    //private Button buttonChangePassword;
-
-    boolean success;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +40,12 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         passwordEditText = findViewById(R.id.passwordEditText);
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonCreateAccount =findViewById(R.id.buttonCreateAccount);
-        // buttonChangePassword = findViewById(R.id.buttonChangePassword);
 
         //  Set click listeners
         buttonLogin.setOnClickListener(this);
         buttonCreateAccount.setOnClickListener(this);
-        //buttonChangePassword.setOnClickListener(this);
 
+        // Instantiate view models
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
     }
@@ -83,7 +80,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             LoginResponse.UserResponse user = loginResponse.getUserResponse();
                             String token = loginResponse.getKey();
                             String campus = user.getCampus();
-                            if (status.equals("success")) {
+                            if (status.equals(Constants.SUCCESS)) {
 
 
 
@@ -102,7 +99,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                                 startActivity(toMainActivityIntent);
 
                             }
-                            else {success = false;}
+                            else {
+                            }
 
 
                         }
