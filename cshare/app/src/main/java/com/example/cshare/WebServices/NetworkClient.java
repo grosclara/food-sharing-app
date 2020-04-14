@@ -1,5 +1,7 @@
 package com.example.cshare.WebServices;
 
+import com.example.cshare.Utils.Constants;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -12,8 +14,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class NetworkClient {
 
     private static Retrofit retrofit;
-    public static final String BASE_URL = "http://10.59.33.8:8000/api/v1/";
-    //public static final String BASE_URL = "http://192.168.1.29:8000/api/v1/";
 
     public static Retrofit getRetrofitClient(){
         if (retrofit == null) {
@@ -26,7 +26,7 @@ public class NetworkClient {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(Constants.BASE_URL_API)
                     .client(okHttpClient)
                     // Adapt to the Retrofit instance that will allow it to automatically convert its data into Observables
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

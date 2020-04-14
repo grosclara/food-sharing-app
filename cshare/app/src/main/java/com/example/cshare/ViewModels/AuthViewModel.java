@@ -27,22 +27,16 @@ import retrofit2.Retrofit;
 public class AuthViewModel extends ViewModel {
 
     private MutableLiveData<LoginForm> loginFormMutableLiveData;
-
     private MutableLiveData<LoginResponse> responseMutableLiveData;
-
     private MutableLiveData<Boolean> loggedOutMutableLiveData;
 
     private Retrofit retrofit;
     // Insert API interface dependency here
     private AuthenticationAPI authAPI;
 
-    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {
-        return responseMutableLiveData;
-    }
+    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {return responseMutableLiveData;}
 
-    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {
-        return loggedOutMutableLiveData;
-    }
+    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {return loggedOutMutableLiveData;}
 
     public AuthViewModel() {
         // Define the URL endpoint for the HTTP request.
@@ -90,15 +84,16 @@ public class AuthViewModel extends ViewModel {
                 });
 
         }
-
-    public void logout(String token){
+        
+        
+    public void logOut(String token){
         /**
          * Request to the API to logout
          */
         loggedOutMutableLiveData = new MutableLiveData<>();
-        Observable<ResponseBody> details;
-        details = authAPI.logout(token);
-        details
+        
+        Observable<ResponseBody> key = authAPI.logout(token);
+        key
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -112,7 +107,7 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Log Out : on start subscription");
                     }
 
                     @Override
@@ -124,12 +119,12 @@ public class AuthViewModel extends ViewModel {
                     @Override
                     public void onError(Throwable e) {
                         loggedOutMutableLiveData.setValue(false);
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "Log Out : error");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Completed");
+                        Log.d(Constants.TAG, "Log out : Completed");
                     }
                 });
 
@@ -137,13 +132,10 @@ public class AuthViewModel extends ViewModel {
 
     public void submitValidForm(LoginForm loginForm) {
         responseMutableLiveData = new MutableLiveData<>();
-
         loggedOutMutableLiveData = new MutableLiveData<>();
         loginFormMutableLiveData = new MutableLiveData<>();
         loginFormMutableLiveData.setValue(loginForm);
 
-
-        // request
         Observable<LoginResponse> loginResponseObservable;
         loginResponseObservable = authAPI.login(
             loginFormMutableLiveData.getValue());
@@ -161,7 +153,7 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<LoginResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Log In : on start subscription");
                     }
 
 
@@ -172,20 +164,20 @@ public class AuthViewModel extends ViewModel {
                         LoginResponse response = new LoginResponse(token,"success",user);
                         responseMutableLiveData.setValue(response);
                         loggedOutMutableLiveData.setValue(false);
-                        Log.i("intent ", "value putted in view model");
+                        Log.d(Constants.TAG, "Log In : live Data filled");
                     }
 
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "error");
-                        LoginResponse profileResponse = new LoginResponse("failed");
+                        LoginResponse profileResponse = new LoginResponse("Log In : failed");
                         responseMutableLiveData.setValue(profileResponse);
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "All data received");
+                        Log.d(Constants.TAG, "Log In : All data received");
                     }
                 });
 

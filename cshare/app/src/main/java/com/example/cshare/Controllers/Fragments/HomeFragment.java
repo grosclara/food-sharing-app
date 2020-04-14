@@ -2,20 +2,22 @@ package com.example.cshare.Controllers.Fragments;
 
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.ViewModels.HomeViewModel;
+import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.ProductViewModel;
 
 import java.util.List;
 
 
 public class HomeFragment extends ProductListFragment {
 
-    private HomeViewModel homeViewModel;
-
+    private ProductViewModel productViewModel;
+    private static String tag;
 
     @Override
     protected BaseFragment newInstance() {
@@ -23,11 +25,20 @@ public class HomeFragment extends ProductListFragment {
     }
 
     @Override
+    protected void click(Product product) {
+        // Check whether the current user is the supplier of the product or not
+        // (if yes, he won't be able to order it)
+        if (product.getSupplier() == Constants.USERID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
+    }
+
+    @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         // Set data
-        homeViewModel.getHomeMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 adapter.updateProducts(products);
@@ -44,7 +55,7 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                homeViewModel.update();
+                productViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();

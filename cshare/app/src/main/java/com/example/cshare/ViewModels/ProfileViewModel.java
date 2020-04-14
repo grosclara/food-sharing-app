@@ -8,6 +8,7 @@ import com.example.cshare.RequestManager.ProfileRequestManager;
 
 
 public class ProfileViewModel extends ViewModel {
+
     private ProfileRequestManager profileRequestManager;
     private MutableLiveData<User> userProfileMutableLiveData;
 

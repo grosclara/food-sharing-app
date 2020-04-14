@@ -87,8 +87,15 @@
 "29/03 - BT : Implementation of the swipe up refresh functionality, 1h00"
 "31/03 - BT : Implementation of the ProfileFragment along with its viewModel and requestManager, 1h00"
 "02/04 - CG : Review of Babacar's work on ProfileFragment and refresh functionality, 1h30"
-"05/04 - BT : Launch acitivity and storage of user in shared prefs, 1h00"
+"05/04 - BT : Launch activity and storage of user in shared prefs, 1h00"
+"08/04 - CG : Implementation of the Camera class composed of basic method to retrieve Bitmap from uri, compressing and rotating them if necessary, 6h00"
+"09/04 - CG : Fix size and rotation pictures issues when uploading them to the server from the Add Fragment, 2h00"
 "09/04 - BT : Login view model and login activity, 3h00"
-"11/04 - BT : Logout and AuthViewModel, 1h30"
-"12/04 - BT : Register, 2h"
+"09/04 - CG : Fix issue #30 : the picture of added product displays itself correctly, 1h00"
+"10/04 - BT + CG : Review of has been done so far (merge branches), 30mn"
+"10/04 - BT : Login functionality implemented, 2h00"
+"11/04 - BT : Implementation of the other auth functionality (register/logout) and AuthViewModel, 3h30"
+"11/04 - CG : Restructuration of the viewModels (merge the 3 products related viewmodels in one, 30mn
+Implementation of the dialogs to interact with products, 2h00"
+"12/04 - CG : Implementation of every request that allow the user to interact with the products (order/deliver/cancel/delete), 4h00"
 

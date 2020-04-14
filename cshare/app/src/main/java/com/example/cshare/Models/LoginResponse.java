@@ -58,6 +58,4 @@ public class LoginResponse {
         return key;
     }
 
-
-
 }
