@@ -52,7 +52,8 @@ public class ProfileRequestManager {
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
-        getUser();
+
+        getUserProfile();
     }
 
     // Getter method
