@@ -76,19 +76,18 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     authViewModel.getResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
                         @Override
                         public void onChanged(LoginResponse loginResponse) {
+
                             String status = loginResponse.getRequestStatus();
-                            LoginResponse.UserResponse user = loginResponse.getUserResponse();
-                            String token = loginResponse.getKey();
+
                             if (status.equals(Constants.SUCCESS)) {
 
+                                LoginResponse.UserResponse user = loginResponse.getUserResponse();
 
-
-                                int id = user.getId();
-
-                                LauncherActivity.userCreditsEditor.putString("token", token);
-                                LauncherActivity.userCreditsEditor.apply();
+                                LauncherActivity.userCreditsEditor.putString("token", loginResponse.getKey());
                                 LauncherActivity.userCreditsEditor.putBoolean("logStatus", true);
-                                LauncherActivity.userCreditsEditor.putInt("id", id);
+                                LauncherActivity.userCreditsEditor.putInt("id", user.getId());
+                                LauncherActivity.userCreditsEditor.putString("campus", user.getCampus());
+
                                 LauncherActivity.userCreditsEditor.apply();
 
                                 Intent toMainActivityIntent = new Intent();
@@ -96,13 +95,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                                 startActivity(toMainActivityIntent);
 
                             }
-                            else {
-                            }
-
-
                         }
                     });
-
                 }
                 break;
             case (R.id.buttonCreateAccount):

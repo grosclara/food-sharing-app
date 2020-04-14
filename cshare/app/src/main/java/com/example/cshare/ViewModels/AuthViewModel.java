@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Log;
 
+import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 
@@ -32,6 +33,10 @@ public class AuthViewModel extends ViewModel {
     private Retrofit retrofit;
     // Insert API interface dependency here
     private AuthenticationAPI authAPI;
+
+    private String token = MainActivity.token;
+    private String campus = MainActivity.campus;
+    private int userID = MainActivity.userID;
 
     public MutableLiveData<LoginResponse> getResponseMutableLiveData() {return responseMutableLiveData;}
 
@@ -84,7 +89,7 @@ public class AuthViewModel extends ViewModel {
 
         }
         
-    public void logOut(String token){
+    public void logOut(){
         /**
          * Request to the API to logout
          */

@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Camera;
@@ -224,11 +225,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
                 // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
-                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date, Constants.USERID);
+                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date, MainActivity.userID);
 
                 // Format the product to update view models
                 String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
-                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, Constants.USERID, productCategory, quantity, expiration_date);
+                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, MainActivity.userID, productCategory, quantity, expiration_date);
 
                 productViewModel.addProduct(productToPost, product);
 

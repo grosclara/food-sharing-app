@@ -105,7 +105,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button -> logout the user
-                                authViewModel.logOut(Constants.TOKEN);
+                                authViewModel.logOut();
                                 authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                                     @Override
                                     public void onChanged(Boolean loggedOut) {

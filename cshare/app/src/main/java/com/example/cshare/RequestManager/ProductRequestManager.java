@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
@@ -42,6 +43,10 @@ public class ProductRequestManager {
     private ProductAPI productAPI;
     private OrderAPI orderAPI;
 
+    private String token = MainActivity.token;
+    private String campus = MainActivity.campus;
+    private int userID = MainActivity.userID;
+
     public ProductRequestManager() {
         /**
          * Constructor that fetch all the list of available products and store it in the
@@ -53,11 +58,11 @@ public class ProductRequestManager {
         orderAPI = retrofit.create(OrderAPI.class);
 
         // Initialize the value of availableProductList
-        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
+        getAvailableProducts(token, campus, Constants.AVAILABLE);
         // Initialize the value of inCartProductList
-        getInCartProducts(Constants.TOKEN, Constants.USERID);
+        getInCartProducts(token, userID);
         // Initialize the value of sharedProductProductList
-        getSharedProducts(Constants.TOKEN, Constants.USERID);
+        getSharedProducts(token, userID);
     }
 
     // Getter method
@@ -68,9 +73,9 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
 
     public void updateRequestManager() {
-        getAvailableProducts(Constants.TOKEN, Constants.CAMPUS, Constants.STATUS);
-        getInCartProducts(Constants.TOKEN, Constants.USERID);
-        getSharedProducts(Constants.TOKEN, Constants.USERID);
+        getAvailableProducts(MainActivity.token, MainActivity.campus, Constants.AVAILABLE);
+        getInCartProducts(MainActivity.token, MainActivity.userID);
+        getSharedProducts(MainActivity.token, MainActivity.userID);
     }
 
     public void getInCartProducts(String token, int userID) {
@@ -250,7 +255,7 @@ public class ProductRequestManager {
 
         Observable<ProductForm> product;
         product = productAPI.addProduct(
-                Constants.TOKEN,
+                token,
                 productToPost.getProductPicture(),
                 productToPost.getProductName(),
                 productToPost.getProductCategory(),
@@ -310,8 +315,9 @@ public class ProductRequestManager {
 
         Observable<Response<Product>> product;
         product = productAPI.deleteProductById(
-                Constants.TOKEN,
+                token,
                 productToDelete.getId());
+
         Log.d(Constants.TAG, product.toString());
         product
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -379,12 +385,12 @@ public class ProductRequestManager {
          * Request to the API to order a product and update its status from available to collected
          */
         Observable<Order> order;
-        order = orderAPI.addOrder(Constants.TOKEN, request);
+        order = orderAPI.addOrder(token, request);
         order
                 .flatMap(new Function<Order, Observable<Product>>() {
                     @Override
                     public Observable<Product> apply(Order order) throws Exception {
-                        return updateStatus(Constants.TOKEN, request.getProductID(), status);
+                        return updateStatus(token, request.getProductID(), status);
                     }
                 })
 
@@ -464,7 +470,7 @@ public class ProductRequestManager {
     }
 
     public void deliver(int productID, Map status){
-        Observable<Product> product = updateStatus(Constants.TOKEN, productID, status);
+        Observable<Product> product = updateStatus(token, productID, status);
         product
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -504,7 +510,7 @@ public class ProductRequestManager {
     }
 
     public void cancelOrder(int productID, Map status){
-        Observable<Product> product = updateStatus(Constants.TOKEN, productID, status);
+        Observable<Product> product = updateStatus(token, productID, status);
         product
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -547,7 +553,7 @@ public class ProductRequestManager {
     }
 
     public Observable<Product> updateStatus(
-            String token, int productID, Map status) {
+           String token, int productID, Map status) {
         return productAPI.updateProductStatus(token, productID, status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

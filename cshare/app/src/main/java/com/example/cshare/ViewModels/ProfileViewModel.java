@@ -20,7 +20,6 @@ public class ProfileViewModel extends ViewModel {
     }
 
     // Getter method
-    public MutableLiveData<User> getUserMutableLiveData() {
-        return userProfileMutableLiveData;
-    }
+    public MutableLiveData<User> getUserMutableLiveData() { return userProfileMutableLiveData; }
+
 }
