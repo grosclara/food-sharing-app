@@ -38,7 +38,7 @@ public class ProfileRequestManager {
 
     //User credits
     String token;
-    int userId;
+    int userID;
 
     // Insert API interface dependency here
     private UserAPI userAPI;
@@ -53,11 +53,7 @@ public class ProfileRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
 
-        token = "Token "+LauncherActivity.userCredits.getString("token", null).trim();
-        userId = LauncherActivity.userCredits.getInt("id", -1);
-
-
-        getUserProfile(token, userId);
+        getUserProfile(Constants.TOKEN, Constants.USERID);
     }
 
     // Getter method
@@ -86,24 +82,24 @@ public class ProfileRequestManager {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "getUser : on start subscription");
                     }
 
                     @Override
                     public void onNext(User user) {
-                        Log.d(Constants.TAG,"live data filled");
+                        Log.d(Constants.TAG,"getUser : live data filled");
                         userProfile.setValue(user);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "getUser : error");
                         //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Data received");
+                        Log.d(Constants.TAG, "getUser : Data received");
                     }
                 });
 

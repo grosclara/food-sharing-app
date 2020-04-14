@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductToPost;
+import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.OrderAPI;
@@ -242,13 +242,13 @@ public class ProductRequestManager {
                 });
     }
 
-    public void addProduct(ProductToPost productToPost, Product productIns) {
+    public void addProduct(ProductForm productToPost, Product productIns) {
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
          */
 
-        Observable<ProductToPost> product;
+        Observable<ProductForm> product;
         product = productAPI.addProduct(
                 Constants.TOKEN,
                 productToPost.getProductPicture(),
@@ -268,14 +268,14 @@ public class ProductRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ProductToPost>() {
+                .subscribe(new Observer<ProductForm>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "addProduct : on start subscription");
                     }
 
                     @Override
-                    public void onNext(ProductToPost product) {
+                    public void onNext(ProductForm product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue();

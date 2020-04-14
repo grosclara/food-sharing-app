@@ -1,11 +1,13 @@
 package com.example.cshare.Controllers.Fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,7 +20,7 @@ import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener{
+public class ProfileFragment extends BaseFragment implements View.OnClickListener {
 
     // ViewModel
     private ProfileViewModel profileViewModel;
@@ -32,17 +34,17 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private TextView textViewRoomNumber;
     private ImageView imageViewProfilePicture;
 
-    //User credits
-    String token;
-    int userId;
-
     private Button logoutButton;
 
     @Override
-    protected BaseFragment newInstance() { return new ProfileFragment(); }
+    protected BaseFragment newInstance() {
+        return new ProfileFragment();
+    }
 
     @Override
-    protected int getFragmentLayout() { return R.layout.fragment_profile; }
+    protected int getFragmentLayout() {
+        return R.layout.fragment_profile;
+    }
 
     @Override
     protected void configureDesign(View view) {
@@ -54,7 +56,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         textViewRoomNumber = view.findViewById(R.id.textViewRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
 
-        logoutButton =view.findViewById(R.id.buttonLogOut);
+        logoutButton = view.findViewById(R.id.buttonLogOut);
 
         logoutButton.setOnClickListener(this);
 
@@ -62,7 +64,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void updateDesign() {
-
     }
 
     @Override
@@ -87,26 +88,44 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.buttonLogOut:
-                authViewModel.logout(token);
-                authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean loggedOut) {
-                        if (loggedOut = true){
-                            LauncherActivity.userCreditsEditor.putBoolean("logStatus",false);
-                            LauncherActivity.userCreditsEditor.apply();
+                // Alert Dialog to confirm the will to sign out
+                // Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                // Chain together various setter methods to set the dialog characteristics
+                builder.setMessage("Are you sure you want to log out ?")
+                        .setTitle("Log out")
+                        // Add the buttons
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button -> logout the user
+                                authViewModel.logout(Constants.TOKEN);
+                                authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                    @Override
+                                    public void onChanged(Boolean loggedOut) {
+                                        if (loggedOut) {
+                                            LauncherActivity.userCreditsEditor.putBoolean("logStatus", false);
+                                            LauncherActivity.userCreditsEditor.apply();
 
-                            Intent toLoginActivityIntent = new Intent();
-                            toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
-                            startActivity(toLoginActivityIntent);
+                                            Intent toLoginActivityIntent = new Intent();
+                                            toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                                            startActivity(toLoginActivityIntent);
 
-                        }
-                    }
-                });
-
-
-
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                                //finish();
+                            }
+                        });
+                // Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
         }
     }
 }

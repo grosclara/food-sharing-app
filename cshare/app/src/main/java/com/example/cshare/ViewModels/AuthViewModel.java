@@ -25,9 +25,7 @@ import retrofit2.Retrofit;
 public class AuthViewModel extends ViewModel {
 
     private MutableLiveData<LoginForm> loginFormMutableLiveData;
-
     private MutableLiveData<LoginResponse> responseMutableLiveData;
-
     private MutableLiveData<Boolean> loggedOutMutableLiveData;
 
     private Retrofit retrofit;
@@ -69,7 +67,7 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Log Out : on start subscription");
                     }
 
                     @Override
@@ -81,12 +79,12 @@ public class AuthViewModel extends ViewModel {
                     @Override
                     public void onError(Throwable e) {
                         loggedOutMutableLiveData.setValue(false);
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "Log Out : error");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "Completed");
+                        Log.d(Constants.TAG, "Log out : Completed");
                     }
                 });
 
@@ -118,7 +116,7 @@ public class AuthViewModel extends ViewModel {
                 .subscribe(new Observer<LoginResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Log In : on start subscription");
                     }
 
 
@@ -129,20 +127,20 @@ public class AuthViewModel extends ViewModel {
                         LoginResponse response = new LoginResponse(token,"success",user);
                         responseMutableLiveData.setValue(response);
                         loggedOutMutableLiveData.setValue(false);
-                        Log.i("intent ", "value putted in view model");
+                        Log.d(Constants.TAG, "Log In : live Data filled");
                     }
 
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "error");
-                        LoginResponse profileResponse = new LoginResponse("failed");
+                        LoginResponse profileResponse = new LoginResponse("Log In : failed");
                         responseMutableLiveData.setValue(profileResponse);
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "All data received");
+                        Log.d(Constants.TAG, "Log In : All data received");
                     }
                 });
 
