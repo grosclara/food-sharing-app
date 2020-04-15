@@ -1,10 +1,9 @@
-package com.example.cshare.Views;
+package com.example.cshare.Utils.ViewUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

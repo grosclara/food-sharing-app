@@ -1,14 +1,19 @@
 package com.example.cshare.Utils;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
@@ -31,6 +36,62 @@ public class Camera {
     public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
                 file);
+    }
+
+    public static Uri captureImage(Context context, Activity activity) throws IOException {
+        // Launching camera app to capture image
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Create a file to store the picture taken
+        File pictureFile = Camera.createImageFile(context);
+        // Retrieve its Uri
+        Uri pictureFileUri = getOutputMediaFileUri(context, pictureFile);
+        // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
+
+        // Checking whether device has camera hardware or not
+        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+            // start the image capture Intent
+            activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        }
+
+        return pictureFileUri;
+    }
+
+    public static File processPicture(Context context, Uri uri, ImageView imageView) throws IOException {
+
+        File fileToUpload = null;
+
+        if (uri != null) {
+            // Rotate if necessary and reduce size
+            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
+            // Displaying the image or video on the screen
+            Camera.previewMedia(bitmap, imageView);
+            // Save new picture to fileToUpload
+            fileToUpload = Camera.saveBitmap(context, bitmap);
+
+        } else {
+            Toast.makeText(context,
+                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
+        }
+        return fileToUpload;
+    }
+
+    public static void choosePictureFromGallery(Activity activity) {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        // Create an Intent with action as ACTION_PICK
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Sets the type as image/*. This ensures only components of type image are selected
+        pickIntent.setType("image/*");
+
+        // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+
+        // Create a chooser in case there are third parties app and launch the Intent
+        activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
     /**

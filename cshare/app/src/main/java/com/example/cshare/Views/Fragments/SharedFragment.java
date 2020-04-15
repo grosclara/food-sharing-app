@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;

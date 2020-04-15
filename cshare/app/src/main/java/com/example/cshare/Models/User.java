@@ -107,5 +107,13 @@ public class User implements Serializable {
     public String getPassword1() { return password1; }
 
     public String getPassword2() { return password2; }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
 

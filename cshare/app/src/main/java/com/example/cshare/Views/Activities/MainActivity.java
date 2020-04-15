@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Activities;
+package com.example.cshare.Views.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.cshare.Controllers.Fragments.AddFragment;
-import com.example.cshare.Controllers.Fragments.CartFragment;
-import com.example.cshare.Controllers.Fragments.HomeFragment;
-import com.example.cshare.Controllers.Fragments.ProfileFragment;
-import com.example.cshare.Controllers.Fragments.SharedFragment;
+import com.example.cshare.Views.Fragments.AddFragment;
+import com.example.cshare.Views.Fragments.CartFragment;
+import com.example.cshare.Views.Fragments.HomeFragment;
+import com.example.cshare.Views.Fragments.ProfileFragment;
+import com.example.cshare.Views.Fragments.SharedFragment;
 import com.example.cshare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

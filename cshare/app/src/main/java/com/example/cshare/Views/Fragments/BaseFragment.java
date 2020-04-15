@@ -1,17 +1,15 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.cshare.Controllers.Activities.LauncherActivity;
-import com.example.cshare.R;
+import com.example.cshare.Views.Activities.LauncherActivity;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -19,7 +17,7 @@ public abstract class BaseFragment extends Fragment {
     // we have redefined the most repeated methods
 
     // Force the developer to implement them in future children's classes.
-    protected abstract com.example.cshare.Controllers.Fragments.BaseFragment newInstance();
+    protected abstract com.example.cshare.Views.Fragments.BaseFragment newInstance();
 
     protected abstract int getFragmentLayout();
 

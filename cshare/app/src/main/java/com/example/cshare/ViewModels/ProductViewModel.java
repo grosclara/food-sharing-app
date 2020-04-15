@@ -1,11 +1,8 @@
 package com.example.cshare.ViewModels;
 
-import android.media.session.MediaSession;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.cshare.Controllers.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;

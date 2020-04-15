@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 
 import android.app.DatePickerDialog;
@@ -28,7 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cshare.Controllers.Activities.MainActivity;
+import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Camera;
@@ -196,7 +196,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             // Capture picture
             try {
-                captureImage();
+                pictureFileUri = Camera.captureImage(getContext(), getActivity());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -322,23 +322,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         }
     }
 
-    public void captureImage() throws IOException {
-        // Launching camera app to capture image
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        // Create a file to store the picture taken
-        File pictureFile = Camera.createImageFile(getContext());
-        // Retrieve its Uri
-        pictureFileUri = Camera.getOutputMediaFileUri(getContext(), pictureFile);
-        // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
-
-        // Checking whether device has camera hardware or not
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // start the image capture Intent
-            startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-        }
-    }
 
     /**
      * Receiving activity result method will be called after closing the camera
@@ -351,7 +335,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
             try {
-                processPicture(pictureFileUri); // modify the raw picture taken
+                fileToUpload = Camera.processPicture(getContext(), pictureFileUri, imageViewPreviewProduct); // modify the raw picture taken
+                pictureSelected = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -369,20 +354,4 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         }
     }
 
-    private void processPicture(Uri uri) throws IOException {
-        if (uri != null) {
-
-            pictureSelected = true;
-            // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(getActivity().getContentResolver(), uri);
-            // Displaying the image or video on the screen
-            Camera.previewMedia(bitmap, imageViewPreviewProduct);
-            // Save new picture to fileToUpload
-            fileToUpload = Camera.saveBitmap(getContext(), bitmap);
-
-        } else {
-            Toast.makeText(getContext(),
-                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
-        }
-    }
 }

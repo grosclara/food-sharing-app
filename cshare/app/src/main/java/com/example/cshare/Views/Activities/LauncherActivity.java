@@ -1,31 +1,34 @@
-package com.example.cshare.Controllers.Activities;
+package com.example.cshare.Views.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.cshare.R;
+import com.example.cshare.ViewModels.AuthViewModel;
 
 public class LauncherActivity extends AppCompatActivity {
-    public static final String PREFS_NAME = "CShareUserFile";
 
-    public static SharedPreferences userCredits;
-    public static SharedPreferences.Editor userCreditsEditor;
+    private AuthViewModel authViewModel;
+    private Boolean logStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        // Check if the user is logged in
-        userCredits = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        userCreditsEditor = userCredits.edit();
-        Boolean logStatus = userCredits.getBoolean("logStatus", false);
+        // Instantiate view model
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        if(logStatus){
+        logStatus = authViewModel.isLoggedIn();
+        redirectUser(logStatus);
+    }
+
+    private void redirectUser(Boolean logStatus) {
+        if (logStatus) {
             Intent toMainActivityIntent = new Intent();
             toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
             startActivity(toMainActivityIntent);
@@ -36,6 +39,6 @@ public class LauncherActivity extends AppCompatActivity {
             startActivity(toSignInActivityIntent);
             finish();
         }
-
     }
+
 }

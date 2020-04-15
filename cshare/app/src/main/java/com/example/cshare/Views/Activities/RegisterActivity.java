@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Activities;
+package com.example.cshare.Views.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -149,9 +149,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
         if (v == buttonAlreadyHaveAnAccount) {
+
             Intent toLoginActivityIntent = new Intent();
             toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toLoginActivityIntent);
+
         }
 
         if (v == buttonSignUp) {
@@ -184,6 +186,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                     User user = new User(profilePictureBody, firstName, lastName, roomNumber, campus, email, password1, password2);
                     authViewModel.registerWithPicture(user);
+
                 } else {
                     User user = new User(email, lastName, firstName, password1, password2, campus, roomNumber);
                     authViewModel.registerWithoutPicture(user);
@@ -198,25 +201,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if (v == buttonGallery || v == imageViewGallery) {
-            choosePictureFromGallery();
+
+            Camera.choosePictureFromGallery(getParent());
+
         }
-    }
-
-    private void choosePictureFromGallery() {
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
-
-        // Create an Intent with action as ACTION_PICK
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        pickIntent.setType("image/*");
-
-        // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-
-        // Create a chooser in case there are third parties app and launch the Intent
-        startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
     /**
@@ -233,7 +221,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             pictureFileUri = data.getData();
 
             try {
-                processPicture(this, pictureFileUri); // modify the raw picture taken
+                fileToUpload = Camera.processPicture(this, pictureFileUri, imageViewGallery); // modify the raw picture taken
+                pictureSelected = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -248,23 +237,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(this,
                     "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
                     .show();
-        }
-    }
-
-    private void processPicture(Context context, Uri uri) throws IOException {
-        if (uri != null) {
-
-            pictureSelected = true;
-            // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
-            // Displaying the image or video on the screen
-            Camera.previewMedia(bitmap, imageViewGallery);
-            // Save new picture to fileToUpload
-            fileToUpload = Camera.saveBitmap(context, bitmap);
-
-        } else {
-            Toast.makeText(context,
-                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
         }
     }
 

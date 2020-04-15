@@ -1,4 +1,4 @@
-package com.example.cshare.Utils;
+package com.example.cshare.Utils.ViewUtils;
 
 import android.view.View;
 

@@ -7,54 +7,28 @@ package com.example.cshare.Models;
 public class LoginResponse {
     private String key;
     private String requestStatus;
-    private UserResponse user;
-
-    public class UserResponse{
-        private int id;
-        private String email;
-        private String last_name;
-        private String first_name;
-        private String room_number;
-        private String campus;
-        private String profile_picture;
-        private boolean is_active;
-        private boolean is_staff;
-        private String last_login;
-        private String date_joined;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getCampus() {
-            return campus;
-        }
-    }
+    private User user;
 
     public LoginResponse(String requestStatus) {
         this.requestStatus = requestStatus;
+    }
+
+    public LoginResponse(String key, String requestStatus, User user) {
+        this.key = key;
+        this.requestStatus = requestStatus;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getRequestStatus() {
         return requestStatus;
     }
 
-    public UserResponse getUser() {
-        return user;
-    }
-
-    public UserResponse getUserResponse() {
-        return user;
-    }
-
-    /*
-     * Constructor of the LoginResponse class.
-     *
-     */
-    public LoginResponse(String key, String requestStatus, UserResponse user) {
-        this.key = key;
+    public void setRequestStatus(String requestStatus) {
         this.requestStatus = requestStatus;
-        this.user = user;
     }
 
     public String getKey() {

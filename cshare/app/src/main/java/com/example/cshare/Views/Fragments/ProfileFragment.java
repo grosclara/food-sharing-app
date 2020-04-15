@@ -1,8 +1,7 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,11 +12,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.cshare.Controllers.Activities.LauncherActivity;
-import com.example.cshare.Controllers.Activities.LoginActivity;
+import com.example.cshare.Views.Activities.LauncherActivity;
+import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
-import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;

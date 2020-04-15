@@ -4,8 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Controllers.Activities.LauncherActivity;
-import com.example.cshare.Controllers.Activities.MainActivity;
+import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;

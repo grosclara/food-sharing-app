@@ -1,11 +1,17 @@
 package com.example.cshare.ViewModels;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 
-import com.example.cshare.Controllers.Activities.MainActivity;
+import com.example.cshare.Listeners.AuthListener;
+import com.example.cshare.RequestManager.AuthRequestManager;
+import com.example.cshare.Views.Activities.LoginActivity;
+import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
 
@@ -14,6 +20,8 @@ import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -24,7 +32,9 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 
-public class AuthViewModel extends ViewModel {
+public class AuthViewModel extends AndroidViewModel {
+
+    private AuthRequestManager authRequestManager;
 
     private MutableLiveData<LoginForm> loginFormMutableLiveData;
     private MutableLiveData<LoginResponse> responseMutableLiveData;
@@ -38,17 +48,43 @@ public class AuthViewModel extends ViewModel {
     private String campus = MainActivity.campus;
     private int userID = MainActivity.userID;
 
-    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {return responseMutableLiveData;}
+    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {
+        return responseMutableLiveData;
+    }
 
-    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {return loggedOutMutableLiveData;}
+    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {
+        return loggedOutMutableLiveData;
+    }
 
-    public AuthViewModel() {
+    public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         authAPI = retrofit.create(AuthenticationAPI.class);
+        // Get request manager instance
+        authRequestManager = AuthRequestManager.getInstance(getApplication());
     }
 
-    public void registerWithoutPicture(User user){
+    public boolean logIn(LoginForm loginForm){
+
+        Boolean logInSuccess = false;
+
+        LoginResponse loginResponse = authRequestManager.logIn(loginForm).getValue();
+
+        if (loginResponse.getRequestStatus().equals(Constants.SUCCESS)) {
+
+            authRequestManager.saveUserCredentials(loginResponse.getUser());
+            logInSuccess = true;
+
+        }
+
+        else {
+            // Request error
+        }
+
+    }
+
+    public void registerWithoutPicture(User user) {
         /**
          * Request to the API to register
          */
@@ -87,14 +123,18 @@ public class AuthViewModel extends ViewModel {
                     }
                 });
 
-        }
-        
-    public void logOut(){
+    }
+
+    public boolean isLoggedIn() {
+        return authRequestManager.isLoggedIn();
+    }
+
+    public void logOut() {
         /**
          * Request to the API to logout
          */
         loggedOutMutableLiveData = new MutableLiveData<>();
-        
+
         Observable<ResponseBody> key = authAPI.logout(token);
         key
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -141,7 +181,7 @@ public class AuthViewModel extends ViewModel {
 
         Observable<LoginResponse> loginResponseObservable;
         loginResponseObservable = authAPI.login(
-            loginFormMutableLiveData.getValue());
+                loginFormMutableLiveData.getValue());
         loginResponseObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -162,9 +202,10 @@ public class AuthViewModel extends ViewModel {
 
                     @Override
                     public void onNext(LoginResponse loginResponse) {
+
                         String token = loginResponse.getKey();
-                        LoginResponse.UserResponse user = loginResponse.getUserResponse();
-                        LoginResponse response = new LoginResponse(token,"success",user);
+                        User user = loginResponse.getUser();
+                        LoginResponse response = new LoginResponse(token, "success", user);
                         responseMutableLiveData.setValue(response);
                         loggedOutMutableLiveData.setValue(false);
                         Log.d(Constants.TAG, "Log In : live Data filled");
@@ -184,7 +225,7 @@ public class AuthViewModel extends ViewModel {
                     }
                 });
 
-}
+    }
 
     public void registerWithPicture(User user) {
         /**
@@ -218,14 +259,17 @@ public class AuthViewModel extends ViewModel {
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Register : on start subscription");
                     }
+
                     @Override
                     public void onNext(User newUser) {
                         Log.d(Constants.TAG, "Account created successfully");
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Register : error");
                     }
+
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Register : Completed");

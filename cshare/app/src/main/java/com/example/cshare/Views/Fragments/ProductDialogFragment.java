@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,9 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModel;
 
-import com.example.cshare.Controllers.Activities.MainActivity;
+import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
