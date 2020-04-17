@@ -1,6 +1,8 @@
 package com.example.cshare.Views.Activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -11,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.cshare.Models.LoginForm;
+import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.ViewModels.AuthViewModel;
 
+import java.util.List;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -43,7 +47,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Instantiate view model
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
+        authViewModel.getIsLoggedInMutableLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isLoggedIn) {
+                if (isLoggedIn) {
+                    // TODO: Only in case of success
+                    Intent toMainActivityIntent = new Intent();
+                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+                    startActivity(toMainActivityIntent);
+                }
+            }
+        });
     }
 
     @Override
@@ -60,11 +74,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (isValid(loginUser)) {
                     authViewModel.logIn(loginUser);
-
-                    // TODO: Only in case of success
-                    Intent toMainActivityIntent = new Intent();
-                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                    startActivity(toMainActivityIntent);
                 }
                 break;
 

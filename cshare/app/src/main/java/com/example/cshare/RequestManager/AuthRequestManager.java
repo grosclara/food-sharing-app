@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.LoginForm;
 import com.example.cshare.Models.LoginResponse;
-import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.WebServices.AuthenticationAPI;
@@ -22,6 +21,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class AuthRequestManager {
@@ -30,7 +30,7 @@ public class AuthRequestManager {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ResponseLogin> loginResponseMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -86,9 +86,9 @@ public class AuthRequestManager {
                         Log.d(Constants.TAG, "Log In : On start subscription");
                     }
                     @Override
-                    public void onNext(LoginResponse loginResponse) {
+                    public void onNext(LoginResponse response) {
                         Log.d(Constants.TAG, "Log In successful");
-                        saveUserCredentials(loginResponse);
+                        saveUserCredentials(response);
                     }
 
                     @Override
@@ -105,6 +105,8 @@ public class AuthRequestManager {
 
     public void saveUserCredentials(LoginResponse loginResponse){
         prefs.fillPrefs(loginResponse);
+        // Update isLoggedInMutableLiveData
+        isLoggedIn();
     }
 
 

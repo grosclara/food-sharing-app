@@ -8,7 +8,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.cshare.Models.LoginResponse;
-import com.example.cshare.Models.User;
+import com.example.cshare.RequestManager.ResponseLogin;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -63,11 +63,11 @@ public class PreferenceProvider {
     }
 
     public String getToken() {
-        return "token "+prefs.getString(TOKEN_KEY, "Invalid token");
+        return "token "+prefs.getString(TOKEN_KEY, "invalidToken");
     }
 
     public String getCampus() {
-        return prefs.getString(CAMPUS_KEY, "Invalid Campus");
+        return prefs.getString(CAMPUS_KEY, "invalidCampus");
     }
 
     public int getUserID() {

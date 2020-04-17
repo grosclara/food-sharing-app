@@ -2,34 +2,14 @@ package com.example.cshare.ViewModels;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import android.app.Application;
-import android.content.Intent;
-import android.util.Log;
 
 import com.example.cshare.RequestManager.AuthRequestManager;
-import com.example.cshare.Views.Activities.LoginActivity;
-import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.LoginForm;
-import com.example.cshare.Models.LoginResponse;
-
-import com.example.cshare.Models.User;
-import com.example.cshare.Utils.Constants;
-import com.example.cshare.WebServices.AuthenticationAPI;
-import com.example.cshare.WebServices.NetworkClient;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
 
 public class AuthViewModel extends AndroidViewModel {
 
