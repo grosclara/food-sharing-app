@@ -37,12 +37,13 @@ public class ProductRequestManager {
     private MutableLiveData<List<Product>> sharedProductList = new MutableLiveData<>();
     private MutableLiveData<List<Product>> inCartProductList = new MutableLiveData<>();
 
-
+    // Data sources dependencies
     private Retrofit retrofit;
     // Insert API interface dependency here
     private ProductAPI productAPI;
     private OrderAPI orderAPI;
 
+    // To delete
     private String token = MainActivity.token;
     private String campus = MainActivity.campus;
     private int userID = MainActivity.userID;
@@ -57,12 +58,8 @@ public class ProductRequestManager {
         productAPI = retrofit.create(ProductAPI.class);
         orderAPI = retrofit.create(OrderAPI.class);
 
-        // Initialize the value of availableProductList
-        getAvailableProducts(token, campus, Constants.AVAILABLE);
-        // Initialize the value of inCartProductList
-        getInCartProducts(token, userID);
-        // Initialize the value of sharedProductProductList
-        getSharedProducts(token, userID);
+        // Initialize the value of the lists
+        updateOrCreateRequestManager(token, campus, Constants.AVAILABLE, userID);
     }
 
     // Getter method
@@ -72,10 +69,10 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getInCartProductList() { return inCartProductList; }
     public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
 
-    public void updateRequestManager() {
-        getAvailableProducts(MainActivity.token, MainActivity.campus, Constants.AVAILABLE);
-        getInCartProducts(MainActivity.token, MainActivity.userID);
-        getSharedProducts(MainActivity.token, MainActivity.userID);
+    public void updateOrCreateRequestManager(String token, String campus, String status, int userID) {
+        getAvailableProducts(token, campus, status);
+        getInCartProducts(token, userID);
+        getSharedProducts(token, userID);
     }
 
     public void getInCartProducts(String token, int userID) {

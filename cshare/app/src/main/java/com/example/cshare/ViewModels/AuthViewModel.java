@@ -8,7 +8,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.cshare.Listeners.AuthListener;
 import com.example.cshare.RequestManager.AuthRequestManager;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Views.Activities.MainActivity;
@@ -36,36 +35,43 @@ public class AuthViewModel extends AndroidViewModel {
 
     private AuthRequestManager authRequestManager;
 
-    private MutableLiveData<LoginForm> loginFormMutableLiveData;
-    private MutableLiveData<LoginResponse> responseMutableLiveData;
-    private MutableLiveData<Boolean> loggedOutMutableLiveData;
-
-    private Retrofit retrofit;
-    // Insert API interface dependency here
-    private AuthenticationAPI authAPI;
-
-    private String token = MainActivity.token;
-    private String campus = MainActivity.campus;
-    private int userID = MainActivity.userID;
-
-    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {
-        return responseMutableLiveData;
-    }
-
-    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {
-        return loggedOutMutableLiveData;
-    }
+    // MutableLiveData object that contains the data
+    private MutableLiveData<Boolean> isLoggedInMutableLiveData;
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
+
+        // Get request manager instance
+        authRequestManager = AuthRequestManager.getInstance(getApplication());
+
+        // Initialize isLoggedIn var
+        isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
+    }
+
+    // Getter method
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
+        return isLoggedInMutableLiveData;
+    }
+
+    public void logIn(LoginForm loginForm){
+        authRequestManager.logIn(loginForm);
+    }
+/*
+    public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
+
+        // Get request manager instance
+        authRequestManager = AuthRequestManager.getInstance(getApplication());
+
+        isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         authAPI = retrofit.create(AuthenticationAPI.class);
-        // Get request manager instance
-        authRequestManager = AuthRequestManager.getInstance(getApplication());
     }
+*/
 
-    public boolean logIn(LoginForm loginForm){
+    /*public boolean logIn(LoginForm loginForm){
 
         Boolean logInSuccess = false;
 
@@ -81,13 +87,14 @@ public class AuthViewModel extends AndroidViewModel {
         else {
             // Request error
         }
+        return logInSuccess;
 
     }
 
     public void registerWithoutPicture(User user) {
-        /**
+        *//**
          * Request to the API to register
-         */
+         *//*
         Observable<User> userObservable;
         userObservable = authAPI.createUserWithoutPicture(user);
         userObservable
@@ -130,9 +137,9 @@ public class AuthViewModel extends AndroidViewModel {
     }
 
     public void logOut() {
-        /**
+        *//**
          * Request to the API to logout
-         */
+         *//*
         loggedOutMutableLiveData = new MutableLiveData<>();
 
         Observable<ResponseBody> key = authAPI.logout(token);
@@ -228,10 +235,10 @@ public class AuthViewModel extends AndroidViewModel {
     }
 
     public void registerWithPicture(User user) {
-        /**
+        *//**
          * Request to the API to create an account with a profile picture
          * @param User
-         */
+         *//*
 
         Observable<User> userObservable;
         userObservable = authAPI.createUserWithPicture(
@@ -275,5 +282,5 @@ public class AuthViewModel extends AndroidViewModel {
                         Log.d(Constants.TAG, "Register : Completed");
                     }
                 });
-    }
+    }*/
 }

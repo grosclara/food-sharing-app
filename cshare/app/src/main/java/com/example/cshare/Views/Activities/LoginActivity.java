@@ -16,7 +16,7 @@ import com.example.cshare.ViewModels.AuthViewModel;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity  implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AuthViewModel authViewModel;
 
@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         emailAddressEditText = findViewById(R.id.emailAddressEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         buttonLogin = findViewById(R.id.buttonLogin);
-        buttonCreateAccount =findViewById(R.id.buttonCreateAccount);
+        buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
 
         //  Set click listeners
         buttonLogin.setOnClickListener(this);
@@ -49,24 +49,22 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch(id) {
+        switch (id) {
 
             // Validate form and send Login request
-            case(R.id.buttonLogin):
+            case (R.id.buttonLogin):
 
                 // Retrieve information from the UI
                 LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
                         passwordEditText.getText().toString().trim());
 
                 if (isValid(loginUser)) {
-                    Boolean logInSuccess = authViewModel.logIn(loginUser);
+                    authViewModel.logIn(loginUser);
 
-                    if (logInSuccess){
-
-                        Intent toMainActivityIntent = new Intent();
-                        toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                        startActivity(toMainActivityIntent);
-                    }
+                    // TODO: Only in case of success
+                    Intent toMainActivityIntent = new Intent();
+                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+                    startActivity(toMainActivityIntent);
                 }
                 break;
 
@@ -78,9 +76,10 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                 break;
 
         }
+
     }
 
-    private Boolean isValid(LoginForm loginForm){
+    private Boolean isValid(LoginForm loginForm) {
 
         if (!loginForm.isEmailValid()) {
             emailAddressEditText.setError("Enter a Valid E-mail Address");

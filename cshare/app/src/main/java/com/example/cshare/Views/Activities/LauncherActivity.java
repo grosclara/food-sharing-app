@@ -13,7 +13,6 @@ import com.example.cshare.ViewModels.AuthViewModel;
 public class LauncherActivity extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
-    private Boolean logStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +22,7 @@ public class LauncherActivity extends AppCompatActivity {
         // Instantiate view model
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        logStatus = authViewModel.isLoggedIn();
-        redirectUser(logStatus);
+        redirectUser(authViewModel.getIsLoggedInMutableLiveData().getValue());
     }
 
     private void redirectUser(Boolean logStatus) {

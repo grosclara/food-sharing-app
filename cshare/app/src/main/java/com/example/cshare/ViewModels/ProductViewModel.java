@@ -16,42 +16,37 @@ public class ProductViewModel extends ViewModel {
     private ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<List<Product>> availableProductList = new MutableLiveData<>();
-    private MutableLiveData<List<Product>> sharedProductList = new MutableLiveData<>();
-    private MutableLiveData<List<Product>> inCartProductList = new MutableLiveData<>();
+    private MutableLiveData<List<Product>> availableProductList;
+    private MutableLiveData<List<Product>> sharedProductList;
+    private MutableLiveData<List<Product>> inCartProductList;
 
     public ProductViewModel() {
-
         // Get request manager instance
         productRequestManager = ProductRequestManager.getInstance();
         // Retrieve product lists from request manager
         availableProductList = productRequestManager.getAvailableProductList();
         inCartProductList = productRequestManager.getInCartProductList();
         sharedProductList = productRequestManager.getSharedProductList();
-
     }
 
     // Get request manager
     public ProductRequestManager getProductRequestManager() {
         return productRequestManager;
     }
-
     // Getter method
     public MutableLiveData<List<Product>> getAvailableProductList() {
         return availableProductList;
     }
-
     public MutableLiveData<List<Product>> getInCartProductList() {
         return inCartProductList;
     }
-
     public MutableLiveData<List<Product>> getSharedProductList() {
         return sharedProductList;
     }
 
     // Update products in request manager
     public void update() {
-        productRequestManager.updateRequestManager();
+        productRequestManager.updateOrCreateRequestManager();
     }
 
     // Add a product and update every list

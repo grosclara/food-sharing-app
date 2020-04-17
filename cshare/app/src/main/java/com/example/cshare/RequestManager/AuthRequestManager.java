@@ -26,21 +26,27 @@ import retrofit2.Retrofit;
 
 public class AuthRequestManager {
 
+    private static AuthRequestManager authRequestManager;
+
+    // MutableLiveData object that contains the data
+    private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
+
     // Data sources dependencies
     private PreferenceProvider prefs;
     private Retrofit retrofit;
     // Insert API interface dependency here
     private AuthenticationAPI authApi;
 
-    //private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
+    public AuthRequestManager(PreferenceProvider prefs) {
 
-    private static AuthRequestManager authRequestManager;
-
-    public AuthRequestManager(PreferenceProvider prefs){
         this.prefs = prefs;
         // Define the URL endpoint for the HTTP request.
         this.retrofit = NetworkClient.getRetrofitClient();
         this.authApi = this.retrofit.create(AuthenticationAPI.class);
+
+        // Initialize the value of the boolean isLoggedIn
+        isLoggedIn();
     }
 
     public synchronized static AuthRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
@@ -49,20 +55,24 @@ public class AuthRequestManager {
          * else it creates new repository and returns it
          */
         if (authRequestManager == null) {
-            if (authRequestManager == null) {
-                authRequestManager = new AuthRequestManager(new PreferenceProvider(application));
-            }
+            Log.d("tag", "new instance +1");
+            authRequestManager = new AuthRequestManager(new PreferenceProvider(application));
         }
         return authRequestManager;
     }
 
-    public Boolean isLoggedIn(){
-        return prefs.isLoggedIn();
+    // Getter method
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
+        return isLoggedInMutableLiveData;
     }
 
-    public MutableLiveData<LoginResponse> logIn(LoginForm loginForm) {
+    // Requests
 
-        MutableLiveData<LoginResponse> response = new MutableLiveData<>();
+    public void isLoggedIn() {
+        isLoggedInMutableLiveData.setValue(prefs.isLoggedIn());
+    }
+
+    public void logIn(LoginForm loginForm) {
 
         Observable<LoginResponse> loginResponseObservable;
         loginResponseObservable = authApi.login(loginForm);
@@ -77,14 +87,11 @@ public class AuthRequestManager {
                     }
                     @Override
                     public void onNext(LoginResponse loginResponse) {
-                        loginResponse.setRequestStatus(Constants.SUCCESS);
-                        response.setValue(loginResponse);
                         Log.d(Constants.TAG, "Log In successful");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        response.setValue(new LoginResponse(Constants.ERROR));
                         Log.d(Constants.TAG, "error");
                     }
 
@@ -93,14 +100,13 @@ public class AuthRequestManager {
                         Log.d(Constants.TAG, "Log In : All data received");
                     }
                 });
-        return response;
     }
 
-    public void saveUserCredentials(User user){
+    /*public void saveUserCredentials(User user){
 
         prefs.fillPrefs(user);
 
-    }
+    }*/
 
 
 }
