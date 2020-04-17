@@ -49,8 +49,11 @@ public class PreferenceProvider {
     }
 
     public boolean isLoggedIn() {
-        Boolean logStatus = prefs.getBoolean(LOG_STATUS_KEY, false);
-        return logStatus;
+        return prefs.getBoolean(LOG_STATUS_KEY, false);
+    }
+
+    public void  logOut(){
+        prefs.edit().putBoolean(LOG_STATUS_KEY, false).apply();
     }
 
     public void fillPrefs(LoginResponse loginResponse) {

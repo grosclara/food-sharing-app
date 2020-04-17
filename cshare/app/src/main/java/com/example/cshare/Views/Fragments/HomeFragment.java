@@ -1,6 +1,8 @@
 package com.example.cshare.Views.Fragments;
 
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;

@@ -4,6 +4,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.example.cshare.RequestManager.AuthRequestManager;
 import com.example.cshare.Models.LoginForm;
@@ -37,7 +38,11 @@ public class AuthViewModel extends AndroidViewModel {
         authRequestManager.logIn(loginForm);
     }
 
- /*   public void registerWithoutPicture(User user) {
+    public void logOut() {
+        authRequestManager.logOut();
+    }
+
+    /*   public void registerWithoutPicture(User user) {
         *//**
          * Request to the API to register
          *//*

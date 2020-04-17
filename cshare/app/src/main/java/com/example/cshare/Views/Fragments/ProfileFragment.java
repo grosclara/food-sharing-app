@@ -2,6 +2,7 @@ package com.example.cshare.Views.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -70,8 +71,24 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     protected void configureViewModel() {
         // Retrieve auth data from view model (log out, change password)
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
         // Retrieve user details from profile view model
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        authViewModel.getIsLoggedInMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean loggedIn) {
+                if (! loggedIn) {
+
+                    Toast.makeText(getContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+                    // Go back to the Launcher Activity
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
+                }
+            }
+        });
 
         profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
 
@@ -103,24 +120,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button -> logout the user
-                                //authViewModel.logOut();
-                                /*authViewModel.getLoggedOutMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                                    @Override
-                                    public void onChanged(Boolean loggedOut) {
-                                        if (loggedOut) {
-                                            // Update the Shared preferences
-                                            LauncherActivity.userCreditsEditor.putBoolean("logStatus", false);
-                                            LauncherActivity.userCreditsEditor.apply();
-
-                                            Toast.makeText(getContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
-
-                                            // Go back to the Launcher Activity
-                                            Intent toLoginActivityIntent = new Intent();
-                                            toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
-                                            startActivity(toLoginActivityIntent);
-                                        }
-                                    }
-                                });*/
+                                authViewModel.logOut();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

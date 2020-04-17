@@ -21,6 +21,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -85,6 +86,7 @@ public class AuthRequestManager {
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log In : On start subscription");
                     }
+
                     @Override
                     public void onNext(LoginResponse response) {
                         Log.d(Constants.TAG, "Log In successful");
@@ -103,11 +105,53 @@ public class AuthRequestManager {
                 });
     }
 
-    public void saveUserCredentials(LoginResponse loginResponse){
+    public void saveUserCredentials(LoginResponse loginResponse) {
         prefs.fillPrefs(loginResponse);
         // Update isLoggedInMutableLiveData
         isLoggedIn();
     }
 
+    public void logOut() {
+        /**
+         * Request to the API to logout
+         */
 
+        Observable<ResponseBody> key = authApi.logout(prefs.getToken());
+        key
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "Log Out : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody empty) {
+                        prefs.logOut();
+                        // Update isLoggedInMutableLiveData
+                        isLoggedIn();
+                        Log.d(Constants.TAG, "Logged out successfully");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "Log Out : error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Log out : Completed");
+                    }
+                });
+
+    }
 }
