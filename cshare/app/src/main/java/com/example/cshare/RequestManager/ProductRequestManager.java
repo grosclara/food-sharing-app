@@ -1,9 +1,12 @@
 package com.example.cshare.RequestManager;
 
+import android.app.Application;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
@@ -13,6 +16,8 @@ import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.OrderAPI;
 import com.example.cshare.WebServices.ProductAPI;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -38,28 +43,27 @@ public class ProductRequestManager {
     private MutableLiveData<List<Product>> inCartProductList = new MutableLiveData<>();
 
     // Data sources dependencies
+    private PreferenceProvider prefs;
     private Retrofit retrofit;
     // Insert API interface dependency here
     private ProductAPI productAPI;
     private OrderAPI orderAPI;
 
-    // To delete
-    private String token = MainActivity.token;
-    private String campus = MainActivity.campus;
-    private int userID = MainActivity.userID;
-
-    public ProductRequestManager() {
+    public ProductRequestManager(PreferenceProvider prefs) {
         /**
          * Constructor that fetch all the list of available products and store it in the
          * products attributes
          */
         // Define the URL endpoint for the HTTP request.
+
+        this.prefs = prefs;
+
         retrofit = NetworkClient.getRetrofitClient();
         productAPI = retrofit.create(ProductAPI.class);
         orderAPI = retrofit.create(OrderAPI.class);
 
         // Initialize the value of the lists
-        updateOrCreateRequestManager(token, campus, Constants.AVAILABLE, userID);
+        updateOrCreateRequestManager();
     }
 
     // Getter method
@@ -69,10 +73,10 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getInCartProductList() { return inCartProductList; }
     public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
 
-    public void updateOrCreateRequestManager(String token, String campus, String status, int userID) {
-        getAvailableProducts(token, campus, status);
-        getInCartProducts(token, userID);
-        getSharedProducts(token, userID);
+    public void updateOrCreateRequestManager() {
+        getAvailableProducts(prefs.getToken(), prefs.getCampus(), Constants.AVAILABLE);
+        getInCartProducts(prefs.getToken(), prefs.getUserID());
+        getSharedProducts(prefs.getToken(), prefs.getUserID());
     }
 
     public void getInCartProducts(String token, int userID) {
@@ -252,7 +256,7 @@ public class ProductRequestManager {
 
         Observable<ProductForm> product;
         product = productAPI.addProduct(
-                token,
+                prefs.getToken(),
                 productToPost.getProductPicture(),
                 productToPost.getProductName(),
                 productToPost.getProductCategory(),
@@ -312,7 +316,7 @@ public class ProductRequestManager {
 
         Observable<Response<Product>> product;
         product = productAPI.deleteProductById(
-                token,
+                prefs.getToken(),
                 productToDelete.getId());
 
         Log.d(Constants.TAG, product.toString());
@@ -382,12 +386,12 @@ public class ProductRequestManager {
          * Request to the API to order a product and update its status from available to collected
          */
         Observable<Order> order;
-        order = orderAPI.addOrder(token, request);
+        order = orderAPI.addOrder(prefs.getToken(), request);
         order
                 .flatMap(new Function<Order, Observable<Product>>() {
                     @Override
                     public Observable<Product> apply(Order order) throws Exception {
-                        return updateStatus(token, request.getProductID(), status);
+                        return updateStatus(prefs.getToken(), request.getProductID(), status);
                     }
                 })
 
@@ -467,7 +471,7 @@ public class ProductRequestManager {
     }
 
     public void deliver(int productID, Map status){
-        Observable<Product> product = updateStatus(token, productID, status);
+        Observable<Product> product = updateStatus(prefs.getToken(), productID, status);
         product
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -507,7 +511,7 @@ public class ProductRequestManager {
     }
 
     public void cancelOrder(int productID, Map status){
-        Observable<Product> product = updateStatus(token, productID, status);
+        Observable<Product> product = updateStatus(prefs.getToken(), productID, status);
         product
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -557,15 +561,14 @@ public class ProductRequestManager {
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    public synchronized static ProductRequestManager getInstance() {
+    public synchronized static ProductRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
         /**
          * Method that return the current repository object if it exists
          * else it creates new repository and returns it
          */
         if (productRequestManager == null) {
-            if (productRequestManager == null) {
-                productRequestManager = new ProductRequestManager();
-            }
+            Log.d("tag", "new instance +1");
+            productRequestManager = new ProductRequestManager(new PreferenceProvider(application));
         }
         return productRequestManager;
     }

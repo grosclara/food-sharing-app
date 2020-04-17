@@ -37,7 +37,6 @@ public class AuthViewModel extends AndroidViewModel {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData;
-    private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -57,41 +56,8 @@ public class AuthViewModel extends AndroidViewModel {
     public void logIn(LoginForm loginForm){
         authRequestManager.logIn(loginForm);
     }
-/*
-    public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
-        super(application);
 
-        // Get request manager instance
-        authRequestManager = AuthRequestManager.getInstance(getApplication());
-
-        isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
-        // Define the URL endpoint for the HTTP request.
-        retrofit = NetworkClient.getRetrofitClient();
-        authAPI = retrofit.create(AuthenticationAPI.class);
-    }
-*/
-
-    /*public boolean logIn(LoginForm loginForm){
-
-        Boolean logInSuccess = false;
-
-        LoginResponse loginResponse = authRequestManager.logIn(loginForm).getValue();
-
-        if (loginResponse.getRequestStatus().equals(Constants.SUCCESS)) {
-
-            authRequestManager.saveUserCredentials(loginResponse.getUser());
-            logInSuccess = true;
-
-        }
-
-        else {
-            // Request error
-        }
-        return logInSuccess;
-
-    }
-
-    public void registerWithoutPicture(User user) {
+ /*   public void registerWithoutPicture(User user) {
         *//**
          * Request to the API to register
          *//*

@@ -43,10 +43,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        token = "token "+LauncherActivity.userCredits.getString("token", "Invalid token");
-        userID = LauncherActivity.userCredits.getInt("id", -1);
-        campus = LauncherActivity.userCredits.getString("campus", "Gif");
-
         // Binding views
         // ButterKnife.bind(this);
         bottomNav = findViewById(R.id.bottom_navigation);

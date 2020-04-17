@@ -185,11 +185,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
 
                     User user = new User(profilePictureBody, firstName, lastName, roomNumber, campus, email, password1, password2);
-                    authViewModel.registerWithPicture(user);
+                    //authViewModel.registerWithPicture(user);
 
                 } else {
                     User user = new User(email, lastName, firstName, password1, password2, campus, roomNumber);
-                    authViewModel.registerWithoutPicture(user);
+                    //authViewModel.registerWithoutPicture(user);
                 }
 
                 Toast.makeText(this, "Account created successfully, please sign in", Toast.LENGTH_SHORT).show();

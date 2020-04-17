@@ -1,5 +1,8 @@
 package com.example.cshare.ViewModels;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -8,10 +11,12 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
 import com.example.cshare.RequestManager.ProductRequestManager;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Map;
 
-public class ProductViewModel extends ViewModel {
+public class ProductViewModel extends AndroidViewModel {
 
     private ProductRequestManager productRequestManager;
 
@@ -20,9 +25,11 @@ public class ProductViewModel extends ViewModel {
     private MutableLiveData<List<Product>> sharedProductList;
     private MutableLiveData<List<Product>> inCartProductList;
 
-    public ProductViewModel() {
+    public ProductViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
+
         // Get request manager instance
-        productRequestManager = ProductRequestManager.getInstance();
+        productRequestManager = ProductRequestManager.getInstance(application);
         // Retrieve product lists from request manager
         availableProductList = productRequestManager.getAvailableProductList();
         inCartProductList = productRequestManager.getInCartProductList();

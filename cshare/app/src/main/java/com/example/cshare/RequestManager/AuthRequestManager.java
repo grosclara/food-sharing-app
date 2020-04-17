@@ -88,6 +88,7 @@ public class AuthRequestManager {
                     @Override
                     public void onNext(LoginResponse loginResponse) {
                         Log.d(Constants.TAG, "Log In successful");
+                        saveUserCredentials(loginResponse);
                     }
 
                     @Override
@@ -102,11 +103,9 @@ public class AuthRequestManager {
                 });
     }
 
-    /*public void saveUserCredentials(User user){
-
-        prefs.fillPrefs(user);
-
-    }*/
+    public void saveUserCredentials(LoginResponse loginResponse){
+        prefs.fillPrefs(loginResponse);
+    }
 
 
 }
