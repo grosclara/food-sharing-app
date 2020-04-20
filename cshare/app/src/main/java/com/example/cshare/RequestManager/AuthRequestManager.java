@@ -9,6 +9,7 @@ import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.ViewModels.ProductViewModel;
@@ -25,6 +26,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class AuthRequestManager {
@@ -60,7 +62,6 @@ public class AuthRequestManager {
          * else it creates new repository and returns it
          */
         if (authRequestManager == null) {
-            Log.d("tag", "new instance +1");
             authRequestManager = new AuthRequestManager(new PreferenceProvider(application));
         }
         return authRequestManager;
@@ -124,7 +125,7 @@ public class AuthRequestManager {
          * Request to the API to logout
          */
 
-        Observable<ResponseBody> key = authApi.logout(prefs.getToken());
+        Observable<Response<User>> key = authApi.logout(prefs.getToken());
         key
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -136,14 +137,14 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<Response<User>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log Out : on start subscription");
                     }
 
                     @Override
-                    public void onNext(ResponseBody empty) {
+                    public void onNext(Response<User> empty) {
                         prefs.logOut();
                         // Update isLoggedInMutableLiveData
                         isLoggedIn();
@@ -296,5 +297,53 @@ public class AuthRequestManager {
                         }
                     });
     }
+
+    public void deleteAccount(){
+        /**
+         * Request to the API to delete the profile
+         */
+        Observable<Response<User>> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
+        observable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<Response<User>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "Deletion : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(Response<User> empty) {
+                        Log.d(Constants.TAG, "Deletion successful");
+
+                        Log.d(Constants.TAG, String.valueOf(prefs.isLoggedIn()));
+                        prefs.logOut();
+                        isLoggedIn();
+                        Log.d(Constants.TAG, String.valueOf(isLoggedInMutableLiveData.getValue()));
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, e.getLocalizedMessage());
+                        Log.d(Constants.TAG, "Deletion : error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Deletion : Completed");
+                    }
+                });
+
+    }
+
 
 }

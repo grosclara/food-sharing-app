@@ -10,12 +10,15 @@ import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface AuthenticationAPI {
 
@@ -48,7 +51,7 @@ public interface AuthenticationAPI {
     Observable<LoginResponse> login(@Body LoginForm loginForm);
 
     @POST("rest-auth/logout/")
-    Observable<ResponseBody> logout(
+    Observable<Response<User>> logout(
             @Header("Authorization") String token
     );
 
@@ -61,5 +64,11 @@ public interface AuthenticationAPI {
     @POST("rest-auth/password/reset/")
     Observable<User> resetPassword(
             @Body User user
+    );
+
+    @DELETE("user/{id}/")
+    Observable<Response<User>> delete(
+            @Header("Authorization") String token,
+            @Path("id") int userId
     );
 }

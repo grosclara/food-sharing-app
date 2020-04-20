@@ -47,10 +47,4 @@ public interface UserAPI {
             @Part("is_active") Boolean isActive
     );
 
-    @DELETE("user/{id}/")
-    Observable<ResponseBody> deleteUserById(
-            @Header("Authorization") String token,
-            @Path("id") int userId
-    );
-
 }

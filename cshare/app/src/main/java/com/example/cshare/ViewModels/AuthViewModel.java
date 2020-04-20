@@ -51,6 +51,8 @@ public class AuthViewModel extends AndroidViewModel {
         authRequestManager.logOut();
     }
 
+    public void deleteAccount() {authRequestManager.deleteAccount();}
+
     public void register(RegisterForm registerForm){
         if (registerForm.getProfile_picture() != null){
             authRequestManager.registerWithPicture(registerForm);

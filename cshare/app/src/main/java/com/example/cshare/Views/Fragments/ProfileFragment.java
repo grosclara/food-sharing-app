@@ -46,6 +46,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     private Button logOutButton;
     private Button changePasswordButton;
+    private Button deleteAccountButton;
 
     @Override
     protected BaseFragment newInstance() {
@@ -69,10 +70,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
         logOutButton = view.findViewById(R.id.buttonLogOut);
         changePasswordButton = view.findViewById(R.id.buttonChangePassword);
+        deleteAccountButton = view.findViewById(R.id.buttonDeleteAccount);
 
         // Activate buttons
         logOutButton.setOnClickListener(this);
         changePasswordButton.setOnClickListener(this);
+        deleteAccountButton.setOnClickListener(this);
 
     }
 
@@ -91,7 +94,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         authViewModel.getIsPasswordChangedMutableLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if(aBoolean) {
+                if (aBoolean) {
                     Toast.makeText(getContext(), "Password successfully changed", Toast.LENGTH_SHORT).show();
                     authViewModel.getIsPasswordChangedMutableLiveData().setValue(false);
                 }
@@ -164,7 +167,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
 
                 // Inflate the layout
-                View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password,null);
+                View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password, null);
 
                 // Load the edit texts
                 editTextOldPassword = changePasswordLayout.findViewById(R.id.editTextOldPassword);
@@ -179,7 +182,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         // Add the buttons
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button -> logout the user
+                                // User clicked OK button -> change password
                                 PasswordForm passwordForm = new PasswordForm(editTextOldPassword.getText().toString().trim(),
                                         editTextNewPassword.getText().toString().trim(),
                                         editTextConfirmNewPassword.getText().toString().trim());
@@ -201,6 +204,30 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 // Get the AlertDialog from create()
                 AlertDialog dialogPassword = builderPassword.create();
                 dialogPassword.show();
+                break;
+            case R.id.buttonDeleteAccount:
+                // Alert Dialog to confirm the will to delete account
+                // Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
+                // Chain together various setter methods to set the dialog characteristics
+                deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
+                        .setTitle("Delete account")
+                        // Add the buttons
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button -> delete the user's account
+                                authViewModel.deleteAccount();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                // Get the AlertDialog from create()
+                AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
+                deleteAccountDialog.show();
+
 
         }
     }
