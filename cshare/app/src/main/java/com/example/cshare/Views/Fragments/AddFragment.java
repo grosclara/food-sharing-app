@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,6 +41,7 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.example.cshare.R;
 import com.mobsandgeeks.saripaar.annotation.Future;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +87,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
+    private String fileToUploadPath;
 
     // ViewModels
     ProductViewModel productViewModel;
@@ -111,6 +114,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
         spinnerProductCategories = view.findViewById(R.id.spinnerProductCategories);
         imageViewPreviewProduct = view.findViewById(R.id.imageViewPreviewProduct);
+
+        Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
 
         // Validator
         configureValidator();
@@ -196,40 +201,37 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             // Capture picture
             try {
-                pictureFileUri = Camera.captureImage(getContext(), getActivity());
+                pictureFileUri = Camera.captureImage(getContext(), this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        } else if (v == buttonSubmit) {
+        }
+
+        else if (v == buttonSubmit) {
 
             // Validate the field
             validator.validate();
 
-            if (validated & pictureSelected) {
+            if (validated & fileToUploadUri != null) {
 
                 // Retrieve the name of the product typed in the editText field
                 productName = String.valueOf(editTextProductName.getText());
                 // Retrieve the quantity of the product typed in the editText field
                 quantity = String.valueOf(editTextQuantity.getText());
 
-                try {
-                    fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                fileToUpload = new File(fileToUploadPath);
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
-                // HTTP Post request (CREATE A NEW MODEL PRODUCT TO POST ????)
-                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date, MainActivity.userID);
+                // HTTP Post request
+                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date);
 
                 // Format the product to update view models
                 String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
-                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, MainActivity.userID, productCategory, quantity, expiration_date);
+                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, productCategory, quantity, expiration_date);
 
                 productViewModel.addProduct(productToPost, product);
 
@@ -265,7 +267,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 dialog.show();
 
 
-            } else if (!pictureSelected) {
+            } else if ( fileToUploadUri == null) {
                 Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
                 textViewPictureError.setVisibility(View.VISIBLE);
             }
@@ -303,22 +305,27 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     /*
       Here we store the file uri as it will be null after returning from camera app
     */
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save file url in bundle as it will be null on screen orientation
-        // changes
-        outState.putParcelable("file_uri", pictureFileUri);
+        // Save file uri in bundle as it will be null on screen orientation changes
+        outState.putParcelable("file_uri", fileToUploadUri);
+        outState.putString("file_path", fileToUploadPath);
+
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.d("tag", "onViewStateRestored");
+
         if (savedInstanceState != null) {
-            // get the file url
-            pictureFileUri = savedInstanceState.getParcelable("file_uri");
+            // get the file uri
+            fileToUploadUri = savedInstanceState.getParcelable("file_uri");
+            fileToUploadPath = savedInstanceState.getString("file_path");
+            // Reload the image view picture
+            if (fileToUploadUri != null)
+            { Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct); }
+            else { Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct); }
         }
     }
 
@@ -334,9 +341,14 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
         if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
+
             try {
                 fileToUpload = Camera.processPicture(getContext(), pictureFileUri); // modify the raw picture taken
-                pictureSelected = true;
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

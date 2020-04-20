@@ -79,9 +79,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String campus;
     private String roomNumber;
 
-    // Check whether a picture has been selected
-    private boolean pictureSelected = false;
-
     // Path to the location of the picture taken by the phone
     private Uri pictureFileUri;
     private File fileToUpload;

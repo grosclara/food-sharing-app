@@ -1,11 +1,9 @@
 package com.example.cshare.Utils;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -14,11 +12,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.Fragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,11 +28,13 @@ import java.util.Locale;
 
 public class Camera {
 
+    // TODO : Create a File class in Utils
+
     // Camera activity request codes
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
 
-    public static Uri captureImage(Context context, Activity activity) throws IOException {
+    public static Uri captureImage(Context context, Fragment fragment) throws IOException {
         // Launching camera app to capture image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -46,13 +46,13 @@ public class Camera {
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
 
         // Checking whether device has camera hardware or not
-        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
             // start the image capture Intent
-            activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+            fragment.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
         }
-
-        return pictureFileUri;
+       return pictureFileUri;
     }
+
     public static void choosePictureFromGallery(Activity activity) {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");

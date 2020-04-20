@@ -253,10 +253,13 @@ public class ProductRequestManager {
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
          */
+        productToPost.setToken(prefs.getToken());
+        productToPost.setSupplierID(prefs.getUserID());
+        productIns.setSupplier(prefs.getUserID());
 
         Observable<ProductForm> product;
         product = productAPI.addProduct(
-                prefs.getToken(),
+                productToPost.getToken(),
                 productToPost.getProductPicture(),
                 productToPost.getProductName(),
                 productToPost.getProductCategory(),
