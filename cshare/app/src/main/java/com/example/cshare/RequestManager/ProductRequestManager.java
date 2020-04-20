@@ -63,7 +63,7 @@ public class ProductRequestManager {
         orderAPI = retrofit.create(OrderAPI.class);
 
         // Initialize the value of the lists
-        updateOrCreateRequestManager();
+        update();
     }
 
     // Getter method
@@ -73,7 +73,7 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getInCartProductList() { return inCartProductList; }
     public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
 
-    public void updateOrCreateRequestManager() {
+    public void update() {
         getAvailableProducts(prefs.getToken(), prefs.getCampus(), Constants.AVAILABLE);
         getInCartProducts(prefs.getToken(), prefs.getUserID());
         getSharedProducts(prefs.getToken(), prefs.getUserID());

@@ -1,6 +1,7 @@
 package com.example.cshare.ViewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -53,7 +54,8 @@ public class ProductViewModel extends AndroidViewModel {
 
     // Update products in request manager
     public void update() {
-        productRequestManager.updateOrCreateRequestManager();
+        Log.d("tag","product update");
+        productRequestManager.update();
     }
 
     // Add a product and update every list

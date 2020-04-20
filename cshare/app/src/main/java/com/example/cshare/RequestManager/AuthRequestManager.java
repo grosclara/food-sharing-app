@@ -10,6 +10,7 @@ import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
+import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
 

@@ -1,15 +1,19 @@
 package com.example.cshare.RequestManager;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.UserAPI;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -34,24 +38,24 @@ public class ProfileRequestManager {
     // MutableLiveData object that contains the user data
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
 
+    // Data sources dependencies
+    private PreferenceProvider prefs;
     private Retrofit retrofit;
     // Insert API interface dependency here
     private UserAPI userAPI;
 
-    private String token = MainActivity.token;
-    private String campus = MainActivity.campus;
-    private int userID = MainActivity.userID;
+    public ProfileRequestManager(PreferenceProvider prefs) {
 
-    public ProfileRequestManager() {
-        /**
-         * Constructor that fetch the user profile and store it in the
-         * attributes
-         */
-
+        this.prefs = prefs;
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
 
+        // Initialize the value of the User profile
+        update();
+    }
+
+    public void update() {
         getUserProfile();
     }
 
@@ -66,7 +70,7 @@ public class ProfileRequestManager {
          */
 
         Observable<User> userObservable;
-        userObservable = userAPI.getUserByID(token, userID);
+        userObservable = userAPI.getUserByID(prefs.getToken(), prefs.getUserID());
         userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -86,7 +90,7 @@ public class ProfileRequestManager {
 
                     @Override
                     public void onNext(User user) {
-                        Log.d(Constants.TAG,"getUser : live data filled");
+                        Log.d(Constants.TAG, "getUser : live data filled");
                         userProfile.setValue(user);
                     }
 
@@ -103,15 +107,13 @@ public class ProfileRequestManager {
                 });
     }
 
-    public synchronized static ProfileRequestManager getInstance() {
+    public synchronized static ProfileRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
         /**
          * Method that return the current repository object if it exists
          * else it creates new repository and returns it
          */
         if (profileRequestManager == null) {
-            if (profileRequestManager == null) {
-                profileRequestManager = new ProfileRequestManager();
-            }
+            profileRequestManager = new ProfileRequestManager(new PreferenceProvider(application));
         }
         return profileRequestManager;
     }

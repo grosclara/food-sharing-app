@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +15,14 @@ import android.widget.EditText;
 import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.R;
 import com.example.cshare.ViewModels.AuthViewModel;
+import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.ProfileViewModel;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AuthViewModel authViewModel;
+    private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
 
     // Views
     private EditText emailAddressEditText;
@@ -41,12 +46,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonCreateAccount.setOnClickListener(this);
 
         // Instantiate view model
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         authViewModel.getIsLoggedInMutableLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean isLoggedIn) {
                 if (isLoggedIn) {
                     // TODO: Only in case of success
+
+                    // Update the viewModels
+                    productViewModel.update();
+                    profileViewModel.update();
+                    // Redirect to the MainActivity
                     Intent toMainActivityIntent = new Intent();
                     toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
                     startActivity(toMainActivityIntent);
