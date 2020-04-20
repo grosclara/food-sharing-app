@@ -1,8 +1,8 @@
 package com.example.cshare.WebServices;
 
-import com.example.cshare.Models.LoginForm;
-import com.example.cshare.Models.LoginResponse;
-import com.example.cshare.RequestManager.ResponseLogin;
+import com.example.cshare.Models.Auth.LoginForm;
+import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
@@ -27,7 +27,7 @@ public interface AuthenticationAPI {
 
     @Multipart
     @POST("rest-auth/registration/")
-    Observable<User> createUserWithPicture(
+    Observable<RegisterForm> createUserWithPicture(
             @Part MultipartBody.Part profilePictureBody,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
@@ -39,8 +39,8 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/registration/")
-    Observable<User> createUserWithoutPicture(
-            @Body User user
+    Observable<RegisterForm> createUserWithoutPicture(
+            @Body RegisterForm user
     );
 
     @POST("rest-auth/login/")

@@ -2,13 +2,11 @@ package com.example.cshare.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import com.example.cshare.Models.LoginResponse;
-import com.example.cshare.RequestManager.ResponseLogin;
+import com.example.cshare.Models.Auth.LoginResponse;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

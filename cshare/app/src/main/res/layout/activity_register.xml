@@ -78,8 +78,8 @@
         android:id="@+id/imageViewGallery"
         android:layout_width="75dp"
         android:layout_height="76dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonGallery"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button

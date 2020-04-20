@@ -2,6 +2,7 @@ package com.example.cshare.Views.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -19,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Camera;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -65,6 +68,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Button buttonGallery;
 
     private String[] campusArray;
+
+    private RegisterForm registerForm;
+
     private String email;
     private String lastName;
     private String firstName;
@@ -80,6 +86,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
+    private String fileToUploadPath;
 
     // ViewModel
     AuthViewModel authViewModel;
@@ -87,6 +94,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(Constants.TAG, "onActCreated");
         setContentView(R.layout.activity_register);
 
         // Bind views
@@ -97,11 +106,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextPasswordSignUp = findViewById(R.id.editTextPasswordSignUp);
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
         imageViewGallery = findViewById(R.id.imageViewGallery);
-        Picasso.get().load(R.drawable.test).into(imageViewGallery);
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
         buttonGallery = findViewById(R.id.buttonGallery);
         spinnerCampus = findViewById(R.id.spinnerCampus);
+
+        Picasso.get().load(R.drawable.test).into(imageViewGallery);
 
         // Activate buttons
         buttonSignUp.setOnClickListener(this);
@@ -117,6 +127,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //ViewModel
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel.getIsRegisteredMutableLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+                if (aBoolean) {
+                    authViewModel.getIsRegisteredMutableLiveData().setValue(false);
+
+                    Toast.makeText(getApplicationContext(), "Account successfully created, please sign in", Toast.LENGTH_SHORT).show();
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
+                }
+
+            }
+        });
+        /*authViewModel.getRegisterFormMutableLiveData().observe(this, new Observer<RegisterForm>() {
+            @Override
+            public void onChanged(RegisterForm registerForm) {
+                // Update form
+                Picasso.get().load(fileToUpload).into(imageViewGallery);
+
+            }
+        });*/
     }
 
     private void configureCampusSpinner() {
@@ -171,38 +204,27 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 password2 = editTextPasswordConfirm.getText().toString().trim();
                 roomNumber = editTextRoomNumber.getText().toString().trim();
 
-                if (pictureSelected) {
+                registerForm = new RegisterForm(email, password1, password2, lastName, firstName, roomNumber, campus);
 
-                    try {
-                        fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                if (fileToUploadUri != null) {
 
+                    fileToUpload = new File(fileToUploadPath);
                     // Create RequestBody instance from file
                     RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
                     // MultipartBody.Part is used to send also the actual file name
-                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
+                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
 
-                    User user = new User(profilePictureBody, firstName, lastName, roomNumber, campus, email, password1, password2);
-                    //authViewModel.registerWithPicture(user);
-
-                } else {
-                    User user = new User(email, lastName, firstName, password1, password2, campus, roomNumber);
-                    //authViewModel.registerWithoutPicture(user);
+                    registerForm.setProfile_picture(profilePictureBody);
                 }
 
-                Toast.makeText(this, "Account created successfully, please sign in", Toast.LENGTH_SHORT).show();
+                authViewModel.register(registerForm);
 
-                Intent toLoginActivityIntent = new Intent();
-                toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
-                startActivity(toLoginActivityIntent);
             }
         }
 
         if (v == buttonGallery || v == imageViewGallery) {
 
-            Camera.choosePictureFromGallery(getParent());
+            Camera.choosePictureFromGallery(this);
 
         }
     }
@@ -220,9 +242,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
 
+            // modify the raw picture taken in a new file and retrieve its Uri
             try {
-                fileToUpload = Camera.processPicture(this, pictureFileUri, imageViewGallery); // modify the raw picture taken
-                pictureSelected = true;
+                fileToUpload = Camera.processPicture(this, pictureFileUri);
+
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewGallery);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -270,18 +298,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save file url in bundle as it will be null on screen orientation
-        // changes
-        outState.putParcelable("file_uri", pictureFileUri);
+        // Save file uri in bundle as it will be null on screen orientation changes
+        outState.putParcelable("file_uri", fileToUploadUri);
+        outState.putString("file_path", fileToUploadPath);
+
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.d("tag", "onRestoreInstanceState");
+
         if (savedInstanceState != null) {
-            // get the file url
-            pictureFileUri = savedInstanceState.getParcelable("file_uri");
+            // get the file uri
+            fileToUploadUri = savedInstanceState.getParcelable("file_uri");
+            fileToUploadPath = savedInstanceState.getString("file_path");
+            // Reload the image view picture
+            if (fileToUploadUri != null)
+            { Picasso.get().load(fileToUploadUri).into(imageViewGallery); }
+            else { Picasso.get().load(R.drawable.test).into(imageViewGallery); }
         }
     }
 

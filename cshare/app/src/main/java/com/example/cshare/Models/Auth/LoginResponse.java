@@ -1,4 +1,6 @@
-package com.example.cshare.Models;
+package com.example.cshare.Models.Auth;
+
+import com.example.cshare.Models.User;
 
 public class LoginResponse {
 

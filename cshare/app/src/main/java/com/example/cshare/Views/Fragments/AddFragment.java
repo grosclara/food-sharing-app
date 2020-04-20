@@ -335,7 +335,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
             try {
-                fileToUpload = Camera.processPicture(getContext(), pictureFileUri, imageViewPreviewProduct); // modify the raw picture taken
+                fileToUpload = Camera.processPicture(getContext(), pictureFileUri); // modify the raw picture taken
                 pictureSelected = true;
             } catch (IOException e) {
                 e.printStackTrace();

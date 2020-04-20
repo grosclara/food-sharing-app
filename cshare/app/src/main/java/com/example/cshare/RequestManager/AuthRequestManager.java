@@ -5,8 +5,9 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.LoginForm;
-import com.example.cshare.Models.LoginResponse;
+import com.example.cshare.Models.Auth.LoginForm;
+import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.WebServices.AuthenticationAPI;
@@ -22,7 +23,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class AuthRequestManager {
@@ -32,6 +32,7 @@ public class AuthRequestManager {
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ResponseLogin> loginResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isRegisteredMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -66,6 +67,7 @@ public class AuthRequestManager {
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
         return isLoggedInMutableLiveData;
     }
+    public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){ return isRegisteredMutableLiveData; }
 
     // Requests
 
@@ -150,6 +152,99 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log out : Completed");
+                    }
+                });
+
+    }
+
+   public void registerWithoutPicture(RegisterForm user) {
+        /*
+        Request to the API to register
+         */
+        Observable<RegisterForm> userObservable;
+        userObservable = authApi.createUserWithoutPicture(user);
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<RegisterForm>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "Registration : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(RegisterForm userInfo) {
+                        Log.d(Constants.TAG, "Registered successfully");
+                        isRegisteredMutableLiveData.setValue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "Registration : error");
+                        isRegisteredMutableLiveData.setValue(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Registration : Completed");
+                    }
+                });
+    }
+
+    public void registerWithPicture(RegisterForm user) {
+        /*
+        Request to the API to register
+         */
+        Observable<RegisterForm> userObservable;
+        userObservable = authApi.createUserWithPicture(user.getProfile_picture(),
+                user.getFirst_name(),
+                user.getLast_name(),
+                user.getRoom_number(),
+                user.getCampus(),
+                user.getEmail(),
+                user.getPassword1(),
+                user.getPassword2());
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<RegisterForm>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "Registration : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(RegisterForm userInfo) {
+                        Log.d(Constants.TAG, "Registered successfully");
+                        isRegisteredMutableLiveData.setValue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "Registration : error");
+                        Log.d(Constants.TAG, e.getLocalizedMessage());
+                        isRegisteredMutableLiveData.setValue(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Registration : Completed");
                     }
                 });
 

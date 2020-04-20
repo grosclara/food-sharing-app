@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,12 +34,6 @@ public class Camera {
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
 
-    // Creating file uri to store image
-    public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {
-        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
-                file);
-    }
-
     public static Uri captureImage(Context context, Activity activity) throws IOException {
         // Launching camera app to capture image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -57,26 +53,6 @@ public class Camera {
 
         return pictureFileUri;
     }
-
-    public static File processPicture(Context context, Uri uri, ImageView imageView) throws IOException {
-
-        File fileToUpload = null;
-
-        if (uri != null) {
-            // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
-            // Displaying the image or video on the screen
-            Camera.previewMedia(bitmap, imageView);
-            // Save new picture to fileToUpload
-            fileToUpload = Camera.saveBitmap(context, bitmap);
-
-        } else {
-            Toast.makeText(context,
-                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
-        }
-        return fileToUpload;
-    }
-
     public static void choosePictureFromGallery(Activity activity) {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
@@ -94,18 +70,29 @@ public class Camera {
         activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
-    /**
-     * Displaying captured image/video on the screen
-     */
-    public static void previewMedia(Bitmap bitmap, ImageView imageViewPreview){
-        //imgPreview.setVisibility(View.VISIBLE);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        // down sizing image as it throws OutOfMemory Exception for larger
-        // images
-        options.inSampleSize = 8;
-        imageViewPreview.setImageBitmap(bitmap);
+    // Creating file uri to store image
+    public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {
+        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
+                file);
     }
 
+    public static File processPicture(Context context, Uri uri) throws IOException {
+
+        File fileToUpload = null;
+
+        if (uri != null) {
+            // Rotate if necessary and reduce size
+            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
+            // Save new picture to fileToUpload
+            fileToUpload = Camera.saveBitmap(context, bitmap);
+
+        } else {
+            Toast.makeText(context,
+                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
+        }
+
+        return fileToUpload;
+    }
 
     public static File createImageFile(Context context) throws IOException {
         /**
