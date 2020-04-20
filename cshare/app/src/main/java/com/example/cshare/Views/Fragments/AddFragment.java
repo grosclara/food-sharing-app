@@ -35,6 +35,7 @@ import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -246,19 +247,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button
-                                // Create fragment and give it an argument specifying the article it should show
-                                HomeFragment homeFragment = new HomeFragment();
-
-                                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-                                // Replace whatever is in the fragment_container view with this fragment,
-                                // and add the transaction to the back stack so the user can navigate back
-                                transaction.replace(R.id.fragment_container, homeFragment);
-                                transaction.addToBackStack(null);
-
-                                // Commit the transaction
-                                transaction.commit();
-
+                                // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
+                                ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
                             }
                         });
 
