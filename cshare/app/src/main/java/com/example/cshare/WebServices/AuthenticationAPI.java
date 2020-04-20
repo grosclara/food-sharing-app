@@ -2,6 +2,7 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.User;
 
@@ -52,9 +53,9 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/password/change/")
-    Observable<User> changePassword(
+    Observable<PasswordForm> changePassword(
             @Header("Authorization") String token,
-            @Body User user
+            @Body PasswordForm passwordForm
     );
 
     @POST("rest-auth/password/reset/")

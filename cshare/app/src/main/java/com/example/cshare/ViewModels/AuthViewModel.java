@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
+import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.RequestManager.AuthRequestManager;
 import com.example.cshare.Models.Auth.LoginForm;
@@ -19,6 +20,7 @@ public class AuthViewModel extends AndroidViewModel {
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData;
     private MutableLiveData<Boolean> isRegisteredMutableLiveData;
+    private MutableLiveData<Boolean> isPasswordChangedMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -30,6 +32,7 @@ public class AuthViewModel extends AndroidViewModel {
         isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
         //registerFormMutableLiveData = new MutableLiveData<>();
         isRegisteredMutableLiveData = authRequestManager.getIsRegisteredMutableLiveData();
+        isPasswordChangedMutableLiveData = authRequestManager.getIsPasswordChangedMutableLiveData();
     }
 
     // Getter method
@@ -38,6 +41,7 @@ public class AuthViewModel extends AndroidViewModel {
     }
     // public MutableLiveData<RegisterForm> getRegisterFormMutableLiveData(){ return registerFormMutableLiveData; }
     public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){return isRegisteredMutableLiveData;}
+    public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){ return isPasswordChangedMutableLiveData;}
 
     public void logIn(LoginForm loginForm){
         authRequestManager.logIn(loginForm);
@@ -51,5 +55,9 @@ public class AuthViewModel extends AndroidViewModel {
         if (registerForm.getProfile_picture() != null){
             authRequestManager.registerWithPicture(registerForm);
         } else { authRequestManager.registerWithoutPicture(registerForm); }
+    }
+
+    public void changePassword(PasswordForm passwordForm){
+        authRequestManager.changePassword(passwordForm);
     }
 }

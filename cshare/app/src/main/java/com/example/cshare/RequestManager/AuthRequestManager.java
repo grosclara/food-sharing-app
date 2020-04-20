@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -34,6 +35,7 @@ public class AuthRequestManager {
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ResponseLogin> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isRegisteredMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isPasswordChangedMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -68,7 +70,10 @@ public class AuthRequestManager {
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
         return isLoggedInMutableLiveData;
     }
-    public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){ return isRegisteredMutableLiveData; }
+    public MutableLiveData<Boolean> getIsRegisteredMutableLiveData() {
+        return isRegisteredMutableLiveData;
+    }
+    public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){return isPasswordChangedMutableLiveData;}
 
     // Requests
 
@@ -158,7 +163,7 @@ public class AuthRequestManager {
 
     }
 
-   public void registerWithoutPicture(RegisterForm user) {
+    public void registerWithoutPicture(RegisterForm user) {
         /*
         Request to the API to register
          */
@@ -250,4 +255,46 @@ public class AuthRequestManager {
                 });
 
     }
+
+    public void changePassword(PasswordForm passwordForm){
+            /**
+             * Request to the API to change password
+             */
+            Observable<PasswordForm> observable;
+            observable = authApi.changePassword(prefs.getToken(), passwordForm);
+            observable
+                    // Run the Observable in a dedicated thread (Schedulers.io)
+                    .subscribeOn(Schedulers.io())
+                    // Allows to tell all Subscribers to listen to the Observable data stream on the
+                    // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                    // of the graphical interface from the  method
+                    .observeOn(AndroidSchedulers.mainThread())
+                    // If the Subscriber has not sent data before the defined time (10 seconds),
+                    // the data transmission will be stopped and a Timeout error will be sent to the
+                    // Subscribers via their onError() method.
+                    .timeout(10, TimeUnit.SECONDS)
+                    .subscribe(new Observer<PasswordForm>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            Log.d(Constants.TAG, "Password change : on start subscription");
+                        }
+
+                        @Override
+                        public void onNext(PasswordForm response) {
+                            Log.d(Constants.TAG, "Password changed successfully");
+                            isPasswordChangedMutableLiveData.setValue(true);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.d(Constants.TAG, "Password change : error");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.d(Constants.TAG, "Password change : Completed");
+                        }
+                    });
+    }
+
 }
