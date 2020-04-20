@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
 
+import com.example.cshare.Models.User;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
@@ -54,6 +56,19 @@ public class ProductDialogFragment extends DialogFragment {
         this.tag = tag;
         this.productViewModel = productViewModel;
         this.profileViewModel = profileViewModel;
+
+        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User supplier) {
+
+                // HTTP Request to retrieve the user information
+                textViewSupplierFirstName.setText(supplier.getFirstName());
+                textViewSupplierLastName.setText(supplier.getLastName());
+                textViewSupplierCampus.setText(supplier.getCampus());
+                textViewSupplierRoomNumber.setText(supplier.getRoomNumber());
+                Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
+            }
+        });
     }
 
     @Override
@@ -67,9 +82,22 @@ public class ProductDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_dialog_product, null);
         builder.setView(view);
 
-        // Bind supplier related views
-        fillInSupplierDetails(view, product.getSupplier());
         // Bind product related views
+        textViewProductName = view.findViewById(R.id.textViewProductName);
+        textViewProductCategory = view.findViewById(R.id.textViewProductCategory);
+        textViewProductStatus = view.findViewById(R.id.textViewProductStatus);
+        textViewExpirationDate = view.findViewById(R.id.textViewExpirationDate);
+        imageViewProduct = view.findViewById(R.id.imageViewProduct);
+        // Bind supplier related views
+        textViewSupplierFirstName = view.findViewById(R.id.textViewSupplierFirstName);
+        textViewSupplierLastName = view.findViewById(R.id.textViewSupplierLastName);
+        textViewSupplierCampus = view.findViewById(R.id.textViewSupplierCampus);
+        textViewSupplierRoomNumber = view.findViewById(R.id.textViewSupplierRoomNumber);
+        imageViewSupplierProfilePicture = view.findViewById(R.id.imageViewSupplierProfilePicture);
+
+        // Fill in related views
+        fillInSupplierDetails(view, product.getSupplier());
+        // Fill in product related views
         fillInProductDetails(view);
 
         // Depending on the tag of the dialog, display its title and buttons
@@ -159,13 +187,6 @@ public class ProductDialogFragment extends DialogFragment {
 
     private void fillInProductDetails(View view) {
 
-        // Bind views
-        textViewProductName = view.findViewById(R.id.textViewProductName);
-        textViewProductCategory = view.findViewById(R.id.textViewProductCategory);
-        textViewProductStatus = view.findViewById(R.id.textViewProductStatus);
-        textViewExpirationDate = view.findViewById(R.id.textViewExpirationDate);
-        imageViewProduct = view.findViewById(R.id.imageViewProduct);
-
         textViewProductName.setText(product.getName());
         textViewProductCategory.setText(product.getCategory());
         textViewProductStatus.setText(product.getStatus());
@@ -185,25 +206,11 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void
-    fillInSupplierDetails(View view, int supplierID) {
+    private void fillInSupplierDetails(View view, int supplierID) {
+
         // Retrieve all information from the supplier and fill in the views
-
-        // Bind views
-        textViewSupplierFirstName = view.findViewById(R.id.textViewSupplierFirstName);
-        textViewSupplierLastName = view.findViewById(R.id.textViewSupplierLastName);
-        textViewSupplierCampus = view.findViewById(R.id.textViewSupplierCampus);
-        textViewSupplierRoomNumber = view.findViewById(R.id.textViewSupplierRoomNumber);
-        imageViewSupplierProfilePicture = view.findViewById(R.id.imageViewSupplierProfilePicture);
-
-        // HTTP Request to retrieve the user information
-        textViewSupplierFirstName.setText("Clara");
-        textViewSupplierLastName.setText("Gros");
-        textViewSupplierCampus.setText("Gif");
-        textViewSupplierRoomNumber.setText("4F306");
-        Picasso.get().load(R.drawable.photo_cv).into(imageViewSupplierProfilePicture);
+       profileViewModel.getUserByID(supplierID);
 
     }
-
 
 }

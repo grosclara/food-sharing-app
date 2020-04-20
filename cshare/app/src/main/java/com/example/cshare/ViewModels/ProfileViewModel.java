@@ -21,6 +21,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<User> userProfileMutableLiveData;
+    private MutableLiveData<User> otherProfileMutableLiveData;
 
     public ProfileViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -29,10 +30,12 @@ public class ProfileViewModel extends AndroidViewModel {
 
         // Retrieve user profile list from request manager
         userProfileMutableLiveData = profileRequestManager.getUser();
+        otherProfileMutableLiveData = profileRequestManager.getOtherUser();
     }
 
     // Getter method
     public MutableLiveData<User> getUserMutableLiveData() { return userProfileMutableLiveData; }
+    public MutableLiveData<User> getOtherProfileMutableLiveData() {return otherProfileMutableLiveData; }
 
     public void update(){
         Log.d("tag","profile update");
@@ -41,6 +44,10 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public int getUserID(){
         return profileRequestManager.getUserID();
+    }
+
+    public void getUserByID(int userID){
+        profileRequestManager.getUserByID(userID);
     }
 
 }

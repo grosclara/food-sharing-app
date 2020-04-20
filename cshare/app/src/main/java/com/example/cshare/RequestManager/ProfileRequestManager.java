@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Utils.PreferenceProvider;
-import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
@@ -37,6 +36,7 @@ public class ProfileRequestManager {
 
     // MutableLiveData object that contains the user data
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
+    private MutableLiveData<User> otherUser = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -63,16 +63,16 @@ public class ProfileRequestManager {
     public MutableLiveData<User> getUser() {
         return userProfile;
     }
+    public MutableLiveData<User> getOtherUser(){ return otherUser; }
 
     public int getUserID(){
         return prefs.getUserID();
     }
 
-    private void getUserProfile() {
+    public void getUserProfile() {
         /**
          * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
          */
-
         Observable<User> userObservable;
         userObservable = userAPI.getUserByID(prefs.getToken(), prefs.getUserID());
         userObservable
@@ -96,6 +96,48 @@ public class ProfileRequestManager {
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "getUser : live data filled");
                         userProfile.setValue(user);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "getUser : error");
+                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "getUser : Data received");
+                    }
+                });
+    }
+
+    public void getUserByID(int userID) {
+        /**
+         * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
+         */
+        Observable<User> userObservable;
+        userObservable = userAPI.getUserByID(prefs.getToken(), userID);
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "getUser : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(User response) {
+                        Log.d(Constants.TAG, "getUser : live data filled");
+                        otherUser.setValue(response);
                     }
 
                     @Override

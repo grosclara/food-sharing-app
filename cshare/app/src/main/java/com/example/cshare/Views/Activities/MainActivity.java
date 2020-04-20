@@ -27,10 +27,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static String token;
-    public static int userID;
-    public static String campus;
-
     // FOR DESIGN
     BottomNavigationView bottomNav;
 
