@@ -74,24 +74,24 @@ public class ProductRequestManager {
     public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
 
     public void update() {
-        getAvailableProducts(prefs.getToken(), prefs.getCampus(), Constants.AVAILABLE);
-        getInCartProducts(prefs.getToken(), prefs.getUserID());
-        getSharedProducts(prefs.getToken(), prefs.getUserID());
+        getAvailableProducts();
+        getInCartProducts();
+        getSharedProducts();
     }
 
-    public void getInCartProducts(String token, int userID) {
+    public void getInCartProducts() {
         /**
          * Request to the API to fill the MutableLiveData attribute productList with the list of products
          * present in the cart
          */
 
         Observable<List<Order>> products;
-        products = orderAPI.getOrdersByCustomerID(token, userID);
+        products = orderAPI.getOrdersByCustomerID(prefs.getToken(), prefs.getUserID());
         products
                 .flatMapSingle(new Function<List<Order>, Single<List<Product>>>() {
                     @Override
                     public Single<List<Product>> apply(List<Order> orders) throws Exception {
-                        return streamFetchProductsFollowingOrders(token, orders);
+                        return streamFetchProductsFollowingOrders(prefs.getToken(), orders);
                     }
                 })
 
@@ -134,13 +134,13 @@ public class ProductRequestManager {
                 });
     }
 
-    public void getAvailableProducts(String token, String campus, String status) {
+    public void getAvailableProducts() {
         /**
          * Request to the API to fill the MutableLiveData attribute productList with the list of available products
          */
 
         Observable<List<Product>> products;
-        products = productAPI.getAvailableProducts(token, campus, status);
+        products = productAPI.getAvailableProducts(prefs.getToken(), prefs.getCampus(), Constants.AVAILABLE);
         products
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -202,13 +202,13 @@ public class ProductRequestManager {
         }*/
     }
 
-    public void getSharedProducts(String token, int userID) {
+    public void getSharedProducts() {
         /**
          * Request to the API to fill the MutableLiveData attribute productList with the list of shared products
          */
 
         Observable<List<Product>> products;
-        products = productAPI.getProductsByUserID(token, userID);
+        products = productAPI.getProductsByUserID(prefs.getToken(), prefs.getUserID());
         products
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -322,7 +322,6 @@ public class ProductRequestManager {
                 prefs.getToken(),
                 productToDelete.getId());
 
-        Log.d(Constants.TAG, product.toString());
         product
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())

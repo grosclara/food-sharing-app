@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
@@ -20,6 +21,7 @@ import java.util.List;
 public class HomeFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
     private static String tag;
 
     @Override
@@ -28,19 +30,11 @@ public class HomeFragment extends ProductListFragment {
     }
 
     @Override
-    protected void click(Product product) {
-        // Check whether the current user is the supplier of the product or not
-        // (if yes, he won't be able to order it)
-
-        if (product.getSupplier() == MainActivity.userID){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
-        productDetailsFragment.show(getChildFragmentManager(), tag);
-    }
-
-    @Override
     protected void configureViewModel() {
         // Retrieve data for view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         // Set data
         productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
@@ -65,6 +59,16 @@ public class HomeFragment extends ProductListFragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    protected void click(Product product) {
+        // Check whether the current user is the supplier of the product or not
+        // (if yes, he won't be able to order it)
+
+        if (product.getSupplier() == profileViewModel.getUserID()){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
 }

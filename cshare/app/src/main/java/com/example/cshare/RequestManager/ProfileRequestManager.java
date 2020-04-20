@@ -64,6 +64,10 @@ public class ProfileRequestManager {
         return userProfile;
     }
 
+    public int getUserID(){
+        return prefs.getUserID();
+    }
+
     private void getUserProfile() {
         /**
          * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database

@@ -10,12 +10,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.ProfileViewModel;
 
 import java.util.List;
 
 public class CartFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
 
     private static String tag;
 
@@ -28,7 +30,7 @@ public class CartFragment extends ProductListFragment {
     protected void click(Product product) {
         if (product.getStatus().equals(Constants.COLLECTED)){
             tag = Constants.INCART;} else {tag = Constants.ARCHIVED;}
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
@@ -36,6 +38,7 @@ public class CartFragment extends ProductListFragment {
     protected void configureViewModel() {
         // Retrieve data for view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         // Set data
         productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override

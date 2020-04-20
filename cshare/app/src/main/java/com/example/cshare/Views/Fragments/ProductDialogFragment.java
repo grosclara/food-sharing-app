@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
@@ -31,7 +32,9 @@ public class ProductDialogFragment extends DialogFragment {
     public Product product;
     public Context context;
     public String tag;
-    public ProductViewModel productViewModel;
+
+    private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
 
     // Bind views
     private TextView textViewProductName;
@@ -45,11 +48,12 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String tag, ProductViewModel productViewModel) {
+    public ProductDialogFragment(Context context, Product product, String tag, ProductViewModel productViewModel, ProfileViewModel profileViewModel) {
         this.context = context;
         this.product = product;
         this.tag = tag;
         this.productViewModel = productViewModel;
+        this.profileViewModel = profileViewModel;
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ProductDialogFragment extends DialogFragment {
                                 // Order the product
                                 if (product.getStatus().equals("Available")) {
                                     // Create the order object
-                                    Order request = new Order(MainActivity.userID, product.getId());
+                                    Order request = new Order(profileViewModel.getUserID(), product.getId());
                                     // Change the status attribute of the product object to not available
                                     Map<String, String> status = new HashMap<>();
                                     status.put("status", Constants.COLLECTED);

@@ -39,4 +39,8 @@ public class ProfileViewModel extends AndroidViewModel {
         profileRequestManager.update();
     }
 
+    public int getUserID(){
+        return profileRequestManager.getUserID();
+    }
+
 }

@@ -8,12 +8,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.ProfileViewModel;
 
 import java.util.List;
 
 public class SharedFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
 
     private static final String tag = "shared";
 
@@ -25,7 +27,7 @@ public class SharedFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel);
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
@@ -33,6 +35,7 @@ public class SharedFragment extends ProductListFragment {
     protected void configureViewModel() {
         // Retrieve data for view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         // Set data
         productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
