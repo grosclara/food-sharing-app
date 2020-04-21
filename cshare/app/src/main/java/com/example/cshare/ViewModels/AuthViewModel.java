@@ -22,15 +22,12 @@ public class AuthViewModel extends AndroidViewModel {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData;
-    private MutableLiveData<Boolean> isRegisteredMutableLiveData;
-    private MutableLiveData<Boolean> isPasswordChangedMutableLiveData;
-    private MutableLiveData<Boolean> isPasswordResetMutableLiveData;
-
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
     private MutableLiveData<AuthResponse> logoutResponseMutableLiveData;
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData;
     private MutableLiveData<AuthResponse> changePasswordMutableLiveData;
     private MutableLiveData<AuthResponse> resetPasswordMutableLiveData;
+    private MutableLiveData<LoginResponse> registrationResponseMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -38,33 +35,24 @@ public class AuthViewModel extends AndroidViewModel {
         // Get request manager instance
         authRequestManager = AuthRequestManager.getInstance(getApplication());
 
-        // Initialize isLoggedIn var
         isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
-        //registerFormMutableLiveData = new MutableLiveData<>();
-        isRegisteredMutableLiveData = authRequestManager.getIsRegisteredMutableLiveData();
-        isPasswordChangedMutableLiveData = authRequestManager.getIsPasswordChangedMutableLiveData();
-        isPasswordResetMutableLiveData = authRequestManager.getIsPasswordResetMutableLiveData();
-
         loginResponseMutableLiveData = authRequestManager.getLoginResponseMutableLiveData();
         logoutResponseMutableLiveData = authRequestManager.getLogoutResponseMutableLiveData();
         deleteResponseMutableLiveData = authRequestManager.getDeleteResponseMutableLiveData();
         changePasswordMutableLiveData = authRequestManager.getChangePasswordMutableLiveData();
         resetPasswordMutableLiveData = authRequestManager.getResetPasswordMutableLiveData();
+        registrationResponseMutableLiveData = authRequestManager.getRegistrationResponseMutableLiveData();
     }
 
     // Getter method
-    // public MutableLiveData<RegisterForm> getRegisterFormMutableLiveData(){ return registerFormMutableLiveData; }
-    public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){return isRegisteredMutableLiveData;}
-    public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){ return isPasswordChangedMutableLiveData;}
-    public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){return isPasswordResetMutableLiveData;}
 
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
-
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
     public MutableLiveData<AuthResponse> getResetPasswordMutableLiveData() { return resetPasswordMutableLiveData; }
+    public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
 
 
     public void logIn(LoginForm loginForm){

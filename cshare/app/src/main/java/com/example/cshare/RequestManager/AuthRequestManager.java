@@ -35,15 +35,13 @@ public class AuthRequestManager {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isRegisteredMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isPasswordChangedMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isPasswordResetMutableLiveData = new MutableLiveData<>();
-
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> changePasswordMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<LoginResponse> registrationResponseMutableLiveData = new MutableLiveData<>();
+
     // Data sources dependencies
     private PreferenceProvider prefs;
     private Retrofit retrofit;
@@ -73,22 +71,13 @@ public class AuthRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
-        return isLoggedInMutableLiveData;
-    }
-    public MutableLiveData<Boolean> getIsRegisteredMutableLiveData() {
-        return isRegisteredMutableLiveData;
-    }
-    public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){return isPasswordChangedMutableLiveData;}
-    public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){
-        return isPasswordResetMutableLiveData;
-    }
-
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
     public MutableLiveData<AuthResponse> getResetPasswordMutableLiveData() {return resetPasswordMutableLiveData; }
+    public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
 
     // Requests
 
@@ -188,9 +177,9 @@ public class AuthRequestManager {
         /*
         Request to the API to register
          */
-        Observable<RegisterForm> userObservable;
-        userObservable = authApi.createUserWithoutPicture(user);
-        userObservable
+        Observable<LoginResponse> registrationObservable;
+        registrationObservable = authApi.createUserWithoutPicture(user);
+        registrationObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -201,27 +190,29 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<RegisterForm>() {
+                .subscribe(new Observer<LoginResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Registration : on start subscription");
+                        registrationResponseMutableLiveData.setValue(LoginResponse.loading());
                     }
 
                     @Override
-                    public void onNext(RegisterForm userInfo) {
+                    public void onNext(LoginResponse userInfo) {
                         Log.d(Constants.TAG, "Registered successfully");
-                        isRegisteredMutableLiveData.setValue(true);
+                        registrationResponseMutableLiveData.setValue(LoginResponse.success(userInfo.getToken(), userInfo.getUser()));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Registration : error");
-                        isRegisteredMutableLiveData.setValue(false);
+                        registrationResponseMutableLiveData.setValue(LoginResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Registration : Completed");
+                        registrationResponseMutableLiveData = new MutableLiveData<>();
                     }
                 });
     }
@@ -230,8 +221,8 @@ public class AuthRequestManager {
         /*
         Request to the API to register
          */
-        Observable<RegisterForm> userObservable;
-        userObservable = authApi.createUserWithPicture(user.getProfile_picture(),
+        Observable<LoginResponse> registrationObservable;
+        registrationObservable = authApi.createUserWithPicture(user.getProfile_picture(),
                 user.getFirst_name(),
                 user.getLast_name(),
                 user.getRoom_number(),
@@ -239,7 +230,7 @@ public class AuthRequestManager {
                 user.getEmail(),
                 user.getPassword1(),
                 user.getPassword2());
-        userObservable
+        registrationObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -250,28 +241,29 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<RegisterForm>() {
+                .subscribe(new Observer<LoginResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Registration : on start subscription");
+                        registrationResponseMutableLiveData.setValue(LoginResponse.loading());
                     }
 
                     @Override
-                    public void onNext(RegisterForm userInfo) {
+                    public void onNext(LoginResponse userInfo) {
                         Log.d(Constants.TAG, "Registered successfully");
-                        isRegisteredMutableLiveData.setValue(true);
+                        registrationResponseMutableLiveData.setValue(LoginResponse.success(userInfo.getToken(), userInfo.getUser()));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Registration : error");
-                        Log.d(Constants.TAG, e.getLocalizedMessage());
-                        isRegisteredMutableLiveData.setValue(false);
+                        registrationResponseMutableLiveData.setValue(LoginResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Registration : Completed");
+                        registrationResponseMutableLiveData = new MutableLiveData<>();
                     }
                 });
 

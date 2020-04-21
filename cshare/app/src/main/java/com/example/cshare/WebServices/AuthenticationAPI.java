@@ -32,7 +32,7 @@ public interface AuthenticationAPI {
 
     @Multipart
     @POST("rest-auth/registration/")
-    Observable<RegisterForm> createUserWithPicture(
+    Observable<LoginResponse> createUserWithPicture(
             @Part MultipartBody.Part profilePictureBody,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
@@ -44,7 +44,7 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/registration/")
-    Observable<RegisterForm> createUserWithoutPicture(
+    Observable<LoginResponse> createUserWithoutPicture(
             @Body RegisterForm user
     );
 

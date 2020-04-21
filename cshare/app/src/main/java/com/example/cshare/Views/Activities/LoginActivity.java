@@ -58,19 +58,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonResetPassword.setOnClickListener(this);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        //profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
             public void onChanged(LoginResponse loginResponse) {
-                Log.d(Constants.TAG, "loginResponse");
                 if (loginResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
                     // In case of success
-                    //profileViewModel.update();
+                    profileViewModel.update();
+                    productViewModel.update();
 
                     // Redirect to the MainActivity
                     Intent toMainActivityIntent = new Intent();

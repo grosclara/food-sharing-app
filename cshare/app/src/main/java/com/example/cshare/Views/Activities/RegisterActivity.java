@@ -21,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
@@ -124,29 +126,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //ViewModel
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        authViewModel.getIsRegisteredMutableLiveData().observe(this, new Observer<Boolean>() {
+        authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(LoginResponse loginResponse) {
+                if (loginResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getApplicationContext(), "Account successfully created !", Toast.LENGTH_SHORT).show();
 
-                if (aBoolean) {
-                    authViewModel.getIsRegisteredMutableLiveData().setValue(false);
-
-                    Toast.makeText(getApplicationContext(), "Account successfully created, please sign in", Toast.LENGTH_SHORT).show();
+                    // Redirect to the LoginActivity
                     Intent toLoginActivityIntent = new Intent();
                     toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
                     startActivity(toLoginActivityIntent);
-                }
 
+                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        /*authViewModel.getRegisterFormMutableLiveData().observe(this, new Observer<RegisterForm>() {
-            @Override
-            public void onChanged(RegisterForm registerForm) {
-                // Update form
-                Picasso.get().load(fileToUpload).into(imageViewGallery);
-
-            }
-        });*/
     }
 
     private void configureCampusSpinner() {
