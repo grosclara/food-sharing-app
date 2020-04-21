@@ -112,6 +112,30 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+                    // Redirect to the Login activity
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
+
+                } else if (authResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<AuthResponse>() {
+            @Override
+            public void onChanged(AuthResponse authResponse) {
+                if (authResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
+
+                    // Redirect to the Login activity
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
+
                 } else if (authResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
