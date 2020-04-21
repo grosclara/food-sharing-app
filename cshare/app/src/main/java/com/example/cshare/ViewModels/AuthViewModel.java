@@ -29,6 +29,7 @@ public class AuthViewModel extends AndroidViewModel {
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
     private MutableLiveData<AuthResponse> logoutResponseMutableLiveData;
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData;
+    private MutableLiveData<AuthResponse> changePasswordMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -46,6 +47,7 @@ public class AuthViewModel extends AndroidViewModel {
         loginResponseMutableLiveData = authRequestManager.getLoginResponseMutableLiveData();
         logoutResponseMutableLiveData = authRequestManager.getLogoutResponseMutableLiveData();
         deleteResponseMutableLiveData = authRequestManager.getDeleteResponseMutableLiveData();
+        changePasswordMutableLiveData = authRequestManager.getChangePasswordMutableLiveData();
     }
 
     // Getter method
@@ -56,8 +58,9 @@ public class AuthViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){return isPasswordResetMutableLiveData;}
 
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
-    public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() {return logoutResponseMutableLiveData; }
-    public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
 
     public void logIn(LoginForm loginForm){
         authRequestManager.logIn(loginForm);

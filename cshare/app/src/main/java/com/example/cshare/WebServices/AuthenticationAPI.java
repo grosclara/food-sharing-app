@@ -57,7 +57,7 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/password/change/")
-    Observable<PasswordForm> changePassword(
+    Observable<Response<AuthResponse>> changePassword(
             @Header("Authorization") String token,
             @Body PasswordForm passwordForm
     );

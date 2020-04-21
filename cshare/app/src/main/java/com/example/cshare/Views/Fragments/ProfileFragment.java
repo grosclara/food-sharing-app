@@ -94,14 +94,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         // Retrieve user details from profile view model
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        authViewModel.getIsPasswordChangedMutableLiveData().observe(this, new Observer<Boolean>() {
+        authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<AuthResponse>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    Toast.makeText(getContext(), "Password successfully changed", Toast.LENGTH_SHORT).show();
-                    authViewModel.getIsPasswordChangedMutableLiveData().setValue(false);
+            public void onChanged(AuthResponse authResponse) {
+                if (authResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 

@@ -42,6 +42,7 @@ public class AuthRequestManager {
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<AuthResponse> changePasswordMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -86,6 +87,7 @@ public class AuthRequestManager {
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
 
     // Requests
 
@@ -278,7 +280,7 @@ public class AuthRequestManager {
             /**
              * Request to the API to change password
              */
-            Observable<PasswordForm> observable;
+            Observable<Response<AuthResponse>> observable;
             observable = authApi.changePassword(prefs.getToken(), passwordForm);
             observable
                     // Run the Observable in a dedicated thread (Schedulers.io)
@@ -291,21 +293,23 @@ public class AuthRequestManager {
                     // the data transmission will be stopped and a Timeout error will be sent to the
                     // Subscribers via their onError() method.
                     .timeout(10, TimeUnit.SECONDS)
-                    .subscribe(new Observer<PasswordForm>() {
+                    .subscribe(new Observer<Response<AuthResponse>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             Log.d(Constants.TAG, "Password change : on start subscription");
+                            changePasswordMutableLiveData.setValue(AuthResponse.loading());
                         }
 
                         @Override
-                        public void onNext(PasswordForm response) {
+                        public void onNext(Response<AuthResponse> response) {
                             Log.d(Constants.TAG, "Password changed successfully");
-                            isPasswordChangedMutableLiveData.setValue(true);
+                            changePasswordMutableLiveData.setValue(AuthResponse.success());
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             Log.d(Constants.TAG, "Password change : error");
+                            changePasswordMutableLiveData.setValue(AuthResponse.error(e));
                         }
 
                         @Override
