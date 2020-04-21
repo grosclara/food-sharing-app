@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.Auth.ResponseProductList;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
@@ -38,9 +39,9 @@ public class ProductRequestManager {
     private static ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<List<Product>> availableProductList = new MutableLiveData<>();
-    private MutableLiveData<List<Product>> sharedProductList = new MutableLiveData<>();
-    private MutableLiveData<List<Product>> inCartProductList = new MutableLiveData<>();
+    private MutableLiveData<ResponseProductList> availableProductList = new MutableLiveData<>();
+    private MutableLiveData<ResponseProductList> sharedProductList = new MutableLiveData<>();
+    private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -67,11 +68,9 @@ public class ProductRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<List<Product>> getAvailableProductList() {
-        return availableProductList;
-    }
-    public MutableLiveData<List<Product>> getInCartProductList() { return inCartProductList; }
-    public MutableLiveData<List<Product>> getSharedProductList() { return sharedProductList; }
+    public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
+    public MutableLiveData<ResponseProductList> getInCartProductList() { return inCartProductList; }
+    public MutableLiveData<ResponseProductList> getSharedProductList() { return sharedProductList; }
 
     public void update() {
         getAvailableProducts();
@@ -85,9 +84,9 @@ public class ProductRequestManager {
          * present in the cart
          */
 
-        Observable<List<Order>> products;
-        products = orderAPI.getOrdersByCustomerID(prefs.getToken(), prefs.getUserID());
-        products
+        Observable<List<Order>> orders;
+        orders = orderAPI.getOrdersByCustomerID(prefs.getToken(), prefs.getUserID());
+        orders
                 .flatMapSingle(new Function<List<Order>, Single<List<Product>>>() {
                     @Override
                     public Single<List<Product>> apply(List<Order> orders) throws Exception {
@@ -109,22 +108,20 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getInCartProducts : on start subscription");
-                        // productList.setValue((List<Product>) ResponseProductList.loading());
+                        inCartProductList.setValue(ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
                         String msg = String.format("inCart : new data received %s", inCartProductList.toString());
                         Log.d(Constants.TAG, msg);
-                        //productList.setValue((List<Product>) ResponseProductList.success(products));
-                        inCartProductList.setValue(products);
+                        inCartProductList.setValue(ResponseProductList.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getInCartProducts : error");
-                        Log.d(Constants.TAG, e.getMessage());
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        inCartProductList.setValue(ResponseProductList.error(e));
                     }
 
                     @Override
@@ -156,7 +153,7 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getAvailableProducts : on start subscription");
-                        // productList.setValue((List<Product>) ResponseProductList.loading());
+                        availableProductList.setValue(ResponseProductList.loading());
                     }
 
                     @Override
@@ -164,13 +161,13 @@ public class ProductRequestManager {
                         String msg = String.format("getAvailableProducts : new data received %s", availableProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
-                        availableProductList.setValue(products);
+                        availableProductList.setValue(ResponseProductList.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getAvailableProducts : error");
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        availableProductList.setValue(ResponseProductList.error(e));
                     }
 
                     @Override
@@ -224,21 +221,20 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getSharedProducts :  start subscription");
-                        // productList.setValue((List<Product>) ResponseProductList.loading());
+                        sharedProductList.setValue(ResponseProductList.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
                         String msg = String.format("getSharedProducts :  new data received %s", sharedProductList.toString());
                         Log.d(Constants.TAG, msg);
-                        //productList.setValue((List<Product>) ResponseProductList.success(products));
-                        sharedProductList.setValue(products);
+                        sharedProductList.setValue(ResponseProductList.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getSharedProducts :  error");
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        sharedProductList.setValue(ResponseProductList.error(e));
                     }
 
                     @Override
@@ -287,14 +283,14 @@ public class ProductRequestManager {
                     public void onNext(ProductForm product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
                         // New product list to which we add the new product
-                        List oldAvailable = getAvailableProductList().getValue();
-                        List oldShared = getSharedProductList().getValue();
+                        List oldAvailable = getAvailableProductList().getValue().getProductList();
+                        List oldShared = getSharedProductList().getValue().getProductList();
                         oldAvailable.add(0, productIns);
                         oldShared.add(0, productIns);
 
                         // Wrap this new list in live data
-                        availableProductList.setValue(oldAvailable);
-                        sharedProductList.setValue(oldShared);
+                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
+                        sharedProductList.setValue(ResponseProductList.success(oldShared));
 
                     }
 
@@ -344,8 +340,8 @@ public class ProductRequestManager {
 
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
                         // New product list to which we add the new product
-                        List<Product> oldAvailable = getAvailableProductList().getValue();
-                        List<Product> oldShared = getSharedProductList().getValue();
+                        List<Product> oldAvailable = getAvailableProductList().getValue().getProductList();
+                        List<Product> oldShared = getSharedProductList().getValue().getProductList();
 
                         // Remove the productToDelete from both the shared and available product lists
                         Product pAv = null;
@@ -367,8 +363,8 @@ public class ProductRequestManager {
                         oldShared.remove(pSh);
 
                         // Wrap this new list in live data
-                        availableProductList.setValue(oldAvailable);
-                        sharedProductList.setValue(oldShared);
+                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
+                        sharedProductList.setValue(ResponseProductList.success(oldShared));
                     }
 
                     @Override
@@ -419,11 +415,11 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, msg);
 
                         // Ordered product added to the cart
-                        List<Product> oldInCart = getInCartProductList().getValue();
+                        List<Product> oldInCart = getInCartProductList().getValue().getProductList();
                         oldInCart.add(0, productIns);
 
                         // Remove the product from the home available list
-                        List<Product> oldAvailable = getAvailableProductList().getValue();
+                        List<Product> oldAvailable = getAvailableProductList().getValue().getProductList();
                         Product pAv = null;
                         ListIterator<Product> itAv = oldAvailable.listIterator();
                         while (itAv.hasNext() && pAv == null) {
@@ -434,8 +430,8 @@ public class ProductRequestManager {
                         oldAvailable.remove(pAv);
 
                         // Wrap these new lists in live data
-                        inCartProductList.setValue(oldInCart);
-                        availableProductList.setValue(oldAvailable);
+                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
+                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
                     }
 
                     @Override
@@ -460,7 +456,7 @@ public class ProductRequestManager {
                 .concatMap(order -> streamFetchProductFollowingId(
                         token, order.getProductID())
                 )
-                .toList(); // Items in the list have the same order of initial list
+                .toList();
     }
 
     public Observable<Product> streamFetchProductFollowingId(
@@ -484,7 +480,7 @@ public class ProductRequestManager {
                     @Override
                     public void onNext(Product productDel) {
                         // Change the status of the delivered product in the inCart list
-                        List<Product> oldInCart = inCartProductList.getValue();
+                        List<Product> oldInCart = inCartProductList.getValue().getProductList();
                         Product pDel = null;
                         int index = -1;
                         ListIterator<Product> itDel = oldInCart.listIterator();
@@ -496,7 +492,7 @@ public class ProductRequestManager {
                         }
                         oldInCart.set(index, productDel);
 
-                        inCartProductList.setValue(oldInCart);
+                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
 
                     }
 
@@ -524,8 +520,8 @@ public class ProductRequestManager {
                     @Override
                     public void onNext(Product productAv) {
                         // Remove the product from the inCart list and re add it to the available list
-                        List<Product> oldAvailable = availableProductList.getValue();
-                        List<Product> oldInCart = inCartProductList.getValue();
+                        List<Product> oldAvailable = availableProductList.getValue().getProductList();
+                        List<Product> oldInCart = inCartProductList.getValue().getProductList();
 
                         Product pIC = null;
                         ListIterator<Product> itIC = oldInCart.listIterator();
@@ -538,8 +534,8 @@ public class ProductRequestManager {
 
                         oldAvailable.add(0, productAv);
 
-                        availableProductList.setValue(oldAvailable);
-                        inCartProductList.setValue(oldInCart);
+                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
+                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
 
                     }
 

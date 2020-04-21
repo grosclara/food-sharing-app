@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cshare.Models.Auth.ResponseProductList;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
@@ -22,9 +23,9 @@ public class ProductViewModel extends AndroidViewModel {
     private ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<List<Product>> availableProductList;
-    private MutableLiveData<List<Product>> sharedProductList;
-    private MutableLiveData<List<Product>> inCartProductList;
+    private MutableLiveData<ResponseProductList> availableProductList;
+    private MutableLiveData<ResponseProductList> sharedProductList;
+    private MutableLiveData<ResponseProductList> inCartProductList;
 
     public ProductViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -42,13 +43,11 @@ public class ProductViewModel extends AndroidViewModel {
         return productRequestManager;
     }
     // Getter method
-    public MutableLiveData<List<Product>> getAvailableProductList() {
-        return availableProductList;
-    }
-    public MutableLiveData<List<Product>> getInCartProductList() {
+    public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
+    public MutableLiveData<ResponseProductList> getInCartProductList() {
         return inCartProductList;
     }
-    public MutableLiveData<List<Product>> getSharedProductList() {
+    public MutableLiveData<ResponseProductList> getSharedProductList() {
         return sharedProductList;
     }
 

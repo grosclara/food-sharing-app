@@ -2,6 +2,7 @@ package com.example.cshare.Views.Fragments;
 
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -9,6 +10,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.cshare.Models.Auth.ResponseProductList;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Product;
@@ -36,13 +39,18 @@ public class HomeFragment extends ProductListFragment {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         // Set data
-        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ResponseProductList>() {
             @Override
-            public void onChanged(@Nullable List<Product> products) {
-                adapter.updateProducts(products);
+            public void onChanged(@Nullable ResponseProductList response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    adapter.updateProducts(response.getProductList());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     // Configure the SwipeRefreshLayout
@@ -66,7 +74,11 @@ public class HomeFragment extends ProductListFragment {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
 
-        if (product.getSupplier() == profileViewModel.getUserID()){ tag = Constants.SHARED; } else{ tag = Constants.ORDER;}
+        if (product.getSupplier() == profileViewModel.getUserID()) {
+            tag = Constants.SHARED;
+        } else {
+            tag = Constants.ORDER;
+        }
         DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
