@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.LoginForm;
+import com.example.cshare.Models.Auth.Response.AuthResponse;
 import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.R;
@@ -59,10 +60,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
             public void onChanged(LoginResponse loginResponse) {
-                if (loginResponse.getStatus().equals(Status.LOADING)){
+                if (loginResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                }
-                else if (loginResponse.getStatus().equals(Status.SUCCESS)){
+                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
                     // In case of success
@@ -71,23 +71,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent toMainActivityIntent = new Intent();
                     toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
                     startActivity(toMainActivityIntent);
-                }
-                else if (loginResponse.getStatus().equals(Status.ERROR)){
+                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        /*authViewModel.getIsPasswordResetMutableLiveData().observe(this, new Observer<Boolean>() {
+        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<AuthResponse>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    Toast.makeText(getApplicationContext(), "Password successfully reset", Toast.LENGTH_SHORT).show();
-                    authViewModel.getIsPasswordResetMutableLiveData().setValue(false);
+            public void onChanged(AuthResponse authResponse) {
+                if (authResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getApplicationContext(), "Password reset", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getApplicationContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
-
             }
-        });*/
+        });
     }
 
     @Override
@@ -102,7 +103,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
                         passwordEditText.getText().toString().trim());
 
-                if (isValid(loginUser)) { authViewModel.logIn(loginUser); }
+                if (isValid(loginUser)) {
+                    authViewModel.logIn(loginUser);
+                }
 
                 break;
 

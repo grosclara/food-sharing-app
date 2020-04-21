@@ -43,6 +43,7 @@ public class AuthRequestManager {
     private MutableLiveData<AuthResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> changePasswordMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<AuthResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -58,7 +59,7 @@ public class AuthRequestManager {
         this.authApi = this.retrofit.create(AuthenticationAPI.class);
 
         // Initialize the value of the boolean isLoggedIn
-        //isLoggedIn();
+        isLoggedIn();
     }
 
     public synchronized static AuthRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
@@ -88,6 +89,7 @@ public class AuthRequestManager {
     public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
+    public MutableLiveData<AuthResponse> getResetPasswordMutableLiveData() {return resetPasswordMutableLiveData; }
 
     // Requests
 
@@ -323,7 +325,7 @@ public class AuthRequestManager {
         /**
          * Request to the API to change password
          */
-        Observable<Response<ResetPasswordForm>> observable;
+        Observable<Response<AuthResponse>> observable;
         observable = authApi.resetPassword(passwordForm);
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -336,21 +338,23 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<ResetPasswordForm>>() {
+                .subscribe(new Observer<Response<AuthResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Password reset : on start subscription");
+                        resetPasswordMutableLiveData.setValue(AuthResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<ResetPasswordForm> empty) {
+                    public void onNext(Response<AuthResponse> response) {
                         Log.d(Constants.TAG, "Password reset successfully");
-                        isPasswordResetMutableLiveData.setValue(true);
+                        resetPasswordMutableLiveData.setValue(AuthResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Password reset : error");
+                        resetPasswordMutableLiveData.setValue(AuthResponse.error(e));
                     }
 
                     @Override

@@ -63,7 +63,7 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/password/reset/")
-    Observable<Response<ResetPasswordForm>> resetPassword(
+    Observable<Response<AuthResponse>> resetPassword(
             @Body ResetPasswordForm resetPasswordForm
     );
 
