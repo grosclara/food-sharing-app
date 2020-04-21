@@ -72,6 +72,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         changePasswordButton = view.findViewById(R.id.buttonChangePassword);
         deleteAccountButton = view.findViewById(R.id.buttonDeleteAccount);
 
+
         // Activate buttons
         logOutButton.setOnClickListener(this);
         changePasswordButton.setOnClickListener(this);

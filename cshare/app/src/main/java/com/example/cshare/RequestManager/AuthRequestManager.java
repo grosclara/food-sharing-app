@@ -9,6 +9,7 @@ import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -38,6 +39,7 @@ public class AuthRequestManager {
     private MutableLiveData<ResponseLogin> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isRegisteredMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isPasswordChangedMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isPasswordResetMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -75,6 +77,9 @@ public class AuthRequestManager {
         return isRegisteredMutableLiveData;
     }
     public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){return isPasswordChangedMutableLiveData;}
+    public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){
+        return isPasswordResetMutableLiveData;
+    }
 
     // Requests
 
@@ -296,6 +301,48 @@ public class AuthRequestManager {
                             Log.d(Constants.TAG, "Password change : Completed");
                         }
                     });
+    }
+
+    public void resetPassword(ResetPasswordForm passwordForm){
+        /**
+         * Request to the API to change password
+         */
+        Observable<Response<ResetPasswordForm>> observable;
+        observable = authApi.resetPassword(passwordForm);
+        observable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<Response<ResetPasswordForm>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "Password reset : on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(Response<ResetPasswordForm> empty) {
+                        Log.d(Constants.TAG, "Password reset successfully");
+                        isPasswordResetMutableLiveData.setValue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(Constants.TAG, "Password reset : error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "Password reset : Completed");
+                    }
+                });
+
     }
 
     public void deleteAccount(){

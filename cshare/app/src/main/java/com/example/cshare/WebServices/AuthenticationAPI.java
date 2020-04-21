@@ -4,6 +4,7 @@ import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
@@ -62,8 +63,8 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/password/reset/")
-    Observable<User> resetPassword(
-            @Body User user
+    Observable<Response<ResetPasswordForm>> resetPassword(
+            @Body ResetPasswordForm resetPasswordForm
     );
 
     @DELETE("user/{id}/")
