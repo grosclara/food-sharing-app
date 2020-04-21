@@ -1,9 +1,10 @@
-package com.example.cshare.RequestManager;
+package com.example.cshare.Models.Auth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.cshare.Models.Product;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.WebServices.NetworkError;
 
 import java.util.List;

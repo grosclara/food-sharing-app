@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
+import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
@@ -24,6 +25,8 @@ public class AuthViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isPasswordChangedMutableLiveData;
     private MutableLiveData<Boolean> isPasswordResetMutableLiveData;
 
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
+
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
@@ -36,16 +39,18 @@ public class AuthViewModel extends AndroidViewModel {
         isRegisteredMutableLiveData = authRequestManager.getIsRegisteredMutableLiveData();
         isPasswordChangedMutableLiveData = authRequestManager.getIsPasswordChangedMutableLiveData();
         isPasswordResetMutableLiveData = authRequestManager.getIsPasswordResetMutableLiveData();
+
+        loginResponseMutableLiveData = authRequestManager.getLoginResponseMutableLiveData();
     }
 
     // Getter method
-    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
-        return isLoggedInMutableLiveData;
-    }
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     // public MutableLiveData<RegisterForm> getRegisterFormMutableLiveData(){ return registerFormMutableLiveData; }
     public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){return isRegisteredMutableLiveData;}
     public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){ return isPasswordChangedMutableLiveData;}
     public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){return isPasswordResetMutableLiveData;}
+
+    public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
 
     public void logIn(LoginForm loginForm){
         authRequestManager.logIn(loginForm);

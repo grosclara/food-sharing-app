@@ -54,11 +54,11 @@ public class PreferenceProvider {
         prefs.edit().putBoolean(LOG_STATUS_KEY, false).apply();
     }
 
-    public void fillPrefs(LoginResponse loginResponse) {
+    public void fillPrefs(LoginResponse loginResponsetest) {
         prefs.edit()
-                .putString(TOKEN_KEY, loginResponse.getKey())
-                .putString(CAMPUS_KEY, loginResponse.getUser().getCampus())
-                .putInt(ID_KEY, loginResponse.getUser().getId())
+                .putString(TOKEN_KEY, loginResponsetest.getToken())
+                .putString(CAMPUS_KEY, loginResponsetest.getUser().getCampus())
+                .putInt(ID_KEY, loginResponsetest.getUser().getId())
                 .putBoolean(LOG_STATUS_KEY, true)
                 .apply();
     }

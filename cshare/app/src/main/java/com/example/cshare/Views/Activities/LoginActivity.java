@@ -17,8 +17,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.LoginForm;
+import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.R;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
@@ -54,12 +56,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonCreateAccount.setOnClickListener(this);
         buttonResetPassword.setOnClickListener(this);
 
-        // Instantiate view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        authViewModel.getIsPasswordResetMutableLiveData().observe(this, new Observer<Boolean>() {
+        authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
+            @Override
+            public void onChanged(LoginResponse loginResponse) {
+                if (loginResponse.getStatus().equals(Status.LOADING)){
+                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+                else if (loginResponse.getStatus().equals(Status.SUCCESS)){
+                    Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+
+                    // In case of success
+
+                    // Redirect to the MainActivity
+                    Intent toMainActivityIntent = new Intent();
+                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
+                    startActivity(toMainActivityIntent);
+                }
+                else if (loginResponse.getStatus().equals(Status.ERROR)){
+                    Toast.makeText(getApplicationContext(), loginResponse.error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        /*authViewModel.getIsPasswordResetMutableLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -68,24 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
 
             }
-        });
-
-        authViewModel.getIsLoggedInMutableLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isLoggedIn) {
-                if (isLoggedIn) {
-                    // TODO: Only in case of success
-
-                    // Update the viewModels
-                    productViewModel.update();
-                    profileViewModel.update();
-                    // Redirect to the MainActivity
-                    Intent toMainActivityIntent = new Intent();
-                    toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
-                    startActivity(toMainActivityIntent);
-                }
-            }
-        });
+        });*/
     }
 
     @Override

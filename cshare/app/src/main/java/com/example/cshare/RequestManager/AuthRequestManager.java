@@ -6,14 +6,13 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
+import com.example.cshare.Models.Auth.LoginResponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
-import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
 
@@ -26,7 +25,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -36,10 +34,11 @@ public class AuthRequestManager {
 
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<ResponseLogin> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isRegisteredMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isPasswordChangedMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isPasswordResetMutableLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -81,6 +80,8 @@ public class AuthRequestManager {
         return isPasswordResetMutableLiveData;
     }
 
+    public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData;}
+
     // Requests
 
     public void isLoggedIn() {
@@ -99,17 +100,20 @@ public class AuthRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log In : On start subscription");
+                        loginResponseMutableLiveData.setValue(LoginResponse.loading());
                     }
 
                     @Override
                     public void onNext(LoginResponse response) {
                         Log.d(Constants.TAG, "Log In successful");
                         saveUserCredentials(response);
+                        loginResponseMutableLiveData.setValue(LoginResponse.success(response.getToken(), response.getUser()));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "error");
+                        loginResponseMutableLiveData.setValue(LoginResponse.error(e));
                     }
 
                     @Override
