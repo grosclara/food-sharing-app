@@ -30,6 +30,20 @@ public class ResponseProductList {
         this.error = error;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    @Nullable
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    @Nullable
+    public Throwable getError() {
+        return error;
+    }
+
     public static ResponseProductList loading() {
         return new ResponseProductList(LOADING, null, null);
     }
