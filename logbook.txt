@@ -95,10 +95,20 @@
 "10/04 - BT + CG : Review of has been done so far (merge branches), 30mn"
 "10/04 - BT : Login functionality implemented, 2h00"
 "11/04 - BT : Implementation of the other auth functionality (register/logout) and AuthViewModel, 3h30"
-"11/04 - CG : Restructuration of the viewModels (merge the 3 products related viewmodels in one, 30mn
+"11/04 - CG : Restructuration of the viewModels (merge the 3 products related viewmodels in one), 30mn
 Implementation of the dialogs to interact with products, 2h00"
 "12/04 - CG : Implementation of every request that allow the user to interact with the products (order/deliver/cancel/delete), 4h00"
 "14/04 - CG : Review of Babacar's work on auth, 3h00"
+"15/04 - BT : Change password functionality, 1h00"
+"16/04 - BT : Reset password functionality, 1h00",
+"18/04 - CG : Modification of the login architecture, creation of a request manager to isolate the viewModel from the HTTP request, 2h00",
+"19/04 - BT : Delete account functionality, 2h00",
+"20/04 - CG : Improvement of the architecture with respect to the auth functionalities, 3h00
+	      Use of onSaveInstanceState in form activities so that the picture taken can survive any configuration changes, 2h00"
+"21/04 - CG : Review of Babacar's work on auth functionalities to intergate them in the modified architecture, 1h00"
+
+
+
 
 
 
