@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.Order;
@@ -40,6 +41,7 @@ public class ProductRequestManager {
     private MutableLiveData<ResponseProductList> availableProductList = new MutableLiveData<>();
     private MutableLiveData<ResponseProductList> sharedProductList = new MutableLiveData<>();
     private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
+    private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -69,6 +71,7 @@ public class ProductRequestManager {
     public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
     public MutableLiveData<ResponseProductList> getInCartProductList() { return inCartProductList; }
     public MutableLiveData<ResponseProductList> getSharedProductList() { return sharedProductList; }
+    public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
 
     public void update() {
         getAvailableProducts();
@@ -251,7 +254,7 @@ public class ProductRequestManager {
         productToPost.setSupplierID(prefs.getUserID());
         productIns.setSupplier(prefs.getUserID());
 
-        Observable<ProductForm> product;
+        Observable<Product> product;
         product = productAPI.addProduct(
                 productToPost.getToken(),
                 productToPost.getProductPicture(),
@@ -271,15 +274,17 @@ public class ProductRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ProductForm>() {
+                .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "addProduct : on start subscription");
+                        addProductResponse.setValue(ProductResponse.loading());
                     }
 
                     @Override
-                    public void onNext(ProductForm product) {
+                    public void onNext(Product product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
+                        addProductResponse.setValue(ProductResponse.success(product));
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue().getProductList();
                         List oldShared = getSharedProductList().getValue().getProductList();
@@ -294,13 +299,14 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        addProductResponse.setValue(ProductResponse.error(e));
                         Log.d(Constants.TAG, "addProduct : error");
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "addProduct : Product received successfully");
+                        addProductResponse.setValue(ProductResponse.complete());
                     }
                 });
     }

@@ -44,7 +44,7 @@ public interface  ProductAPI {
 
     @Multipart
     @POST("product/")
-    Observable<ProductForm> addProduct(
+    Observable<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String productName,

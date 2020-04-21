@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
@@ -24,6 +25,7 @@ public class ProductViewModel extends AndroidViewModel {
     private MutableLiveData<ResponseProductList> availableProductList;
     private MutableLiveData<ResponseProductList> sharedProductList;
     private MutableLiveData<ResponseProductList> inCartProductList;
+    private MutableLiveData<ProductResponse> addProductResponse;
 
     public ProductViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -34,12 +36,9 @@ public class ProductViewModel extends AndroidViewModel {
         availableProductList = productRequestManager.getAvailableProductList();
         inCartProductList = productRequestManager.getInCartProductList();
         sharedProductList = productRequestManager.getSharedProductList();
+        addProductResponse = productRequestManager.getAddProductResponse();
     }
 
-    // Get request manager
-    public ProductRequestManager getProductRequestManager() {
-        return productRequestManager;
-    }
     // Getter method
     public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
     public MutableLiveData<ResponseProductList> getInCartProductList() {
@@ -48,6 +47,7 @@ public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<ResponseProductList> getSharedProductList() {
         return sharedProductList;
     }
+    public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
 
     // Update products in request manager
     public void update() {
@@ -55,10 +55,9 @@ public class ProductViewModel extends AndroidViewModel {
         productRequestManager.update();
     }
 
-    // Add a product and update every list
+    // Add a product
     public void addProduct(ProductForm productToPost, Product product) {
         productRequestManager.addProduct(productToPost, product);
-        //update();
     }
 
     public void order(Order request, Map status){

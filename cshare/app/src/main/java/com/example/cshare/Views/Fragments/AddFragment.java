@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cshare.Models.Response.ProductResponse;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
@@ -140,6 +143,37 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     protected void configureViewModel() {
         // Retrieve data from view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+
+        productViewModel.getAddProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse productResponse) {
+                if (productResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (productResponse.getStatus().equals(Status.SUCCESS)){
+                    // Add an alert dialog box and go back home
+                    // 1. Instantiate an AlertDialog.Builder with its constructor
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Your product has been added successfully")
+                            .setTitle("Merci !")
+                            // Add the button
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User clicked OK button
+                                    // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
+                                    ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
+                                }
+                            });
+
+                    // 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else if (productResponse.getStatus().equals(Status.ERROR)){
+                    Toast.makeText(getContext(), productResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     private void configureValidator() {
@@ -235,27 +269,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 Product product = new Product(productName, Constants.AVAILABLE, imageFileName, productCategory, quantity, expiration_date);
 
                 productViewModel.addProduct(productToPost, product);
-
-                // Add an alert dialog box and go back home
-
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setMessage("Votre produit a été ajouté avec succès")
-                        .setTitle("Merci !")
-                        // Add the button
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button
-                                // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
-                                ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
-                            }
-                        });
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
 
             } else if ( fileToUploadUri == null) {
                 Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
