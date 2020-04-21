@@ -5,9 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.cshare.Models.Auth.ResponseProductList;
+import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
@@ -15,7 +14,6 @@ import com.example.cshare.RequestManager.ProductRequestManager;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 import java.util.Map;
 
 public class ProductViewModel extends AndroidViewModel {

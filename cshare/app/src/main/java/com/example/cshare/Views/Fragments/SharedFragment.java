@@ -8,13 +8,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.cshare.Models.Auth.ResponseProductList;
+import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
-
-import java.util.List;
 
 public class SharedFragment extends ProductListFragment {
 

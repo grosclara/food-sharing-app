@@ -1,8 +1,8 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Auth.Response.AuthResponse;
-import com.example.cshare.Models.Auth.Response.LoginResponse;
+import com.example.cshare.Models.Response.AuthResponse;
+import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;

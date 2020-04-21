@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +19,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.Auth.Response.LoginResponse;
-import com.example.cshare.Models.User;
+import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;

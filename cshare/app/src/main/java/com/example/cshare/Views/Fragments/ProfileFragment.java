@@ -2,14 +2,11 @@ package com.example.cshare.Views.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,10 +15,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.Models.Auth.PasswordForm;
-import com.example.cshare.Models.Auth.Response.AuthResponse;
+import com.example.cshare.Models.Response.AuthResponse;
 import com.example.cshare.RequestManager.Status;
-import com.example.cshare.Utils.Constants;
-import com.example.cshare.Views.Activities.LauncherActivity;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;

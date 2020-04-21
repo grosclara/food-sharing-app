@@ -1,14 +1,12 @@
 package com.example.cshare.RequestManager;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Auth.ResponseProductList;
+import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Utils.PreferenceProvider;
-import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
