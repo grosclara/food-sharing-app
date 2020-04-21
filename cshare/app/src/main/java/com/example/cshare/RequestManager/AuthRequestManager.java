@@ -9,7 +9,8 @@ import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
-import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.Response.AuthResponse;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -39,6 +40,8 @@ public class AuthRequestManager {
     private MutableLiveData<Boolean> isPasswordResetMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<AuthResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -54,7 +57,7 @@ public class AuthRequestManager {
         this.authApi = this.retrofit.create(AuthenticationAPI.class);
 
         // Initialize the value of the boolean isLoggedIn
-        isLoggedIn();
+        //isLoggedIn();
     }
 
     public synchronized static AuthRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
@@ -80,7 +83,9 @@ public class AuthRequestManager {
         return isPasswordResetMutableLiveData;
     }
 
-    public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData;}
+    public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
 
     // Requests
 
@@ -134,8 +139,8 @@ public class AuthRequestManager {
          * Request to the API to logout
          */
 
-        Observable<Response<User>> key = authApi.logout(prefs.getToken());
-        key
+        Observable<Response<AuthResponse>> observable = authApi.logout(prefs.getToken());
+        observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -146,23 +151,26 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<User>>() {
+                .subscribe(new Observer<Response<AuthResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log Out : on start subscription");
+                        logoutResponseMutableLiveData.setValue(AuthResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<User> empty) {
+                    public void onNext(Response<AuthResponse> response) {
                         prefs.logOut();
                         // Update isLoggedInMutableLiveData
-                        isLoggedIn();
+                        //isLoggedIn();
                         Log.d(Constants.TAG, "Logged out successfully");
+                        logoutResponseMutableLiveData.setValue(AuthResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Log Out : error");
+                        logoutResponseMutableLiveData.setValue(AuthResponse.error(e));
                     }
 
                     @Override
@@ -353,7 +361,7 @@ public class AuthRequestManager {
         /**
          * Request to the API to delete the profile
          */
-        Observable<Response<User>> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
+        Observable<Response<AuthResponse>> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -365,27 +373,24 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<User>>() {
+                .subscribe(new Observer<Response<AuthResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Deletion : on start subscription");
+                        deleteResponseMutableLiveData.setValue(AuthResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<User> empty) {
+                    public void onNext(Response<AuthResponse> response) {
                         Log.d(Constants.TAG, "Deletion successful");
-
-                        Log.d(Constants.TAG, String.valueOf(prefs.isLoggedIn()));
                         prefs.logOut();
-                        isLoggedIn();
-                        Log.d(Constants.TAG, String.valueOf(isLoggedInMutableLiveData.getValue()));
-
+                        deleteResponseMutableLiveData.setValue(AuthResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(Constants.TAG, e.getLocalizedMessage());
                         Log.d(Constants.TAG, "Deletion : error");
+                        deleteResponseMutableLiveData.setValue(AuthResponse.error(e));
                     }
 
                     @Override
@@ -395,6 +400,4 @@ public class AuthRequestManager {
                 });
 
     }
-
-
 }

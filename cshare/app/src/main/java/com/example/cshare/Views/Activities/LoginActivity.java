@@ -1,6 +1,5 @@
 package com.example.cshare.Views.Activities;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -9,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
@@ -75,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     startActivity(toMainActivityIntent);
                 }
                 else if (loginResponse.getStatus().equals(Status.ERROR)){
-                    Toast.makeText(getApplicationContext(), loginResponse.error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -104,9 +102,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
                         passwordEditText.getText().toString().trim());
 
-                if (isValid(loginUser)) {
-                    authViewModel.logIn(loginUser);
-                }
+                if (isValid(loginUser)) { authViewModel.logIn(loginUser); }
+
                 break;
 
             // Redirect to the Register Activity

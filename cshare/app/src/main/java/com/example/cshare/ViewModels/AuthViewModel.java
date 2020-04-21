@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
-import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.Response.AuthResponse;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
@@ -26,6 +27,8 @@ public class AuthViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isPasswordResetMutableLiveData;
 
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
+    private MutableLiveData<AuthResponse> logoutResponseMutableLiveData;
+    private MutableLiveData<AuthResponse> deleteResponseMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -41,6 +44,8 @@ public class AuthViewModel extends AndroidViewModel {
         isPasswordResetMutableLiveData = authRequestManager.getIsPasswordResetMutableLiveData();
 
         loginResponseMutableLiveData = authRequestManager.getLoginResponseMutableLiveData();
+        logoutResponseMutableLiveData = authRequestManager.getLogoutResponseMutableLiveData();
+        deleteResponseMutableLiveData = authRequestManager.getDeleteResponseMutableLiveData();
     }
 
     // Getter method
@@ -51,6 +56,8 @@ public class AuthViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){return isPasswordResetMutableLiveData;}
 
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() {return logoutResponseMutableLiveData; }
+    public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
 
     public void logIn(LoginForm loginForm){
         authRequestManager.logIn(loginForm);

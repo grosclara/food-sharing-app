@@ -1,7 +1,8 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.Response.AuthResponse;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
@@ -51,7 +52,7 @@ public interface AuthenticationAPI {
     Observable<LoginResponse> login(@Body LoginForm loginForm);
 
     @POST("rest-auth/logout/")
-    Observable<Response<User>> logout(
+    Observable<Response<AuthResponse>> logout(
             @Header("Authorization") String token
     );
 
@@ -67,7 +68,7 @@ public interface AuthenticationAPI {
     );
 
     @DELETE("user/{id}/")
-    Observable<Response<User>> delete(
+    Observable<Response<AuthResponse>> delete(
             @Header("Authorization") String token,
             @Path("id") int userId
     );

@@ -1,11 +1,10 @@
-package com.example.cshare.Models.Auth;
+package com.example.cshare.Models.Auth.Response;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
-import com.example.cshare.WebServices.NetworkError;
 
 import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
@@ -45,6 +44,8 @@ public class LoginResponse {
     public String getToken() {
         return key;
     }
+
+    public Throwable getError(){ return error; }
 
     public static LoginResponse loading() {
         return new LoginResponse(LOADING, null, null, null);

@@ -18,6 +18,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.Models.Auth.PasswordForm;
+import com.example.cshare.Models.Auth.Response.AuthResponse;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Views.Activities.LauncherActivity;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
@@ -103,17 +105,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             }
         });
 
-        authViewModel.getIsLoggedInMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<AuthResponse>() {
             @Override
-            public void onChanged(Boolean loggedIn) {
-                if (!loggedIn) {
-
-                    Toast.makeText(getContext(), "Successfully logged out", Toast.LENGTH_SHORT).show();
-
-                    // Go back to the Launcher Activity
-                    Intent toLoginActivityIntent = new Intent();
-                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
-                    startActivity(toLoginActivityIntent);
+            public void onChanged(AuthResponse authResponse) {
+                if (authResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+                } else if (authResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

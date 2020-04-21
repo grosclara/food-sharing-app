@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import com.example.cshare.Models.Auth.LoginResponse;
+import com.example.cshare.Models.Auth.Response.LoginResponse;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
