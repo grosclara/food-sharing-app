@@ -44,7 +44,6 @@ public class AuthRequestManager {
     private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> changePasswordMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<AuthResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
-
     // Data sources dependencies
     private PreferenceProvider prefs;
     private Retrofit retrofit;
@@ -128,6 +127,8 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log In : All data received");
+                        //loginResponseMutableLiveData.setValue(LoginResponse.complete());
+                        loginResponseMutableLiveData = new MutableLiveData<>();
                     }
                 });
     }
@@ -180,9 +181,9 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log out : Completed");
+                        logoutResponseMutableLiveData = new MutableLiveData<>();
                     }
                 });
-
     }
 
     public void registerWithoutPicture(RegisterForm user) {
@@ -317,6 +318,7 @@ public class AuthRequestManager {
                         @Override
                         public void onComplete() {
                             Log.d(Constants.TAG, "Password change : Completed");
+                            changePasswordMutableLiveData = new MutableLiveData<>();
                         }
                     });
     }
@@ -360,6 +362,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Password reset : Completed");
+                        resetPasswordMutableLiveData = new MutableLiveData<>();
                     }
                 });
 
@@ -404,6 +407,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Deletion : Completed");
+                        deleteResponseMutableLiveData = new MutableLiveData<>();
                     }
                 });
 

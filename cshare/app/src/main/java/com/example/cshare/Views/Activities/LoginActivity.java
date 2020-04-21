@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.example.cshare.Models.Auth.Response.LoginResponse;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
@@ -56,21 +58,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonResetPassword.setOnClickListener(this);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        //profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
             public void onChanged(LoginResponse loginResponse) {
+                Log.d(Constants.TAG, "loginResponse");
                 if (loginResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
                     // In case of success
+                    //profileViewModel.update();
 
                     // Redirect to the MainActivity
                     Intent toMainActivityIntent = new Intent();
                     toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
                     startActivity(toMainActivityIntent);
+
                 } else if (loginResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }

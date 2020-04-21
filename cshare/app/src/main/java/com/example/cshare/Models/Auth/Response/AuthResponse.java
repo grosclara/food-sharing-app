@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.example.cshare.RequestManager.Status;
 
+import static com.example.cshare.RequestManager.Status.COMPLETE;
 import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
 import static com.example.cshare.RequestManager.Status.SUCCESS;
@@ -41,5 +42,9 @@ public class AuthResponse {
 
     public static AuthResponse error(@NonNull Throwable error) {
         return new AuthResponse(ERROR, error);
+    }
+
+    public static AuthResponse complete(){
+        return new AuthResponse(COMPLETE, null);
     }
 }

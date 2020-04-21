@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 
+import static com.example.cshare.RequestManager.Status.COMPLETE;
 import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
 import static com.example.cshare.RequestManager.Status.SUCCESS;
@@ -57,6 +58,10 @@ public class LoginResponse {
 
     public static LoginResponse error(@NonNull Throwable error) {
         return new LoginResponse(ERROR, null, null, error);
+    }
+
+    public static LoginResponse complete(){
+        return new LoginResponse(COMPLETE, null, null, null);
     }
 
 }
