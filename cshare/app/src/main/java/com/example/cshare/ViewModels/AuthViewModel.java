@@ -53,11 +53,12 @@ public class AuthViewModel extends AndroidViewModel {
     }
 
     // Getter method
-    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     // public MutableLiveData<RegisterForm> getRegisterFormMutableLiveData(){ return registerFormMutableLiveData; }
     public MutableLiveData<Boolean> getIsRegisteredMutableLiveData(){return isRegisteredMutableLiveData;}
     public MutableLiveData<Boolean> getIsPasswordChangedMutableLiveData(){ return isPasswordChangedMutableLiveData;}
     public MutableLiveData<Boolean> getIsPasswordResetMutableLiveData(){return isPasswordResetMutableLiveData;}
+
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
 
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
     public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }

@@ -92,9 +92,7 @@ public class AuthRequestManager {
 
     // Requests
 
-    public void isLoggedIn() {
-        isLoggedInMutableLiveData.setValue(prefs.isLoggedIn());
-    }
+    public void isLoggedIn() { isLoggedInMutableLiveData.setValue(prefs.isLoggedIn());}
 
     public void logIn(LoginForm loginForm) {
 
