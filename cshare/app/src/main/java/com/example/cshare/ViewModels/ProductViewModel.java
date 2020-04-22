@@ -30,6 +30,7 @@ public class ProductViewModel extends AndroidViewModel {
     private MutableLiveData<ApiEmptyResponse> deleteProductResponse;
     private MutableLiveData<ProductResponse> cancelOrderResponse;
     private MutableLiveData<ProductResponse> deliverProductResponse;
+    private MutableLiveData<ProductResponse> orderProductResponse;
 
     public ProductViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -44,6 +45,7 @@ public class ProductViewModel extends AndroidViewModel {
         deleteProductResponse = productRequestManager.getDeleteProductResponse();
         cancelOrderResponse = productRequestManager.getCancelOrderResponse();
         deliverProductResponse = productRequestManager.getDeliverProductResponse();
+        orderProductResponse = productRequestManager.getOrderProductResponse();
     }
 
     // Getter method
@@ -58,6 +60,8 @@ public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() { return deleteProductResponse; }
     public MutableLiveData<ProductResponse> getCancelOrderResponse() { return cancelOrderResponse; }
     public MutableLiveData<ProductResponse> getDeliverProductResponse() { return deliverProductResponse; }
+
+    public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
 
     // Update products in request manager
     public void update() {

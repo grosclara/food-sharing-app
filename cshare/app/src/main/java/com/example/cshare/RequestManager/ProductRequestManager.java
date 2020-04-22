@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,6 +46,7 @@ public class ProductRequestManager {
     private MutableLiveData<ApiEmptyResponse> deleteProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> deliverProductResponse = new MutableLiveData<>();
+    private MutableLiveData<ProductResponse> orderProductResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -97,6 +97,10 @@ public class ProductRequestManager {
 
     public MutableLiveData<ProductResponse> getCancelOrderResponse() {
         return cancelOrderResponse;
+    }
+
+    public MutableLiveData<ProductResponse> getOrderProductResponse() {
+        return orderProductResponse;
     }
 
     public void update() {
@@ -442,12 +446,14 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "addOrder : on start subscription");
+                        orderProductResponse.setValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product productIns) {
                         String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
+                        orderProductResponse.setValue(ProductResponse.success(productIns));
 
                         // Ordered product added to the cart
                         List<Product> oldInCart = getInCartProductList().getValue().getProductList();
@@ -472,13 +478,13 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "addOrder : error");
-                        Log.d(Constants.TAG, e.getLocalizedMessage());
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        orderProductResponse.setValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getInCartProducts : All data received");
+                        orderProductResponse.setValue(ProductResponse.complete());
                     }
                 });
     }
