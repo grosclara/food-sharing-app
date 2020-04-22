@@ -99,9 +99,7 @@ public class ProductRequestManager {
         return cancelOrderResponse;
     }
 
-    public MutableLiveData<ProductResponse> getOrderProductResponse() {
-        return orderProductResponse;
-    }
+    public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
 
     public void update() {
         getAvailableProducts();

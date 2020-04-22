@@ -11,6 +11,7 @@ import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.LoginResponse;
+import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -37,7 +38,7 @@ public class AuthRequestManager {
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ApiEmptyResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<ApiEmptyResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<UserReponse> deleteResponseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ApiEmptyResponse> changePasswordMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ApiEmptyResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<LoginResponse> registrationResponseMutableLiveData = new MutableLiveData<>();
@@ -83,7 +84,7 @@ public class AuthRequestManager {
         return logoutResponseMutableLiveData;
     }
 
-    public MutableLiveData<ApiEmptyResponse> getDeleteResponseMutableLiveData() {
+    public MutableLiveData<UserReponse> getDeleteResponseMutableLiveData() {
         return deleteResponseMutableLiveData;
     }
 
@@ -399,25 +400,25 @@ public class AuthRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Deletion : on start subscription");
-                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.loading());
+                        deleteResponseMutableLiveData.setValue(UserReponse.loading());
                     }
 
                     @Override
                     public void onNext(User response) {
                         prefs.logOut();
-                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.success());
+                        deleteResponseMutableLiveData.setValue(UserReponse.success(response));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Deletion : error");
-                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.error(e));
+                        deleteResponseMutableLiveData.setValue(UserReponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Deletion : Completed");
-                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.complete());
+                        deleteResponseMutableLiveData.setValue(UserReponse.complete());
                     }
                 });
 

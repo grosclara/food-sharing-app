@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
@@ -123,12 +124,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
             }
         });
-        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
+        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
+            public void onChanged(UserReponse response) {
+                if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+                } else if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
@@ -136,9 +137,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
                     startActivity(toLoginActivityIntent);
 
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getDeleteResponseMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(UserReponse.complete());
                 }
             }
         });

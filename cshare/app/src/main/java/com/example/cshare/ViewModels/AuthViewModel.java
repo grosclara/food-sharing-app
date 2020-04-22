@@ -10,6 +10,8 @@ import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
+import com.example.cshare.Models.Response.UserReponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.AuthRequestManager;
 import com.example.cshare.Models.Auth.LoginForm;
 
@@ -24,7 +26,7 @@ public class AuthViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isLoggedInMutableLiveData;
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
     private MutableLiveData<ApiEmptyResponse> logoutResponseMutableLiveData;
-    private MutableLiveData<ApiEmptyResponse> deleteResponseMutableLiveData;
+    private MutableLiveData<UserReponse> deleteResponseMutableLiveData;
     private MutableLiveData<ApiEmptyResponse> changePasswordMutableLiveData;
     private MutableLiveData<ApiEmptyResponse> resetPasswordMutableLiveData;
     private MutableLiveData<LoginResponse> registrationResponseMutableLiveData;
@@ -49,7 +51,7 @@ public class AuthViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
     public MutableLiveData<ApiEmptyResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
-    public MutableLiveData<ApiEmptyResponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
+    public MutableLiveData<UserReponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
     public MutableLiveData<ApiEmptyResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
     public MutableLiveData<ApiEmptyResponse> getResetPasswordMutableLiveData() { return resetPasswordMutableLiveData; }
     public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
