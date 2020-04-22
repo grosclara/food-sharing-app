@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -42,6 +43,7 @@ public class ProductRequestManager {
     private MutableLiveData<ResponseProductList> sharedProductList = new MutableLiveData<>();
     private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> deleteProductResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -72,6 +74,7 @@ public class ProductRequestManager {
     public MutableLiveData<ResponseProductList> getInCartProductList() { return inCartProductList; }
     public MutableLiveData<ResponseProductList> getSharedProductList() { return sharedProductList; }
     public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
+    public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() { return deleteProductResponse; }
 
     public void update() {
         getAvailableProducts();
@@ -317,12 +320,12 @@ public class ProductRequestManager {
          * @param productToPost
          */
 
-        Observable<Response<Product>> product;
-        product = productAPI.deleteProductById(
+        Observable<Response<ApiEmptyResponse>> observable;
+        observable = productAPI.deleteProductById(
                 prefs.getToken(),
                 productToDelete.getId());
 
-        product
+        observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -333,16 +336,19 @@ public class ProductRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<Product>>() {
+                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "deleteProduct : on start subscription");
+                        deleteProductResponse.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<Product> product) {
+                    public void onNext(Response<ApiEmptyResponse> response) {
 
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
+                        deleteProductResponse.setValue(ApiEmptyResponse.success());
+
                         // New product list to which we add the new product
                         List<Product> oldAvailable = getAvailableProductList().getValue().getProductList();
                         List<Product> oldShared = getSharedProductList().getValue().getProductList();
@@ -374,11 +380,13 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "deleteProduct : error");
+                        deleteProductResponse.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "deleteProduct : Deletion completed");
+                        deleteProductResponse.setValue(ApiEmptyResponse.complete());
                     }
                 });
     }

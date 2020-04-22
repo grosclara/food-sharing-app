@@ -9,7 +9,7 @@ import com.example.cshare.Models.Auth.LoginForm;
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Auth.RegisterForm;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
-import com.example.cshare.Models.Response.AuthResponse;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -35,10 +35,10 @@ public class AuthRequestManager {
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<AuthResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<AuthResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<AuthResponse> changePasswordMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<AuthResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> logoutResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> deleteResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> changePasswordMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> resetPasswordMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<LoginResponse> registrationResponseMutableLiveData = new MutableLiveData<>();
 
     // Data sources dependencies
@@ -72,10 +72,10 @@ public class AuthRequestManager {
     // Getter method
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
-    public MutableLiveData<AuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
-    public MutableLiveData<AuthResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
-    public MutableLiveData<AuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
-    public MutableLiveData<AuthResponse> getResetPasswordMutableLiveData() {return resetPasswordMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getDeleteResponseMutableLiveData() {return deleteResponseMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getResetPasswordMutableLiveData() {return resetPasswordMutableLiveData; }
     public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
 
     // Requests
@@ -130,7 +130,7 @@ public class AuthRequestManager {
          * Request to the API to logout
          */
 
-        Observable<Response<AuthResponse>> observable = authApi.logout(prefs.getToken());
+        Observable<Response<ApiEmptyResponse>> observable = authApi.logout(prefs.getToken());
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -142,26 +142,26 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<AuthResponse>>() {
+                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log Out : on start subscription");
-                        logoutResponseMutableLiveData.setValue(AuthResponse.loading());
+                        logoutResponseMutableLiveData.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<AuthResponse> response) {
+                    public void onNext(Response<ApiEmptyResponse> response) {
                         prefs.logOut();
                         // Update isLoggedInMutableLiveData
                         //isLoggedIn();
                         Log.d(Constants.TAG, "Logged out successfully");
-                        logoutResponseMutableLiveData.setValue(AuthResponse.success());
+                        logoutResponseMutableLiveData.setValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Log Out : error");
-                        logoutResponseMutableLiveData.setValue(AuthResponse.error(e));
+                        logoutResponseMutableLiveData.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
@@ -272,7 +272,7 @@ public class AuthRequestManager {
             /**
              * Request to the API to change password
              */
-            Observable<Response<AuthResponse>> observable;
+            Observable<Response<ApiEmptyResponse>> observable;
             observable = authApi.changePassword(prefs.getToken(), passwordForm);
             observable
                     // Run the Observable in a dedicated thread (Schedulers.io)
@@ -285,23 +285,23 @@ public class AuthRequestManager {
                     // the data transmission will be stopped and a Timeout error will be sent to the
                     // Subscribers via their onError() method.
                     .timeout(10, TimeUnit.SECONDS)
-                    .subscribe(new Observer<Response<AuthResponse>>() {
+                    .subscribe(new Observer<Response<ApiEmptyResponse>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             Log.d(Constants.TAG, "Password change : on start subscription");
-                            changePasswordMutableLiveData.setValue(AuthResponse.loading());
+                            changePasswordMutableLiveData.setValue(ApiEmptyResponse.loading());
                         }
 
                         @Override
-                        public void onNext(Response<AuthResponse> response) {
+                        public void onNext(Response<ApiEmptyResponse> response) {
                             Log.d(Constants.TAG, "Password changed successfully");
-                            changePasswordMutableLiveData.setValue(AuthResponse.success());
+                            changePasswordMutableLiveData.setValue(ApiEmptyResponse.success());
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             Log.d(Constants.TAG, "Password change : error");
-                            changePasswordMutableLiveData.setValue(AuthResponse.error(e));
+                            changePasswordMutableLiveData.setValue(ApiEmptyResponse.error(e));
                         }
 
                         @Override
@@ -316,7 +316,7 @@ public class AuthRequestManager {
         /**
          * Request to the API to change password
          */
-        Observable<Response<AuthResponse>> observable;
+        Observable<Response<ApiEmptyResponse>> observable;
         observable = authApi.resetPassword(passwordForm);
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -329,23 +329,23 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<AuthResponse>>() {
+                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Password reset : on start subscription");
-                        resetPasswordMutableLiveData.setValue(AuthResponse.loading());
+                        resetPasswordMutableLiveData.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<AuthResponse> response) {
+                    public void onNext(Response<ApiEmptyResponse> response) {
                         Log.d(Constants.TAG, "Password reset successfully");
-                        resetPasswordMutableLiveData.setValue(AuthResponse.success());
+                        resetPasswordMutableLiveData.setValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Password reset : error");
-                        resetPasswordMutableLiveData.setValue(AuthResponse.error(e));
+                        resetPasswordMutableLiveData.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
@@ -361,7 +361,7 @@ public class AuthRequestManager {
         /**
          * Request to the API to delete the profile
          */
-        Observable<Response<AuthResponse>> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
+        Observable<Response<ApiEmptyResponse>> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -373,24 +373,24 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<AuthResponse>>() {
+                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Deletion : on start subscription");
-                        deleteResponseMutableLiveData.setValue(AuthResponse.loading());
+                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<AuthResponse> response) {
+                    public void onNext(Response<ApiEmptyResponse> response) {
                         Log.d(Constants.TAG, "Deletion successful");
                         prefs.logOut();
-                        deleteResponseMutableLiveData.setValue(AuthResponse.success());
+                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Deletion : error");
-                        deleteResponseMutableLiveData.setValue(AuthResponse.error(e));
+                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override

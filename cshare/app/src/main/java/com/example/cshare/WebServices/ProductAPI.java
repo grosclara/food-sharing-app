@@ -2,6 +2,7 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public interface  ProductAPI {
     );
 
     @DELETE("product/{id}/")
-    Observable<Response<Product>> deleteProductById(
+    Observable<Response<ApiEmptyResponse>> deleteProductById(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

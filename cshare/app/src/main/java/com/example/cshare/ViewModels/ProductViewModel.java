@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Models.Order;
@@ -26,6 +27,7 @@ public class ProductViewModel extends AndroidViewModel {
     private MutableLiveData<ResponseProductList> sharedProductList;
     private MutableLiveData<ResponseProductList> inCartProductList;
     private MutableLiveData<ProductResponse> addProductResponse;
+    private MutableLiveData<ApiEmptyResponse> deleteProductResponse;
 
     public ProductViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -37,6 +39,7 @@ public class ProductViewModel extends AndroidViewModel {
         inCartProductList = productRequestManager.getInCartProductList();
         sharedProductList = productRequestManager.getSharedProductList();
         addProductResponse = productRequestManager.getAddProductResponse();
+        deleteProductResponse = productRequestManager.getDeleteProductResponse();
     }
 
     // Getter method
@@ -48,6 +51,8 @@ public class ProductViewModel extends AndroidViewModel {
         return sharedProductList;
     }
     public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
+    public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() { return deleteProductResponse; }
+
 
     // Update products in request manager
     public void update() {

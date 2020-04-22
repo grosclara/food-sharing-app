@@ -10,7 +10,7 @@ import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
 import static com.example.cshare.RequestManager.Status.SUCCESS;
 
-public class AuthResponse {
+public class ApiEmptyResponse {
 
     /**
      * Auth response empty model
@@ -21,7 +21,7 @@ public class AuthResponse {
     @Nullable
     public final Throwable error;
 
-    private AuthResponse(Status status, @Nullable Throwable error) {
+    private ApiEmptyResponse(Status status, @Nullable Throwable error) {
         this.status = status;
         this.error = error;
     }
@@ -32,19 +32,19 @@ public class AuthResponse {
 
     public Throwable getError(){ return error; }
 
-    public static AuthResponse loading() {
-        return new AuthResponse(LOADING, null);
+    public static ApiEmptyResponse loading() {
+        return new ApiEmptyResponse(LOADING, null);
     }
 
-    public static AuthResponse success() {
-        return new AuthResponse(SUCCESS, null);
+    public static ApiEmptyResponse success() {
+        return new ApiEmptyResponse(SUCCESS, null);
     }
 
-    public static AuthResponse error(@NonNull Throwable error) {
-        return new AuthResponse(ERROR, error);
+    public static ApiEmptyResponse error(@NonNull Throwable error) {
+        return new ApiEmptyResponse(ERROR, error);
     }
 
-    public static AuthResponse complete(){
-        return new AuthResponse(COMPLETE, null);
+    public static ApiEmptyResponse complete(){
+        return new ApiEmptyResponse(COMPLETE, null);
     }
 }

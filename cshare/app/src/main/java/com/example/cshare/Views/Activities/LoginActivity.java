@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Response.AuthResponse;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.Models.Auth.ResetPasswordForm;
 import com.example.cshare.R;
@@ -82,15 +82,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<AuthResponse>() {
+        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
             @Override
-            public void onChanged(AuthResponse authResponse) {
-                if (authResponse.getStatus().equals(Status.LOADING)) {
+            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
+                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (authResponse.getStatus().equals(Status.SUCCESS)) {
+                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Password reset", Toast.LENGTH_SHORT).show();
-                } else if (authResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), authResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getApplicationContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

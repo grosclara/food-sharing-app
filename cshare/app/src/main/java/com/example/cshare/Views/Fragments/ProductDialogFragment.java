@@ -134,7 +134,6 @@ public class ProductDialogFragment extends DialogFragment {
                                 // Check the status
                                 if (product.getStatus().equals(Constants.AVAILABLE)) {
                                     // if still available, delete the product from the database
-                                    Log.d(Constants.TAG, "Product deleted");
                                     productViewModel.deleteProduct(product);
                                 } else {
                                     Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
