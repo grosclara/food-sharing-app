@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.Response.ResponseProductList;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.Status;
@@ -54,15 +55,15 @@ public class SharedFragment extends ProductListFragment {
                 }
             }
         });
-        productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
+        productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse response) {
+            public void onChanged(ProductResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     // Reset the status
-                    productViewModel.getDeleteProductResponse().setValue(ApiEmptyResponse.complete());
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }

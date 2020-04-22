@@ -57,7 +57,7 @@ public interface  ProductAPI {
     );
 
     @DELETE("product/{id}/")
-    Observable<Response<ApiEmptyResponse>> deleteProductById(
+    Observable<Product> deleteProductById(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

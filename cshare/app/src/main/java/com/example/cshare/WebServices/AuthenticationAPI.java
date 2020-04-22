@@ -66,7 +66,7 @@ public interface AuthenticationAPI {
     );
 
     @DELETE("user/{id}/")
-    Observable<Response<ApiEmptyResponse>> delete(
+    Observable<User> delete(
             @Header("Authorization") String token,
             @Path("id") int userId
     );

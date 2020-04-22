@@ -31,7 +31,7 @@ public interface OrderAPI {
             @Body Order order);
 
     @DELETE("order/{id}/")
-    Observable<Response<ApiEmptyResponse>> deleteOrderByProductId(
+    Observable<Order> deleteOrderByProductId(
             @Header("Authorization") String token,
             @Path("id") int productId
     );

@@ -43,7 +43,7 @@ public class ProductRequestManager {
     private MutableLiveData<ResponseProductList> sharedProductList = new MutableLiveData<>();
     private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
-    private MutableLiveData<ApiEmptyResponse> deleteProductResponse = new MutableLiveData<>();
+    private MutableLiveData<ProductResponse> deleteProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> deliverProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> orderProductResponse = new MutableLiveData<>();
@@ -89,7 +89,7 @@ public class ProductRequestManager {
         return addProductResponse;
     }
 
-    public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() {
+    public MutableLiveData<ProductResponse> getDeleteProductResponse() {
         return deleteProductResponse;
     }
 
@@ -347,7 +347,7 @@ public class ProductRequestManager {
          * @param productToPost
          */
 
-        Observable<Response<ApiEmptyResponse>> observable;
+        Observable<Product> observable;
         observable = productAPI.deleteProductById(
                 prefs.getToken(),
                 productToDelete.getId());
@@ -363,18 +363,18 @@ public class ProductRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
+                .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "deleteProduct : on start subscription");
-                        deleteProductResponse.setValue(ApiEmptyResponse.loading());
+                        deleteProductResponse.setValue(ProductResponse.loading());
                     }
 
                     @Override
-                    public void onNext(Response<ApiEmptyResponse> response) {
+                    public void onNext(Product response) {
 
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
-                        deleteProductResponse.setValue(ApiEmptyResponse.success());
+                        deleteProductResponse.setValue(ProductResponse.success(response));
 
                         // New product list to which we add the new product
                         List<Product> oldAvailable = getAvailableProductList().getValue().getProductList();
@@ -407,13 +407,13 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "deleteProduct : error");
-                        deleteProductResponse.setValue(ApiEmptyResponse.error(e));
+                        deleteProductResponse.setValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "deleteProduct : Deletion completed");
-                        deleteProductResponse.setValue(ApiEmptyResponse.complete());
+                        deleteProductResponse.setValue(ProductResponse.complete());
                     }
                 });
     }
@@ -559,12 +559,12 @@ public class ProductRequestManager {
         /**
          * Request to the API to order a product and update its status from available to collected
          */
-        Observable<Response<ApiEmptyResponse>> observable;
+        Observable<Order> observable;
         observable = orderAPI.deleteOrderByProductId(prefs.getToken(), productID);
         observable
-                .flatMap(new Function<Response<ApiEmptyResponse>, Observable<Product>>() {
+                .flatMap(new Function<Order, Observable<Product>>() {
                     @Override
-                    public Observable<Product> apply(Response<ApiEmptyResponse> order) throws Exception {
+                    public Observable<Product> apply(Order order) throws Exception {
                         return updateStatus(prefs.getToken(), productID, status);
                     }
                 })
