@@ -18,8 +18,9 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
+from .mixins import DestroyWithPayloadMixin
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
@@ -63,7 +64,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
 
     lookup_field = 'product'
     
@@ -88,7 +89,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(client=client)
         return queryset
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
 
