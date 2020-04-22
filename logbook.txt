@@ -105,7 +105,11 @@ Implementation of the dialogs to interact with products, 2h00"
 "19/04 - BT : Delete account functionality, 2h00",
 "20/04 - CG : Improvement of the architecture with respect to the auth functionalities, 3h00
 	      Use of onSaveInstanceState in form activities so that the picture taken can survive any configuration changes, 2h00"
-"21/04 - CG : Review of Babacar's work on auth functionalities to intergate them in the modified architecture, 1h00"
+"21/04 - CG : Review of Babacar's work on auth functionalities to intergate them in the modified architecture, 1h00
+	      Handle Network request errors for the auth requests, 4h00"
+"22/04 - CG : Handle Network request errors for the product-related requests, 2h00"
+"22/04 - BT : Edit profile functionality implemented, 2h00"
+
 
 
 
