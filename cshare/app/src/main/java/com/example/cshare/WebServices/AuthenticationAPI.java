@@ -23,8 +23,6 @@ import retrofit2.http.Path;
 
 public interface AuthenticationAPI {
 
-    // CREATE NEW MODEL CLASS TO AUTHENTICATE ANY USER
-
     @GET("rest-auth/user/")
     Observable<User> getProfileInfo(
             @Header("Authorization") String token
@@ -57,13 +55,13 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/password/change/")
-    Observable<Response<ApiEmptyResponse>> changePassword(
+    Observable<ApiEmptyResponse> changePassword(
             @Header("Authorization") String token,
             @Body PasswordForm passwordForm
     );
 
     @POST("rest-auth/password/reset/")
-    Observable<Response<ApiEmptyResponse>> resetPassword(
+    Observable<ApiEmptyResponse> resetPassword(
             @Body ResetPasswordForm resetPasswordForm
     );
 
