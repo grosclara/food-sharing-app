@@ -52,7 +52,7 @@ public interface AuthenticationAPI {
     Observable<LoginResponse> login(@Body LoginForm loginForm);
 
     @POST("rest-auth/logout/")
-    Observable<Response<ApiEmptyResponse>> logout(
+    Observable<ApiEmptyResponse> logout(
             @Header("Authorization") String token
     );
 

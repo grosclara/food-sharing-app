@@ -130,7 +130,7 @@ public class AuthRequestManager {
          * Request to the API to logout
          */
 
-        Observable<Response<ApiEmptyResponse>> observable = authApi.logout(prefs.getToken());
+        Observable<ApiEmptyResponse> observable = authApi.logout(prefs.getToken());
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -142,7 +142,7 @@ public class AuthRequestManager {
                 // the data transmission will be stopped and a Timeout error will be sent to the
                 // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Response<ApiEmptyResponse>>() {
+                .subscribe(new Observer<ApiEmptyResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Log Out : on start subscription");
@@ -150,11 +150,10 @@ public class AuthRequestManager {
                     }
 
                     @Override
-                    public void onNext(Response<ApiEmptyResponse> response) {
+                    public void onNext(ApiEmptyResponse response) {
                         prefs.logOut();
                         // Update isLoggedInMutableLiveData
                         //isLoggedIn();
-                        Log.d(Constants.TAG, "Logged out successfully");
                         logoutResponseMutableLiveData.setValue(ApiEmptyResponse.success());
                     }
 
