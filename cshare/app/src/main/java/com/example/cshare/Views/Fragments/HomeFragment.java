@@ -50,6 +50,7 @@ public class HomeFragment extends ProductListFragment {
                 }
             }
         });
+
         productViewModel.getDeleteProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {
@@ -101,7 +102,7 @@ public class HomeFragment extends ProductListFragment {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
 
-        if (product.getSupplier() == profileViewModel.getUserID()) {
+        if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
             tag = Constants.SHARED;
         } else {
             tag = Constants.ORDER;

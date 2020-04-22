@@ -32,7 +32,7 @@ public class UserReponse {
     }
 
     @Nullable
-    public User getProduct() {
+    public User getUser() {
         return user;
     }
 

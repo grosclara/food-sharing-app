@@ -2,6 +2,7 @@ package com.example.cshare.Views.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
@@ -144,10 +146,18 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             }
         });
 
-        profileViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<User>() {
+        profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
             @Override
-            public void onChanged(User profile) {
-                updateUserDetails(profile);
+            public void onChanged(UserReponse response) {
+                if (response.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
+                    updateUserDetails(response.getUser());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
+                }
             }
         });
     }

@@ -150,7 +150,7 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getInCartProducts : error");
-                        inCartProductList.setValue(ResponseProductList.error(e));
+                        inCartProductList.postValue(ResponseProductList.error(e));
                     }
 
                     @Override
@@ -196,7 +196,7 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getAvailableProducts : error");
-                        availableProductList.setValue(ResponseProductList.error(e));
+                        availableProductList.postValue(ResponseProductList.error(e));
                     }
 
                     @Override

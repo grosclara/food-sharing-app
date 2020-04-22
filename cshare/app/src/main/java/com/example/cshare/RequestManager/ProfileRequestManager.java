@@ -6,9 +6,11 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Auth.PasswordForm;
+import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.UserAPI;
 
@@ -36,14 +38,15 @@ public class ProfileRequestManager {
     private static ProfileRequestManager profileRequestManager;
 
     // MutableLiveData object that contains the user data
-    private MutableLiveData<User> userProfile = new MutableLiveData<>();
-    private MutableLiveData<User> otherUser = new MutableLiveData<>();
+    private MutableLiveData<UserReponse> userProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<UserReponse> otherUserProfileResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
     private Retrofit retrofit;
     // Insert API interface dependency here
     private UserAPI userAPI;
+    private AuthenticationAPI authAPI;
 
     public ProfileRequestManager(PreferenceProvider prefs) {
 
@@ -51,6 +54,7 @@ public class ProfileRequestManager {
         // Define the URL endpoint for the HTTP request.
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
+        authAPI = retrofit.create(AuthenticationAPI.class);
 
         // Initialize the value of the User profile
         update();
@@ -61,21 +65,17 @@ public class ProfileRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<User> getUser() {
-        return userProfile;
+    public MutableLiveData<UserReponse> getUserProfileResponse() {
+        return userProfileResponse;
     }
-    public MutableLiveData<User> getOtherUser(){ return otherUser; }
-
-    public int getUserID(){
-        return prefs.getUserID();
-    }
+    public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
 
     public void getUserProfile() {
         /**
          * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
          */
         Observable<User> userObservable;
-        userObservable = userAPI.getUserByID(prefs.getToken(), prefs.getUserID());
+        userObservable = authAPI.getProfileInfo(prefs.getToken());
         userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -91,18 +91,19 @@ public class ProfileRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getUser : on start subscription");
+                        userProfileResponse.setValue(UserReponse.loading());
                     }
 
                     @Override
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "getUser : live data filled");
-                        userProfile.setValue(user);
+                        userProfileResponse.setValue(UserReponse.success(user));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getUser : error");
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        userProfileResponse.postValue(UserReponse.error(e));
                     }
 
                     @Override
@@ -133,23 +134,25 @@ public class ProfileRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getUser : on start subscription");
+                        otherUserProfileResponse.setValue(UserReponse.loading());
                     }
 
                     @Override
                     public void onNext(User response) {
                         Log.d(Constants.TAG, "getUser : live data filled");
-                        otherUser.setValue(response);
+                        otherUserProfileResponse.setValue(UserReponse.success(response));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getUser : error");
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
+                        otherUserProfileResponse.setValue(UserReponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getUser : Data received");
+                        otherUserProfileResponse.setValue(UserReponse.complete());
                     }
                 });
     }

@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.ProductResponse;
+import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
@@ -60,16 +61,20 @@ public class ProductDialogFragment extends DialogFragment {
         this.productViewModel = productViewModel;
         this.profileViewModel = profileViewModel;
 
-        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<User>() {
+        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
             @Override
-            public void onChanged(User supplier) {
-
-                // HTTP Request to retrieve the user information
-                textViewSupplierFirstName.setText(supplier.getFirstName());
-                textViewSupplierLastName.setText(supplier.getLastName());
-                textViewSupplierCampus.setText(supplier.getCampus());
-                textViewSupplierRoomNumber.setText(supplier.getRoomNumber());
-                Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
+            public void onChanged(UserReponse response) {
+                if(response.getStatus().equals(Status.SUCCESS)){
+                    Toast.makeText(getContext(), "Supplier info retrieved", Toast.LENGTH_SHORT).show();
+                    fillInSupplierDetails(response.getUser());
+                }
+                else if (response.getStatus().equals(Status.LOADING)){
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+                else if (response.getStatus().equals(Status.ERROR)){
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+                }
             }
         });
 
@@ -99,10 +104,10 @@ public class ProductDialogFragment extends DialogFragment {
         textViewSupplierRoomNumber = view.findViewById(R.id.textViewSupplierRoomNumber);
         imageViewSupplierProfilePicture = view.findViewById(R.id.imageViewSupplierProfilePicture);
 
-        // Fill in related views
-        fillInSupplierDetails(view, product.getSupplier());
         // Fill in product related views
-        fillInProductDetails(view);
+        fillInProductDetails();
+        // Retrieve all information from the supplier and fill in the views
+        profileViewModel.getUserByID(product.getSupplier());
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {
@@ -113,14 +118,11 @@ public class ProductDialogFragment extends DialogFragment {
                                 // Order the product
                                 if (product.getStatus().equals("Available")) {
                                     // Create the order object
-                                    Order request = new Order(profileViewModel.getUserID(), product.getId());
+                                    Order request = new Order(profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId(), product.getId());
                                     // Change the status attribute of the product object to not available
                                     Map<String, String> status = new HashMap<>();
                                     status.put("status", Constants.COLLECTED);
                                     productViewModel.order(request, status);
-
-                                    //updateProductStatus(product, status);
-                                    Log.d(Constants.TAG, "Status updated");
                                 }
                             }
                         })
@@ -187,7 +189,7 @@ public class ProductDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    private void fillInProductDetails(View view) {
+    private void fillInProductDetails() {
 
         textViewProductName.setText(product.getName());
         textViewProductCategory.setText(product.getCategory());
@@ -208,11 +210,13 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails(View view, int supplierID) {
-
-        // Retrieve all information from the supplier and fill in the views
-       profileViewModel.getUserByID(supplierID);
-
+    private void fillInSupplierDetails(User supplier) {
+        // HTTP Request to retrieve the user information
+        textViewSupplierFirstName.setText(supplier.getFirstName());
+        textViewSupplierLastName.setText(supplier.getLastName());
+        textViewSupplierCampus.setText(supplier.getCampus());
+        textViewSupplierRoomNumber.setText(supplier.getRoomNumber());
+        Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
     }
 
 }
