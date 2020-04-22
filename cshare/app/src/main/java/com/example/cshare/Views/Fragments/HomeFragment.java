@@ -49,19 +49,20 @@ public class HomeFragment extends ProductListFragment {
                 }
             }
         });
-
-        productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
+        productViewModel.getDeleteProductResponse().observe(this, new Observer<ApiEmptyResponse>() {
             @Override
             public void onChanged(ApiEmptyResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    productViewModel.getDeleteProductResponse().setValue(ApiEmptyResponse.complete());
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 
     // Configure the SwipeRefreshLayout

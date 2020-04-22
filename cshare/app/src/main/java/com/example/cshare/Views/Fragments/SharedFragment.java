@@ -61,6 +61,8 @@ public class SharedFragment extends ProductListFragment {
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    // Reset the status
+                    productViewModel.getDeleteProductResponse().setValue(ApiEmptyResponse.complete());
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }

@@ -99,6 +99,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
                 } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getChangePasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
                 }
             }
         });
@@ -118,6 +119,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
                 } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getLogoutResponseMutableLiveData().setValue(ApiEmptyResponse.complete());
                 }
             }
         });
@@ -136,6 +138,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
                 } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(ApiEmptyResponse.complete());
                 }
             }
         });

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -44,6 +45,7 @@ public class ProductRequestManager {
     private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
     private MutableLiveData<ApiEmptyResponse> deleteProductResponse = new MutableLiveData<>();
+    private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -70,11 +72,29 @@ public class ProductRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
-    public MutableLiveData<ResponseProductList> getInCartProductList() { return inCartProductList; }
-    public MutableLiveData<ResponseProductList> getSharedProductList() { return sharedProductList; }
-    public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
-    public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() { return deleteProductResponse; }
+    public MutableLiveData<ResponseProductList> getAvailableProductList() {
+        return availableProductList;
+    }
+
+    public MutableLiveData<ResponseProductList> getInCartProductList() {
+        return inCartProductList;
+    }
+
+    public MutableLiveData<ResponseProductList> getSharedProductList() {
+        return sharedProductList;
+    }
+
+    public MutableLiveData<ProductResponse> getAddProductResponse() {
+        return addProductResponse;
+    }
+
+    public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() {
+        return deleteProductResponse;
+    }
+
+    public MutableLiveData<ProductResponse> getCancelOrderResponse() {
+        return cancelOrderResponse;
+    }
 
     public void update() {
         getAvailableProducts();
@@ -391,7 +411,7 @@ public class ProductRequestManager {
                 });
     }
 
-    public void order(Order request, Map status){
+    public void order(Order request, Map status) {
         /**
          * Request to the API to order a product and update its status from available to collected
          */
@@ -480,7 +500,7 @@ public class ProductRequestManager {
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    public void deliver(int productID, Map status){
+    public void deliver(int productID, Map status) {
         Observable<Product> product = updateStatus(prefs.getToken(), productID, status);
         product
                 .subscribe(new Observer<Product>() {
@@ -500,7 +520,7 @@ public class ProductRequestManager {
                             Product item = itDel.next();
                             if (item.getId() == productDel.getId())
                                 pDel = item;
-                                index = oldInCart.indexOf(item);
+                            index = oldInCart.indexOf(item);
                         }
                         oldInCart.set(index, productDel);
 
@@ -520,17 +540,43 @@ public class ProductRequestManager {
                 });
     }
 
-    public void cancelOrder(int productID, Map status){
-        Observable<Product> product = updateStatus(prefs.getToken(), productID, status);
-        product
+    // TODO : delete the order before updating the status (chain the requests delete order by product id and update product status)
+    public void cancelOrder(int productID, Map status) {
+
+        /**
+         * Request to the API to order a product and update its status from available to collected
+         */
+        Observable<Response<ApiEmptyResponse>> observable;
+        observable = orderAPI.deleteOrderByProductId(prefs.getToken(), productID);
+        observable
+                .flatMap(new Function<Response<ApiEmptyResponse>, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> apply(Response<ApiEmptyResponse> order) throws Exception {
+                        return updateStatus(prefs.getToken(), productID, status);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+
                 .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        Log.d(Constants.TAG, "Cancel order : start subscription");
+                        cancelOrderResponse.setValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product productAv) {
+                        Log.d(Constants.TAG, "Cancel order : live data filled");
+                        cancelOrderResponse.setValue(ProductResponse.success(productAv));
+
                         // Remove the product from the inCart list and re add it to the available list
                         List<Product> oldAvailable = availableProductList.getValue().getProductList();
                         List<Product> oldInCart = inCartProductList.getValue().getProductList();
@@ -553,18 +599,20 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d(Constants.TAG, "Cancel order : error");
+                        cancelOrderResponse.setValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.d(Constants.TAG, "Cancel order : All data received");
+                        cancelOrderResponse.setValue(ProductResponse.complete());
                     }
                 });
     }
 
     public Observable<Product> updateStatus(
-           String token, int productID, Map status) {
+            String token, int productID, Map status) {
         return productAPI.updateProductStatus(token, productID, status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

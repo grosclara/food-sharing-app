@@ -16,7 +16,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 
+import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.ProductResponse;
 import com.example.cshare.Models.User;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Activities.MainActivity;
 import com.example.cshare.Models.Order;
@@ -69,6 +72,7 @@ public class ProductDialogFragment extends DialogFragment {
                 Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
             }
         });
+
     }
 
     @Override
@@ -167,7 +171,6 @@ public class ProductDialogFragment extends DialogFragment {
                                 Map<String, String> status = new HashMap<>();
                                 status.put("status", Constants.AVAILABLE);
                                 productViewModel.cancelOrder(product.getId(), status);
-                                //updateProductStatus(product, "Available");
                             }
                         });
                 break;

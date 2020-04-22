@@ -3,6 +3,7 @@ package com.example.cshare.WebServices;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
 import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.ProductResponse;
 
 import java.util.List;
 import java.util.Map;

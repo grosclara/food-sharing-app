@@ -114,7 +114,7 @@ public class AuthRequestManager {
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log In : All data received");
                         //loginResponseMutableLiveData.setValue(LoginResponse.complete());
-                        loginResponseMutableLiveData = new MutableLiveData<>();
+                        loginResponseMutableLiveData.setValue(LoginResponse.complete());
                     }
                 });
     }
@@ -167,7 +167,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log out : Completed");
-                        logoutResponseMutableLiveData = new MutableLiveData<>();
+                        logoutResponseMutableLiveData.setValue(ApiEmptyResponse.complete());
                     }
                 });
     }
@@ -211,7 +211,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Registration : Completed");
-                        registrationResponseMutableLiveData = new MutableLiveData<>();
+                        registrationResponseMutableLiveData.setValue(LoginResponse.complete());
                     }
                 });
     }
@@ -262,7 +262,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Registration : Completed");
-                        registrationResponseMutableLiveData = new MutableLiveData<>();
+                        registrationResponseMutableLiveData.setValue(LoginResponse.complete());
                     }
                 });
 
@@ -307,7 +307,7 @@ public class AuthRequestManager {
                         @Override
                         public void onComplete() {
                             Log.d(Constants.TAG, "Password change : Completed");
-                            changePasswordMutableLiveData = new MutableLiveData<>();
+                            changePasswordMutableLiveData.setValue(ApiEmptyResponse.complete());
                         }
                     });
     }
@@ -351,7 +351,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Password reset : Completed");
-                        resetPasswordMutableLiveData = new MutableLiveData<>();
+                        resetPasswordMutableLiveData.setValue(ApiEmptyResponse.complete());
                     }
                 });
 
@@ -396,7 +396,7 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Deletion : Completed");
-                        deleteResponseMutableLiveData = new MutableLiveData<>();
+                        deleteResponseMutableLiveData.setValue(ApiEmptyResponse.complete());
                     }
                 });
 

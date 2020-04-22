@@ -138,6 +138,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 } else if (loginResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getRegistrationResponseMutableLiveData().setValue(LoginResponse.complete());
                 }
             }
         });

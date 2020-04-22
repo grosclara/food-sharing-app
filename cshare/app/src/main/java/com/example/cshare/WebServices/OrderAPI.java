@@ -1,12 +1,14 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Order;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -29,7 +31,7 @@ public interface OrderAPI {
             @Body Order order);
 
     @DELETE("order/{id}/")
-    Observable<ResponseBody> deleteOrderByProductId(
+    Observable<Response<ApiEmptyResponse>> deleteOrderByProductId(
             @Header("Authorization") String token,
             @Path("id") int productId
     );

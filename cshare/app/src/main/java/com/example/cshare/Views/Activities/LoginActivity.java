@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 } else if (loginResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getLoginResponseMutableLiveData().setValue(LoginResponse.complete());
                 }
             }
         });
@@ -91,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "Password reset", Toast.LENGTH_SHORT).show();
                 } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getApplicationContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getResetPasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
                 }
             }
         });
