@@ -70,6 +70,19 @@ public class CartFragment extends ProductListFragment {
                 }
             }
         });
+        productViewModel.getDeliverProductResponse().observe(this, new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "Product successfully delivered", Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());
+                } else if (response.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

@@ -46,6 +46,7 @@ public class ProductRequestManager {
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
     private MutableLiveData<ApiEmptyResponse> deleteProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
+    private MutableLiveData<ProductResponse> deliverProductResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -91,6 +92,8 @@ public class ProductRequestManager {
     public MutableLiveData<ApiEmptyResponse> getDeleteProductResponse() {
         return deleteProductResponse;
     }
+
+    public MutableLiveData<ProductResponse> getDeliverProductResponse() { return deliverProductResponse; }
 
     public MutableLiveData<ProductResponse> getCancelOrderResponse() {
         return cancelOrderResponse;
@@ -506,12 +509,16 @@ public class ProductRequestManager {
                 .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        Log.d(Constants.TAG, "Deliver : on start subscription");
+                        deliverProductResponse.setValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product productDel) {
                         // Change the status of the delivered product in the inCart list
+                        Log.d(Constants.TAG, "Live data filled");
+                        deliverProductResponse.setValue(ProductResponse.success(productDel));
+
                         List<Product> oldInCart = inCartProductList.getValue().getProductList();
                         Product pDel = null;
                         int index = -1;
@@ -530,17 +537,17 @@ public class ProductRequestManager {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d(Constants.TAG, "Deliver : error");
+                        deliverProductResponse.setValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
-
+                        deliverProductResponse.setValue(ProductResponse.complete());
                     }
                 });
     }
 
-    // TODO : delete the order before updating the status (chain the requests delete order by product id and update product status)
     public void cancelOrder(int productID, Map status) {
 
         /**
