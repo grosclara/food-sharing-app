@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
@@ -23,6 +24,8 @@ ProductListFragment extends BaseFragment {
     // FOR DESIGN
     // Declare RecyclerView
     RecyclerView recyclerView;
+    // Declare progress bar
+    ProgressBar progressBar;
     // Declare the SwipeRefreshLayout
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -31,6 +34,8 @@ ProductListFragment extends BaseFragment {
     // Declare list of products (Product) & Adapter
     private List<Product> products;
     protected ProductAdapter adapter;
+
+    protected Boolean isClickable = true;
 
     // --------------
     // BASE METHODS
@@ -49,12 +54,15 @@ ProductListFragment extends BaseFragment {
         // Bind views
         recyclerView = view.findViewById(R.id.products_recycler_view);
         swipeRefreshLayout = view.findViewById(R.id.fragment_product_list_swipe_container);
+        progressBar = view.findViewById(R.id.progressBar);
 
         // Call during UI creation
         this.configureRecyclerView();
 
         // Configure the SwipeRefreshLayout
         this.configureSwipeRefreshLayout();
+
+        this.configureProgressBar();
     }
 
     @Override
@@ -89,7 +97,6 @@ ProductListFragment extends BaseFragment {
                                             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                                                 // Get product from adapter
                                                 Product product = adapter.getProduct(position);
-                                                Log.d(Constants.TAG, product.getName());
                                                 click(product);
                                             }
                                         }
@@ -101,5 +108,7 @@ ProductListFragment extends BaseFragment {
 
     // Configure SwipeRefreshLayout
     protected abstract void configureSwipeRefreshLayout();
+
+    protected abstract void configureProgressBar();
 
 }

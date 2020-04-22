@@ -1,5 +1,6 @@
 package com.example.cshare.Views.Fragments;
 
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -31,8 +32,10 @@ public class SharedFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
-        productDetailsFragment.show(getChildFragmentManager(), tag);
+        if (isClickable) {
+            DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
+            productDetailsFragment.show(getChildFragmentManager(), tag);
+        }
     }
 
     @Override
@@ -44,14 +47,18 @@ public class SharedFragment extends ProductListFragment {
         productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<ResponseProductList>() {
             @Override
             public void onChanged(@Nullable ResponseProductList response) {
-                if (response.getStatus().equals(Status.SUCCESS)){
+                if (response.getStatus().equals(Status.SUCCESS)) {
                     adapter.updateProducts(response.getProductList());
-                }
-                else if (response.getStatus().equals(Status.ERROR)){
+                    progressBar.setVisibility(View.GONE);
+                    isClickable = true;
+                } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-                else if (response.getStatus().equals(Status.LOADING)){
+                    progressBar.setVisibility(View.GONE);
+                    isClickable = false;
+                } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.VISIBLE);
+                    isClickable = false;
                 }
             }
         });
@@ -84,5 +91,9 @@ public class SharedFragment extends ProductListFragment {
             }
         });
 
+    }
+
+    @Override
+    protected void configureProgressBar() {
     }
 }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemClickSupport {
 
+    private final Boolean isClickable;
     private final RecyclerView recyclerView;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
@@ -14,7 +15,7 @@ public class ItemClickSupport {
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (onItemClickListener != null) {
+            if (onItemClickListener != null && isClickable) {
                 RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(v);
                 onItemClickListener.onItemClicked(recyclerView, holder.getAdapterPosition(), v);
             }
@@ -24,7 +25,7 @@ public class ItemClickSupport {
     private View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            if (onItemLongClickListener != null) {
+            if (onItemLongClickListener != null && isClickable) {
                 RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(v);
                 return onItemLongClickListener.onItemLongClicked(recyclerView, holder.getAdapterPosition(), v);
             }
@@ -55,6 +56,7 @@ public class ItemClickSupport {
         this.itemID = itemID;
         this.recyclerView.setTag(itemID, this);
         this.recyclerView.addOnChildAttachStateChangeListener(attachListener);
+        isClickable = true;
     }
 
     public static ItemClickSupport addTo(RecyclerView view, int itemID) {

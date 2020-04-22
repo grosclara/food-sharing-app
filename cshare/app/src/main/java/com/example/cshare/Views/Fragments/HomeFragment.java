@@ -2,6 +2,7 @@ package com.example.cshare.Views.Fragments;
 
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,10 +44,16 @@ public class HomeFragment extends ProductListFragment {
             public void onChanged(@Nullable ResponseProductList response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     adapter.updateProducts(response.getProductList());
+                    progressBar.setVisibility(View.GONE);
+                    isClickable = true;
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    isClickable = false;
+                    progressBar.setVisibility(View.GONE);
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.VISIBLE);
+                    isClickable = false;
                 }
             }
         });
@@ -98,17 +105,24 @@ public class HomeFragment extends ProductListFragment {
     }
 
     @Override
+    protected void configureProgressBar() {
+    }
+
+    @Override
     protected void click(Product product) {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
 
-        if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
-            tag = Constants.SHARED;
-        } else {
-            tag = Constants.ORDER;
+        if (isClickable) {
+
+            if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
+                tag = Constants.SHARED;
+            } else {
+                tag = Constants.ORDER;
+            }
+            DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
+            productDetailsFragment.show(getChildFragmentManager(), tag);
         }
-        DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
-        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
 }
