@@ -65,7 +65,6 @@ public class ProductViewModel extends AndroidViewModel {
 
     // Update products in request manager
     public void update() {
-        Log.d("tag","product update");
         productRequestManager.update();
     }
 

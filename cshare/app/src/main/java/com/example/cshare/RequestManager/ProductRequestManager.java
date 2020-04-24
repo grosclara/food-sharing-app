@@ -196,7 +196,7 @@ public class ProductRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getAvailableProducts : error");
-                        availableProductList.postValue(ResponseProductList.error(e));
+                        availableProductList.setValue(ResponseProductList.error(e));
                     }
 
                     @Override

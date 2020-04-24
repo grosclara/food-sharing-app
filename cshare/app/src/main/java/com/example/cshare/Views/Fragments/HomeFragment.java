@@ -42,6 +42,8 @@ public class HomeFragment extends ProductListFragment {
         productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ResponseProductList>() {
             @Override
             public void onChanged(@Nullable ResponseProductList response) {
+                Log.d(Constants.TAG, "ONCHANGED");
+                Log.d(Constants.TAG, response.getStatus().toString());
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     adapter.updateProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);
@@ -99,7 +101,6 @@ public class HomeFragment extends ProductListFragment {
                 productViewModel.update();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
             }
         });
     }
