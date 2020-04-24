@@ -18,7 +18,12 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from .mixins import DestroyWithPayloadMixin
+
+class DestroyWithPayloadMixin(object):
+     def destroy(self, *args, **kwargs):
+         serializer = self.get_serializer(self.get_object())
+         super().destroy(*args, **kwargs)
+         return Response(serializer.data, status=HTTP_200_OK)
 
 class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     """ 
@@ -34,10 +39,6 @@ class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     ordering = ('-updated_at')
 
     serializer_class = ProductSerializer
-
-    # Defines the function to call for a PATCH request
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
     def get_queryset(self):
         """

@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Auth.PasswordForm;
+import com.example.cshare.Models.EditProfileForm;
 import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
@@ -156,6 +157,112 @@ public class ProfileRequestManager {
                     }
                 });
     }
+
+    public void editProfileWithPicture(EditProfileForm form) {
+        /**
+         * Request to the API to edit the user's profile with a profile  with a put request
+         * @param
+         */
+        Observable<User> userObservable;
+        userObservable = userAPI.updateProfileWithPicture(
+                prefs.getToken(),
+                prefs.getUserID(),
+                body,
+                form.getFirst_name(),
+                form.getLast_name(),
+                form.getRoom_number(),
+                form.getCampus(),
+                email,
+                true);
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        Log.d(Constants.TAG, "profile edited successfully");
+                        profileEdited.setValue(true);
+                        userProfile.setValue(user);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        profileEdited.setValue(false);
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "completed");
+                    }
+                });
+    }
+
+    public void editProfileWithoutPicture(int id, String firstName, String lastName, String roomNumber, String campus, String email) {
+        /**
+         * Request to the API to edit the user's profile without a profile  with a put request
+         * @param
+         */
+        Observable<User> userObservable;
+        userObservable = userAPI.updateProfileWithoutPicture(
+                token,
+                id,
+                firstName,
+                lastName,
+                roomNumber,
+                campus,
+                email,
+                true);
+        userObservable
+                // Run the Observable in a dedicated thread (Schedulers.io)
+                .subscribeOn(Schedulers.io())
+                // Allows to tell all Subscribers to listen to the Observable data stream on the
+                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
+                // of the graphical interface from the  method
+                .observeOn(AndroidSchedulers.mainThread())
+                // If the Subscriber has not sent data before the defined time (10 seconds),
+                // the data transmission will be stopped and a Timeout error will be sent to the
+                // Subscribers via their onError() method.
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(Constants.TAG, "on start subscription");
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        Log.d(Constants.TAG, "profile edited successfully");
+                        userProfile.setValue(user);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        Log.d(Constants.TAG, "error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(Constants.TAG, "completed");
+                    }
+                });
+    }
+
 
     public synchronized static ProfileRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
         /**
