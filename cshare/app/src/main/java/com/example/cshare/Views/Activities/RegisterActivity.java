@@ -216,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         if (v == buttonGallery || v == imageViewGallery) {
 
-            Camera.choosePictureFromGallery(this);
+            Camera.choosePictureFromGallery(this, null);
 
         }
     }

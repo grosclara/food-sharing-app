@@ -3,6 +3,7 @@ package com.example.cshare.Views.Fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,6 +26,7 @@ import com.example.cshare.Models.EditProfileForm;
 import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.Views.Activities.LoginActivity;
@@ -34,10 +37,14 @@ import com.example.cshare.ViewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends BaseFragment implements View.OnClickListener {
 
@@ -56,7 +63,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     private String[] campusArray;
 
-    private String email;
     private String campus;
     private String firstName;
     private String lastName;
@@ -80,6 +86,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private Button logOutButton;
     private Button changePasswordButton;
     private Button deleteAccountButton;
+    private Button buttonGallery;
 
     @Override
     protected BaseFragment newInstance() {
@@ -108,12 +115,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         changePasswordButton = view.findViewById(R.id.buttonChangePassword);
         deleteAccountButton = view.findViewById(R.id.buttonDeleteAccount);
         buttonSave = view.findViewById(R.id.buttonSave);
+        buttonGallery = view.findViewById(R.id.buttonGallery);
 
         // Activate buttons
         logOutButton.setOnClickListener(this);
         changePasswordButton.setOnClickListener(this);
         deleteAccountButton.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
+        buttonGallery.setOnClickListener(this);
+        imageViewProfilePicture.setOnClickListener(this);
 
         configureCampusSpinner();
 
@@ -188,7 +198,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                Log.d(Constants.TAG, "onChanged "+response.getStatus());
                 if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.SUCCESS)) {
@@ -205,7 +214,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getEditedProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
             @Override
             public void onChanged(ApiEmptyResponse response) {
-                Log.d(Constants.TAG, "onChanged edited"+response.getStatus());
+                Log.d(Constants.TAG, "onChanged edited" + response.getStatus());
                 if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.SUCCESS)) {
@@ -230,133 +239,176 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonLogOut:
-                // Alert Dialog to confirm the will to sign out
-                // Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                // Chain together various setter methods to set the dialog characteristics
-                builder.setMessage("Are you sure you want to log out ?")
-                        .setTitle("Log out")
-                        // Add the buttons
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button -> logout the user
-                                authViewModel.logOut();
+
+        if (v == logOutButton) {
+            // Alert Dialog to confirm the will to sign out
+            // Instantiate an AlertDialog.Builder with its constructor
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            // Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("Are you sure you want to log out ?")
+                    .setTitle("Log out")
+                    // Add the buttons
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button -> logout the user
+                            authViewModel.logOut();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+        if (v == changePasswordButton) {
+            // Alert Dialog to change password
+            // Instantiate an AlertDialog.Builder with its constructor
+            AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
+
+            // Inflate the layout
+            View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password, null);
+
+            // Load the edit texts
+            editTextOldPassword = changePasswordLayout.findViewById(R.id.editTextOldPassword);
+            editTextNewPassword = changePasswordLayout.findViewById(R.id.editTextNewPassword);
+            editTextConfirmNewPassword = changePasswordLayout.findViewById(R.id.editTextConfirmNewPassword);
+
+            builderPassword.setView(changePasswordLayout);
+
+            // Chain together various setter methods to set the dialog characteristics
+            builderPassword.setMessage("Enter your old password and a new one")
+                    .setTitle("Change Password")
+                    // Add the buttons
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button -> change password
+                            PasswordForm passwordForm = new PasswordForm(editTextOldPassword.getText().toString().trim(),
+                                    editTextNewPassword.getText().toString().trim(),
+                                    editTextConfirmNewPassword.getText().toString().trim());
+
+                            // Validation
+                            // TODO : set Validators
+                            if (passwordForm.isValid()) {
+                                authViewModel.changePassword(passwordForm);
+                            } else {
+                                // Set errors
                             }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        });
-                // Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                break;
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Get the AlertDialog from create()
+            AlertDialog dialogPassword = builderPassword.create();
+            dialogPassword.show();
+        }
 
-            case R.id.buttonChangePassword:
-                // Alert Dialog to change password
-                // Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
+        if (v == deleteAccountButton) {
 
-                // Inflate the layout
-                View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password, null);
+            // Alert Dialog to confirm the will to delete account
+            // Instantiate an AlertDialog.Builder with its constructor
+            AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
+            // Chain together various setter methods to set the dialog characteristics
+            deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
+                    .setTitle("Delete account")
+                    // Add the buttons
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button -> delete the user's account
+                            authViewModel.deleteAccount();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Get the AlertDialog from create()
+            AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
+            deleteAccountDialog.show();
+        }
 
-                // Load the edit texts
-                editTextOldPassword = changePasswordLayout.findViewById(R.id.editTextOldPassword);
-                editTextNewPassword = changePasswordLayout.findViewById(R.id.editTextNewPassword);
-                editTextConfirmNewPassword = changePasswordLayout.findViewById(R.id.editTextConfirmNewPassword);
+        if (v == buttonSave) {
+            //TODO Validate form
 
-                builderPassword.setView(changePasswordLayout);
+            // Validate the field
+            //validator.validate();
 
-                // Chain together various setter methods to set the dialog characteristics
-                builderPassword.setMessage("Enter your old password and a new one")
-                        .setTitle("Change Password")
-                        // Add the buttons
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button -> change password
-                                PasswordForm passwordForm = new PasswordForm(editTextOldPassword.getText().toString().trim(),
-                                        editTextNewPassword.getText().toString().trim(),
-                                        editTextConfirmNewPassword.getText().toString().trim());
+            if (validated) {
 
-                                // Validation
-                                // TODO : set Validators
-                                if (passwordForm.isValid()) {
-                                    authViewModel.changePassword(passwordForm);
-                                } else {
-                                    // Set errors
-                                }
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        });
-                // Get the AlertDialog from create()
-                AlertDialog dialogPassword = builderPassword.create();
-                dialogPassword.show();
-                break;
+                // Retrieve user details from the edit text
+                lastName = editTextLastName.getText().toString().trim();
+                firstName = editTextFirstName.getText().toString().trim();
+                roomNumber = editTextRoomNumber.getText().toString().trim();
 
-            case R.id.buttonDeleteAccount:
-                // Alert Dialog to confirm the will to delete account
-                // Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
-                // Chain together various setter methods to set the dialog characteristics
-                deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
-                        .setTitle("Delete account")
-                        // Add the buttons
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button -> delete the user's account
-                                authViewModel.deleteAccount();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        });
-                // Get the AlertDialog from create()
-                AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
-                deleteAccountDialog.show();
-                break;
+                editProfileForm = new EditProfileForm(lastName, firstName, roomNumber, campus);
 
-            case R.id.buttonSave:
+                if (fileToUploadUri != null) {
 
-                //TODO Validate form
+                    fileToUpload = new File(fileToUploadPath);
+                    // Create RequestBody instance from file
+                    RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
 
-                // Validate the field
-                //validator.validate();
-
-                if (validated) {
-
-                    // Retrieve user details from the edit text
-                    lastName = editTextLastName.getText().toString().trim();
-                    firstName = editTextFirstName.getText().toString().trim();
-                    roomNumber = editTextRoomNumber.getText().toString().trim();
-
-                    editProfileForm = new EditProfileForm(lastName, firstName, roomNumber, campus);
-
-                    if (fileToUploadUri != null) {
-
-                        fileToUpload = new File(fileToUploadPath);
-                        // Create RequestBody instance from file
-                        RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
-                        // MultipartBody.Part is used to send also the actual file name
-                        MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
-
-                        editProfileForm.setProfile_picture(profilePictureBody);
-                    }
-
-                    profileViewModel.editProfile(editProfileForm);
-
+                    editProfileForm.setProfile_picture(profilePictureBody);
                 }
-                break;
+
+                profileViewModel.editProfile(editProfileForm);
+
+            }
+        }
+
+        if (v == buttonGallery || v == imageViewProfilePicture) {
+            Camera.choosePictureFromGallery(null, this);
         }
     }
+
+    /**
+     * Receiving activity result method will be called after closing the gallery
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result code is RESULT_OK only if the user selects an Image
+        if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            // data.getData returns the content URI for the selected Image
+            pictureFileUri = data.getData();
+
+            // modify the raw picture taken in a new file and retrieve its Uri
+            try {
+                fileToUpload = Camera.processPicture(getContext(), pictureFileUri);
+
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewProfilePicture);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(getContext(),
+                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // failed to capture image
+            Toast.makeText(getContext(),
+                    "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
 
     private void configureCampusSpinner() {
         campusArray = getResources().getStringArray(R.array.campus_array);

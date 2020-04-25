@@ -53,9 +53,10 @@ public class Camera {
        return pictureFileUri;
     }
 
-    public static void choosePictureFromGallery(Activity activity) {
+    public static void choosePictureFromGallery(Activity activity, Fragment fragment) {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
+
 
         // Create an Intent with action as ACTION_PICK
         Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -67,7 +68,11 @@ public class Camera {
         pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         // Create a chooser in case there are third parties app and launch the Intent
-        activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+        if (activity != null){
+            activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+        } else if (fragment != null) {
+            fragment.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+        }
     }
 
     // Creating file uri to store image
