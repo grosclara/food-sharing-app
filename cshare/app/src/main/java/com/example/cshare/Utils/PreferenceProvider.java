@@ -75,6 +75,12 @@ public class PreferenceProvider {
         return prefs.getInt(ID_KEY, -1);
     }
 
+    public void updateCampus(String campus){
+        prefs.edit()
+                .putString(CAMPUS_KEY, campus)
+                .apply();
+    }
+
 }
 
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.Auth.PasswordForm;
 import com.example.cshare.Models.EditProfileForm;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
 import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
@@ -40,6 +41,7 @@ public class ProfileRequestManager {
 
     // MutableLiveData object that contains the user data
     private MutableLiveData<UserReponse> userProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<ApiEmptyResponse> editedProfileResponse = new MutableLiveData<>();
     private MutableLiveData<UserReponse> otherUserProfileResponse = new MutableLiveData<>();
 
     // Data sources dependencies
@@ -70,6 +72,7 @@ public class ProfileRequestManager {
         return userProfileResponse;
     }
     public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
+    public MutableLiveData<ApiEmptyResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
         /**
@@ -104,7 +107,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getUser : error");
-                        userProfileResponse.postValue(UserReponse.error(e));
+                        userProfileResponse.setValue(UserReponse.error(e));
                     }
 
                     @Override
@@ -167,13 +170,11 @@ public class ProfileRequestManager {
         userObservable = userAPI.updateProfileWithPicture(
                 prefs.getToken(),
                 prefs.getUserID(),
-                body,
+                form.getProfile_picture(),
                 form.getFirst_name(),
                 form.getLast_name(),
                 form.getRoom_number(),
-                form.getCampus(),
-                email,
-                true);
+                form.getCampus());
         userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -188,45 +189,50 @@ public class ProfileRequestManager {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Edit profile : on start subscription");
+                        userProfileResponse.setValue(UserReponse.loading());
+                        editedProfileResponse.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "profile edited successfully");
-                        profileEdited.setValue(true);
-                        userProfile.setValue(user);
-
+                        editPrefs(user.getCampus());
+                        userProfileResponse.setValue(UserReponse.success(user));
+                        editedProfileResponse.setValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        profileEdited.setValue(false);
-                        Log.d(Constants.TAG, "error");
+                        Log.d(Constants.TAG, "Edit profile : error");
+                        userProfileResponse.setValue(UserReponse.error(e));
+                        editedProfileResponse.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "completed");
+                        Log.d(Constants.TAG, "Edit profile : completed");
+                        editedProfileResponse.setValue(ApiEmptyResponse.complete());
                     }
                 });
     }
 
-    public void editProfileWithoutPicture(int id, String firstName, String lastName, String roomNumber, String campus, String email) {
+    public void editPrefs(String campus){
+        if(!prefs.getCampus().equals(campus)){
+            prefs.updateCampus(campus);
+        }
+    }
+
+    public void editProfileWithoutPicture(EditProfileForm editProfileForm) {
         /**
          * Request to the API to edit the user's profile without a profile  with a put request
          * @param
          */
         Observable<User> userObservable;
         userObservable = userAPI.updateProfileWithoutPicture(
-                token,
-                id,
-                firstName,
-                lastName,
-                roomNumber,
-                campus,
-                email,
-                true);
+                prefs.getToken(),
+                prefs.getUserID(),
+                editProfileForm);
         userObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -241,24 +247,30 @@ public class ProfileRequestManager {
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "on start subscription");
+                        Log.d(Constants.TAG, "Edit profile : on start subscription");
+                        userProfileResponse.setValue(UserReponse.loading());
+                        editedProfileResponse.setValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "profile edited successfully");
-                        userProfile.setValue(user);
+                        editPrefs(user.getCampus());
+                        userProfileResponse.setValue(UserReponse.success(user));
+                        editedProfileResponse.setValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
                         Log.d(Constants.TAG, "error");
+                        userProfileResponse.setValue(UserReponse.error(e));
+                        editedProfileResponse.setValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(Constants.TAG, "completed");
+                        Log.d(Constants.TAG, "Edit profile : completed");
+                        editedProfileResponse.setValue(ApiEmptyResponse.complete());
                     }
                 });
     }

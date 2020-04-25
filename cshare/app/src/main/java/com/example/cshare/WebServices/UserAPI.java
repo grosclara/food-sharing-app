@@ -1,6 +1,7 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.EditProfileForm;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
@@ -39,7 +40,7 @@ public interface UserAPI {
     Observable<User> updateProfileWithoutPicture(
             @Header("Authorization") String token,
             @Path("id") int id,
-            @Body RegisterForm form
+            @Body EditProfileForm form
     );
 
 }
