@@ -1,17 +1,16 @@
 package com.example.cshare.WebServices;
 
-import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.LoginResponse;
-import com.example.cshare.Models.Auth.PasswordForm;
-import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.Auth.ResetPasswordForm;
+import com.example.cshare.Models.Forms.LoginForm;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.Forms.PasswordForm;
+import com.example.cshare.Models.Forms.RegisterForm;
+import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;

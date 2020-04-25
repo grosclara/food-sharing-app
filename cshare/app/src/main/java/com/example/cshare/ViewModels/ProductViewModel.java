@@ -1,17 +1,15 @@
 package com.example.cshare.ViewModels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.ProductResponse;
-import com.example.cshare.Models.Response.ResponseProductList;
+import com.example.cshare.Models.ApiResponses.ProductResponse;
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductForm;
+import com.example.cshare.Models.Forms.ProductForm;
 import com.example.cshare.RequestManager.ProductRequestManager;
 
 import java.io.IOException;
@@ -23,9 +21,9 @@ public class ProductViewModel extends AndroidViewModel {
     private ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<ResponseProductList> availableProductList;
-    private MutableLiveData<ResponseProductList> sharedProductList;
-    private MutableLiveData<ResponseProductList> inCartProductList;
+    private MutableLiveData<ProductListResponse> availableProductList;
+    private MutableLiveData<ProductListResponse> sharedProductList;
+    private MutableLiveData<ProductListResponse> inCartProductList;
     private MutableLiveData<ProductResponse> addProductResponse;
     private MutableLiveData<ProductResponse> deleteProductResponse;
     private MutableLiveData<ProductResponse> cancelOrderResponse;
@@ -49,11 +47,11 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     // Getter method
-    public MutableLiveData<ResponseProductList> getAvailableProductList() { return availableProductList; }
-    public MutableLiveData<ResponseProductList> getInCartProductList() {
+    public MutableLiveData<ProductListResponse> getAvailableProductList() { return availableProductList; }
+    public MutableLiveData<ProductListResponse> getInCartProductList() {
         return inCartProductList;
     }
-    public MutableLiveData<ResponseProductList> getSharedProductList() {
+    public MutableLiveData<ProductListResponse> getSharedProductList() {
         return sharedProductList;
     }
     public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }

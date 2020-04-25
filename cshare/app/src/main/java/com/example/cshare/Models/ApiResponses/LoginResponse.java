@@ -1,4 +1,4 @@
-package com.example.cshare.Models.Response;
+package com.example.cshare.Models.ApiResponses;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

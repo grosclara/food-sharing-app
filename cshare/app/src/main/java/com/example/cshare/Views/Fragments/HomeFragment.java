@@ -11,9 +11,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.ProductResponse;
-import com.example.cshare.Models.Response.ResponseProductList;
+import com.example.cshare.Models.ApiResponses.ProductResponse;
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Models.Product;
@@ -39,9 +38,9 @@ public class HomeFragment extends ProductListFragment {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         // Set data
-        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ResponseProductList>() {
+        productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
-            public void onChanged(@Nullable ResponseProductList response) {
+            public void onChanged(@Nullable ProductListResponse response) {
                 Log.d(Constants.TAG, "ONCHANGED");
                 Log.d(Constants.TAG, response.getStatus().toString());
                 if (response.getStatus().equals(Status.SUCCESS)) {

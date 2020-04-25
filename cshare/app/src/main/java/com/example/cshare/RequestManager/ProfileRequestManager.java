@@ -5,10 +5,9 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Auth.PasswordForm;
-import com.example.cshare.Models.EditProfileForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.UserReponse;
+import com.example.cshare.Models.Forms.EditProfileForm;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;

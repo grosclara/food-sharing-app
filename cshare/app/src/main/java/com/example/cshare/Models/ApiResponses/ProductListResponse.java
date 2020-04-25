@@ -1,4 +1,4 @@
-package com.example.cshare.Models.Response;
+package com.example.cshare.Models.ApiResponses;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +13,7 @@ import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
 import static com.example.cshare.RequestManager.Status.SUCCESS;
 
-public class ResponseProductList {
+public class ProductListResponse {
 
     public final Status status;
 
@@ -23,7 +23,7 @@ public class ResponseProductList {
     @Nullable
     public final Throwable error;
 
-    private ResponseProductList(Status status, @Nullable List<Product> productList, @Nullable Throwable error) {
+    private ProductListResponse(Status status, @Nullable List<Product> productList, @Nullable Throwable error) {
         this.status = status;
         this.productList = productList;
         this.error = error;
@@ -43,19 +43,19 @@ public class ResponseProductList {
         return error;
     }
 
-    public static ResponseProductList loading() {
-        return new ResponseProductList(LOADING, null, null);
+    public static ProductListResponse loading() {
+        return new ProductListResponse(LOADING, null, null);
     }
 
-    public static ResponseProductList success(@NonNull List<Product> productList) {
-        return new ResponseProductList(SUCCESS, productList, null);
+    public static ProductListResponse success(@NonNull List<Product> productList) {
+        return new ProductListResponse(SUCCESS, productList, null);
     }
 
-    public static ResponseProductList error(@NonNull Throwable error) {
-        return new ResponseProductList(ERROR, null, error);
+    public static ProductListResponse error(@NonNull Throwable error) {
+        return new ProductListResponse(ERROR, null, error);
     }
 
-    public static ResponseProductList complete(){
-        return new ResponseProductList(COMPLETE, null, null);
+    public static ProductListResponse complete(){
+        return new ProductListResponse(COMPLETE, null, null);
     }
 }

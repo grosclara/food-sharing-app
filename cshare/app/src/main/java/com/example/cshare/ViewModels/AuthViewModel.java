@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.LoginResponse;
-import com.example.cshare.Models.Auth.PasswordForm;
-import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.Auth.ResetPasswordForm;
-import com.example.cshare.Models.Response.UserReponse;
-import com.example.cshare.Models.User;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.Forms.PasswordForm;
+import com.example.cshare.Models.Forms.RegisterForm;
+import com.example.cshare.Models.Forms.ResetPasswordForm;
+import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.AuthRequestManager;
-import com.example.cshare.Models.Auth.LoginForm;
+import com.example.cshare.Models.Forms.LoginForm;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

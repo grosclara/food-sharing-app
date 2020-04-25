@@ -1,16 +1,12 @@
 package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.ProductResponse;
 
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
-import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;

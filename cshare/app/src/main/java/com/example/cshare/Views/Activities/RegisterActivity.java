@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.Response.LoginResponse;
+import com.example.cshare.Models.Forms.RegisterForm;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;

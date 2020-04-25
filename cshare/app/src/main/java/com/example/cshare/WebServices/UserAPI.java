@@ -1,19 +1,15 @@
 package com.example.cshare.WebServices;
 
-import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.EditProfileForm;
+import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.User;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
-import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 

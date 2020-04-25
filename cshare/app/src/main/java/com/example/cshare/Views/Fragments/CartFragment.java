@@ -1,7 +1,6 @@
 package com.example.cshare.Views.Fragments;
 
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,8 +10,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.cshare.Models.Response.ProductResponse;
-import com.example.cshare.Models.Response.ResponseProductList;
+import com.example.cshare.Models.ApiResponses.ProductResponse;
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
@@ -50,9 +49,9 @@ public class CartFragment extends ProductListFragment {
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<ResponseProductList>() {
+        productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
-            public void onChanged(@Nullable ResponseProductList response) {
+            public void onChanged(@Nullable ProductListResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)){
                     adapter.updateProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);

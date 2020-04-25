@@ -14,10 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.LoginResponse;
-import com.example.cshare.Models.Auth.ResetPasswordForm;
+import com.example.cshare.Models.Forms.LoginForm;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.AuthViewModel;

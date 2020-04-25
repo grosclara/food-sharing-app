@@ -1,18 +1,14 @@
 package com.example.cshare.ViewModels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.cshare.Models.EditProfileForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.UserReponse;
-import com.example.cshare.Models.User;
+import com.example.cshare.Models.Forms.EditProfileForm;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.ProfileRequestManager;
-import com.example.cshare.Utils.PreferenceProvider;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

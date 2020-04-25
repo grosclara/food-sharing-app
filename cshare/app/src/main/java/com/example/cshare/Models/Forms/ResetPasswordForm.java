@@ -1,4 +1,4 @@
-package com.example.cshare.Models.Auth;
+package com.example.cshare.Models.Forms;
 
 public class ResetPasswordForm {
 

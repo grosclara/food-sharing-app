@@ -5,13 +5,13 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Auth.LoginForm;
-import com.example.cshare.Models.Auth.PasswordForm;
-import com.example.cshare.Models.Auth.RegisterForm;
-import com.example.cshare.Models.Auth.ResetPasswordForm;
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.LoginResponse;
-import com.example.cshare.Models.Response.UserReponse;
+import com.example.cshare.Models.Forms.LoginForm;
+import com.example.cshare.Models.Forms.PasswordForm;
+import com.example.cshare.Models.Forms.RegisterForm;
+import com.example.cshare.Models.Forms.ResetPasswordForm;
+import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -27,7 +27,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class AuthRequestManager {

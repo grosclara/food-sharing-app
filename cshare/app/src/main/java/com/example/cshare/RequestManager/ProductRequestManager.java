@@ -5,13 +5,12 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Response.ApiEmptyResponse;
-import com.example.cshare.Models.Response.ProductResponse;
-import com.example.cshare.Models.Response.ResponseProductList;
+import com.example.cshare.Models.ApiResponses.ProductResponse;
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.ProductForm;
+import com.example.cshare.Models.Forms.ProductForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.OrderAPI;
@@ -31,7 +30,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ProductRequestManager {
@@ -39,9 +37,9 @@ public class ProductRequestManager {
     private static ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<ResponseProductList> availableProductList = new MutableLiveData<>();
-    private MutableLiveData<ResponseProductList> sharedProductList = new MutableLiveData<>();
-    private MutableLiveData<ResponseProductList> inCartProductList = new MutableLiveData<>();
+    private MutableLiveData<ProductListResponse> availableProductList = new MutableLiveData<>();
+    private MutableLiveData<ProductListResponse> sharedProductList = new MutableLiveData<>();
+    private MutableLiveData<ProductListResponse> inCartProductList = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> deleteProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
@@ -73,15 +71,15 @@ public class ProductRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<ResponseProductList> getAvailableProductList() {
+    public MutableLiveData<ProductListResponse> getAvailableProductList() {
         return availableProductList;
     }
 
-    public MutableLiveData<ResponseProductList> getInCartProductList() {
+    public MutableLiveData<ProductListResponse> getInCartProductList() {
         return inCartProductList;
     }
 
-    public MutableLiveData<ResponseProductList> getSharedProductList() {
+    public MutableLiveData<ProductListResponse> getSharedProductList() {
         return sharedProductList;
     }
 
@@ -137,20 +135,20 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getInCartProducts : on start subscription");
-                        inCartProductList.setValue(ResponseProductList.loading());
+                        inCartProductList.setValue(ProductListResponse.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
                         String msg = String.format("inCart : new data received %s", inCartProductList.toString());
                         Log.d(Constants.TAG, msg);
-                        inCartProductList.setValue(ResponseProductList.success(products));
+                        inCartProductList.setValue(ProductListResponse.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getInCartProducts : error");
-                        inCartProductList.postValue(ResponseProductList.error(e));
+                        inCartProductList.postValue(ProductListResponse.error(e));
                     }
 
                     @Override
@@ -182,7 +180,7 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getAvailableProducts : on start subscription");
-                        availableProductList.setValue(ResponseProductList.loading());
+                        availableProductList.setValue(ProductListResponse.loading());
                     }
 
                     @Override
@@ -190,13 +188,13 @@ public class ProductRequestManager {
                         String msg = String.format("getAvailableProducts : new data received %s", availableProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
-                        availableProductList.setValue(ResponseProductList.success(products));
+                        availableProductList.setValue(ProductListResponse.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getAvailableProducts : error");
-                        availableProductList.setValue(ResponseProductList.error(e));
+                        availableProductList.setValue(ProductListResponse.error(e));
                     }
 
                     @Override
@@ -250,20 +248,20 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getSharedProducts :  start subscription");
-                        sharedProductList.setValue(ResponseProductList.loading());
+                        sharedProductList.setValue(ProductListResponse.loading());
                     }
 
                     @Override
                     public void onNext(List<Product> products) {
                         String msg = String.format("getSharedProducts :  new data received %s", sharedProductList.toString());
                         Log.d(Constants.TAG, msg);
-                        sharedProductList.setValue(ResponseProductList.success(products));
+                        sharedProductList.setValue(ProductListResponse.success(products));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getSharedProducts :  error");
-                        sharedProductList.setValue(ResponseProductList.error(e));
+                        sharedProductList.setValue(ProductListResponse.error(e));
                     }
 
                     @Override
@@ -320,8 +318,8 @@ public class ProductRequestManager {
                         oldShared.add(0, productIns);
 
                         // Wrap this new list in live data
-                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
-                        sharedProductList.setValue(ResponseProductList.success(oldShared));
+                        availableProductList.setValue(ProductListResponse.success(oldAvailable));
+                        sharedProductList.setValue(ProductListResponse.success(oldShared));
 
                     }
 
@@ -398,8 +396,8 @@ public class ProductRequestManager {
                         oldShared.remove(pSh);
 
                         // Wrap this new list in live data
-                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
-                        sharedProductList.setValue(ResponseProductList.success(oldShared));
+                        availableProductList.setValue(ProductListResponse.success(oldAvailable));
+                        sharedProductList.setValue(ProductListResponse.success(oldShared));
                     }
 
                     @Override
@@ -469,8 +467,8 @@ public class ProductRequestManager {
                         oldAvailable.remove(pAv);
 
                         // Wrap these new lists in live data
-                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
-                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
+                        inCartProductList.setValue(ProductListResponse.success(oldInCart));
+                        availableProductList.setValue(ProductListResponse.success(oldAvailable));
                     }
 
                     @Override
@@ -535,7 +533,7 @@ public class ProductRequestManager {
                         }
                         oldInCart.set(index, productDel);
 
-                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
+                        inCartProductList.setValue(ProductListResponse.success(oldInCart));
 
                     }
 
@@ -603,8 +601,8 @@ public class ProductRequestManager {
 
                         oldAvailable.add(0, productAv);
 
-                        availableProductList.setValue(ResponseProductList.success(oldAvailable));
-                        inCartProductList.setValue(ResponseProductList.success(oldInCart));
+                        availableProductList.setValue(ProductListResponse.success(oldAvailable));
+                        inCartProductList.setValue(ProductListResponse.success(oldInCart));
 
                     }
 
