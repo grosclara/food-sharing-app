@@ -205,8 +205,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     updateUserDetails(response.getUser());
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    //TODO to check
-                    profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
                 }
             }
         });
@@ -222,6 +220,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     productViewModel.update();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    profileViewModel.getEditedProfileMutableLiveData().setValue(ApiEmptyResponse.complete());
                 }
             }
         });
