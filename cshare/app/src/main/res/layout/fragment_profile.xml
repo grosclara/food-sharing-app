@@ -1,132 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Controllers.Fragments.ProfileFragment">
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+    tools:context=".Views.Fragments.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textViewProfile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Profile"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="32dp" />
-
-        <ImageView
-            android:id="@+id/imageViewProfilePicture"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewProfile" />
-
-        <TextView
-            android:id="@+id/textViewFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:hint="First Name"
-            app:layout_constraintTop_toBottomOf="@id/imageViewProfilePicture"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <TextView
-            android:id="@+id/textViewLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Last Name"
-            app:layout_constraintTop_toBottomOf="@id/textViewFirstName" />
-
-        <TextView
-            android:id="@+id/textViewEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            app:layout_constraintTop_toBottomOf="@id/textViewLastName" />
-
-        <TextView
-            android:id="@+id/textViewCampus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Campus"
-            app:layout_constraintTop_toBottomOf="@id/textViewEmail" />
-
-        <TextView
-            android:id="@+id/textViewRoomNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Room Number"
-            app:layout_constraintTop_toBottomOf="@id/textViewCampus" />
-
-        <Button
-            android:id="@+id/buttonEditProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit profile"
-            app:layout_constraintTop_toBottomOf="@id/textViewRoomNumber" />
-
-        <TextView
-            android:id="@+id/textViewSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="324dp"
+            android:text="Edit Profile"
+            android:id="@+id/editProfileTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/formLinearLayout"
+            app:layout_constraintTop_toBottomOf="@id/editProfileTextView">
+
+            <ImageView
+                android:id="@+id/imageViewProfilePicture"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center" />
+
+            <Button
+                android:id="@+id/buttonGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Modify your profile picture" />
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/editTextFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="first name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/editTextLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="last name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/editTextRoomNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Room number"
+                android:inputType="text" />
+
+            <Spinner
+                android:id="@+id/spinnerCampus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/editTextRoomNumber" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/formLinearLayout"/>
+
+        <Button
+            android:id="@+id/buttonSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/buttonNotifications"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Notifications"
-            app:layout_constraintTop_toBottomOf="@id/textViewSettings"
-            tools:layout_editor_absoluteX="16dp" />
-
-        <Button
-            android:id="@+id/buttonPrivacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Privacy"
-            app:layout_constraintTop_toBottomOf="@id/buttonNotifications" />
+            app:layout_constraintBottom_toTopOf="@id/buttonChangePassword" />
 
         <Button
             android:id="@+id/buttonChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Change password"
-            app:layout_constraintTop_toBottomOf="@id/buttonPrivacy" />
+            app:layout_constraintBottom_toTopOf="@id/buttonLogOut" />
 
-        <Button
-            android:id="@+id/buttonDeleteAccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Delete account"
-            app:layout_constraintTop_toBottomOf="@id/buttonChangePassword" />
 
         <Button
             android:id="@+id/buttonLogOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log out"
-            app:layout_constraintTop_toBottomOf="@id/buttonDeleteAccount" />
+            app:layout_constraintBottom_toTopOf="@id/buttonDeleteAccount" />
+
+        <Button
+            android:id="@+id/buttonDeleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete account"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

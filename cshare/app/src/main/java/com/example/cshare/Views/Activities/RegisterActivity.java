@@ -1,12 +1,11 @@
-package com.example.cshare.Controllers.Activities;
+package com.example.cshare.Views.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +18,12 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.cshare.Models.User;
+import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.Response.LoginResponse;
 import com.example.cshare.R;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -65,6 +67,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Button buttonGallery;
 
     private String[] campusArray;
+
+    private RegisterForm registerForm;
+
     private String email;
     private String lastName;
     private String firstName;
@@ -73,13 +78,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String campus;
     private String roomNumber;
 
-    // Check whether a picture has been selected
-    private boolean pictureSelected = false;
-
     // Path to the location of the picture taken by the phone
     private Uri pictureFileUri;
     private File fileToUpload;
     private Uri fileToUploadUri;
+    private String fileToUploadPath;
 
     // ViewModel
     AuthViewModel authViewModel;
@@ -87,6 +90,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(Constants.TAG, "onActCreated");
         setContentView(R.layout.activity_register);
 
         // Bind views
@@ -97,11 +102,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextPasswordSignUp = findViewById(R.id.editTextPasswordSignUp);
         editTextRoomNumber = findViewById(R.id.editTextRoomNumber);
         imageViewGallery = findViewById(R.id.imageViewGallery);
-        Picasso.get().load(R.drawable.test).into(imageViewGallery);
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
         buttonGallery = findViewById(R.id.buttonGallery);
         spinnerCampus = findViewById(R.id.spinnerCampus);
+
+        Picasso.get().load(R.drawable.test).into(imageViewGallery);
 
         // Activate buttons
         buttonSignUp.setOnClickListener(this);
@@ -117,6 +123,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //ViewModel
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
+            @Override
+            public void onChanged(LoginResponse loginResponse) {
+                if (loginResponse.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getApplicationContext(), "Account successfully created !", Toast.LENGTH_SHORT).show();
+
+                    // Redirect to the LoginActivity
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
+
+                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    authViewModel.getRegistrationResponseMutableLiveData().setValue(LoginResponse.complete());
+                }
+            }
+        });
     }
 
     private void configureCampusSpinner() {
@@ -149,9 +174,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
         if (v == buttonAlreadyHaveAnAccount) {
+
             Intent toLoginActivityIntent = new Intent();
             toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toLoginActivityIntent);
+
         }
 
         if (v == buttonSignUp) {
@@ -169,54 +196,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 password2 = editTextPasswordConfirm.getText().toString().trim();
                 roomNumber = editTextRoomNumber.getText().toString().trim();
 
-                if (pictureSelected) {
+                registerForm = new RegisterForm(email, password1, password2, lastName, firstName, roomNumber, campus);
 
-                    try {
-                        fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                if (fileToUploadUri != null) {
 
+                    fileToUpload = new File(fileToUploadPath);
                     // Create RequestBody instance from file
                     RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
                     // MultipartBody.Part is used to send also the actual file name
-                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUpload.getAbsolutePath(), requestFile);
+                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
 
-                    User user = new User(profilePictureBody, firstName, lastName, roomNumber, campus, email, password1, password2);
-                    authViewModel.registerWithPicture(user);
-                } else {
-                    User user = new User(email, lastName, firstName, password1, password2, campus, roomNumber);
-                    authViewModel.registerWithoutPicture(user);
+                    registerForm.setProfile_picture(profilePictureBody);
                 }
 
-                Toast.makeText(this, "Account created successfully, please sign in", Toast.LENGTH_SHORT).show();
+                authViewModel.register(registerForm);
 
-                Intent toLoginActivityIntent = new Intent();
-                toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
-                startActivity(toLoginActivityIntent);
             }
         }
 
         if (v == buttonGallery || v == imageViewGallery) {
-            choosePictureFromGallery();
+
+            Camera.choosePictureFromGallery(this, null);
+
         }
-    }
-
-    private void choosePictureFromGallery() {
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
-
-        // Create an Intent with action as ACTION_PICK
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        pickIntent.setType("image/*");
-
-        // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-
-        // Create a chooser in case there are third parties app and launch the Intent
-        startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
     }
 
     /**
@@ -232,8 +234,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
 
+            // modify the raw picture taken in a new file and retrieve its Uri
             try {
-                processPicture(this, pictureFileUri); // modify the raw picture taken
+                fileToUpload = Camera.processPicture(this, pictureFileUri);
+
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewGallery);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -248,23 +257,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(this,
                     "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
                     .show();
-        }
-    }
-
-    private void processPicture(Context context, Uri uri) throws IOException {
-        if (uri != null) {
-
-            pictureSelected = true;
-            // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
-            // Displaying the image or video on the screen
-            Camera.previewMedia(bitmap, imageViewGallery);
-            // Save new picture to fileToUpload
-            fileToUpload = Camera.saveBitmap(context, bitmap);
-
-        } else {
-            Toast.makeText(context,
-                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -298,18 +290,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save file url in bundle as it will be null on screen orientation
-        // changes
-        outState.putParcelable("file_uri", pictureFileUri);
+        // Save file uri in bundle as it will be null on screen orientation changes
+        outState.putParcelable("file_uri", fileToUploadUri);
+        outState.putString("file_path", fileToUploadPath);
+
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.d("tag", "onRestoreInstanceState");
+
         if (savedInstanceState != null) {
-            // get the file url
-            pictureFileUri = savedInstanceState.getParcelable("file_uri");
+            // get the file uri
+            fileToUploadUri = savedInstanceState.getParcelable("file_uri");
+            fileToUploadPath = savedInstanceState.getString("file_path");
+            // Reload the image view picture
+            if (fileToUploadUri != null)
+            { Picasso.get().load(fileToUploadUri).into(imageViewGallery); }
+            else { Picasso.get().load(R.drawable.test).into(imageViewGallery); }
         }
     }
 

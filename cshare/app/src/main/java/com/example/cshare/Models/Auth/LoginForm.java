@@ -1,4 +1,4 @@
-package com.example.cshare.Models;
+package com.example.cshare.Models.Auth;
 
 import android.util.Patterns;
 

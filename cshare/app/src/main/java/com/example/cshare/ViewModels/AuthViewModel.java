@@ -1,235 +1,83 @@
 package com.example.cshare.ViewModels;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import android.util.Log;
+import android.app.Application;
 
-import com.example.cshare.Controllers.Activities.MainActivity;
-import com.example.cshare.Models.LoginForm;
-import com.example.cshare.Models.LoginResponse;
-
+import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.LoginResponse;
+import com.example.cshare.Models.Auth.PasswordForm;
+import com.example.cshare.Models.Auth.RegisterForm;
+import com.example.cshare.Models.Auth.ResetPasswordForm;
+import com.example.cshare.Models.Response.UserReponse;
 import com.example.cshare.Models.User;
-import com.example.cshare.Utils.Constants;
-import com.example.cshare.WebServices.AuthenticationAPI;
-import com.example.cshare.WebServices.NetworkClient;
+import com.example.cshare.RequestManager.AuthRequestManager;
+import com.example.cshare.Models.Auth.LoginForm;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
+public class AuthViewModel extends AndroidViewModel {
 
-public class AuthViewModel extends ViewModel {
+    private AuthRequestManager authRequestManager;
 
-    private MutableLiveData<LoginForm> loginFormMutableLiveData;
-    private MutableLiveData<LoginResponse> responseMutableLiveData;
-    private MutableLiveData<Boolean> loggedOutMutableLiveData;
+    // MutableLiveData object that contains the data
+    private MutableLiveData<Boolean> isLoggedInMutableLiveData;
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
+    private MutableLiveData<ApiEmptyResponse> logoutResponseMutableLiveData;
+    private MutableLiveData<UserReponse> deleteResponseMutableLiveData;
+    private MutableLiveData<ApiEmptyResponse> changePasswordMutableLiveData;
+    private MutableLiveData<ApiEmptyResponse> resetPasswordMutableLiveData;
+    private MutableLiveData<LoginResponse> registrationResponseMutableLiveData;
 
-    private Retrofit retrofit;
-    // Insert API interface dependency here
-    private AuthenticationAPI authAPI;
+    public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
 
-    private String token = MainActivity.token;
-    private String campus = MainActivity.campus;
-    private int userID = MainActivity.userID;
+        // Get request manager instance
+        authRequestManager = AuthRequestManager.getInstance(getApplication());
 
-    public MutableLiveData<LoginResponse> getResponseMutableLiveData() {return responseMutableLiveData;}
-
-    public MutableLiveData<Boolean> getLoggedOutMutableLiveData() {return loggedOutMutableLiveData;}
-
-    public AuthViewModel() {
-        // Define the URL endpoint for the HTTP request.
-        retrofit = NetworkClient.getRetrofitClient();
-        authAPI = retrofit.create(AuthenticationAPI.class);
+        isLoggedInMutableLiveData = authRequestManager.getIsLoggedInMutableLiveData();
+        loginResponseMutableLiveData = authRequestManager.getLoginResponseMutableLiveData();
+        logoutResponseMutableLiveData = authRequestManager.getLogoutResponseMutableLiveData();
+        deleteResponseMutableLiveData = authRequestManager.getDeleteResponseMutableLiveData();
+        changePasswordMutableLiveData = authRequestManager.getChangePasswordMutableLiveData();
+        resetPasswordMutableLiveData = authRequestManager.getResetPasswordMutableLiveData();
+        registrationResponseMutableLiveData = authRequestManager.getRegistrationResponseMutableLiveData();
     }
 
-    public void registerWithoutPicture(User user){
-        /**
-         * Request to the API to register
-         */
-        Observable<User> userObservable;
-        userObservable = authAPI.createUserWithoutPicture(user);
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Registration : on start subscription");
-                    }
+    // Getter method
 
-                    @Override
-                    public void onNext(User userInfo) {
-                        Log.d(Constants.TAG, "Registered successfully");
-                    }
+    public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
+    public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
+    public MutableLiveData<UserReponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
+    public MutableLiveData<ApiEmptyResponse> getResetPasswordMutableLiveData() { return resetPasswordMutableLiveData; }
+    public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "Registration : error");
-                    }
 
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Registration : Completed");
-                    }
-                });
-
-        }
-        
-    public void logOut(){
-        /**
-         * Request to the API to logout
-         */
-        loggedOutMutableLiveData = new MutableLiveData<>();
-        
-        Observable<ResponseBody> key = authAPI.logout(token);
-        key
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Log Out : on start subscription");
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody empty) {
-                        loggedOutMutableLiveData.setValue(true);
-                        Log.d(Constants.TAG, "Logged out successfully");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        loggedOutMutableLiveData.setValue(false);
-                        Log.d(Constants.TAG, "Log Out : error");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Log out : Completed");
-                    }
-                });
-
+    public void logIn(LoginForm loginForm){
+        authRequestManager.logIn(loginForm);
     }
 
-    public void submitValidForm(LoginForm loginForm) {
-        responseMutableLiveData = new MutableLiveData<>();
-        loggedOutMutableLiveData = new MutableLiveData<>();
-        loginFormMutableLiveData = new MutableLiveData<>();
-        loginFormMutableLiveData.setValue(loginForm);
+    public void logOut() {
+        authRequestManager.logOut();
+    }
 
-        Observable<LoginResponse> loginResponseObservable;
-        loginResponseObservable = authAPI.login(
-            loginFormMutableLiveData.getValue());
-        loginResponseObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<LoginResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Log In : on start subscription");
-                    }
+    public void deleteAccount() {authRequestManager.deleteAccount();}
 
+    public void register(RegisterForm registerForm){
+        if (registerForm.getProfile_picture() != null){
+            authRequestManager.registerWithPicture(registerForm);
+        } else { authRequestManager.registerWithoutPicture(registerForm); }
+    }
 
-                    @Override
-                    public void onNext(LoginResponse loginResponse) {
-                        String token = loginResponse.getKey();
-                        LoginResponse.UserResponse user = loginResponse.getUserResponse();
-                        LoginResponse response = new LoginResponse(token,"success",user);
-                        responseMutableLiveData.setValue(response);
-                        loggedOutMutableLiveData.setValue(false);
-                        Log.d(Constants.TAG, "Log In : live Data filled");
-                    }
+    public void changePassword(PasswordForm passwordForm){
+        authRequestManager.changePassword(passwordForm);
+    }
 
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
-                        LoginResponse profileResponse = new LoginResponse("Log In : failed");
-                        responseMutableLiveData.setValue(profileResponse);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Log In : All data received");
-                    }
-                });
-
-}
-
-    public void registerWithPicture(User user) {
-        /**
-         * Request to the API to create an account with a profile picture
-         * @param User
-         */
-
-        Observable<User> userObservable;
-        userObservable = authAPI.createUserWithPicture(
-                user.getProfilePictureBody(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getRoomNumber(),
-                user.getCampus(),
-                user.getEmail(),
-                user.getPassword1(),
-                user.getPassword2());
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Register : on start subscription");
-                    }
-                    @Override
-                    public void onNext(User newUser) {
-                        Log.d(Constants.TAG, "Account created successfully");
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "Register : error");
-                    }
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Register : Completed");
-                    }
-                });
+    public void resetPassword(ResetPasswordForm resetPasswordForm){
+        authRequestManager.resetPassword(resetPasswordForm);
     }
 }

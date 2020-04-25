@@ -19,7 +19,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 
-class ProductViewSet(viewsets.ModelViewSet):
+class DestroyWithPayloadMixin(object):
+     def destroy(self, *args, **kwargs):
+         serializer = self.get_serializer(self.get_object())
+         super().destroy(*args, **kwargs)
+         return Response(serializer.data, status=HTTP_200_OK)
+
+class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
@@ -33,10 +39,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering = ('-updated_at')
 
     serializer_class = ProductSerializer
-
-    # Defines the function to call for a PATCH request
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
     def get_queryset(self):
         """
@@ -63,7 +65,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
 
     lookup_field = 'product'
     
@@ -88,7 +90,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(client=client)
         return queryset
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
 

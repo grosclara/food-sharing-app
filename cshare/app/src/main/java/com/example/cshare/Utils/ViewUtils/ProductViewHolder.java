@@ -1,4 +1,4 @@
-package com.example.cshare.Views;
+package com.example.cshare.Utils.ViewUtils;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -12,9 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.squareup.picasso.Picasso;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 // The purpose here is to model the previously created XML view (representing a line
 // in the RecyclerView) into a JAVA object.

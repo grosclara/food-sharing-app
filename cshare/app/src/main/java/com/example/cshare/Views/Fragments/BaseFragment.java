@@ -1,4 +1,4 @@
-package com.example.cshare.Controllers.Fragments;
+package com.example.cshare.Views.Fragments;
 
 
 import android.os.Bundle;
@@ -10,8 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.cshare.Controllers.Activities.LauncherActivity;
-import com.example.cshare.R;
+import com.example.cshare.Views.Activities.LauncherActivity;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -19,7 +18,7 @@ public abstract class BaseFragment extends Fragment {
     // we have redefined the most repeated methods
 
     // Force the developer to implement them in future children's classes.
-    protected abstract com.example.cshare.Controllers.Fragments.BaseFragment newInstance();
+    protected abstract com.example.cshare.Views.Fragments.BaseFragment newInstance();
 
     protected abstract int getFragmentLayout();
 
@@ -28,10 +27,6 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void updateDesign();
 
     protected abstract void configureViewModel();
-
-    // User credits
-    private String token;
-    private int userId;
 
     // -----------------
     // METHODS OVERRIDE
@@ -45,10 +40,6 @@ public abstract class BaseFragment extends Fragment {
         // Configure Design (Developer will call this method instead of override onCreateView())
         // allow our child fragments not to have to redefine the onCreateView( ) method,
         // but instead to call configureDesign()
-
-        // Retrieve user credits from SP
-        token = "Token "+ LauncherActivity.userCredits.getString("token", null).trim();
-        userId = LauncherActivity.userCredits.getInt("id", -1);
 
         this.configureDesign(view);
         this.configureViewModel();

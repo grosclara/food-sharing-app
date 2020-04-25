@@ -26,6 +26,7 @@ public class Constants {
     public static final String STATUS = "Available";
     
     public static final String SUCCESS = "success";
+    public static final String ERROR = "error";
 
     // Different product statuses
     public static final String AVAILABLE = "Available";

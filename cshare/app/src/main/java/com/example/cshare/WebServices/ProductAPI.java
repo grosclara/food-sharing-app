@@ -2,14 +2,14 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.Models.ProductForm;
+import com.example.cshare.Models.Response.ApiEmptyResponse;
+import com.example.cshare.Models.Response.ProductResponse;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
@@ -46,7 +46,7 @@ public interface  ProductAPI {
 
     @Multipart
     @POST("product/")
-    Observable<ProductForm> addProduct(
+    Observable<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String productName,
@@ -57,7 +57,7 @@ public interface  ProductAPI {
     );
 
     @DELETE("product/{id}/")
-    Observable<Response<Product>> deleteProductById(
+    Observable<Product> deleteProductById(
             @Header("Authorization") String token,
             @Path("id") int productID
     );
