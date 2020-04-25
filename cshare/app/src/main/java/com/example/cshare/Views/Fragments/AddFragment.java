@@ -28,10 +28,10 @@ import android.widget.Toast;
 import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.Forms.ProductForm;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.ProfileViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -77,9 +77,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private String productCategory;
     private String expiration_date;
     private String quantity;
+    private int supplierID;
 
-    // Check whether a picture has been selected
-    private boolean pictureSelected = false;
 
     // Path to the location of the picture taken by the phone
     private Uri pictureFileUri;
@@ -89,6 +88,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
     // ViewModels
     ProductViewModel productViewModel;
+    ProfileViewModel profileViewModel;
 
     @Override
     protected BaseFragment newInstance() {
@@ -130,13 +130,13 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
-    protected void updateDesign() {
-    }
+    protected void updateDesign() {}
 
     @Override
     protected void configureViewModel() {
         // Retrieve data from view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         productViewModel.getAddProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
             @Override
@@ -168,6 +168,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             }
         });
+
+        supplierID = profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId();
     }
 
     private void configureValidator() {
@@ -253,16 +255,15 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 // Create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part product_picture = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
-
-                // HTTP Post request
-                ProductForm productToPost = new ProductForm(product_picture, productName, productCategory, quantity, expiration_date);
+                MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
                 // Format the product to update view models
                 String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
-                Product product = new Product(productName, Constants.AVAILABLE, imageFileName, productCategory, quantity, expiration_date);
 
-                productViewModel.addProduct(productToPost, product);
+                // HTTP Post request
+                Product product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplierID, imageFileName);
+
+                productViewModel.addProduct(product);
 
             } else if ( fileToUploadUri == null) {
                 Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();

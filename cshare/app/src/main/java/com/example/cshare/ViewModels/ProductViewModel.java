@@ -9,7 +9,6 @@ import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.Forms.ProductForm;
 import com.example.cshare.RequestManager.ProductRequestManager;
 
 import java.io.IOException;
@@ -67,8 +66,8 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     // Add a product
-    public void addProduct(ProductForm productToPost, Product product) {
-        productRequestManager.addProduct(productToPost, product);
+    public void addProduct(Product product) {
+        productRequestManager.addProduct(product);
     }
 
     public void order(Order request, Map status){

@@ -1,8 +1,14 @@
 package com.example.cshare.Models;
 
+import androidx.annotation.Nullable;
+
+import okhttp3.MultipartBody;
+
 public class Product {
 
     private int id;
+    @Nullable
+    private MultipartBody.Part product_picture_body;
     private String name;
     private String status;
     private int supplier;
@@ -21,6 +27,16 @@ public class Product {
         this.category = category;
         this.quantity = quantity;
         this.expiration_date = expiration_date;
+    }
+
+    public Product(MultipartBody.Part productPictureBody, String productName, String productCategory, String quantity, String expirationDate, int supplierID, String productPicture) {
+        this.product_picture_body = productPictureBody;
+        this.name = productName;
+        this.category = productCategory;
+        this.quantity = quantity;
+        this.expiration_date = expirationDate;
+        this.product_picture = productPicture;
+        this.supplier = supplierID;
     }
 
     public Product(String status){
@@ -107,4 +123,12 @@ public class Product {
         this.status = status;
     }
 
+    @Nullable
+    public MultipartBody.Part getProduct_picture_body() {
+        return product_picture_body;
+    }
+
+    public void setProduct_picture_body(@Nullable MultipartBody.Part product_picture_body) {
+        this.product_picture_body = product_picture_body;
+    }
 }

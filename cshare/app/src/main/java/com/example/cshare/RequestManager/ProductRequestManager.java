@@ -10,7 +10,6 @@ import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
-import com.example.cshare.Models.Forms.ProductForm;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.OrderAPI;
@@ -271,25 +270,22 @@ public class ProductRequestManager {
                 });
     }
 
-    public void addProduct(ProductForm productToPost, Product productIns) {
+    public void addProduct(Product product) {
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
          */
-        productToPost.setToken(prefs.getToken());
-        productToPost.setSupplierID(prefs.getUserID());
-        productIns.setSupplier(prefs.getUserID());
 
-        Observable<Product> product;
-        product = productAPI.addProduct(
-                productToPost.getToken(),
-                productToPost.getProductPicture(),
-                productToPost.getProductName(),
-                productToPost.getProductCategory(),
-                productToPost.getQuantity(),
-                productToPost.getExpirationDate(),
-                productToPost.getSupplierID());
-        product
+        Observable<Product> productObservable;
+        productObservable = productAPI.addProduct(
+                prefs.getToken(),
+                product.getProduct_picture_body(),
+                product.getName(),
+                product.getCategory(),
+                product.getQuantity(),
+                product.getExpiration_date(),
+                product.getSupplier());
+        productObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -314,8 +310,8 @@ public class ProductRequestManager {
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue().getProductList();
                         List oldShared = getSharedProductList().getValue().getProductList();
-                        oldAvailable.add(0, productIns);
-                        oldShared.add(0, productIns);
+                        oldAvailable.add(0, product);
+                        oldShared.add(0, product);
 
                         // Wrap this new list in live data
                         availableProductList.setValue(ProductListResponse.success(oldAvailable));
