@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -220,6 +221,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             } else if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
+                Log.d(Constants.TAG, message);
                 Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
             }
         }
