@@ -9,7 +9,6 @@ import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.AuthRequestManager;
 import com.example.cshare.Models.Forms.LoginForm;
@@ -76,7 +75,7 @@ public class AuthViewModel extends AndroidViewModel {
         authRequestManager.changePassword(passwordForm);
     }
 
-    public void resetPassword(ResetPasswordForm resetPasswordForm){
-        authRequestManager.resetPassword(resetPasswordForm);
+    public void resetPassword(String email){
+        authRequestManager.resetPassword(email);
     }
 }

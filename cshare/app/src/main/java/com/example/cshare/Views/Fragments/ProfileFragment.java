@@ -2,6 +2,7 @@ package com.example.cshare.Views.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,10 +33,15 @@ import com.example.cshare.Models.User;
 import com.example.cshare.R;
 import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -44,17 +50,24 @@ import okhttp3.RequestBody;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener {
+public class ProfileFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
 
     // ViewModel
     private ProfileViewModel profileViewModel;
     private AuthViewModel authViewModel;
     private ProductViewModel productViewModel;
 
+    // Form validation
+    protected Validator validator;
+    private boolean validated;
+
     //Views
+    @NotEmpty
     private EditText editTextFirstName;
+    @NotEmpty
     private EditText editTextLastName;
     private Spinner spinnerCampus;
+    @NotEmpty
     private EditText editTextRoomNumber;
     private ImageView imageViewProfilePicture;
     private TextView textViewEmail;
@@ -73,8 +86,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private File fileToUpload;
     private Uri fileToUploadUri;
     private String fileToUploadPath;
-
-    private Boolean validated = true;
 
     private EditText editTextOldPassword;
     private EditText editTextNewPassword;
@@ -125,10 +136,18 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
         configureCampusSpinner();
 
+        configureValidator();
+
     }
 
     @Override
     protected void updateDesign() {
+    }
+
+    private void configureValidator() {
+        // Instantiate a new Validator
+        validator = new Validator((this));
+        validator.setValidationListener(this);
     }
 
     @Override
@@ -332,10 +351,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
 
         if (v == buttonSave) {
-            //TODO Validate form
 
             // Validate the field
-            //validator.validate();
+            validator.validate();
 
             if (validated) {
 
@@ -425,5 +443,29 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
             }
         });
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        //Called when all your views pass all validations.
+        validated = true;
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        //Called when there are validation error(s).
+        validated = false;
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(getContext());
+
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Log.d(Constants.TAG, message);
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 }

@@ -22,12 +22,4 @@ public class LoginForm {
     public String getPassword() {
         return password;
     }
-
-    public boolean isEmailValid() {
-        return Patterns.EMAIL_ADDRESS.matcher(getEmailAddress()).matches();
-    }
-
-    public boolean isPasswordLengthGreaterThan5() {
-        return getPassword().length() > 5;
-    }
 }

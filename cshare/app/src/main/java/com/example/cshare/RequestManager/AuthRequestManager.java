@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.UserReponse;
@@ -20,6 +19,8 @@ import com.example.cshare.WebServices.NetworkClient;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -136,7 +137,6 @@ public class AuthRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Log In : All data received");
-                        //loginResponseMutableLiveData.setValue(LoginResponse.complete());
                         loginResponseMutableLiveData.setValue(LoginResponse.complete());
                     }
                 });
@@ -334,12 +334,16 @@ public class AuthRequestManager {
                 });
     }
 
-    public void resetPassword(ResetPasswordForm passwordForm) {
+    public void resetPassword(String email) {
         /**
          * Request to the API to change password
          */
+
+        Map<String, String> emailFieldMap = new HashMap<>();
+        emailFieldMap.put("email", email);
+
         Observable<ApiEmptyResponse> observable;
-        observable = authApi.resetPassword(passwordForm);
+        observable = authApi.resetPassword(emailFieldMap);
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
-import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.AuthViewModel;
@@ -33,8 +33,7 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Form validation
-    protected Validator loginValidator;
-    protected Validator resetPasswordValidator;
+    private Validator loginValidator;
 
     private AuthViewModel authViewModel;
     private ProductViewModel productViewModel;
@@ -45,13 +44,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText emailAddressEditText;
     @Password
     private EditText passwordEditText;
+    private EditText resetPasswordEditText;
 
     private Button buttonLogin;
     private Button buttonCreateAccount;
     private Button buttonResetPassword;
-
-    @Email
-    private EditText editTextResetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonResetPassword.setOnClickListener(this);
 
         configureValidator();
-
         configureViewModel();
 
     }
@@ -121,42 +117,41 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void configureValidator() {
-        // Instantiate a new Validator
+
         loginValidator = new Validator(this);
-        resetPasswordValidator = new Validator(this);
+
+        // Instantiate a new Validator
+        loginValidator.setValidationListener(new Validator.ValidationListener() {
+            @Override
+            public void onValidationSucceeded() {
+                // Retrieve information from the UI
+                LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
+                        passwordEditText.getText().toString().trim());
+
+                authViewModel.logIn(loginUser);
+            }
+
+            @Override
+            public void onValidationFailed(List<ValidationError> errors) {
+                for (ValidationError error : errors) {
+                    View view = error.getView();
+                    String message = error.getCollatedErrorMessage(getApplicationContext());
+
+                    // Display error messages
+                    if (view instanceof EditText) {
+                        ((EditText) view).setError(message);
+                    } else {
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         if (v == buttonLogin) {
-
-            // Validate form and send Login request
-            loginValidator.setValidationListener(new Validator.ValidationListener() {
-                @Override
-                public void onValidationSucceeded() {
-                    // Retrieve information from the UI
-                    LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
-                            passwordEditText.getText().toString().trim());
-
-                    authViewModel.logIn(loginUser);
-                }
-
-                @Override
-                public void onValidationFailed(List<ValidationError> errors) {
-                    for (ValidationError error : errors) {
-                        View view = error.getView();
-                        String message = error.getCollatedErrorMessage(getApplicationContext());
-
-                        // Display error messages
-                        if (view instanceof EditText) {
-                            ((EditText) view).setError(message);
-                        } else {
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-            });
-
+            loginValidator.validate();
 
         } else if (v == buttonCreateAccount) {
 
@@ -166,7 +161,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             startActivity(toRegisterActivityIntent);
 
         } else if (v == buttonResetPassword) {
-
             // Alert Dialog to change password
             // Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -175,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             View resetPasswordLayout = LayoutInflater.from(this).inflate(R.layout.reset_password, null);
 
             // Load the edit texts
-            editTextResetPassword = resetPasswordLayout.findViewById(R.id.emailAddressEditText);
+            resetPasswordEditText = resetPasswordLayout.findViewById(R.id.emailAddressEditText);
 
             builder.setView(resetPasswordLayout);
 
@@ -186,35 +180,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK button -> reset password
-
-                            resetPasswordValidator.setValidationListener(new Validator.ValidationListener() {
-                                @Override
-                                public void onValidationSucceeded() {
-                                    ResetPasswordForm passwordForm = new ResetPasswordForm(editTextResetPassword.getText().toString().trim());
-                                    authViewModel.resetPassword(passwordForm);
-                                }
-
-                                @Override
-                                public void onValidationFailed(List<ValidationError> errors) {
-                                    for (ValidationError error : errors) {
-                                        View view = error.getView();
-                                        String message = error.getCollatedErrorMessage(getApplicationContext());
-                                        // Display error messages
-                                        if (view instanceof EditText) {
-                                            ((EditText) view).setError(message);
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                }
-                            });
+                            String email = resetPasswordEditText.getText().toString().trim().toLowerCase();
+                            if (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                                authViewModel.resetPassword(email);
+                            }else {
+                                String message = "Invalid email";
+                                // Display error messages
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            }
                         }
                     }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {/* User cancelled the dialog*/}
-                    });
-            // Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.show();
+                public void onClick(DialogInterface dialog, int id) {/* User cancelled the dialog*/}
+            });
+
+            // Create the AlertDialog object and return it
+            builder.create().show();
         }
 
     }

@@ -5,14 +5,17 @@ import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.Forms.ResetPasswordForm;
 import com.example.cshare.Models.User;
+
+import java.util.Map;
 
 import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -59,9 +62,10 @@ public interface AuthenticationAPI {
             @Body PasswordForm passwordForm
     );
 
+    @FormUrlEncoded
     @POST("rest-auth/password/reset/")
     Observable<ApiEmptyResponse> resetPassword(
-            @Body ResetPasswordForm resetPasswordForm
+            @FieldMap Map<String, String> status
     );
 
     @DELETE("user/{id}/")
