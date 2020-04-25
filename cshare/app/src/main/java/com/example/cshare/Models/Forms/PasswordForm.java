@@ -12,7 +12,15 @@ public class PasswordForm {
         this.new_password2 = confirmNewPassword;
     }
 
-    public Boolean isValid(){
-        return Boolean.TRUE;
+    public String getOld_password() {
+        return old_password;
+    }
+
+    public String getNew_password1() {
+        return new_password1;
+    }
+
+    public String getNew_password2() {
+        return new_password2;
     }
 }
