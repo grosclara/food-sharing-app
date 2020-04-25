@@ -109,6 +109,8 @@ Implementation of the dialogs to interact with products, 2h00"
 	      Handle Network request errors for the auth requests, 4h00"
 "22/04 - CG : Handle Network request errors for the product-related requests, 2h00"
 "22/04 - BT : Edit profile functionality implemented, 2h00"
+"24/04 - CG : Edit profile HTTP requests handled and refactoring of Babacar's work, 1h00"
+"25/04 - CG : Implementation of validators using saripaar lib, 2h30"
 
 
 
