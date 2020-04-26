@@ -188,3 +188,10 @@ AUTH_PASSWORD_VALIDATORS = [
 SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#email info
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'centralesupelecshare@gmail.com'
+EMAIL_HOST_PASSWORD = 'P@ssword01'
+EMAIL_PORT = 587
