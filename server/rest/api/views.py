@@ -53,7 +53,7 @@ class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
         id = self.request.query_params.get('id',None)
 
         if campus is not None :
-            queryset = Product.objects.filter(supplier__campus=campus)
+            queryset = Product.objects.filter(_campus=campus)
         if supplier is not None:
             queryset = queryset.filter(supplier=supplier)
         if status is not None:
