@@ -112,7 +112,12 @@ Implementation of the dialogs to interact with products, 2h00"
 "24/04 - CG : Edit profile HTTP requests handled and refactoring of Babacar's work, 1h00"
 "25/04 - CG : Implementation of validators using saripaar lib, 2h30"
 "26/04 - BT : Communication between user : sending of an email to the supplier when a customer ordered a product, 1h00"
-"27/04 - CG : Creation of a Add activity, 2h00"
+"27/04 - CG : Alter product model in backend and frontend to add a new campus and room_number location attributes, 45mn
+	      Creation of an Add activity, 1h30
+	      Addition of a pictureDialog to select an image either from camera or gallery in edit profile, add product and register, 1h00
+	      Back buttons, 30mn
+	      Product dialog listener to remove VM logic from product dialogs, 1h00
+	      Attempt to refresh UI every new minute, 30mn"
 
 
 
