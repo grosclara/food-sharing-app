@@ -4,25 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.Views.Fragments.AddFragment;
 import com.example.cshare.Views.Fragments.BaseFragment;
 import com.example.cshare.Views.Fragments.CartFragment;
 import com.example.cshare.Views.Fragments.HomeFragment;
-import com.example.cshare.Views.Fragments.ProductListFragment;
 import com.example.cshare.Views.Fragments.ProfileFragment;
 import com.example.cshare.Views.Fragments.SharedFragment;
 import com.example.cshare.R;
@@ -146,9 +138,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.nav_shared:
                 selectedFragment = new SharedFragment();
                 break;
-            /*case R.id.nav_add:
-                selectedFragment = new AddFragment();
-                break;*/
         }
         // Generic method that will replace and show a fragment inside the HomeActivity Frame Layout
 
