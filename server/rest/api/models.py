@@ -96,6 +96,10 @@ class Product(models.Model): # Product table
     product_picture = models.ImageField(upload_to="media/product/", default='media/product/apple.jpg')
     quantity = models.CharField(max_length=50)
     expiration_date = models.DateField()
+    room_number = models.CharField(max_length = 50)
+    campus = models.CharField(
+        max_length=10,
+        choices=CAMPUS_CHOICES) 
     objects = models.Manager()
 
 class Order(models.Model): # Order table
