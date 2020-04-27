@@ -1,10 +1,13 @@
 package com.example.cshare.Views.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -217,11 +220,38 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if (v == buttonGallery || v == imageViewGallery) {
-
-            Camera.choosePictureFromGallery(this, null);
-
+            showPictureDialog(this);
         }
     }
+
+    private void showPictureDialog(Activity activity) {
+
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                Camera.choosePictureFromGallery(activity, null);
+                                break;
+                            case 1:
+                                try {
+                                    pictureFileUri = Camera.captureImage(activity);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
 
     /**
      * Receiving activity result method will be called after closing the gallery
@@ -248,6 +278,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+            // successfully captured the image
+
+            try {
+                Log.d(Constants.TAG, pictureFileUri.toString());
+                fileToUpload = Camera.processPicture(this, pictureFileUri); // modify the raw picture taken
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewGallery);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
@@ -307,9 +352,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             fileToUploadUri = savedInstanceState.getParcelable("file_uri");
             fileToUploadPath = savedInstanceState.getString("file_path");
             // Reload the image view picture
-            if (fileToUploadUri != null)
-            { Picasso.get().load(fileToUploadUri).into(imageViewGallery); }
-            else { Picasso.get().load(R.drawable.test).into(imageViewGallery); }
+            if (fileToUploadUri != null) {
+                Picasso.get().load(fileToUploadUri).into(imageViewGallery);
+            } else {
+                Picasso.get().load(R.drawable.test).into(imageViewGallery);
+            }
         }
     }
 

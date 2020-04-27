@@ -1,6 +1,7 @@
 package com.example.cshare.Utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +33,7 @@ public class Camera {
 
     // Camera activity request codes
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
+    public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 200;
 
     public static Uri captureImage(Activity activity) throws IOException {
         // Launching camera app to capture image
@@ -54,6 +55,7 @@ public class Camera {
     }
 
     public static void choosePictureFromGallery(Activity activity, Fragment fragment) {
+
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
 
@@ -69,6 +71,7 @@ public class Camera {
 
         // Create a chooser in case there are third parties app and launch the Intent
         if (activity != null){
+            Log.d(Constants.TAG, "choosePictureFromGallery");
             activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
         } else if (fragment != null) {
             fragment.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);

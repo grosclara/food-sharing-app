@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -208,17 +209,40 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private void showPictureDialog(Activity activity) {
+
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                Camera.choosePictureFromGallery(activity, null);
+                                break;
+                            case 1:
+                                try {
+                                    pictureFileUri = Camera.captureImage(activity);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
     @Override
     public void onClick(View v) {
 
         if (v == buttonPhoto || v == imageViewPreviewProduct) {
 
-            // Capture picture
-            try {
-                pictureFileUri = Camera.captureImage(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            showPictureDialog(this);
 
         } else if (v == buttonSubmit) {
 
@@ -310,17 +334,35 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     * Receiving activity result method will be called after closing the camera
+     * Receiving activity result method will be called after closing the gallery
      */
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Handle the case where the user cancelled the camera intent without taking a picture like,
-        // though we have the imagePath, but it’s not a valid image because the user has not taken the picture.
-        if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+
+        // Result code is RESULT_OK only if the user selects an Image
+        if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            // data.getData returns the content URI for the selected Image
+            pictureFileUri = data.getData();
+
+            // modify the raw picture taken in a new file and retrieve its Uri
+            try {
+                fileToUpload = Camera.processPicture(this, pictureFileUri);
+
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
 
             try {
+                Log.d(Constants.TAG, pictureFileUri.toString());
                 fileToUpload = Camera.processPicture(this, pictureFileUri); // modify the raw picture taken
                 fileToUploadPath = fileToUpload.getAbsolutePath();
                 fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
@@ -331,6 +373,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 e.printStackTrace();
             }
 
+
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
             Toast.makeText(this,
@@ -339,7 +382,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         } else {
             // failed to capture image
             Toast.makeText(this,
-                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                    "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
                     .show();
         }
     }
