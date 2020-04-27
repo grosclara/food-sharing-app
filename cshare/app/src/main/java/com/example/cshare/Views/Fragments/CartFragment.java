@@ -42,7 +42,7 @@ public class CartFragment extends ProductListFragment {
             } else {
                 tag = Constants.ARCHIVED;
             }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), tag);
         }
     }

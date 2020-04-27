@@ -144,15 +144,13 @@ public class HomeFragment extends ProductListFragment {
 
         if (isClickable) {
 
-            profileViewModel.getUserByID(product.getSupplier());
-
             if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
                 tag = Constants.SHARED;
             } else {
                 tag = Constants.ORDER;
             }
 
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), tag);
 
         }

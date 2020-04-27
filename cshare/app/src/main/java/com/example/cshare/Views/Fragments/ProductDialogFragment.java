@@ -62,23 +62,45 @@ public class ProductDialogFragment extends DialogFragment {
         void onCancelOrderClicked(Product product);
     }
 
-    public ProductDialogFragment(Product product, String tag) {
+    public ProductDialogFragment(Product product, String tag, ProfileViewModel profileViewModel) {
         this.product = product;
         this.tag = tag;
-
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        profileViewModel.getUserByID(product.getSupplier());
-
-        customer = profileViewModel.getUserProfileMutableLiveData().getValue().getUser();
+        this.profileViewModel = profileViewModel;
 
         profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                if (response.getStatus().equals(Status.SUCCESS)) {
+                if(response.getStatus().equals(Status.SUCCESS)){
+                    Toast.makeText(getContext(), "Supplier info retrieved", Toast.LENGTH_SHORT).show();
                     fillInSupplierDetails(response.getUser());
+                }
+                else if (response.getStatus().equals(Status.LOADING)){
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+                else if (response.getStatus().equals(Status.ERROR)){
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
                 }
             }
         });
+
+        profileViewModel.getUserProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+            @Override
+            public void onChanged(UserReponse response) {
+                if(response.getStatus().equals(Status.SUCCESS)){
+                    Toast.makeText(getContext(), "User info retrieved", Toast.LENGTH_SHORT).show();
+                    customer = response.getUser();
+                }
+                else if (response.getStatus().equals(Status.LOADING)){
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+                else if (response.getStatus().equals(Status.ERROR)){
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+                }
+            }
+        });
+
 
     }
 
@@ -108,6 +130,8 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Fill in product related views
         fillInProductDetails();
+        // Retrieve all information from the supplier and fill in the views
+        profileViewModel.getUserByID(product.getSupplier());
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {

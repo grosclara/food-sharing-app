@@ -35,7 +35,7 @@ public class SharedFragment extends ProductListFragment {
     protected void click(Product product) {
         if (isClickable) {
 
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), tag);
         }
     }
