@@ -113,8 +113,7 @@ Implementation of the dialogs to interact with products, 2h00"
 "25/04 - CG : Implementation of validators using saripaar lib, 2h30"
 "26/04 - BT : Communication between user : sending of an email to the supplier when a customer ordered a product, 1h00"
 "27/04 - CG : Creation of a Add activity, 2h00"
-
-
+"27/04 - BT : Send an email to the client too after an order, 1h00"
 
 
 
