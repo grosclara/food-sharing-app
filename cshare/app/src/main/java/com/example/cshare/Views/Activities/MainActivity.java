@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
             selectedFragment = new HomeFragment();
+            Log.d(Constants.TAG, "TEEEES");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     selectedFragment).commit();
         }

@@ -91,6 +91,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        getSupportActionBar().setTitle("Share your product");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         configureDesign();
 
         configureViewModel();

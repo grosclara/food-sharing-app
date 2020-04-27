@@ -17,21 +17,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Views.Activities.AddActivity"></activity>
-        <activity android:name=".Views.Activities.RegisterActivity" />
+
         <activity android:name=".Views.Activities.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Views.Activities.LoginActivity"
-            android:label="LoginActivity" />
-        <activity
-            android:name=".Views.Activities.MainActivity"
-            android:label="MainActivity" />
+
+        <activity android:name=".Views.Activities.LoginActivity"/>
+
+        <activity android:name=".Views.Activities.RegisterActivity"
+            android:parentActivityName=".Views.Activities.LoginActivity"/>
+
+        <activity android:name=".Views.Activities.MainActivity"/>
+
+        <activity android:name=".Views.Activities.AddActivity"
+            android:parentActivityName=".Views.Activities.MainActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
