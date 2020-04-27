@@ -37,16 +37,12 @@ public class CartFragment extends ProductListFragment {
     protected void click(Product product) {
         if (isClickable) {
 
-            profileViewModel.getUserByID(product.getSupplier());
-
-            User supplier = profileViewModel.getOtherProfileMutableLiveData().getValue().getUser();
-
             if (product.getStatus().equals(Constants.COLLECTED)) {
                 tag = Constants.INCART;
             } else {
                 tag = Constants.ARCHIVED;
             }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, supplier, tag);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
             productDetailsFragment.show(getChildFragmentManager(), tag);
         }
     }

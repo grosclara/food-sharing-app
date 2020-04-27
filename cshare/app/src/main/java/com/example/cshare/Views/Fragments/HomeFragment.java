@@ -93,7 +93,7 @@ public class HomeFragment extends ProductListFragment {
             }
         });
 
-        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+        /*profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
@@ -113,7 +113,7 @@ public class HomeFragment extends ProductListFragment {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
     }
 
@@ -145,6 +145,15 @@ public class HomeFragment extends ProductListFragment {
         if (isClickable) {
 
             profileViewModel.getUserByID(product.getSupplier());
+
+            if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
+                tag = Constants.SHARED;
+            } else {
+                tag = Constants.ORDER;
+            }
+
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
+            productDetailsFragment.show(getChildFragmentManager(), tag);
 
         }
     }

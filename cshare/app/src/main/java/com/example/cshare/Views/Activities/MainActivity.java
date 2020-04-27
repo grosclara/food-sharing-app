@@ -199,12 +199,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     @Override
-    public void onOrderClicked(Product product, User supplier) {
+    public void onOrderClicked(Product product, User customer) {
         Log.d(Constants.TAG, "order listener");
         // Order the product
         if (product.getStatus().equals("Available")) {
             // Create the order object
-            Order request = new Order(supplier.getId(), product.getId());
+            Order request = new Order(customer.getId(), product.getId());
             // Change the status attribute of the product object to not available
             Map<String, String> status = new HashMap<>();
             status.put("status", Constants.COLLECTED);

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Models.User;
@@ -38,7 +39,9 @@ public class ProductDialogFragment extends DialogFragment {
 
     private Product product;
     private String tag;
-    private User supplier;
+    private User customer;
+
+    private ProfileViewModel profileViewModel;
 
     // Bind views
     private TextView textViewProductName;
@@ -53,16 +56,30 @@ public class ProductDialogFragment extends DialogFragment {
     private ImageView imageViewSupplierProfilePicture;
 
     public interface ProductDialogListener {
-        void onOrderClicked(Product product, User supplier);
+        void onOrderClicked(Product product, User customer);
         void onDeleteClicked(Product product);
         void onDeliverClicked(Product product);
         void onCancelOrderClicked(Product product);
     }
 
-    public ProductDialogFragment(Product product, User supplier, String tag) {
+    public ProductDialogFragment(Product product, String tag) {
         this.product = product;
-        this.supplier = supplier;
         this.tag = tag;
+
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel.getUserByID(product.getSupplier());
+
+        customer = profileViewModel.getUserProfileMutableLiveData().getValue().getUser();
+
+        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+            @Override
+            public void onChanged(UserReponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    fillInSupplierDetails(response.getUser());
+                }
+            }
+        });
+
     }
 
     @Override
@@ -91,8 +108,6 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Fill in product related views
         fillInProductDetails();
-        // Retrieve all information from the supplier and fill in the views
-        fillInSupplierDetails();
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {
@@ -100,7 +115,7 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                listener.onOrderClicked(product, supplier);
+                                listener.onOrderClicked(product, customer);
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -171,7 +186,7 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails() {
+    private void fillInSupplierDetails(User supplier) {
         // HTTP Request to retrieve the user information
         textViewSupplierFirstName.setText(supplier.getFirstName());
         textViewSupplierLastName.setText(supplier.getLastName());

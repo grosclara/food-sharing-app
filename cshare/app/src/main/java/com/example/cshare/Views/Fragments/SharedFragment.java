@@ -35,11 +35,7 @@ public class SharedFragment extends ProductListFragment {
     protected void click(Product product) {
         if (isClickable) {
 
-            profileViewModel.getUserByID(product.getSupplier());
-
-            User supplier = profileViewModel.getOtherProfileMutableLiveData().getValue().getUser();
-
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, supplier, tag);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag);
             productDetailsFragment.show(getChildFragmentManager(), tag);
         }
     }
