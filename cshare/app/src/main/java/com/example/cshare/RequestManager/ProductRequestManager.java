@@ -98,10 +98,22 @@ public class ProductRequestManager {
 
     public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
 
-    public void update() {
+    public void updateAvailableProducts(){
         getAvailableProducts();
-        getInCartProducts();
+    };
+
+    public void updateSharedProducts(){
         getSharedProducts();
+    }
+
+    public void updateInCartProducts(){
+        getInCartProducts();
+    }
+
+    public void update() {
+        updateAvailableProducts();
+        updateInCartProducts();
+        updateSharedProducts();
     }
 
     public void getInCartProducts() {

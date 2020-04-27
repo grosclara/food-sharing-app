@@ -1,12 +1,15 @@
 package com.example.cshare.Views.Fragments;
 
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.cshare.Models.Product;
@@ -14,6 +17,8 @@ import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.ViewUtils.ItemClickSupport;
 import com.example.cshare.Utils.ViewUtils.ProductAdapter;
+import com.example.cshare.Views.Activities.AddActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,8 @@ ProductListFragment extends BaseFragment {
     ProgressBar progressBar;
     // Declare the SwipeRefreshLayout
     SwipeRefreshLayout swipeRefreshLayout;
+    // FAB
+    FloatingActionButton buttonFab;
 
     //FOR DATA
     // protected Disposable disposable;
@@ -45,6 +52,9 @@ ProductListFragment extends BaseFragment {
     protected abstract BaseFragment newInstance();
 
     @Override
+    protected void updateDesign(){}
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_product_list;
     }
@@ -55,6 +65,15 @@ ProductListFragment extends BaseFragment {
         recyclerView = view.findViewById(R.id.products_recycler_view);
         swipeRefreshLayout = view.findViewById(R.id.fragment_product_list_swipe_container);
         progressBar = view.findViewById(R.id.progressBar);
+        buttonFab = view.findViewById(R.id.button_add_product);
+
+        buttonFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Call during UI creation
         this.configureRecyclerView();

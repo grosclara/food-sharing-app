@@ -32,13 +32,6 @@ public class CartFragment extends ProductListFragment {
     }
 
     @Override
-    public void updateDesign() {
-        super.updateDesign();
-        Log.d(Constants.TAG, "update cart design");
-        productViewModel.update();
-    }
-
-    @Override
     protected void click(Product product) {
         if (isClickable) {
             if (product.getStatus().equals(Constants.COLLECTED)) {
@@ -110,7 +103,7 @@ public class CartFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.update();
+                productViewModel.updateInCartProducts();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();

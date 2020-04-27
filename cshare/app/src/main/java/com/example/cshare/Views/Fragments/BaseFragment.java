@@ -22,15 +22,13 @@ public abstract class BaseFragment extends Fragment {
     // we have redefined the most repeated methods
 
     // Force the developer to implement them in future children's classes.
-    protected abstract com.example.cshare.Views.Fragments.BaseFragment newInstance();
+    protected abstract BaseFragment newInstance();
 
     protected abstract int getFragmentLayout();
 
     protected abstract void configureDesign(View view);
 
-    public void updateDesign() {
-        Log.d(Constants.TAG, "update design");
-    };
+    protected abstract void updateDesign();
 
     protected abstract void configureViewModel();
 

@@ -17,10 +17,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.Views.Fragments.AddFragment;
 import com.example.cshare.Views.Fragments.BaseFragment;
 import com.example.cshare.Views.Fragments.CartFragment;
 import com.example.cshare.Views.Fragments.HomeFragment;
+import com.example.cshare.Views.Fragments.ProductListFragment;
 import com.example.cshare.Views.Fragments.ProfileFragment;
 import com.example.cshare.Views.Fragments.SharedFragment;
 import com.example.cshare.R;
@@ -36,9 +38,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // FOR DESIGN
     BottomNavigationView bottomNav;
     BaseFragment selectedFragment;
-
-    // Update UI
-    private BroadcastReceiver minuteUpdateReceiver;
 
     // --------------
     // BASE METHODS
@@ -61,31 +60,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         this.showFirstFragment(savedInstanceState);
 
-    }
-
-    public void startMinuteUpdater() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        minuteUpdateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                selectedFragment.updateDesign();
-            }
-        };
-
-        registerReceiver(minuteUpdateReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startMinuteUpdater();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(minuteUpdateReceiver);
     }
 
     private void grantPermission(){
@@ -172,9 +146,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.nav_shared:
                 selectedFragment = new SharedFragment();
                 break;
-            case R.id.nav_add:
+            /*case R.id.nav_add:
                 selectedFragment = new AddFragment();
-                break;
+                break;*/
         }
         // Generic method that will replace and show a fragment inside the HomeActivity Frame Layout
 

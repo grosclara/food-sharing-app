@@ -10,10 +10,10 @@
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:title="Cart" />
 
-    <item
+    <!--<item
         android:id="@+id/nav_add"
         android:icon="@drawable/ic_add_circle_black_24dp"
-        android:title="Add" />
+        android:title="Add" />-->
 
     <item
         android:id="@+id/nav_shared"

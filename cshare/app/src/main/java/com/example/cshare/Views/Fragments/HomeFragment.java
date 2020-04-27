@@ -30,14 +30,6 @@ public class HomeFragment extends ProductListFragment {
     protected BaseFragment newInstance() {
         return new HomeFragment();
     }
-
-    @Override
-    public void updateDesign() {
-        super.updateDesign();
-        Log.d(Constants.TAG, "update home design");
-        productViewModel.update();
-    }
-
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
@@ -104,7 +96,7 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.update();
+                productViewModel.updateAvailableProducts();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
             }

@@ -34,21 +34,21 @@ public class Camera {
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 100;
 
-    public static Uri captureImage(Context context, Fragment fragment) throws IOException {
+    public static Uri captureImage(Activity activity) throws IOException {
         // Launching camera app to capture image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Create a file to store the picture taken
-        File pictureFile = Camera.createImageFile(context);
+        File pictureFile = Camera.createImageFile(activity);
         // Retrieve its Uri
-        Uri pictureFileUri = getOutputMediaFileUri(context, pictureFile);
+        Uri pictureFileUri = getOutputMediaFileUri(activity, pictureFile);
         // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
 
         // Checking whether device has camera hardware or not
-        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
             // start the image capture Intent
-            fragment.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+            activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
         }
        return pictureFileUri;
     }

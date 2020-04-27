@@ -26,14 +26,6 @@ public class SharedFragment extends ProductListFragment {
     private static final String tag = "shared";
 
     @Override
-    public void updateDesign() {
-        super.updateDesign();
-        Log.d(Constants.TAG, "update shared design");
-        productViewModel.update();
-    }
-
-
-    @Override
     protected BaseFragment newInstance() {
         return new SharedFragment();
     }
@@ -92,7 +84,7 @@ public class SharedFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.update();
+                productViewModel.updateSharedProducts();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();

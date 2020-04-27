@@ -1,5 +1,10 @@
-package com.example.cshare.Views.Fragments;
+package com.example.cshare.Views.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -7,12 +12,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,18 +26,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
-import com.example.cshare.Models.User;
-import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.User;
+import com.example.cshare.R;
+import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-
-import com.example.cshare.R;
 import com.mobsandgeeks.saripaar.annotation.Future;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.squareup.picasso.Picasso;
@@ -52,10 +49,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-
-public class AddFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
+public class AddActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
 
     // Form validation
     protected Validator validator;
@@ -93,27 +87,25 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     ProfileViewModel profileViewModel;
 
     @Override
-    protected BaseFragment newInstance() {
-        return new AddFragment();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add);
+
+        configureDesign();
+
+        configureViewModel();
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_add;
-    }
-
-    @Override
-    protected void configureDesign(View view) {
-
+    protected void configureDesign() {
         // Bind views
-        editTextProductName = view.findViewById(R.id.editTextProductName);
-        editTextQuantity = view.findViewById(R.id.editTextQuantity);
-        editTextExpirationDate = view.findViewById(R.id.editTextExpirationDate);
-        textViewPictureError = view.findViewById(R.id.textViewPictureError);
-        buttonPhoto = view.findViewById(R.id.buttonPhoto);
-        buttonSubmit = view.findViewById(R.id.buttonSubmit);
-        spinnerProductCategories = view.findViewById(R.id.spinnerProductCategories);
-        imageViewPreviewProduct = view.findViewById(R.id.imageViewPreviewProduct);
+        editTextProductName = findViewById(R.id.editTextProductName);
+        editTextQuantity = findViewById(R.id.editTextQuantity);
+        editTextExpirationDate = findViewById(R.id.editTextExpirationDate);
+        textViewPictureError = findViewById(R.id.textViewPictureError);
+        buttonPhoto = findViewById(R.id.buttonPhoto);
+        buttonSubmit = findViewById(R.id.buttonSubmit);
+        spinnerProductCategories = findViewById(R.id.spinnerProductCategories);
+        imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
 
         Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
 
@@ -128,44 +120,29 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
         // Product spinner
         configureProductSpinner();
-
     }
 
-    @Override
-    public void updateDesign() {}
-
-    @Override
     protected void configureViewModel() {
         // Retrieve data from view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        productViewModel.getAddProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
+        productViewModel.getAddProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse productResponse) {
                 if (productResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (productResponse.getStatus().equals(Status.SUCCESS)){
-                    // Add an alert dialog box and go back home
-                    // 1. Instantiate an AlertDialog.Builder with its constructor
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("Your product has been added successfully")
-                            .setTitle("Merci !")
-                            // Add the button
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // User clicked OK button
-                                    // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
-                                    ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
-                                }
-                            });
+                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
+                } else if (productResponse.getStatus().equals(Status.SUCCESS)) {
 
-                    // 3. Get the AlertDialog from create()
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                } else if (productResponse.getStatus().equals(Status.ERROR)){
-                    Toast.makeText(getContext(), productResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
+                    // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+
+                    //((BottomNavigationView) findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
+                } else if (productResponse.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getApplicationContext(), productResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -183,7 +160,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private void configureProductSpinner() {
         productCategoriesArray = getResources().getStringArray(R.array.product_categories_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, productCategoriesArray);
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, productCategoriesArray);
         // Apply the adapter to the spinner
         spinnerProductCategories.setAdapter(adapterSpinner);
         spinnerProductCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -212,7 +189,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
         validated = false;
         for (ValidationError error : errors) {
             View view = error.getView();
-            String message = error.getCollatedErrorMessage(getContext());
+            String message = error.getCollatedErrorMessage(this);
 
             // Display error messages
             if (view == editTextExpirationDate) {
@@ -223,7 +200,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 ((EditText) view).setError(message);
             } else {
                 Log.d(Constants.TAG, message);
-                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -235,14 +212,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             // Capture picture
             try {
-                pictureFileUri = Camera.captureImage(getActivity());
+                pictureFileUri = Camera.captureImage(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        }
-
-        else if (v == buttonSubmit) {
+        } else if (v == buttonSubmit) {
 
             // Validate the field
             validator.validate();
@@ -256,7 +231,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
                 fileToUpload = new File(fileToUploadPath);
                 // Create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
+                RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
@@ -268,8 +243,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
                 productViewModel.addProduct(product);
 
-            } else if ( fileToUploadUri == null) {
-                Toast.makeText(getContext(), "You must choose a product picture", Toast.LENGTH_SHORT).show();
+            } else if (fileToUploadUri == null) {
+                Toast.makeText(this, "You must choose a product picture", Toast.LENGTH_SHORT).show();
                 textViewPictureError.setVisibility(View.VISIBLE);
             }
 
@@ -280,7 +255,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                     android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     new DatePickerDialog.OnDateSetListener() {
 
@@ -316,21 +291,20 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
-    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             // get the file uri
             fileToUploadUri = savedInstanceState.getParcelable("file_uri");
             fileToUploadPath = savedInstanceState.getString("file_path");
             // Reload the image view picture
-            if (fileToUploadUri != null)
-            { Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct); }
-            else { Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct); }
+            if (fileToUploadUri != null) {
+                Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
+            } else {
+                Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
+            }
         }
     }
-
-
 
     /**
      * Receiving activity result method will be called after closing the camera
@@ -344,9 +318,9 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             // successfully captured the image
 
             try {
-                fileToUpload = Camera.processPicture(getContext(), pictureFileUri); // modify the raw picture taken
+                fileToUpload = Camera.processPicture(this, pictureFileUri); // modify the raw picture taken
                 fileToUploadPath = fileToUpload.getAbsolutePath();
-                fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
+                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
 
                 Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
 
@@ -356,12 +330,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
-            Toast.makeText(getContext(),
+            Toast.makeText(this,
                     "User cancelled image capture", Toast.LENGTH_SHORT)
                     .show();
         } else {
             // failed to capture image
-            Toast.makeText(getContext(),
+            Toast.makeText(this,
                     "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
                     .show();
         }

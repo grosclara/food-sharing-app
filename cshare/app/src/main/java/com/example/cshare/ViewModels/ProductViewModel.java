@@ -65,6 +65,18 @@ public class ProductViewModel extends AndroidViewModel {
         productRequestManager.update();
     }
 
+    public void updateAvailableProducts(){
+        productRequestManager.updateAvailableProducts();
+    }
+
+    public void updateSharedProducts(){
+        productRequestManager.updateSharedProducts();
+    }
+
+    public void updateInCartProducts(){
+        productRequestManager.updateInCartProducts();
+    }
+
     // Add a product
     public void addProduct(Product product) {
         productRequestManager.addProduct(product);
