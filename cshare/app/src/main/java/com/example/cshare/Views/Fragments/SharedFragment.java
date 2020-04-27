@@ -47,7 +47,7 @@ public class SharedFragment extends ProductListFragment {
             @Override
             public void onChanged(@Nullable ProductListResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
-                    adapter.updateProducts(response.getProductList());
+                    adapter.setProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);
                     isClickable = true;
                 } else if (response.getStatus().equals(Status.ERROR)) {

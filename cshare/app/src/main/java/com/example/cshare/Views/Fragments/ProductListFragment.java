@@ -77,13 +77,18 @@ ProductListFragment extends BaseFragment {
     protected void configureRecyclerView() {
         //recyclerView = findViewById
         // Reset list
-        this.products = new ArrayList<Product>();
+        products = new ArrayList<Product>();
         // Create adapter passing the list of users
-        this.adapter = new ProductAdapter(this.products);
+        adapter = new ProductAdapter(products);
         // Attach the adapter to the recycler view to populate items
-        this.recyclerView.setAdapter(this.adapter);
+        recyclerView.setAdapter(adapter);
+        // setHasFixedSize makes sure that this change of size of RecyclerView is constant.
+        // The height (or width) of the item won't change.
+        // Every item added or removed will be the same.
+        // If you dont set this it will check if the size of the item has changed and that's expensive
+        recyclerView.setHasFixedSize(true);
         // Set layout manager to position the items
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         configureOnItemClickedRecyclerView();
 
     }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // We have created an Adapter, ProductAdapter, inheriting from RecyclerView.Adapter,
@@ -19,7 +20,7 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
 
     // FOR DATA
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     // CONSTRUCTOR
     public ProductAdapter(List<Product> products) {
@@ -32,10 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create view holder and inflating its xml layout
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.product_list_item, parent, false);
-
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_item, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -45,30 +43,30 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         // Update view holder with a product
-        holder.updateWithProduct(this.products.get(position));
+        holder.updateWithProduct(products.get(position));
     }
 
     @Override
     public int getItemCount() {
         // Return the total count of items in the list
 
-        if (this.products == null) {
+        if (products == null) {
             return 0;
         } else {
-            return this.products.size();
+            return products.size();
         }
     }
 
-    public void updateProducts(List<Product> products){
+    public void setProducts(List<Product> newProducts){
         /**
          * If the product list has changed, update it
          */
-        this.products = products;
+        products = newProducts;
         notifyDataSetChanged();
     }
 
     // Create a method that allows to get the product from the position of the item clicked
     public Product getProduct(int position){
-        return this.products.get(position);
+        return products.get(position);
     }
 }

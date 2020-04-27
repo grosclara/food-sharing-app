@@ -44,7 +44,7 @@ public class HomeFragment extends ProductListFragment {
                 Log.d(Constants.TAG, "ONCHANGED");
                 Log.d(Constants.TAG, response.getStatus().toString());
                 if (response.getStatus().equals(Status.SUCCESS)) {
-                    adapter.updateProducts(response.getProductList());
+                    adapter.setProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);
                     isClickable = true;
                 } else if (response.getStatus().equals(Status.ERROR)) {
