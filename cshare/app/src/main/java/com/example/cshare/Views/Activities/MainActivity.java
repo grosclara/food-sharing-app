@@ -4,25 +4,35 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.cshare.Models.Order;
+import com.example.cshare.Models.Product;
+import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Views.Fragments.BaseFragment;
 import com.example.cshare.Views.Fragments.CartFragment;
 import com.example.cshare.Views.Fragments.HomeFragment;
+import com.example.cshare.Views.Fragments.ProductDialogFragment;
 import com.example.cshare.Views.Fragments.ProfileFragment;
 import com.example.cshare.Views.Fragments.SharedFragment;
 import com.example.cshare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ProductDialogFragment.ProductDialogListener {
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
@@ -30,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // FOR DESIGN
     BottomNavigationView bottomNav;
     BaseFragment selectedFragment;
+
+    private ProductViewModel productViewModel;
+    private ProfileViewModel profileViewModel;
 
     // --------------
     // BASE METHODS
@@ -45,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNav = findViewById(R.id.bottom_navigation);
 
         // Call all our configuration methods from the onCreate() method of our activity
+        configureViewModel();
         // Configure all views
         configureDesign();
 
@@ -159,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
             selectedFragment = new HomeFragment();
-            Log.d(Constants.TAG, "TEEEES");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     selectedFragment).commit();
         }
@@ -168,6 +181,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // ---------------------
     // CONFIGURATION
     // ---------------------
+
+    protected void configureViewModel() {
+        // Retrieve data for view model
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+    }
 
     protected void configureDesign() {
         this.configureBottomNavigationView();
@@ -179,4 +197,47 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void configureBottomNavigationView(){
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
+
+    @Override
+    public void onOrderClicked(Product product, User supplier) {
+        Log.d(Constants.TAG, "order listener");
+        // Order the product
+        if (product.getStatus().equals("Available")) {
+            // Create the order object
+            Order request = new Order(supplier.getId(), product.getId());
+            // Change the status attribute of the product object to not available
+            Map<String, String> status = new HashMap<>();
+            status.put("status", Constants.COLLECTED);
+            productViewModel.order(request, status);
+        }
+    }
+
+    @Override
+    public void onDeleteClicked(Product product) {
+        Log.d(Constants.TAG, "delete listener");
+        // Check the status
+        if (product.getStatus().equals(Constants.AVAILABLE)) {
+            // if still available, delete the product from the database
+            productViewModel.deleteProduct(product);
+        } else {
+            Toast.makeText(this, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDeliverClicked(Product product){
+        // Set status to delivered and send request to update in database
+        Map<String, String> status = new HashMap<>();
+        status.put("status", Constants.DELIVERED);
+        productViewModel.deliver(product.getId(), status);
+    }
+
+    @Override
+    public void onCancelOrderClicked(Product product){
+        // Delete order and set product status to available
+        Map<String, String> status = new HashMap<>();
+        status.put("status", Constants.AVAILABLE);
+        productViewModel.cancelOrder(product.getId(), status);
+    }
+
 }

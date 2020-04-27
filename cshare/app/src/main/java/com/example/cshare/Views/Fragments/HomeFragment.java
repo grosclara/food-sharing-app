@@ -13,11 +13,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
+import com.example.cshare.Models.ApiResponses.UserReponse;
+import com.example.cshare.Models.Order;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class HomeFragment extends ProductListFragment {
@@ -30,11 +36,12 @@ public class HomeFragment extends ProductListFragment {
     protected BaseFragment newInstance() {
         return new HomeFragment();
     }
+
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
 
         // Set data
         productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
@@ -86,6 +93,28 @@ public class HomeFragment extends ProductListFragment {
             }
         });
 
+        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+            @Override
+            public void onChanged(UserReponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    Toast.makeText(getContext(), "Supplier retrieved", Toast.LENGTH_SHORT).show();
+                    Log.d(Constants.TAG, String.valueOf(profileViewModel.getOtherProfileMutableLiveData().getValue().getStatus()));
+
+
+                    User supplier = profileViewModel.getOtherProfileMutableLiveData().getValue().getUser();
+                    Log.d(Constants.TAG, supplier.getFirstName());
+
+
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());
+                } else if (response.getStatus().equals(Status.LOADING)) {
+                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     // Configure the SwipeRefreshLayout
@@ -109,19 +138,14 @@ public class HomeFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
+
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
 
         if (isClickable) {
 
-            if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
-                tag = Constants.SHARED;
-            } else {
-                tag = Constants.ORDER;
-            }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
-            productDetailsFragment.show(getChildFragmentManager(), tag);
+            profileViewModel.getUserByID(product.getSupplier());
+
         }
     }
-
 }

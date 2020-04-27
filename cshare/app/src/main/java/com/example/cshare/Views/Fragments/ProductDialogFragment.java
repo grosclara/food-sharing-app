@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
 import com.example.cshare.Models.ApiResponses.UserReponse;
@@ -31,12 +34,11 @@ import java.util.Map;
 
 public class ProductDialogFragment extends DialogFragment {
 
-    public Product product;
-    public Context context;
-    public String tag;
+    private ProductDialogListener listener;
 
-    private ProductViewModel productViewModel;
-    private ProfileViewModel profileViewModel;
+    private Product product;
+    private String tag;
+    private User supplier;
 
     // Bind views
     private TextView textViewProductName;
@@ -50,30 +52,17 @@ public class ProductDialogFragment extends DialogFragment {
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
 
-    public ProductDialogFragment(Context context, Product product, String tag, ProductViewModel productViewModel, ProfileViewModel profileViewModel) {
-        this.context = context;
+    public interface ProductDialogListener {
+        void onOrderClicked(Product product, User supplier);
+        void onDeleteClicked(Product product);
+        void onDeliverClicked(Product product);
+        void onCancelOrderClicked(Product product);
+    }
+
+    public ProductDialogFragment(Product product, User supplier, String tag) {
         this.product = product;
+        this.supplier = supplier;
         this.tag = tag;
-        this.productViewModel = productViewModel;
-        this.profileViewModel = profileViewModel;
-
-        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
-            @Override
-            public void onChanged(UserReponse response) {
-                if(response.getStatus().equals(Status.SUCCESS)){
-                    Toast.makeText(getContext(), "Supplier info retrieved", Toast.LENGTH_SHORT).show();
-                    fillInSupplierDetails(response.getUser());
-                }
-                else if (response.getStatus().equals(Status.LOADING)){
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                }
-                else if (response.getStatus().equals(Status.ERROR)){
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
-                }
-            }
-        });
-
     }
 
     @Override
@@ -103,7 +92,7 @@ public class ProductDialogFragment extends DialogFragment {
         // Fill in product related views
         fillInProductDetails();
         // Retrieve all information from the supplier and fill in the views
-        profileViewModel.getUserByID(product.getSupplier());
+        fillInSupplierDetails();
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {
@@ -111,15 +100,7 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle("Order the product")
                         .setPositiveButton("Order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // Order the product
-                                if (product.getStatus().equals("Available")) {
-                                    // Create the order object
-                                    Order request = new Order(profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId(), product.getId());
-                                    // Change the status attribute of the product object to not available
-                                    Map<String, String> status = new HashMap<>();
-                                    status.put("status", Constants.COLLECTED);
-                                    productViewModel.order(request, status);
-                                }
+                                listener.onOrderClicked(product, supplier);
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -133,13 +114,7 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle("Product shared by you")
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // Check the status
-                                if (product.getStatus().equals(Constants.AVAILABLE)) {
-                                    // if still available, delete the product from the database
-                                    productViewModel.deleteProduct(product);
-                                } else {
-                                    Toast.makeText(context, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
-                                }
+                                listener.onDeleteClicked(product);
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -151,24 +126,14 @@ public class ProductDialogFragment extends DialogFragment {
 
             case Constants.INCART:
                 builder.setTitle("What to do with this product?")
-                        /*.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) { }
-                        })*/
                         .setPositiveButton("Delivered", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // Set status to delivered and send request to update in database
-                                Map<String, String> status = new HashMap<>();
-                                status.put("status", Constants.DELIVERED);
-                                productViewModel.deliver(product.getId(), status);
+                                listener.onDeliverClicked(product);
                             }
                         })
                         .setNegativeButton("Cancel the order", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // Delete order and set product status to available
-                                Map<String, String> status = new HashMap<>();
-                                status.put("status", Constants.AVAILABLE);
-                                productViewModel.cancelOrder(product.getId(), status);
+                                listener.onCancelOrderClicked(product);
                             }
                         });
                 break;
@@ -206,13 +171,24 @@ public class ProductDialogFragment extends DialogFragment {
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 
-    private void fillInSupplierDetails(User supplier) {
+    private void fillInSupplierDetails() {
         // HTTP Request to retrieve the user information
         textViewSupplierFirstName.setText(supplier.getFirstName());
         textViewSupplierLastName.setText(supplier.getLastName());
         textViewSupplierCampus.setText(supplier.getCampus());
         textViewSupplierRoomNumber.setText(supplier.getRoomNumber());
         Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            listener = (ProductDialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + "must implement ProductDialogListener");
+        }
     }
 
 }

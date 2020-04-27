@@ -154,10 +154,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void configureViewModel() {
         // Retrieve auth data from view model (log out, change password)
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(getActivity()).get(AuthViewModel.class);
         // Retrieve user details from profile view model
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
 
         authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
             @Override

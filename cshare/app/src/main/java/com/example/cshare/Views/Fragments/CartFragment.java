@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
@@ -26,6 +27,7 @@ public class CartFragment extends ProductListFragment {
 
     private static String tag;
 
+
     @Override
     protected BaseFragment newInstance() {
         return new CartFragment();
@@ -34,12 +36,17 @@ public class CartFragment extends ProductListFragment {
     @Override
     protected void click(Product product) {
         if (isClickable) {
+
+            profileViewModel.getUserByID(product.getSupplier());
+
+            User supplier = profileViewModel.getOtherProfileMutableLiveData().getValue().getUser();
+
             if (product.getStatus().equals(Constants.COLLECTED)) {
                 tag = Constants.INCART;
             } else {
                 tag = Constants.ARCHIVED;
             }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(getContext(), product, tag, productViewModel, profileViewModel);
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, supplier, tag);
             productDetailsFragment.show(getChildFragmentManager(), tag);
         }
     }
@@ -47,8 +54,8 @@ public class CartFragment extends ProductListFragment {
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
 
         productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
