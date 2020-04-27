@@ -91,8 +91,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(Constants.TAG, "onActCreated");
         setContentView(R.layout.activity_register);
+
+        getSupportActionBar().setTitle("Sign up");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Bind views
         editTextPasswordConfirm = findViewById(R.id.editTextPasswordConfirm);
