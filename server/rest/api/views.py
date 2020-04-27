@@ -101,17 +101,22 @@ class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
         client_name = User.objects.get(id=client_id).first_name
         client_email = User.objects.get(id=client_id).email
         product = Product.objects.get(id=product_id).name
+        supplier_name = Product.objects.get(id=product_id).supplier.first_name
+        supplier_mail = Product.objects.get(id=product_id).supplier.email
          
-        to = Product.objects.get(id=product_id).supplier.email
-        self.send_mail(to, product, client_name, client_email)
+        self.send_mails(client_email,supplier_mail, product, client_name, client_email)
         return response
 
-    def send_mail(self, to, product, orderer, orderer_mail):
-        subject = "Your product has been ordered!"
-        message = "Hey, \n"+ str(orderer) +" wants to collect your "+ str(product) +". \nPlease contact him at " + str(orderer_mail) +" to set up a meeting for the collection. \nThank you for using CShare" 
+    def send_mails(self, client_mail,supplier_mail, product, client_name,supplier_name):
+        subject_supplier = "Your product has been ordered!"
+        subject_client = " Collect your "+ str(product) + "!"
+        message_supplier = "Hey, \n"+ str(client_name) +" wants to collect your "+ str(product) +". \nPlease contact him at " + str(client_mail).lower() +" to set up a meeting for the collection. \nThank you for using CShare" 
+        message_client = "Hey, \nYou have ordered "+ str(product)+ " from " +str(supplier_name) + ". \nPlease contact him at " + str(supplier_mail).lower() +" to set up a meeting for the collection. \nThank you for using CShare"
         from_email = settings.EMAIL_HOST_USER
-        to = [to]
-        send_mail(subject, message, from_email, to,fail_silently=False)
+        client_mail = [client_mail]
+        supplier_mail = [supplier_mail]
+        send_mail(subject_supplier, message_supplier, from_email, supplier_mail,fail_silently=False)
+        send_mail(subject_client, message_client, from_email, client_mail, fail_silently=False )
 
 
 class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
