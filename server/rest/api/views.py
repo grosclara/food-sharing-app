@@ -18,6 +18,8 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
+from django.core.mail import send_mail
+
 
 class DestroyWithPayloadMixin(object):
      def destroy(self, *args, **kwargs):
@@ -77,6 +79,7 @@ class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     # This will be used as the default ordering
     ordering = ('-updated_at')  
 
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return OrderDetailsSerializer
@@ -89,6 +92,27 @@ class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
         if client is not None:
             queryset = queryset.filter(client=client)
         return queryset
+    
+    def create(self, request, *args, **kwargs):
+        response = super(OrderViewSet, self).create(request, *args, **kwargs)
+
+        client_id = response.data["client"]
+        product_id = response.data["product"]
+        client_name = User.objects.get(id=client_id).first_name
+        client_email = User.objects.get(id=client_id).email
+        product = Product.objects.get(id=product_id).name
+         
+        to = Product.objects.get(id=product_id).supplier.email
+        self.send_mail(to, product, client_name, client_email)
+        return response
+
+    def send_mail(self, to, product, orderer, orderer_mail):
+        subject = "Your product has been ordered!"
+        message = "Hey, \n"+ str(orderer) +" wants to collect your "+ str(product) +". \nPlease contact him at " + str(orderer_mail) +" to set up a meeting for the collection. \nThank you for using CShare" 
+        from_email = settings.EMAIL_HOST_USER
+        to = [to]
+        send_mail(subject, message, from_email, to,fail_silently=False)
+
 
 class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
     queryset = User.objects.all()
