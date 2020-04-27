@@ -76,8 +76,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void configureViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
@@ -87,6 +85,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+
+                    profileViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProfileViewModel.class);
+                    productViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProductViewModel.class);
 
                     // In case of success
                     profileViewModel.update();

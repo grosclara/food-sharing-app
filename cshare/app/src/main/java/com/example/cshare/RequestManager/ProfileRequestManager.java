@@ -57,6 +57,8 @@ public class ProfileRequestManager {
         retrofit = NetworkClient.getRetrofitClient();
         userAPI = retrofit.create(UserAPI.class);
         authAPI = retrofit.create(AuthenticationAPI.class);
+
+        update();
     }
 
     public void update() {

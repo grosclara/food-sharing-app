@@ -65,6 +65,8 @@ public class ProductRequestManager {
         productAPI = retrofit.create(ProductAPI.class);
         orderAPI = retrofit.create(OrderAPI.class);
 
+        update();
+
     }
 
     // Getter method
