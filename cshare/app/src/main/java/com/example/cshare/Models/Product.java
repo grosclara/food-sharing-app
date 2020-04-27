@@ -18,18 +18,22 @@ public class Product {
     private String category;
     private String quantity;
     private String expiration_date;
+    private String campus;
+    private String room_number;
 
     // Constructor to add a new product to the VM in the add fragment
-    public Product(String name, String status, String product_picture, String category, String quantity, String expiration_date){
+    public Product(String name, String status, String product_picture, String category, String quantity, String expiration_date, String campus, String room_number){
         this.name = name;
         this.status = status;
         this.product_picture = product_picture;
         this.category = category;
         this.quantity = quantity;
         this.expiration_date = expiration_date;
+        this.campus = campus;
+        this.room_number = room_number;
     }
 
-    public Product(MultipartBody.Part productPictureBody, String productName, String productCategory, String quantity, String expirationDate, int supplierID, String productPicture) {
+    public Product(MultipartBody.Part productPictureBody, String productName, String productCategory, String quantity, String expirationDate, int supplierID, String productPicture, String campus, String room_number) {
         this.product_picture_body = productPictureBody;
         this.name = productName;
         this.category = productCategory;
@@ -37,10 +41,24 @@ public class Product {
         this.expiration_date = expirationDate;
         this.product_picture = productPicture;
         this.supplier = supplierID;
+        this.room_number = room_number;
+        this.campus = campus;
     }
 
-    public Product(String status){
-        this.status = status;
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
+
+    public String getRoom_number() {
+        return room_number;
+    }
+
+    public void setRoom_number(String room_number) {
+        this.room_number = room_number;
     }
 
     public String getCategory() {
