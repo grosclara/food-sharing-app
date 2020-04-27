@@ -261,7 +261,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
 
                 // Format the product to update view models
-                String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
+                String imageFileName = Constants.BASE_URL_API + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
 
                 // HTTP Post request
                 Product product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplier.getId(), imageFileName, supplier.getCampus(), supplier.getRoomNumber());
