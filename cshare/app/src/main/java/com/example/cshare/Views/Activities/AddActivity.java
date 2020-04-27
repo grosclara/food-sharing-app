@@ -211,7 +211,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     private void showPictureDialog(Activity activity) {
 
-        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(activity);
         pictureDialog.setTitle("Select Action");
         String[] pictureDialogItems = {
                 "Select photo from gallery",
@@ -226,7 +226,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                                 break;
                             case 1:
                                 try {
-                                    pictureFileUri = Camera.captureImage(activity);
+                                    pictureFileUri = Camera.captureImage(activity, null);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

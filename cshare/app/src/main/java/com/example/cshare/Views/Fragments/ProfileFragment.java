@@ -1,5 +1,6 @@
 package com.example.cshare.Views.Fragments;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -384,8 +386,37 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
 
         if (v == buttonGallery || v == imageViewProfilePicture) {
-            Camera.choosePictureFromGallery(null, this);
+
+            showPictureDialog(this);
         }
+    }
+
+    private void showPictureDialog(Fragment fragment) {
+
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(fragment.getContext());
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                Camera.choosePictureFromGallery(null, fragment);
+                                break;
+                            case 1:
+                                try {
+                                    pictureFileUri = Camera.captureImage(null, fragment);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
     }
 
     /**
@@ -395,6 +426,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d(Constants.TAG, "TESTSTSTST0");
+
         // Result code is RESULT_OK only if the user selects an Image
         if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
 
@@ -403,10 +436,24 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
             // modify the raw picture taken in a new file and retrieve its Uri
             try {
-                fileToUpload = Camera.processPicture(getContext(), pictureFileUri);
+                fileToUpload = Camera.processPicture(getActivity(), pictureFileUri);
 
                 fileToUploadPath = fileToUpload.getAbsolutePath();
-                fileToUploadUri = Camera.getOutputMediaFileUri(getContext(), fileToUpload);
+                fileToUploadUri = Camera.getOutputMediaFileUri(getActivity(), fileToUpload);
+
+                Picasso.get().load(fileToUploadUri).into(imageViewProfilePicture);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+            // successfully captured the image
+
+            try {
+                Log.d(Constants.TAG, pictureFileUri.toString());
+                fileToUpload = Camera.processPicture(getActivity(), pictureFileUri); // modify the raw picture taken
+                fileToUploadPath = fileToUpload.getAbsolutePath();
+                fileToUploadUri = Camera.getOutputMediaFileUri(getActivity(), fileToUpload);
 
                 Picasso.get().load(fileToUploadUri).into(imageViewProfilePicture);
 
@@ -414,14 +461,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 e.printStackTrace();
             }
 
+
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "User cancelled image capture", Toast.LENGTH_SHORT)
                     .show();
         } else {
             // failed to capture image
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
                     .show();
         }

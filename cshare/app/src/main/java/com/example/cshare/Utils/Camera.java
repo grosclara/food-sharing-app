@@ -35,21 +35,36 @@ public class Camera {
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 200;
 
-    public static Uri captureImage(Activity activity) throws IOException {
+    public static Uri captureImage(Activity activity, Fragment fragment) throws IOException {
         // Launching camera app to capture image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        
+        Uri pictureFileUri = null;
 
-        // Create a file to store the picture taken
-        File pictureFile = Camera.createImageFile(activity);
-        // Retrieve its Uri
-        Uri pictureFileUri = getOutputMediaFileUri(activity, pictureFile);
-        // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
-
-        // Checking whether device has camera hardware or not
-        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
-            // start the image capture Intent
-            activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        if (activity != null) {
+            // Create a file to store the picture taken
+            File pictureFile = createImageFile(activity);
+            // Retrieve its Uri
+            pictureFileUri = getOutputMediaFileUri(activity, pictureFile);
+            // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
+            // Checking whether device has camera hardware or not
+            if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+                // start the image capture Intent
+                activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+            }
+        } else if (fragment != null){
+            // Create a file to store the picture taken
+            File pictureFile = createImageFile(fragment.getContext());
+            // Retrieve its Uri
+            pictureFileUri = getOutputMediaFileUri(fragment.getContext(), pictureFile);
+            // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
+            // Checking whether device has camera hardware or not
+            if (takePictureIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
+                // start the image capture Intent
+                fragment.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+            }
         }
        return pictureFileUri;
     }

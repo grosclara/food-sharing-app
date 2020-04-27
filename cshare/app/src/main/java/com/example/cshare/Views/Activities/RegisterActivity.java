@@ -241,7 +241,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 break;
                             case 1:
                                 try {
-                                    pictureFileUri = Camera.captureImage(activity);
+                                    pictureFileUri = Camera.captureImage(activity, null);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

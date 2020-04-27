@@ -235,7 +235,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
 
             // Capture picture
             try {
-                pictureFileUri = Camera.captureImage(getActivity());
+                pictureFileUri = Camera.captureImage(getActivity(), null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
