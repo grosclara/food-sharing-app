@@ -282,7 +282,10 @@ public class ProductRequestManager {
                 product.getCategory(),
                 product.getQuantity(),
                 product.getExpiration_date(),
-                product.getSupplier());
+                product.getSupplier(),
+                product.getRoom_number(),
+                product.getCampus());
+
         productObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())

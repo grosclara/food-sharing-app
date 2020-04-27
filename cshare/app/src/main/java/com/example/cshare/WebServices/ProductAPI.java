@@ -49,7 +49,9 @@ public interface  ProductAPI {
             @Part("category") String productCategory,
             @Part("quantity") String quantity,
             @Part("expiration_date") String expiration_date,
-            @Part("supplier") int supplier
+            @Part("supplier") int supplier,
+            @Part("room_number") String room_number,
+            @Part("campus") String campus
     );
 
     @DELETE("product/{id}/")

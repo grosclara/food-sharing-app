@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Camera;
@@ -78,7 +79,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     private String productCategory;
     private String expiration_date;
     private String quantity;
-    private int supplierID;
+    private User supplier;
 
 
     // Path to the location of the picture taken by the phone
@@ -170,7 +171,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
             }
         });
 
-        supplierID = profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId();
+        supplier = profileViewModel.getUserProfileMutableLiveData().getValue().getUser();
     }
 
     private void configureValidator() {
@@ -263,7 +264,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
                 String imageFileName = Constants.BASE_URL + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
 
                 // HTTP Post request
-                Product product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplierID, imageFileName);
+                Product product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplier.getId(), imageFileName, supplier.getCampus(), supplier.getRoomNumber());
 
                 productViewModel.addProduct(product);
 
