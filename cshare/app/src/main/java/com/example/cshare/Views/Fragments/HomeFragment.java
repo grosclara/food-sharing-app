@@ -32,6 +32,13 @@ public class HomeFragment extends ProductListFragment {
     }
 
     @Override
+    public void updateDesign() {
+        super.updateDesign();
+        Log.d(Constants.TAG, "update home design");
+        productViewModel.update();
+    }
+
+    @Override
     protected void configureViewModel() {
         // Retrieve data for view model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);

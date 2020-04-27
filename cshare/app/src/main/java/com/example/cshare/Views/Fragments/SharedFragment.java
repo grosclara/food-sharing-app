@@ -1,5 +1,6 @@
 package com.example.cshare.Views.Fragments;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 
@@ -22,6 +24,13 @@ public class SharedFragment extends ProductListFragment {
     private ProfileViewModel profileViewModel;
 
     private static final String tag = "shared";
+
+    @Override
+    public void updateDesign() {
+        super.updateDesign();
+        Log.d(Constants.TAG, "update shared design");
+        productViewModel.update();
+    }
 
 
     @Override

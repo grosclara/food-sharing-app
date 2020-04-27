@@ -141,8 +141,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
-    protected void updateDesign() {
-    }
+    public void updateDesign() {super.updateDesign();}
 
     private void configureValidator() {
         // Instantiate a new Validator

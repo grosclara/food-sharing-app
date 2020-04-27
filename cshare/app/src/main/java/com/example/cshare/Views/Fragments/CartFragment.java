@@ -1,6 +1,7 @@
 package com.example.cshare.Views.Fragments;
 
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,6 +29,13 @@ public class CartFragment extends ProductListFragment {
     @Override
     protected BaseFragment newInstance() {
         return new CartFragment();
+    }
+
+    @Override
+    public void updateDesign() {
+        super.updateDesign();
+        Log.d(Constants.TAG, "update cart design");
+        productViewModel.update();
     }
 
     @Override

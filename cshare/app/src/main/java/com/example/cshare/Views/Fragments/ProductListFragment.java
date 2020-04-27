@@ -65,10 +65,6 @@ ProductListFragment extends BaseFragment {
         this.configureProgressBar();
     }
 
-    @Override
-    protected void updateDesign() {
-    }
-
     // -----------------
     // CONFIGURATION
     // -----------------

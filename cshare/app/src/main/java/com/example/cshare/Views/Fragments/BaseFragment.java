@@ -3,13 +3,17 @@ package com.example.cshare.Views.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.Views.Activities.LauncherActivity;
 
 public abstract class BaseFragment extends Fragment {
@@ -24,7 +28,9 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void configureDesign(View view);
 
-    protected abstract void updateDesign();
+    public void updateDesign() {
+        Log.d(Constants.TAG, "update design");
+    };
 
     protected abstract void configureViewModel();
 
@@ -61,6 +67,4 @@ public abstract class BaseFragment extends Fragment {
         // Handling Bundle Save
         // Icepick.saveInstanceState(this, outState);
     }
-
-
 }

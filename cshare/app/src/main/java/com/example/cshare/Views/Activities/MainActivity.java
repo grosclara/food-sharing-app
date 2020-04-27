@@ -7,12 +7,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.cshare.Views.Fragments.AddFragment;
+import com.example.cshare.Views.Fragments.BaseFragment;
 import com.example.cshare.Views.Fragments.CartFragment;
 import com.example.cshare.Views.Fragments.HomeFragment;
 import com.example.cshare.Views.Fragments.ProfileFragment;
@@ -29,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     // FOR DESIGN
     BottomNavigationView bottomNav;
+    BaseFragment selectedFragment;
+
+    // Update UI
+    private BroadcastReceiver minuteUpdateReceiver;
 
     // --------------
     // BASE METHODS
@@ -43,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // ButterKnife.bind(this);
         bottomNav = findViewById(R.id.bottom_navigation);
 
-
         // Call all our configuration methods from the onCreate() method of our activity
         // Configure all views
         configureDesign();
@@ -52,6 +61,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         this.showFirstFragment(savedInstanceState);
 
+    }
+
+    public void startMinuteUpdater() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        minuteUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                selectedFragment.updateDesign();
+            }
+        };
+
+        registerReceiver(minuteUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startMinuteUpdater();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(minuteUpdateReceiver);
     }
 
     private void grantPermission(){
@@ -121,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         int id = menuItem.getItemId();
-        Fragment selectedFragment = null;
+        selectedFragment = null;
 
         // Show fragment after user clicked on a menu item
         // Create each fragment page and show it
@@ -161,8 +195,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void showFirstFragment(Bundle savedInstanceState){
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
+            selectedFragment = new HomeFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+                    selectedFragment).commit();
         }
     }
 

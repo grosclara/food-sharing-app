@@ -132,7 +132,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, V
     }
 
     @Override
-    protected void updateDesign() {}
+    public void updateDesign() {}
 
     @Override
     protected void configureViewModel() {
