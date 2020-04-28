@@ -127,6 +127,19 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
     
+
+    def send_mails(self, client_mail, supplier_mail, product, client_name,supplier_name):
+        subject_supplier = "Your product has been ordered!"
+        subject_client = " Collect your "+ str(product) + "!"
+        message_supplier = "Hey, \n"+ str(client_name) +" wants to collect your "+ str(product) +". \nPlease contact him at " + str(client_mail).lower() +" to set up a meeting for the collection. \nThank you for using CShare" 
+        message_client = "Hey, \nYou have ordered "+ str(product)+ " from " +str(supplier_name) + ". \nPlease contact him at " + str(supplier_mail).lower() +" to set up a meeting for the collection. \nThank you for using CShare"
+        from_email = settings.EMAIL_HOST_USER
+        client_mail = [client_mail]
+        supplier_mail = [supplier_mail]
+        send_mail(subject_supplier, message_supplier, from_email, supplier_mail,fail_silently=False)
+        send_mail(subject_client, message_client, from_email, client_mail, fail_silently=False )
+
+    
     def create(self, request, *args, **kwargs):
         """
             Create an order with the specific product in query parameters.
@@ -137,12 +150,21 @@ class OrderViewSet(viewsets.ModelViewSet):
         data.update(request.data)
         data["customer"] = request.user.id
 
-        product = Product.objects.get(pk=data["product"])
+        product = Product.objects.get(pk = data["product"])
         product_serializer = ProductSerializer(product)
         
         product.status = COLLECTED
         product.save()
 
+        #Send emails
+        customer_id = request.user.id
+        customer_name = request.user.first_name
+        customer_mail = request.user.email
+        supplier_name = product.supplier.first_name
+        supplier_mail = product.supplier.email
+         
+        self.send_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
+     
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
