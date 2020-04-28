@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
+from rest_framework.decorators import action
 from .models import Product, Order, User
 from .serializers import ProductSerializer, OrderSerializer, CustomUserDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -10,19 +11,16 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_201_CREATED
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 from django.core.mail import send_mail
+from django.http import QueryDict
+from .constants import AVAILABLE, COLLECTED, DELIVERED
+from django.shortcuts import get_object_or_404
 
-class DestroyWithPayloadMixin(object):
-     def destroy(self, *args, **kwargs):
-         serializer = self.get_serializer(self.get_object())
-         super().destroy(*args, **kwargs)
-         return Response(serializer.data, status=HTTP_200_OK)
-
-class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
     """
@@ -37,117 +35,201 @@ class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
 
     serializer_class = ProductSerializer
 
-    def get_queryset(self):
+    def create(self, request, *args, **kwargs):
+        """ 
+        the authenticated user can create a new product of which he will be the supplier
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `supplier` or a 'status' query parameter in the URL.
-        """
-        queryset = Product.objects.all()
-        supplier = self.request.query_params.get('supplier', None)
-        status = self.request.query_params.get('status', None)
-        campus = self.request.query_params.get('campus',None)
-        category = self.request.query_params.get('category',None)
-        id = self.request.query_params.get('id',None)
 
-        if campus is not None :
-            queryset = Product.objects.filter(campus=campus)
-        if supplier is not None:
-            queryset = queryset.filter(supplier=supplier)
-        if status is not None:
-            queryset = queryset.filter(status=status)
-        if id is not None:
-            queryset = queryset.filter(id=id)
-        if category is not None:
-            queryset = queryset.filter(category=category)
+        data = QueryDict(mutable=True)
+        data.update(request.data)
+        data["supplier"] = request.user.id
 
-        return queryset
-    
-"""     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        print(request.data)
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers) """
-""" 
-    def perform_create(self, serializer):
-        serializer.save() """
-        
-class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
-
-    lookup_field = 'product'
-
-    filter_backends = [filters.OrderingFilter]
-    # Explicitly specify which fields the API may be ordered against
-    ordering_fields = ['created_at','updated_at']
-    # This will be used as the default ordering
-    ordering = ('-updated_at')
-
-    serializer_class = OrderSerializer
-    
-    def get_queryset(self):
-        queryset = Order.objects.all()
-        client = self.request.query_params.get('client', None)
-        if client is not None:
-            queryset = queryset.filter(client=client)
-        return queryset
-    
-    def create(self, request, *args, **kwargs):
-
-        # Retrieve product and customer from the request
-        product_id = request.data["product"]
-        product = Product.objects.get(pk=product_id)
-        customer = request.user
-
-        order = Order(customer=customer, product=product)
-        serializer = self.get_serializer(instance=order)
-
-        serializer = self.get_serializer(data = serializer.data)
-        serializer.is_valid()
-        serializer.save()
 
         headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
-        """ print(request.user.id)
-        print(request.data)
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `supplier`, 'campus', 'category' or a 'status' query parameter in the URL.
+        """
+        queryset = Product.objects.all()
+        status = self.request.query_params.get('status', None)
+        campus = self.request.query_params.get('campus',None)
+        category = self.request.query_params.get('category',None)
+        supplier = self.request.query_params.get('supplier',None)
 
-        product_id = request.data["product"]
-    
-        customer = User.objects.get(id=request.user.id)
-        product = Product.objects.get(id=product_id)
+        if campus is not None :
+            queryset = Product.objects.filter(campus=campus)
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        if category is not None:
+            queryset = queryset.filter(category=category)
+        if supplier is not None:
+            queryset = queryset.filter(supplier=supplier)
 
-        print(customer)
+        return queryset
 
-        product.status = 'Collected'
+    def destroy(self, request, *args, **kwargs):
+        """
+        The auth user can only try to delete the products he created. These must be available (cannot delete a product already ordered by someone else).
+        If not, it will render a 400 BAd request error
+        """
+            
+        instance = self.get_object()
 
-        print(product.status)
+        if (request.user == instance.supplier):
 
-        #response = super(OrderViewSet, self).create(request, *args, **kwargs)
-        #print("CUSTOOOOOOOOOOOOOOOMER"+response)
+            if (instance.status == AVAILABLE) :
 
+                serializer = self.get_serializer(instance)
+                super().destroy(request, *args, **kwargs)
+                return Response(serializer.data, status=HTTP_200_OK)
         
-         
-        to = Product.objects.get(id=product_id).supplier.email
+        return Response(status=HTTP_400_BAD_REQUEST)    
 
-        #self.send_mail(to, product.name, customer_name, customer_email)
+class OrderViewSet(viewsets.ModelViewSet):
+
+    # Path variable
+    lookup_field = 'product'
+
+    serializer_class = OrderSerializer
+
+    
+    def get_queryset(self):
+        """
+        Returns all orders from the auth user ordered by their updated_date
+        """
+        queryset = Order.objects.filter(customer=self.request.user).order_by('-updated_at')
+        return queryset
+    
+    def list(self, request):
+        """
+        Display a list of the orders the auth user have created 
+        """
+        queryset = self.get_queryset()
+
+        # Pagination
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        products = []
+
+        for order in queryset:
+            products.append(order.product)
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        """
+            Create an order with the specific product in query parameters.
+            The auth user will automatically be the customer
+        """
+
+        data = QueryDict(mutable=True)
+        data.update(request.data)
+        data["customer"] = request.user.id
+
+        product = Product.objects.get(pk=data["product"])
+        product_serializer = ProductSerializer(product)
+        
+        product.status = COLLECTED
+        product.save()
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(product_serializer.data, status=HTTP_201_CREATED, headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        The auth user can only try to delete the order that he created (he must be the customer of the order). 
+        The product must be collected (cannot delete an order if the transaction has already been make (status = DELIVERED)).
+        If not, it will render a 400 BAd request error
+        """
+
+        order = self.get_object()
+
+        if (request.user == order.customer):
+
+            product = order.product
+
+            if (product.status == COLLECTED) :
+
+                product_serializer = ProductSerializer(product)
+                # Update the product status in the db
+                product.status = AVAILABLE
+                product.save()
+                # Returns the serialized product
+                serializer = self.get_serializer(self.get_object())
+                super().destroy(*args, **kwargs)
+                return Response(product_serializer.data, status=HTTP_200_OK)
+        
+        return Response(status=HTTP_400_BAD_REQUEST)
+        
+    def partial_update(self, request, *args, **kwargs):
+        """
+            Change a product status from Collected to Delivered 
+            (only the customer can do so)
+        """
+
+        if request.user == self.get_object().customer :
+
+            product = self.get_object().product
+
+            if product.status == COLLECTED :
 
 
-        #return response """
+                product.status = DELIVERED
+                product.save()
 
-    def send_mail(self, to, product, orderer, orderer_mail):
-        subject = "Your product has been ordered!"
-        message = "Hey, \n"+ str(orderer) +" wants to collect your "+ str(product) +". \nPlease contact him at " + str(orderer_mail) +" to set up a meeting for the collection. \nThank you for using CShare" 
-        from_email = settings.EMAIL_HOST_USER
-        to = [to]
-        send_mail(subject, message, from_email, to,fail_silently=False)
+                # Returns the serialized product
+                serializer = ProductSerializer(product)
+                return Response(serializer.data, status=HTTP_200_OK)
+        
+        return Response(status=HTTP_400_BAD_REQUEST) 
 
-
-class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        The auth user can only edit its own profile
+        Otherwise, it will render 400 Bad request error
+        """
+
+        if request.user == self.get_object() :
+            response_with_updated_instance = super(UserViewSet, self).partial_update(request, *args, **kwargs)
+            return response_with_updated_instance
+        
+        return Response(status=HTTP_400_BAD_REQUEST) 
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        The auth user can only delete its own profile
+        Otherwise, it will render 400 Bad request error
+        """
+            
+        if (request.user == self.get_object()):
+
+            serializer = self.get_serializer(self.get_object)
+            super().destroy(request, *args, **kwargs)
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        
+        return Response(status=HTTP_400_BAD_REQUEST)
 
 
 

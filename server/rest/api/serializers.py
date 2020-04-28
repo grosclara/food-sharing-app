@@ -68,7 +68,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id','email','first_name','last_name','room_number','campus','profile_picture','is_active','is_staff','last_login','date_joined')
+        fields = ('email','first_name','last_name','room_number','campus','profile_picture')
 
 class CustomTokenSerializer(serializers.ModelSerializer):
     """
@@ -89,10 +89,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
-    customer = CustomUserDetailsSerializer(read_only= True)
-    product = ProductSerializer()
-
 
     class Meta:
         model = Order
