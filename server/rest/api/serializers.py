@@ -81,34 +81,19 @@ class CustomTokenSerializer(serializers.ModelSerializer):
         model = Token
         fields = ('key','user')
 
-
-# The HyperLinkedModelSerializer class provides a shortcut that lets you automatically create a Serializer class 
-# with fields that correspond to the Model fields.
-# It uses hyperlinks to represent relationships, rather than primary keys.
-
 class ProductSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
-    class Meta:
-        model=Product
-        fields='__all__'
-
-class ProductDetailsSerializer(serializers.ModelSerializer):
-
-    supplier = CustomUserDetailsSerializer(read_only=True)
     
     class Meta:
-        model=Product
-        fields=('__all__')
+        model = Product
+        fields = ('__all__')
 
-
-class OrderDetailsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model=Order
-        fields=('__all__')
 
 class OrderSerializer(serializers.ModelSerializer):
 
+    customer = CustomUserDetailsSerializer(read_only= True)
+    product = ProductSerializer()
+
+
     class Meta:
-        model=Order
-        fields=('__all__')
+        model = Order
+        fields = ('__all__')

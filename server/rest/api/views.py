@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .models import Product, Order, User
-from .serializers import ProductSerializer, ProductDetailsSerializer, OrderSerializer, OrderDetailsSerializer, CustomUserDetailsSerializer
+from .serializers import ProductSerializer, OrderSerializer, CustomUserDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
@@ -10,16 +10,11 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework.status import (
-    HTTP_400_BAD_REQUEST,
-    HTTP_404_NOT_FOUND,
-    HTTP_200_OK
-)
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_201_CREATED
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 from django.core.mail import send_mail
-
 
 class DestroyWithPayloadMixin(object):
      def destroy(self, *args, **kwargs):
@@ -66,25 +61,29 @@ class ProductViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
             queryset = queryset.filter(category=category)
 
         return queryset
-
+    
+"""     def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        print(request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers) """
+""" 
+    def perform_create(self, serializer):
+        serializer.save() """
+        
 class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
 
-    lookup_field = 'product'
-    
     lookup_field = 'product'
 
     filter_backends = [filters.OrderingFilter]
     # Explicitly specify which fields the API may be ordered against
     ordering_fields = ['created_at','updated_at']
     # This will be used as the default ordering
-    ordering = ('-updated_at')  
+    ordering = ('-updated_at')
 
-
-    def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return OrderDetailsSerializer
-        else:
-            return OrderSerializer
+    serializer_class = OrderSerializer
     
     def get_queryset(self):
         queryset = Order.objects.all()
@@ -94,17 +93,48 @@ class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
         return queryset
     
     def create(self, request, *args, **kwargs):
-        response = super(OrderViewSet, self).create(request, *args, **kwargs)
 
-        client_id = response.data["client"]
-        product_id = response.data["product"]
-        client_name = User.objects.get(id=client_id).first_name
-        client_email = User.objects.get(id=client_id).email
-        product = Product.objects.get(id=product_id).name
+        # Retrieve product and customer from the request
+        product_id = request.data["product"]
+        product = Product.objects.get(pk=product_id)
+        customer = request.user
+
+        order = Order(customer=customer, product=product)
+        serializer = self.get_serializer(instance=order)
+
+        serializer = self.get_serializer(data = serializer.data)
+        serializer.is_valid()
+        serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
+
+        """ print(request.user.id)
+        print(request.data)
+
+        product_id = request.data["product"]
+    
+        customer = User.objects.get(id=request.user.id)
+        product = Product.objects.get(id=product_id)
+
+        print(customer)
+
+        product.status = 'Collected'
+
+        print(product.status)
+
+        #response = super(OrderViewSet, self).create(request, *args, **kwargs)
+        #print("CUSTOOOOOOOOOOOOOOOMER"+response)
+
+        
          
         to = Product.objects.get(id=product_id).supplier.email
-        self.send_mail(to, product, client_name, client_email)
-        return response
+
+        #self.send_mail(to, product.name, customer_name, customer_email)
+
+
+        #return response """
 
     def send_mail(self, to, product, orderer, orderer_mail):
         subject = "Your product has been ordered!"
@@ -115,9 +145,9 @@ class OrderViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
 
 
 class UserViewSet(DestroyWithPayloadMixin, viewsets.ModelViewSet):
+
     queryset = User.objects.all()
     serializer_class = CustomUserDetailsSerializer
-
 
 
 

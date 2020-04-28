@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_auth.registration',
-
 ]
 
 MIDDLEWARE = [
@@ -157,6 +156,8 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'api.User'
+PRODUCT_MODEL = 'api.Product'
+
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
