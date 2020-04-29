@@ -34,7 +34,7 @@ public class HomeViewModel extends AndroidViewModel {
     public HomeViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
-        homeProductsDataSourceFactory = new HomeProductsDataSourceFactory(new PreferenceProvider(application));
+        homeProductsDataSourceFactory = new HomeProductsDataSourceFactory(application, new PreferenceProvider(application));
         liveDataSource = homeProductsDataSourceFactory.getHomeProductsLiveDataSource();
 
         PagedList.Config config =

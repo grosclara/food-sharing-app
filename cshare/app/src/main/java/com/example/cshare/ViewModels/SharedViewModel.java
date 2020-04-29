@@ -35,7 +35,7 @@ public class SharedViewModel extends AndroidViewModel {
     public SharedViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
-        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory(new PreferenceProvider(application));
+        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory(application, new PreferenceProvider(application));
         liveDataSource = sharedProductsDataSourceFactory.getSharedProductsLiveDataSource();
 
         PagedList.Config config =

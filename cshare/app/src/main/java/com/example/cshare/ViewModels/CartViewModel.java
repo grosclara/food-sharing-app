@@ -35,7 +35,7 @@ public class CartViewModel extends AndroidViewModel {
     public CartViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
-        cartProductsDataSourceFactory = new CartProductsDataSourceFactory(new PreferenceProvider(application));
+        cartProductsDataSourceFactory = new CartProductsDataSourceFactory(application, new PreferenceProvider(application));
         liveDataSource = cartProductsDataSourceFactory.getCartProductsLiveDataSource();
 
         PagedList.Config config =

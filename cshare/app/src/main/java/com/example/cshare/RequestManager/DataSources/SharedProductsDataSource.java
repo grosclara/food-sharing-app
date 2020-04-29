@@ -1,5 +1,9 @@
 package com.example.cshare.RequestManager.DataSources;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
 
@@ -7,6 +11,8 @@ import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,8 +22,10 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
 
     private static final int FIRST_PAGE = 1;
     private String token;
+    private Context context;
 
-    public SharedProductsDataSource(String token) {
+    public SharedProductsDataSource(Context context, String token) {
+        this.context = context;
         this.token = token;
     }
 
@@ -32,16 +40,24 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if (response.body() != null) {
+                        if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? FIRST_PAGE + 1 : null;
                             callback.onResult(response.body().getProductList(), null, key);
+                        } else {
+                            try {
+                                Log.d(Constants.TAG, response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
 
                     }
 
                     @Override
                     public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
-
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -59,15 +75,23 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if (response.body() != null) {
+                        if (response.isSuccessful()) {
                             Integer key = (params.key > 1) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
+                        } else {
+                            try {
+                                Log.d(Constants.TAG, response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
-
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -83,15 +107,23 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if (response.body() != null) {
+                        if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);
+                        } else {
+                            try {
+                                Log.d(Constants.TAG, response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
-
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

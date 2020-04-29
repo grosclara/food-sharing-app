@@ -1,5 +1,7 @@
 package com.example.cshare.RequestManager.DataSourceFactories;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 import androidx.paging.PageKeyedDataSource;
@@ -13,14 +15,16 @@ public class SharedProductsDataSourceFactory extends DataSource.Factory {
     private MutableLiveData<PageKeyedDataSource<Integer, Product>> sharedProductsLiveDataSource = new MutableLiveData<>();
 
     private PreferenceProvider prefs;
+    private Context context;
 
-    public SharedProductsDataSourceFactory(PreferenceProvider prefs) {
+    public SharedProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
+        this.context = context;
         this.prefs = prefs;
     }
 
     @Override
     public DataSource create() {
-        SharedProductsDataSource sharedProductsDataSource = new SharedProductsDataSource(prefs.getToken());
+        SharedProductsDataSource sharedProductsDataSource = new SharedProductsDataSource(context, prefs.getToken());
         sharedProductsLiveDataSource.postValue(sharedProductsDataSource);
         return sharedProductsDataSource;
     }
