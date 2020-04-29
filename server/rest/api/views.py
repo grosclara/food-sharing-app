@@ -43,6 +43,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         data = QueryDict(mutable=True)
         data.update(request.data)
         data["supplier"] = request.user.id
+        data["campus"] = request.user.campus
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -54,17 +55,15 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
+        Display every product in the same campus as the auth user
         Optionally restricts the returned purchases to a given user,
-        by filtering against a `supplier`, 'campus', 'category' or a 'status' query parameter in the URL.
+        by filtering against a `supplier`, category' or a 'status' query parameter in the URL.
         """
-        queryset = Product.objects.all()
+        queryset = Product.objects.filter(campus=self.request.user.campus)
         status = self.request.query_params.get('status', None)
-        campus = self.request.query_params.get('campus',None)
         category = self.request.query_params.get('category',None)
         supplier = self.request.query_params.get('supplier',None)
 
-        if campus is not None :
-            queryset = Product.objects.filter(campus=campus)
         if status is not None:
             queryset = queryset.filter(status=status)
         if category is not None:
@@ -119,13 +118,12 @@ class OrderViewSet(viewsets.ModelViewSet):
             product_ids.append(order.product.id)
         
 
-        product_queryset = Product.objects.filter(id__in=product_ids)
+        product_queryset = Product.objects.filter(id__in=product_ids).order_by('-updated_at')
 
 
         # Pagination
         paged_queryset = self.paginate_queryset(product_queryset)
         if paged_queryset is not None:
-            print("PAGINATION")
             serializer = ProductSerializer(paged_queryset, many=True)
             return self.get_paginated_response(serializer.data)
 
@@ -146,7 +144,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         """
             Create an order with the specific product in query parameters.
-            The product concerned must be available, furthermore, the auth user can't be the supplier.
+            The product concerned must be available
+            The auth user can't be the supplier
+            The auth user (customer) must be in the same campus as the product
             Otherwise it will render HTTP 400 error code
             The auth user will automatically be the customer
         """
@@ -161,26 +161,28 @@ class OrderViewSet(viewsets.ModelViewSet):
         if product.supplier != request.user :
 
             if product.status == AVAILABLE :
+
+                if product.campus == request.user.campus :
             
-                product.status = COLLECTED
-                product.save()
+                    serializer = self.get_serializer(data=data)
+                    serializer.is_valid(raise_exception=True)
+                    self.perform_create(serializer)
 
-                #Send emails
-                customer_id = request.user.id
-                customer_name = request.user.first_name
-                customer_mail = request.user.email
-                supplier_name = product.supplier.first_name
-                supplier_mail = product.supplier.email
-                
-                self.send_order_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
-            
-                serializer = self.get_serializer(data=data)
-                serializer.is_valid(raise_exception=True)
-                self.perform_create(serializer)
+                    product.status = COLLECTED
+                    product.save()
 
-                headers = self.get_success_headers(serializer.data)
+                    #Send emails
+                    customer_id = request.user.id
+                    customer_name = request.user.first_name
+                    customer_mail = request.user.email
+                    supplier_name = product.supplier.first_name
+                    supplier_mail = product.supplier.email
+                    
+                    self.send_order_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
 
-                return Response(product_serializer.data, status=HTTP_201_CREATED, headers=headers)
+                    headers = self.get_success_headers(serializer.data)
+
+                    return Response(product_serializer.data, status=HTTP_201_CREATED, headers=headers)
         
         return Response(status=HTTP_400_BAD_REQUEST)
 
@@ -193,22 +195,45 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         order = self.get_object()
 
-        if (request.user == order.customer):
+        if request.user == order.customer :
 
             product = order.product
 
             if (product.status == COLLECTED) :
 
                 product_serializer = ProductSerializer(product)
+                # Returns the serialized product
+                serializer = self.get_serializer(self.get_object())
+                super().destroy(request, *args, **kwargs)
                 # Update the product status in the db
                 product.status = AVAILABLE
                 product.save()
-                # Returns the serialized product
-                serializer = self.get_serializer(self.get_object())
-                super().destroy(*args, **kwargs)
+
+                # Send mail to inform the supplier the order has been canceled by the customer 
+                #Send emails
+                customer_id = request.user.id
+                customer_name = request.user.first_name
+                customer_mail = request.user.email
+                supplier_name = product.supplier.first_name
+                supplier_mail = product.supplier.email
+                    
+                self.send_cancel_order_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
+
                 return Response(product_serializer.data, status=HTTP_200_OK)
         
         return Response(status=HTTP_400_BAD_REQUEST)
+    
+    def send_cancel_order_mails(self, client_mail, supplier_mail, product, client_name,supplier_name):
+
+        subject_supplier = str(client_name) + " has canceled the order of " + str(product) + "!"
+        subject_client = str(product) + " order canceled"
+        message_supplier = "Hey, \n"+ str(client_name) +" doesn't want your "+ str(product) +" anymore. \nThe product is now available on the CShare platform in case someone elsewants to order it! \nThank you for using CShare" 
+        message_client = "Hey, \nYou have canceled the order of "+ str(product)+ " provided by " +str(supplier_name) + ". \nThank you for using CShare"
+        from_email = settings.EMAIL_HOST_USER
+        client_mail = [client_mail]
+        supplier_mail = [supplier_mail]
+        send_mail(subject_supplier, message_supplier, from_email, supplier_mail,fail_silently=False)
+        send_mail(subject_client, message_client, from_email, client_mail, fail_silently=False )
         
     def partial_update(self, request, *args, **kwargs):
         """
