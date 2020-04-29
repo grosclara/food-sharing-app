@@ -10,6 +10,7 @@ import androidx.paging.PagedList;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSourceFactories.HomeProductsDataSourceFactory;
+import com.example.cshare.Utils.Constants;
 
 public class HomeViewModel extends ViewModel {
 
@@ -32,7 +33,7 @@ public class HomeViewModel extends ViewModel {
 
         PagedList.Config config =
                 (new PagedList.Config.Builder())
-                        .setPageSize(15)
+                        .setPageSize(Constants.PAGE_SIZE)
                         .setEnablePlaceholders(false)
                         .build();
         productPagedList = (new LivePagedListBuilder<Integer, Product>(homeProductsDataSourceFactory, config)).build();

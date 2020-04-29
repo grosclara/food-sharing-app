@@ -8,6 +8,7 @@ import androidx.paging.PagedList;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSourceFactories.SharedProductsDataSourceFactory;
+import com.example.cshare.Utils.Constants;
 
 public class SharedViewModel extends ViewModel {
 
@@ -30,7 +31,7 @@ public class SharedViewModel extends ViewModel {
 
         PagedList.Config config =
                 (new PagedList.Config.Builder())
-                        .setPageSize(15)
+                        .setPageSize(Constants.PAGE_SIZE)
                         .setEnablePlaceholders(false)
                         .build();
 

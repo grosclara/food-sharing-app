@@ -8,6 +8,7 @@ import androidx.paging.PagedList;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSourceFactories.CartProductsDataSourceFactory;
+import com.example.cshare.Utils.Constants;
 
 public class CartViewModel extends ViewModel {
 
@@ -30,7 +31,7 @@ public class CartViewModel extends ViewModel {
 
         PagedList.Config config =
                 (new PagedList.Config.Builder())
-                        .setPageSize(15)
+                        .setPageSize(Constants.PAGE_SIZE)
                         .setEnablePlaceholders(false)
                         .build();
 
