@@ -19,6 +19,7 @@ import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.CartViewModel;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 
@@ -27,6 +28,7 @@ public class CartFragment extends ProductListFragment {
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
     private CartViewModel cartViewModel;
+    private HomeViewModel homeViewModel;
 
     private static String tag;
 
@@ -42,6 +44,7 @@ public class CartFragment extends ProductListFragment {
         productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
         profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
         cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
 
         cartViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
@@ -54,6 +57,8 @@ public class CartFragment extends ProductListFragment {
             public void onChanged(ProductResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Order successfully canceled", Toast.LENGTH_SHORT).show();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());

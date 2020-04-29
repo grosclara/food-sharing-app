@@ -246,62 +246,28 @@ public class ProductRequestManager {
 
     public void cancelOrder(int productID) {
 
-        /**
-         * Request to the API to order a product and update its status from available to collected
-         */
-        Observable<Product> productObservable;
-        productObservable = orderAPI.cancelOrder(prefs.getToken(), productID);
-        productObservable
+        Observable<Product> observable;
+        observable = orderAPI.cancelOrder(prefs.getToken(), productID);
+        observable
                 .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
                 .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-
                 .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Cancel order : start subscription");
                         cancelOrderResponse.setValue(ProductResponse.loading());
                     }
-
                     @Override
                     public void onNext(Product productAv) {
-
-                        /*//TODO See how to handle this
                         Log.d(Constants.TAG, "Cancel order : live data filled");
                         cancelOrderResponse.setValue(ProductResponse.success(productAv));
-
-                        // Remove the product from the inCart list and re add it to the available list
-                        List<Product> oldAvailable = availableProductList.getValue().getApiProductListResponse().getProductList();
-                        List<Product> oldInCart = inCartProductList.getValue().getApiProductListResponse().getProductList();
-
-                        Product pIC = null;
-                        ListIterator<Product> itIC = oldInCart.listIterator();
-                        while (itIC.hasNext() && pIC == null) {
-                            Product item = itIC.next();
-                            if (item.getId() == productAv.getId())
-                                pIC = item;
-                        }
-                        oldInCart.remove(pIC);
-
-                        oldAvailable.add(0, productAv);
-*/
-                        //availableProductList.setValue(ProductListResponse.success(oldAvailable));
-                        //inCartProductList.setValue(ProductListResponse.success(oldInCart));
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Cancel order : error");
                         cancelOrderResponse.setValue(ProductResponse.error(e));
                     }
-
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Cancel order : All data received");
