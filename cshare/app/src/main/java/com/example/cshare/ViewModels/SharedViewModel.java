@@ -1,5 +1,8 @@
 package com.example.cshare.ViewModels;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
@@ -9,8 +12,12 @@ import androidx.paging.PagedList;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSourceFactories.SharedProductsDataSourceFactory;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.Utils.PreferenceProvider;
 
-public class SharedViewModel extends ViewModel {
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SharedViewModel extends AndroidViewModel {
 
     private SharedProductsDataSourceFactory sharedProductsDataSourceFactory;
 
@@ -25,8 +32,10 @@ public class SharedViewModel extends ViewModel {
         return liveDataSource;
     }
 
-    public SharedViewModel() {
-        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory();
+    public SharedViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
+
+        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory(new PreferenceProvider(application));
         liveDataSource = sharedProductsDataSourceFactory.getSharedProductsLiveDataSource();
 
         PagedList.Config config =

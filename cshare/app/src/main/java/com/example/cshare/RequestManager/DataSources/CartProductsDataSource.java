@@ -6,6 +6,7 @@ import androidx.paging.PageKeyedDataSource;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.WebServices.NetworkClient;
 
 import retrofit2.Call;
@@ -15,6 +16,11 @@ import retrofit2.Response;
 public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
+    private String token;
+
+    public CartProductsDataSource(String token) {
+        this.token = token;
+    }
 
     // Load the initial data
     @Override
@@ -22,7 +28,7 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
 
         NetworkClient.getInstance()
                 .getOrderApi()
-                .getOrderedProducts(Constants.TOKEN, FIRST_PAGE)
+                .getOrderedProducts(token, FIRST_PAGE)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -49,7 +55,7 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
 
         NetworkClient.getInstance()
                 .getOrderApi()
-                .getOrderedProducts(Constants.TOKEN,params.key)
+                .getOrderedProducts(token,params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -73,7 +79,7 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
         NetworkClient.getInstance()
                 .getOrderApi()
-                .getOrderedProducts(Constants.TOKEN, params.key)
+                .getOrderedProducts(token, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {

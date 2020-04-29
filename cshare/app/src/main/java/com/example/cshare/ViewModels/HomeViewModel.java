@@ -1,9 +1,9 @@
 package com.example.cshare.ViewModels;
 
-import android.util.Log;
+import android.app.Application;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PageKeyedDataSource;
 import androidx.paging.PagedList;
@@ -11,8 +11,12 @@ import androidx.paging.PagedList;
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSourceFactories.HomeProductsDataSourceFactory;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.Utils.PreferenceProvider;
 
-public class HomeViewModel extends ViewModel {
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class HomeViewModel extends AndroidViewModel {
 
     private HomeProductsDataSourceFactory homeProductsDataSourceFactory;
 
@@ -27,8 +31,10 @@ public class HomeViewModel extends ViewModel {
         return liveDataSource;
     }
 
-    public HomeViewModel() {
-        homeProductsDataSourceFactory = new HomeProductsDataSourceFactory();
+    public HomeViewModel(Application application) throws GeneralSecurityException, IOException {
+        super(application);
+
+        homeProductsDataSourceFactory = new HomeProductsDataSourceFactory(new PreferenceProvider(application));
         liveDataSource = homeProductsDataSourceFactory.getHomeProductsLiveDataSource();
 
         PagedList.Config config =

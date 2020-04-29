@@ -17,15 +17,19 @@ import retrofit2.Response;
 public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
+    private String token;
+
+    public HomeProductsDataSource(String token) {
+        this.token = token;
+    }
 
     // Load the initial data
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
-        Log.d(Constants.TAG, "Load initial");
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, FIRST_PAGE)
+                .getProducts(token, Constants.AVAILABLE, null, 0, FIRST_PAGE)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -49,12 +53,10 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     // Load the former data when scrolling up
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
-        Log.d(Constants.TAG, "Load before");
-
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, params.key)
+                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -76,11 +78,10 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     // Load the further data when scrolling down
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
-        Log.d(Constants.TAG, "Load after");
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, params.key)
+                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
