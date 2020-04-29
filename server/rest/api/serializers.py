@@ -68,7 +68,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','first_name','last_name','room_number','campus','profile_picture')
+        fields = ('id','email','first_name','last_name','room_number','campus','profile_picture')
 
 class CustomTokenSerializer(serializers.ModelSerializer):
     """

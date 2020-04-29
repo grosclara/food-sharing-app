@@ -109,20 +109,25 @@ class OrderViewSet(viewsets.ModelViewSet):
     
     def list(self, request):
         """
-        Display a list of the orders the auth user have created 
+        Display a list of the products the auth user has ordered 
         """
         queryset = self.get_queryset()
 
-        # Pagination
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        products = []
+        product_ids = []
 
         for order in queryset:
-            products.append(order.product)
+            product_ids.append(order.product.id)
+        
+
+        product_queryset = Product.objects.filter(id__in=product_ids)
+
+
+        # Pagination
+        paged_queryset = self.paginate_queryset(product_queryset)
+        if paged_queryset is not None:
+            print("PAGINATION")
+            serializer = ProductSerializer(paged_queryset, many=True)
+            return self.get_paginated_response(serializer.data)
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
@@ -261,7 +266,7 @@ class UserViewSet(viewsets.ModelViewSet):
             
         if (request.user == self.get_object()):
 
-            serializer = self.get_serializer(self.get_object)
+            serializer = self.get_serializer(self.get_object())
             super().destroy(request, *args, **kwargs)
             return Response(serializer.data, status=HTTP_200_OK)
 
