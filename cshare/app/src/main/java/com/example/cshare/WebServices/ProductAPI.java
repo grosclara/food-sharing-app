@@ -24,20 +24,15 @@ public interface  ProductAPI {
     @GET("product/{id}/")
     Observable<Product> getProductById(
             @Header("Authorization") String token,
-            @Path("id") int productId
+            @Path("id") int productID
     );
 
     @GET("product/")
-    Observable<List<Product>> getAvailableProducts(
+    Observable<List<Product>> getProducts(
             @Header("Authorization") String token,
-            @Query("campus") String campus,
-            @Query("status") String status
-    );
-
-    @GET("product/")
-    Observable<List<Product>> getProductsByUserID(
-            @Header("Authorization") String token,
-            @Query("supplier") int userID
+            @Query("status") String status,
+            @Query("category") String category,
+            @Query("page") int page
     );
 
     @Multipart
@@ -45,26 +40,15 @@ public interface  ProductAPI {
     Observable<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
-            @Part("name") String productName,
-            @Part("category") String productCategory,
+            @Part("name") String name,
+            @Part("category") String category,
             @Part("quantity") String quantity,
-            @Part("expiration_date") String expiration_date,
-            @Part("supplier") int supplier,
-            @Part("room_number") String room_number,
-            @Part("campus") String campus
+            @Part("expiration_date") String expiration_date
     );
 
     @DELETE("product/{id}/")
-    Observable<Product> deleteProductById(
+    Observable<Product> deleteProduct(
             @Header("Authorization") String token,
             @Path("id") int productID
-    );
-
-    @FormUrlEncoded
-    @PATCH("product/{id}/")
-    Observable<Product> updateProductStatus(
-            @Header("Authorization") String token,
-            @Path("id") int id,
-            @FieldMap Map<String, String> status
     );
 }

@@ -131,7 +131,7 @@ public class AuthRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "error");
-                        loginResponseMutableLiveData.setValue(LoginResponse.error(e));
+                        loginResponseMutableLiveData.postValue(LoginResponse.error(e));
                     }
 
                     @Override
@@ -388,6 +388,7 @@ public class AuthRequestManager {
          * Request to the API to delete the profile
          */
         Observable<User> observable = authApi.delete(prefs.getToken(), prefs.getUserID());
+        Log.d(Constants.TAG, String.valueOf(prefs.getUserID()));
         observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())

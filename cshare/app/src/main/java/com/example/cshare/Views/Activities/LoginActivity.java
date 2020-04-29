@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
+                    authViewModel.saveUserCredentials(loginResponse);
+
                     profileViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProfileViewModel.class);
                     productViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProductViewModel.class);
 

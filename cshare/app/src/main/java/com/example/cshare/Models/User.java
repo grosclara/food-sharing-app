@@ -33,7 +33,6 @@ public class User implements Serializable {
     private String profile_picture;
     private MultipartBody.Part profilePictureBody;
 
-
     public User(MultipartBody.Part profilePictureBody, String firstName, String lastName, String roomNumber, String campus, String email, String password1, String password2) {
         this.profilePictureBody = profilePictureBody;
         this.first_name = firstName;

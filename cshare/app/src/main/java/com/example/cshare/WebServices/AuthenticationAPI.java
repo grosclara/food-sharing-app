@@ -71,6 +71,6 @@ public interface AuthenticationAPI {
     @DELETE("user/{id}/")
     Observable<User> delete(
             @Header("Authorization") String token,
-            @Path("id") int userId
+            @Path("id") int userID
     );
 }
