@@ -2,6 +2,7 @@ package com.example.cshare.RequestManager;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -29,6 +30,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ProductRequestManager {
@@ -36,9 +40,6 @@ public class ProductRequestManager {
     private static ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<ProductListResponse> availableProductList = new MutableLiveData<>();
-    private MutableLiveData<ProductListResponse> sharedProductList = new MutableLiveData<>();
-    private MutableLiveData<ProductListResponse> inCartProductList = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> addProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> deleteProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> cancelOrderResponse = new MutableLiveData<>();
@@ -62,20 +63,9 @@ public class ProductRequestManager {
 
         productAPI = NetworkClient.getInstance().getProductAPI();
         orderAPI = NetworkClient.getInstance().getOrderApi();
-        update();
-
     }
 
     // Getter method
-    public MutableLiveData<ProductListResponse> getAvailableProductList() {
-        return availableProductList;
-    }
-    public MutableLiveData<ProductListResponse> getInCartProductList() {
-        return inCartProductList;
-    }
-    public MutableLiveData<ProductListResponse> getSharedProductList() {
-        return sharedProductList;
-    }
     public MutableLiveData<ProductResponse> getAddProductResponse() {
         return addProductResponse;
     }
@@ -87,161 +77,6 @@ public class ProductRequestManager {
         return cancelOrderResponse;
     }
     public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
-
-    public void update() {
-        updateAvailableProducts();
-        updateInCartProducts();
-        updateSharedProducts();
-    }
-    public void updateAvailableProducts(){
-        //getAvailableProducts();
-    };
-    public void updateSharedProducts(){
-        //getSharedProducts();
-    }
-    public void updateInCartProducts(){
-        //getInCartProducts();
-    }
-
-   /* public void getInCartProducts() {
-        *//**
-         * Request to the API to fill the MutableLiveData attribute productList with the list of products
-         * present in the cart
-         *//*
-
-        Observable<ProductListResponse.ApiProductListResponse> products;
-        products = orderAPI.getOrderedProducts(prefs.getToken(), 1);
-        products
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-
-                .subscribe(new Observer<ProductListResponse.ApiProductListResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "getInCartProducts : on start subscription");
-                        inCartProductList.setValue(ProductListResponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(ProductListResponse.ApiProductListResponse apiProductListResponse) {
-                        //TODO : We won't receive an exact product list
-                        String msg = String.format("inCart : new data received %s", inCartProductList.toString());
-                        Log.d(Constants.TAG, msg);
-                        inCartProductList.setValue(ProductListResponse.success(apiProductListResponse));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "getInCartProducts : error");
-                        inCartProductList.postValue(ProductListResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getInCartProducts : All data received");
-                    }
-                });
-    }*/
-
-   /* public void getAvailableProducts() {
-        *//**
-         * Request to the API to fill the MutableLiveData attribute productList with the list of available products
-         *//*
-
-        Observable<ProductListResponse.ApiProductListResponse> products;
-        products = productAPI.getProducts(prefs.getToken(), Constants.AVAILABLE, null, 0, 1);
-        products
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ProductListResponse.ApiProductListResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "getAvailableProducts : on start subscription");
-                        availableProductList.setValue(ProductListResponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(ProductListResponse.ApiProductListResponse apiProductListResponse) {
-                        // TODO it is not really a list of product we will retrieve
-                        String msg = String.format("getAvailableProducts : new data received %s", availableProductList.toString());
-                        Log.d(Constants.TAG, msg);
-                        //productList.setValue((List<Product>) ResponseProductList.success(products));
-                        availableProductList.setValue(ProductListResponse.success(apiProductListResponse));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "getAvailableProducts : error");
-                        availableProductList.setValue(ProductListResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getAvailableProducts : All data received");
-                    }
-                });
-    }
-*/
-    /*public void getSharedProducts() {
-        *//**
-         * Request to the API to fill the MutableLiveData attribute productList with the list of shared products
-         *//*
-
-        Observable<ProductListResponse.ApiProductListResponse> products;
-        products = productAPI.getProducts(prefs.getToken(), null, null, 1, 1);
-        products
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<ProductListResponse.ApiProductListResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "getSharedProducts :  start subscription");
-                        sharedProductList.setValue(ProductListResponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(ProductListResponse.ApiProductListResponse apiProductListResponse) {
-                        // TODO Not exactly a product list
-                        String msg = String.format("getSharedProducts :  new data received %s", sharedProductList.toString());
-                        Log.d(Constants.TAG, msg);
-                        sharedProductList.setValue(ProductListResponse.success(apiProductListResponse));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "getSharedProducts :  error");
-                        sharedProductList.setValue(ProductListResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getSharedProducts :  All data received");
-                    }
-                });
-    }*/
 
     public void addProduct(Product product) {
         /**
@@ -283,10 +118,10 @@ public class ProductRequestManager {
                         // TODO See how to handle the addition of a new product
                         addProductResponse.setValue(ProductResponse.success(product));
                         // New product list to which we add the new product
-                        List oldAvailable = getAvailableProductList().getValue().getApiProductListResponse().getProductList();
+                        /*List oldAvailable = getAvailableProductList().getValue().getApiProductListResponse().getProductList();
                         List oldShared = getSharedProductList().getValue().getApiProductListResponse().getProductList();
                         oldAvailable.add(0, product);
-                        oldShared.add(0, product);
+                        oldShared.add(0, product);*/
 
                         // Wrap this new list in live data
                         //availableProductList.setValue(ProductListResponse.success(oldAvailable));
@@ -308,27 +143,15 @@ public class ProductRequestManager {
                 });
     }
 
-    public void deleteProduct(Product productToDelete) {
+    public void deleteProduct(Product product) {
         /**
          * Request to the API to delete the product taken in param and update the repository
          * @param productToPost
          */
-
-        Observable<Product> observable;
-        observable = productAPI.deleteProduct(
-                prefs.getToken(),
-                productToDelete.getId());
-
+        Observable<Product> observable = productAPI.deleteProduct(prefs.getToken(), product.getId());
         observable
-                // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
                 .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -336,47 +159,16 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "deleteProduct : on start subscription");
                         deleteProductResponse.setValue(ProductResponse.loading());
                     }
-
                     @Override
                     public void onNext(Product response) {
-                        // TODO : See how to handle this deletion
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
                         deleteProductResponse.setValue(ProductResponse.success(response));
-
-                        // New product list to which we add the new product
-                        List<Product> oldAvailable = getAvailableProductList().getValue().getApiProductListResponse().getProductList();
-                        List<Product> oldShared = getSharedProductList().getValue().getApiProductListResponse().getProductList();
-
-                        // Remove the productToDelete from both the shared and available product lists
-                        Product pAv = null;
-                        ListIterator<Product> itAv = oldAvailable.listIterator();
-                        while (itAv.hasNext() && pAv == null) {
-                            Product item = itAv.next();
-                            if (item.getId() == productToDelete.getId())
-                                pAv = item;
-                        }
-                        Product pSh = null;
-                        ListIterator<Product> itSh = oldShared.listIterator();
-                        while (itSh.hasNext() && pSh == null) {
-                            Product item = itSh.next();
-                            if (item.getId() == productToDelete.getId())
-                                pSh = item;
-                        }
-
-                        oldAvailable.remove(pAv);
-                        oldShared.remove(pSh);
-
-                        // Wrap this new list in live data
-                       // availableProductList.setValue(ProductListResponse.success(oldAvailable));
-                        //sharedProductList.setValue(ProductListResponse.success(oldShared));
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "deleteProduct : error");
                         deleteProductResponse.setValue(ProductResponse.error(e));
                     }
-
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "deleteProduct : Deletion completed");
@@ -412,7 +204,7 @@ public class ProductRequestManager {
                     @Override
                     public void onNext(Product productIns) {
                         // TODO See how to handle this addition
-                        String msg = String.format("addOrder : product status updated and order added");
+                        /*String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
                         orderProductResponse.setValue(ProductResponse.success(productIns));
 
@@ -429,7 +221,7 @@ public class ProductRequestManager {
                             if (item.getId() == productIns.getId())
                                 pAv = item;
                         }
-                        oldAvailable.remove(pAv);
+                        oldAvailable.remove(pAv);*/
 
                         // Wrap these new lists in live data
                         //inCartProductList.setValue(ProductListResponse.success(oldInCart));
@@ -462,7 +254,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product productDel) {
-                        // TODO See how to handle this
+                        /*// TODO See how to handle this
                         // Change the status of the delivered product in the inCart list
                         Log.d(Constants.TAG, "Live data filled");
                         deliverProductResponse.setValue(ProductResponse.success(productDel));
@@ -477,7 +269,7 @@ public class ProductRequestManager {
                                 pDel = item;
                             index = oldInCart.indexOf(item);
                         }
-                        oldInCart.set(index, productDel);
+                        oldInCart.set(index, productDel);*/
 
                        // inCartProductList.setValue(ProductListResponse.success(oldInCart));
 
@@ -524,7 +316,7 @@ public class ProductRequestManager {
                     @Override
                     public void onNext(Product productAv) {
 
-                        //TODO See how to handle this
+                        /*//TODO See how to handle this
                         Log.d(Constants.TAG, "Cancel order : live data filled");
                         cancelOrderResponse.setValue(ProductResponse.success(productAv));
 
@@ -542,7 +334,7 @@ public class ProductRequestManager {
                         oldInCart.remove(pIC);
 
                         oldAvailable.add(0, productAv);
-
+*/
                         //availableProductList.setValue(ProductListResponse.success(oldAvailable));
                         //inCartProductList.setValue(ProductListResponse.success(oldInCart));
 

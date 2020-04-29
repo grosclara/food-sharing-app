@@ -92,8 +92,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     productViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
 
                     // In case of success
-                    profileViewModel.update();
-                    productViewModel.update();
+                    // TODO : see whether it needs an update
+                    //profileViewModel.update();
+                    //productViewModel.update();
 
                     // Redirect to the MainActivity
                     Intent toMainActivityIntent = new Intent();

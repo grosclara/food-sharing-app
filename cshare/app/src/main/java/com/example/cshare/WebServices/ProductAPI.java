@@ -24,7 +24,7 @@ import retrofit2.http.Query;
 public interface  ProductAPI {
 
     @GET("product/{id}/")
-    Observable<Product> getProductById(
+    Call<Product> getProductById(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

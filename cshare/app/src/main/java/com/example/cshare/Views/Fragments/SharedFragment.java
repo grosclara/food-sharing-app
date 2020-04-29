@@ -17,6 +17,7 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.ViewModels.SharedViewModel;
@@ -25,10 +26,8 @@ public class SharedFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
-
     private SharedViewModel sharedViewModel;
-
-    private static final String tag = "shared";
+    private HomeViewModel homeViewModel;
 
     @Override
     protected BaseFragment newInstance() {
@@ -36,62 +35,37 @@ public class SharedFragment extends ProductListFragment {
     }
 
     @Override
-    protected void click(Product product) {
-        if (isClickable) {
-
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
-            productDetailsFragment.show(getChildFragmentManager(), tag);
-        }
-    }
-
-    @Override
     protected void configureViewModel() {
         // Retrieve data for view model
         productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
         profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
-
         sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+
         sharedViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
             public void onChanged(PagedList<Product> products) {
                 adapter.submitList(products);
             }
         });
-
-        // Set data
-        /*productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
-            @Override
-            public void onChanged(@Nullable ProductListResponse response) {
-                if (response.getStatus().equals(Status.SUCCESS)) {
-                    //adapter.setProducts(response.getProductList());
-                    progressBar.setVisibility(View.GONE);
-                    isClickable = true;
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    isClickable = false;
-                } else if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.VISIBLE);
-                    isClickable = false;
-                }
-            }
-        });*/
         productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {
+
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
+                    sharedViewModel.refresh();
+                    homeViewModel.refresh();
+
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    // Reset the status
                     productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     @Override
@@ -108,6 +82,15 @@ public class SharedFragment extends ProductListFragment {
     }
 
     @Override
-    protected void configureProgressBar() {
+    protected void configureProgressBar() { }
+
+    @Override
+    protected void click(Product product) {
+        if (isClickable) {
+
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, Constants.SHARED, profileViewModel);
+            productDetailsFragment.show(getChildFragmentManager(), Constants.SHARED);
+        }
     }
+
 }

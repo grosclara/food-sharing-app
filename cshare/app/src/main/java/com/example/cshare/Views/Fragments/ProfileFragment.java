@@ -235,7 +235,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Profile info edited successfully", Toast.LENGTH_SHORT).show();
-                    productViewModel.update();
+                    // TODO update when changing cmapus
+                    //productViewModel.update();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     profileViewModel.getEditedProfileMutableLiveData().setValue(ApiEmptyResponse.complete());
