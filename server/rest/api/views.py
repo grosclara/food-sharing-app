@@ -131,7 +131,6 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
-    
 
     def send_order_mails(self, client_mail, supplier_mail, product, client_name,supplier_name):
         subject_supplier = "Your product has been ordered!"
@@ -147,6 +146,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         """
             Create an order with the specific product in query parameters.
+            The product concerned must be available, furthermore, the auth user can't be the supplier.
+            Otherwise it will render HTTP 400 error code
             The auth user will automatically be the customer
         """
 
@@ -156,26 +157,32 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         product = Product.objects.get(pk = data["product"])
         product_serializer = ProductSerializer(product)
+
+        if product.supplier != request.user :
+
+            if product.status == AVAILABLE :
+            
+                product.status = COLLECTED
+                product.save()
+
+                #Send emails
+                customer_id = request.user.id
+                customer_name = request.user.first_name
+                customer_mail = request.user.email
+                supplier_name = product.supplier.first_name
+                supplier_mail = product.supplier.email
+                
+                self.send_order_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
+            
+                serializer = self.get_serializer(data=data)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+
+                headers = self.get_success_headers(serializer.data)
+
+                return Response(product_serializer.data, status=HTTP_201_CREATED, headers=headers)
         
-        product.status = COLLECTED
-        product.save()
-
-        #Send emails
-        customer_id = request.user.id
-        customer_name = request.user.first_name
-        customer_mail = request.user.email
-        supplier_name = product.supplier.first_name
-        supplier_mail = product.supplier.email
-         
-        self.send_order_mails(customer_mail, supplier_mail, product, customer_name, supplier_name)
-     
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-
-        headers = self.get_success_headers(serializer.data)
-
-        return Response(product_serializer.data, status=HTTP_201_CREATED, headers=headers)
+        return Response(status=HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         """
