@@ -62,14 +62,14 @@ class ProductViewSet(viewsets.ModelViewSet):
         queryset = Product.objects.filter(campus=self.request.user.campus)
         status = self.request.query_params.get('status', None)
         category = self.request.query_params.get('category',None)
-        supplier = self.request.query_params.get('supplier',None)
+        shared = self.request.query_params.get('shared',None)    
 
         if status is not None:
             queryset = queryset.filter(status=status)
         if category is not None:
             queryset = queryset.filter(category=category)
-        if supplier is not None:
-            queryset = queryset.filter(supplier=supplier)
+        if int(shared) == 1:
+            queryset = queryset.filter(supplier=self.request.user)
 
         return queryset
 

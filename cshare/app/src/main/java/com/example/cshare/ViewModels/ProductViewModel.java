@@ -82,16 +82,16 @@ public class ProductViewModel extends AndroidViewModel {
         productRequestManager.addProduct(product);
     }
 
-    public void order(Order request, Map status){
-        productRequestManager.order(request, status);
+    public void order(Order request){
+        productRequestManager.order(request);
     }
 
-    public void deliver(int productID, Map status){
-        productRequestManager.deliver(productID, status);
+    public void deliver(int productID){
+        productRequestManager.deliver(productID);
     }
 
-    public void cancelOrder(int productID, Map status){
-        productRequestManager.cancelOrder(productID, status);
+    public void cancelOrder(int productID){
+        productRequestManager.cancelOrder(productID);
     }
 
     public void deleteProduct(Product product){

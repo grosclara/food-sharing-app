@@ -158,15 +158,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if (v == buttonLogin) {
             loginValidator.validate();
-
-        } else if (v == buttonCreateAccount) {
+        }
+        else if (v == buttonCreateAccount) {
 
             // Redirect to the Register Activity
             Intent toRegisterActivityIntent = new Intent();
             toRegisterActivityIntent.setClass(getApplicationContext(), RegisterActivity.class);
             startActivity(toRegisterActivityIntent);
 
-        } else if (v == buttonResetPassword) {
+        }
+        else if (v == buttonResetPassword) {
             // Alert Dialog to change password
             // Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

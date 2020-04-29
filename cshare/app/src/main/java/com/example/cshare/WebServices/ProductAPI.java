@@ -32,6 +32,7 @@ public interface  ProductAPI {
             @Header("Authorization") String token,
             @Query("status") String status,
             @Query("category") String category,
+            @Query("shared") int shared,
             @Query("page") int page
     );
 

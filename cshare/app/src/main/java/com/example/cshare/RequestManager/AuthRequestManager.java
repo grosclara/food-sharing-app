@@ -124,7 +124,6 @@ public class AuthRequestManager {
                     @Override
                     public void onNext(LoginResponse response) {
                         Log.d(Constants.TAG, "Log In successful");
-                        saveUserCredentials(response);
                         loginResponseMutableLiveData.setValue(LoginResponse.success(response.getToken(), response.getUser()));
                     }
 

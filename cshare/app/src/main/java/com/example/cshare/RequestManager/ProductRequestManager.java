@@ -73,47 +73,37 @@ public class ProductRequestManager {
     public MutableLiveData<ProductListResponse> getAvailableProductList() {
         return availableProductList;
     }
-
     public MutableLiveData<ProductListResponse> getInCartProductList() {
         return inCartProductList;
     }
-
     public MutableLiveData<ProductListResponse> getSharedProductList() {
         return sharedProductList;
     }
-
     public MutableLiveData<ProductResponse> getAddProductResponse() {
         return addProductResponse;
     }
-
     public MutableLiveData<ProductResponse> getDeleteProductResponse() {
         return deleteProductResponse;
     }
-
     public MutableLiveData<ProductResponse> getDeliverProductResponse() { return deliverProductResponse; }
-
     public MutableLiveData<ProductResponse> getCancelOrderResponse() {
         return cancelOrderResponse;
     }
-
     public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
-
-    public void updateAvailableProducts(){
-        getAvailableProducts();
-    };
-
-    public void updateSharedProducts(){
-        getSharedProducts();
-    }
-
-    public void updateInCartProducts(){
-        getInCartProducts();
-    }
 
     public void update() {
         updateAvailableProducts();
         updateInCartProducts();
         updateSharedProducts();
+    }
+    public void updateAvailableProducts(){
+        getAvailableProducts();
+    };
+    public void updateSharedProducts(){
+        getSharedProducts();
+    }
+    public void updateInCartProducts(){
+        getInCartProducts();
     }
 
     public void getInCartProducts() {
@@ -122,16 +112,9 @@ public class ProductRequestManager {
          * present in the cart
          */
 
-        Observable<List<Order>> orders;
-        orders = orderAPI.getOrdersByCustomerID(prefs.getToken(), prefs.getUserID());
-        orders
-                .flatMapSingle(new Function<List<Order>, Single<List<Product>>>() {
-                    @Override
-                    public Single<List<Product>> apply(List<Order> orders) throws Exception {
-                        return streamFetchProductsFollowingOrders(prefs.getToken(), orders);
-                    }
-                })
-
+        Observable<List<Product>> products;
+        products = orderAPI.getOrderedProducts(prefs.getToken(), 1);
+        products
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
                 // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
@@ -151,6 +134,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(List<Product> products) {
+                        //TODO : We won't receive an exact product list
                         String msg = String.format("inCart : new data received %s", inCartProductList.toString());
                         Log.d(Constants.TAG, msg);
                         inCartProductList.setValue(ProductListResponse.success(products));
@@ -175,7 +159,7 @@ public class ProductRequestManager {
          */
 
         Observable<List<Product>> products;
-        products = productAPI.getAvailableProducts(prefs.getToken(), prefs.getCampus(), Constants.AVAILABLE);
+        products = productAPI.getProducts(prefs.getToken(), Constants.AVAILABLE, null, 0, 1);
         products
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -196,6 +180,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(List<Product> products) {
+                        // TODO it is not really a list of product we will retrieve
                         String msg = String.format("getAvailableProducts : new data received %s", availableProductList.toString());
                         Log.d(Constants.TAG, msg);
                         //productList.setValue((List<Product>) ResponseProductList.success(products));
@@ -213,28 +198,6 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "getAvailableProducts : All data received");
                     }
                 });
-
-        /*new SingleObserver<List<Product>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG,"On start subscription");
-                        //productList.setValue((List<Product>) ResponseProductList.loading());
-                    }
-
-                    @Override
-                    public void onSuccess(List<Product> products) {
-                        Log.d(Constants.TAG,"All data received");
-                        productList.setValue(products);
-                        //productList.setValue((List<Product>) ResponseProductList.success(products));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG,"error");
-                        //productList.setValue((List<Product>) ResponseProductList.error(new NetworkError(e)));
-
-                    }
-        }*/
     }
 
     public void getSharedProducts() {
@@ -243,7 +206,7 @@ public class ProductRequestManager {
          */
 
         Observable<List<Product>> products;
-        products = productAPI.getProductsByUserID(prefs.getToken(), prefs.getUserID());
+        products = productAPI.getProducts(prefs.getToken(), null, null, 1, 1);
         products
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
@@ -264,6 +227,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(List<Product> products) {
+                        // TODO Not exactly a product list
                         String msg = String.format("getSharedProducts :  new data received %s", sharedProductList.toString());
                         Log.d(Constants.TAG, msg);
                         sharedProductList.setValue(ProductListResponse.success(products));
@@ -295,10 +259,7 @@ public class ProductRequestManager {
                 product.getName(),
                 product.getCategory(),
                 product.getQuantity(),
-                product.getExpiration_date(),
-                product.getSupplier(),
-                product.getRoom_number(),
-                product.getCampus());
+                product.getExpiration_date());
 
         productObservable
                 // Run the Observable in a dedicated thread (Schedulers.io)
@@ -321,6 +282,8 @@ public class ProductRequestManager {
                     @Override
                     public void onNext(Product product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
+
+                        // TODO See how to handle the addition of a new product
                         addProductResponse.setValue(ProductResponse.success(product));
                         // New product list to which we add the new product
                         List oldAvailable = getAvailableProductList().getValue().getProductList();
@@ -355,7 +318,7 @@ public class ProductRequestManager {
          */
 
         Observable<Product> observable;
-        observable = productAPI.deleteProductById(
+        observable = productAPI.deleteProduct(
                 prefs.getToken(),
                 productToDelete.getId());
 
@@ -379,7 +342,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product response) {
-
+                        // TODO : See how to handle this deletion
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
                         deleteProductResponse.setValue(ProductResponse.success(response));
 
@@ -425,20 +388,13 @@ public class ProductRequestManager {
                 });
     }
 
-    public void order(Order request, Map status) {
+    public void order(Order order) {
         /**
          * Request to the API to order a product and update its status from available to collected
          */
-        Observable<Order> order;
-        order = orderAPI.addOrder(prefs.getToken(), request);
-        order
-                .flatMap(new Function<Order, Observable<Product>>() {
-                    @Override
-                    public Observable<Product> apply(Order order) throws Exception {
-                        return updateStatus(prefs.getToken(), request.getProductID(), status);
-                    }
-                })
-
+        Observable<Product> productObservable;
+        productObservable = orderAPI.order(prefs.getToken(), order.getProductID());
+        productObservable
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
                 // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
@@ -458,6 +414,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product productIns) {
+                        // TODO See how to handle this addition
                         String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
                         orderProductResponse.setValue(ProductResponse.success(productIns));
@@ -496,28 +453,8 @@ public class ProductRequestManager {
                 });
     }
 
-    public Single<List<Product>> streamFetchProductsFollowingOrders(
-            String token, List<Order> orders) {
-        // Get an Observable of the list
-        return Observable
-                .fromIterable(orders)
-                .concatMap(order -> streamFetchProductFollowingId(
-                        token, order.getProductID())
-                )
-                .toList();
-    }
-
-    public Observable<Product> streamFetchProductFollowingId(
-            String token, int productID) {
-
-        return productAPI.getProductById(token, productID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-
-    public void deliver(int productID, Map status) {
-        Observable<Product> product = updateStatus(prefs.getToken(), productID, status);
+    public void deliver(int productID) {
+        Observable<Product> product = orderAPI.deliverOrder(prefs.getToken(), productID);
         product
                 .subscribe(new Observer<Product>() {
                     @Override
@@ -528,6 +465,7 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product productDel) {
+                        // TODO See how to handle this
                         // Change the status of the delivered product in the inCart list
                         Log.d(Constants.TAG, "Live data filled");
                         deliverProductResponse.setValue(ProductResponse.success(productDel));
@@ -561,20 +499,14 @@ public class ProductRequestManager {
                 });
     }
 
-    public void cancelOrder(int productID, Map status) {
+    public void cancelOrder(int productID) {
 
         /**
          * Request to the API to order a product and update its status from available to collected
          */
-        Observable<Order> observable;
-        observable = orderAPI.deleteOrderByProductId(prefs.getToken(), productID);
-        observable
-                .flatMap(new Function<Order, Observable<Product>>() {
-                    @Override
-                    public Observable<Product> apply(Order order) throws Exception {
-                        return updateStatus(prefs.getToken(), productID, status);
-                    }
-                })
+        Observable<Product> productObservable;
+        productObservable = orderAPI.cancelOrder(prefs.getToken(), productID);
+        productObservable
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
                 // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
@@ -594,6 +526,8 @@ public class ProductRequestManager {
 
                     @Override
                     public void onNext(Product productAv) {
+
+                        //TODO See how to handle this
                         Log.d(Constants.TAG, "Cancel order : live data filled");
                         cancelOrderResponse.setValue(ProductResponse.success(productAv));
 
@@ -629,14 +563,6 @@ public class ProductRequestManager {
                         cancelOrderResponse.setValue(ProductResponse.complete());
                     }
                 });
-    }
-
-    public Observable<Product> updateStatus(
-            String token, int productID, Map status) {
-        return productAPI.updateProductStatus(token, productID, status)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
     }
 
     public synchronized static ProductRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {

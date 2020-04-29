@@ -29,7 +29,7 @@ public interface OrderAPI {
             @Body int product);
 
     @DELETE("order/{id}/")
-    Observable<Product> deleteOrder(
+    Observable<Product> cancelOrder(
             @Header("Authorization") String token,
             @Path("id") int productID
     );
