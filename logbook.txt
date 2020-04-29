@@ -118,6 +118,8 @@ Implementation of the dialogs to interact with products, 2h00"
 	      Back buttons, 30mn
 	      Product dialog listener to remove VM logic from product dialogs, 1h00
 	      Attempt to refresh UI every new minute, 30mn"
+"28/04 - CG : Modify every HTTP requests in Django to fit our needs more properly, 7h00
+	      Pagination on GET (lists) requests in Django, 1h00" 
 
 
 
