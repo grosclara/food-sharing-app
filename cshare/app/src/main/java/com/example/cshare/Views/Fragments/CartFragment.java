@@ -67,6 +67,7 @@ public class CartFragment extends ProductListFragment {
             public void onChanged(ProductResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully delivered", Toast.LENGTH_SHORT).show();
+                    cartViewModel.refresh();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());

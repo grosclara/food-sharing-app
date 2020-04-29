@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Check the status
         if (product.getStatus().equals(Constants.AVAILABLE)) {
             // if still available, delete the product from the database
-            productViewModel.deleteProduct(product);
+            productViewModel.deleteProduct(product.getId());
         } else {
             Toast.makeText(this, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
         }

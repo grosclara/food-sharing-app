@@ -143,12 +143,12 @@ public class ProductRequestManager {
                 });
     }
 
-    public void deleteProduct(Product product) {
+    public void deleteProduct(int productID) {
         /**
          * Request to the API to delete the product taken in param and update the repository
          * @param productToPost
          */
-        Observable<Product> observable = productAPI.deleteProduct(prefs.getToken(), product.getId());
+        Observable<Product> observable = productAPI.deleteProduct(prefs.getToken(), productID);
         observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -181,19 +181,11 @@ public class ProductRequestManager {
         /**
          * Request to the API to order a product and update its status from available to collected
          */
-        Observable<Product> productObservable;
-        productObservable = orderAPI.order(prefs.getToken(), order.getProductID());
-        productObservable
+        Observable<Product> observable = orderAPI.order(prefs.getToken(), order.getProductID());
+        observable
                 .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
                 .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
                 .timeout(10, TimeUnit.SECONDS)
-
                 .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -243,46 +235,30 @@ public class ProductRequestManager {
     }
 
     public void deliver(int productID) {
-        Observable<Product> product = orderAPI.deliverOrder(prefs.getToken(), productID);
-        product
+        Observable<Product> observable = orderAPI.deliverOrder(prefs.getToken(), productID);
+        observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS)
                 .subscribe(new Observer<Product>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Deliver : on start subscription");
                         deliverProductResponse.setValue(ProductResponse.loading());
                     }
-
                     @Override
-                    public void onNext(Product productDel) {
-                        /*// TODO See how to handle this
-                        // Change the status of the delivered product in the inCart list
-                        Log.d(Constants.TAG, "Live data filled");
-                        deliverProductResponse.setValue(ProductResponse.success(productDel));
-
-                        List<Product> oldInCart = inCartProductList.getValue().getApiProductListResponse().getProductList();
-                        Product pDel = null;
-                        int index = -1;
-                        ListIterator<Product> itDel = oldInCart.listIterator();
-                        while (itDel.hasNext() && pDel == null) {
-                            Product item = itDel.next();
-                            if (item.getId() == productDel.getId())
-                                pDel = item;
-                            index = oldInCart.indexOf(item);
-                        }
-                        oldInCart.set(index, productDel);*/
-
-                       // inCartProductList.setValue(ProductListResponse.success(oldInCart));
-
+                    public void onNext(Product product) {
+                        Log.d(Constants.TAG, " Deliver : Live data filled");
+                        deliverProductResponse.setValue(ProductResponse.success(product));
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Deliver : error");
                         deliverProductResponse.setValue(ProductResponse.error(e));
                     }
-
                     @Override
                     public void onComplete() {
+                        Log.d(Constants.TAG, " Deliver : Complete");
                         deliverProductResponse.setValue(ProductResponse.complete());
                     }
                 });

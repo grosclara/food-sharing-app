@@ -64,7 +64,7 @@ public class ProductViewModel extends AndroidViewModel {
         productRequestManager.cancelOrder(productID);
     }
 
-    public void deleteProduct(Product product){
-        productRequestManager.deleteProduct(product);
+    public void deleteProduct(int productID){
+        productRequestManager.deleteProduct(productID);
     }
 }
