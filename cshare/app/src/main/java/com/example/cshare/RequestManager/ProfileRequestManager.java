@@ -103,7 +103,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getUser : error");
-                        userProfileResponse.setValue(UserReponse.error(e));
+                        userProfileResponse.postValue(UserReponse.error(e));
                     }
 
                     @Override

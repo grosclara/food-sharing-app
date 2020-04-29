@@ -11,6 +11,8 @@ import com.example.cshare.RequestManager.DataSourceFactories.SharedProductsDataS
 
 public class SharedViewModel extends ViewModel {
 
+    private SharedProductsDataSourceFactory sharedProductsDataSourceFactory;
+
     private LiveData<PagedList<Product>> productPagedList;
     private LiveData<PageKeyedDataSource<Integer, Product>> liveDataSource;
 
@@ -23,7 +25,7 @@ public class SharedViewModel extends ViewModel {
     }
 
     public SharedViewModel() {
-        SharedProductsDataSourceFactory sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory();
+        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory();
         liveDataSource = sharedProductsDataSourceFactory.getSharedProductsLiveDataSource();
 
         PagedList.Config config =
@@ -33,5 +35,10 @@ public class SharedViewModel extends ViewModel {
                         .build();
 
         productPagedList = (new LivePagedListBuilder<Integer, Product>(sharedProductsDataSourceFactory, config)).build();
+    }
+
+    public void refresh(){
+        sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue().invalidate();
+        //getProductPagedList().getValue().getDataSource().invalidate();
     }
 }

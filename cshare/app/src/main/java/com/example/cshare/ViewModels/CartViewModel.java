@@ -11,6 +11,8 @@ import com.example.cshare.RequestManager.DataSourceFactories.CartProductsDataSou
 
 public class CartViewModel extends ViewModel {
 
+    private CartProductsDataSourceFactory cartProductsDataSourceFactory;
+
     private LiveData<PagedList<Product>> productPagedList;
     private LiveData<PageKeyedDataSource<Integer, Product>> liveDataSource;
 
@@ -23,7 +25,7 @@ public class CartViewModel extends ViewModel {
     }
 
     public CartViewModel() {
-        CartProductsDataSourceFactory cartProductsDataSourceFactory = new CartProductsDataSourceFactory();
+        cartProductsDataSourceFactory = new CartProductsDataSourceFactory();
         liveDataSource = cartProductsDataSourceFactory.getCartProductsLiveDataSource();
 
         PagedList.Config config =
@@ -33,5 +35,9 @@ public class CartViewModel extends ViewModel {
                         .build();
 
         productPagedList = (new LivePagedListBuilder<Integer, Product>(cartProductsDataSourceFactory, config)).build();
+    }
+
+    public void refresh(){
+        cartProductsDataSourceFactory.getCartProductsLiveDataSource().getValue().invalidate();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.cshare.Views.Fragments;
 
 
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -129,7 +130,7 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.updateAvailableProducts();
+                homeViewModel.refresh();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
             }

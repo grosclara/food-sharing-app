@@ -120,11 +120,9 @@ public class CartFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.updateInCartProducts();
+                cartViewModel.refresh();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
-
             }
         });
     }

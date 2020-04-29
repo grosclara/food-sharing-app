@@ -1,5 +1,7 @@
 package com.example.cshare.RequestManager.DataSources;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
 
@@ -19,6 +21,7 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     // Load the initial data
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
+        Log.d(Constants.TAG, "Load initial");
 
         NetworkClient.getInstance()
                 .getProductAPI()
@@ -46,6 +49,8 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     // Load the former data when scrolling up
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+        Log.d(Constants.TAG, "Load before");
+
 
         NetworkClient.getInstance()
                 .getProductAPI()
@@ -71,6 +76,8 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     // Load the further data when scrolling down
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+        Log.d(Constants.TAG, "Load after");
+
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, params.key)
