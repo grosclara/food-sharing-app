@@ -1,35 +1,28 @@
 package com.example.cshare.Views.Fragments;
 
 
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
-import com.example.cshare.Models.ApiResponses.ProductListResponse;
-import com.example.cshare.Models.ApiResponses.UserReponse;
-import com.example.cshare.Models.Order;
-import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Models.Product;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class HomeFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
+    private HomeViewModel homeViewModel;
     private static String tag;
 
     @Override
@@ -40,17 +33,28 @@ public class HomeFragment extends ProductListFragment {
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
 
-        // Set data
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+        homeViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
+            @Override
+            public void onChanged(PagedList<Product> products) {
+                adapter.submitList(products);
+            }
+        });
+
+
+
+        /*// Set data
         productViewModel.getAvailableProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
             public void onChanged(@Nullable ProductListResponse response) {
                 Log.d(Constants.TAG, "ONCHANGED");
                 Log.d(Constants.TAG, response.getStatus().toString());
                 if (response.getStatus().equals(Status.SUCCESS)) {
-                    adapter.setProducts(response.getProductList());
+                    //adapter.setProducts(response.getProductList());
+                    Toast.makeText(getContext(), String.valueOf(response.getApiProductListResponse().getProductList().size()), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     isClickable = true;
                 } else if (response.getStatus().equals(Status.ERROR)) {
@@ -63,7 +67,7 @@ public class HomeFragment extends ProductListFragment {
                     isClickable = false;
                 }
             }
-        });
+        });*/
 
         productViewModel.getDeleteProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override

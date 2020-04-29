@@ -1,5 +1,6 @@
 package com.example.cshare.WebServices;
 
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -28,7 +30,7 @@ public interface  ProductAPI {
     );
 
     @GET("product/")
-    Observable<List<Product>> getProducts(
+    Call<ProductListResponse.ApiProductListResponse> getProducts(
             @Header("Authorization") String token,
             @Query("status") String status,
             @Query("category") String category,

@@ -45,7 +45,6 @@ public class AuthRequestManager {
 
     // Data sources dependencies
     private PreferenceProvider prefs;
-    private Retrofit retrofit;
     // Insert API interface dependency here
     private AuthenticationAPI authApi;
 
@@ -53,8 +52,7 @@ public class AuthRequestManager {
 
         this.prefs = prefs;
         // Define the URL endpoint for the HTTP request.
-        this.retrofit = NetworkClient.getRetrofitClient();
-        this.authApi = this.retrofit.create(AuthenticationAPI.class);
+        this.authApi = NetworkClient.getInstance().getAuthAPI();
 
         // Initialize the value of the boolean isLoggedIn
         isLoggedIn();

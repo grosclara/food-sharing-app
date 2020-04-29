@@ -45,7 +45,6 @@ public class ProfileRequestManager {
 
     // Data sources dependencies
     private PreferenceProvider prefs;
-    private Retrofit retrofit;
     // Insert API interface dependency here
     private UserAPI userAPI;
     private AuthenticationAPI authAPI;
@@ -54,9 +53,8 @@ public class ProfileRequestManager {
 
         this.prefs = prefs;
         // Define the URL endpoint for the HTTP request.
-        retrofit = NetworkClient.getRetrofitClient();
-        userAPI = retrofit.create(UserAPI.class);
-        authAPI = retrofit.create(AuthenticationAPI.class);
+        userAPI = NetworkClient.getInstance().getUserAPI();
+        authAPI = NetworkClient.getInstance().getAuthAPI();
 
         update();
     }

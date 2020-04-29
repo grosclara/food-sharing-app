@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
     }
 
     protected void configureDesign() {

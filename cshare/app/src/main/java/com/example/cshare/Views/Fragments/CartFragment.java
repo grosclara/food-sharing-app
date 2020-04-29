@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
@@ -17,6 +18,7 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.CartViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 
@@ -24,6 +26,8 @@ public class CartFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
+
+    private CartViewModel cartViewModel;
 
     private static String tag;
 
@@ -50,14 +54,24 @@ public class CartFragment extends ProductListFragment {
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
 
-        productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
+        cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
+        cartViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
+            @Override
+            public void onChanged(PagedList<Product> products) {
+                adapter.submitList(products);
+            }
+        });
+
+
+
+        /*productViewModel.getInCartProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
             public void onChanged(@Nullable ProductListResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)){
-                    adapter.setProducts(response.getProductList());
+                    //adapter.setProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);
                     isClickable = true;
                 }
@@ -72,7 +86,7 @@ public class CartFragment extends ProductListFragment {
                     isClickable = false;
                 }
             }
-        });
+        });*/
         productViewModel.getCancelOrderResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {

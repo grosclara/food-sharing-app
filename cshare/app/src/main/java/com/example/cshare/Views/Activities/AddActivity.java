@@ -128,8 +128,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     protected void configureViewModel() {
         // Retrieve data from view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
 
         productViewModel.getAddProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override

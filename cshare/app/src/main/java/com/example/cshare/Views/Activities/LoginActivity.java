@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void configureViewModel() {
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(AuthViewModel.class);
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
@@ -88,8 +88,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     authViewModel.saveUserCredentials(loginResponse);
 
-                    profileViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProfileViewModel.class);
-                    productViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProductViewModel.class);
+                    profileViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
+                    productViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
 
                     // In case of success
                     profileViewModel.update();

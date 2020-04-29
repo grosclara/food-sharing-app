@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
@@ -18,11 +19,14 @@ import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
+import com.example.cshare.ViewModels.SharedViewModel;
 
 public class SharedFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
+
+    private SharedViewModel sharedViewModel;
 
     private static final String tag = "shared";
 
@@ -43,14 +47,23 @@ public class SharedFragment extends ProductListFragment {
     @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
+        productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
+
+        sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+        sharedViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
+            @Override
+            public void onChanged(PagedList<Product> products) {
+                adapter.submitList(products);
+            }
+        });
+
         // Set data
-        productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
+        /*productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
             @Override
             public void onChanged(@Nullable ProductListResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
-                    adapter.setProducts(response.getProductList());
+                    //adapter.setProducts(response.getProductList());
                     progressBar.setVisibility(View.GONE);
                     isClickable = true;
                 } else if (response.getStatus().equals(Status.ERROR)) {
@@ -63,7 +76,7 @@ public class SharedFragment extends ProductListFragment {
                     isClickable = false;
                 }
             }
-        });
+        });*/
         productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {

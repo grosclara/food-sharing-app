@@ -12,7 +12,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product> {
+public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
 
@@ -21,13 +21,13 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
 
         NetworkClient.getInstance()
-                .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, FIRST_PAGE)
+                .getOrderApi()
+                .getOrderedProducts(Constants.TOKEN, FIRST_PAGE)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if(response.body() != null){
+                        if (response.body() != null) {
                             Integer key = (response.body().getNext() != null) ? FIRST_PAGE+ 1  : null;
                             callback.onResult(response.body().getProductList(), null, key);
                         }
@@ -48,13 +48,13 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
 
         NetworkClient.getInstance()
-                .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, params.key)
+                .getOrderApi()
+                .getOrderedProducts(Constants.TOKEN,params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if(response.body() != null){
+                        if (response.body() != null) {
                             Integer key = (params.key > 1) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         }
@@ -72,13 +72,13 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
         NetworkClient.getInstance()
-                .getProductAPI()
-                .getProducts(Constants.TOKEN, Constants.AVAILABLE, null, 0, params.key)
+                .getOrderApi()
+                .getOrderedProducts(Constants.TOKEN, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
 
-                        if(response.body() != null){
+                        if (response.body() != null) {
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         }
@@ -91,3 +91,4 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
                 });
     }
 }
+

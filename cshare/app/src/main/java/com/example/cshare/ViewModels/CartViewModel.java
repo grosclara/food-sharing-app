@@ -7,9 +7,10 @@ import androidx.paging.PageKeyedDataSource;
 import androidx.paging.PagedList;
 
 import com.example.cshare.Models.Product;
-import com.example.cshare.RequestManager.DataSourceFactories.HomeProductsDataSourceFactory;
+import com.example.cshare.RequestManager.DataSourceFactories.CartProductsDataSourceFactory;
 
-public class HomeViewModel extends ViewModel {
+public class CartViewModel extends ViewModel {
+
     private LiveData<PagedList<Product>> productPagedList;
     private LiveData<PageKeyedDataSource<Integer, Product>> liveDataSource;
 
@@ -21,9 +22,9 @@ public class HomeViewModel extends ViewModel {
         return liveDataSource;
     }
 
-    public HomeViewModel() {
-        HomeProductsDataSourceFactory homeProductsDataSourceFactory = new HomeProductsDataSourceFactory();
-        liveDataSource = homeProductsDataSourceFactory.getHomeProductsLiveDataSource();
+    public CartViewModel() {
+        CartProductsDataSourceFactory cartProductsDataSourceFactory = new CartProductsDataSourceFactory();
+        liveDataSource = cartProductsDataSourceFactory.getCartProductsLiveDataSource();
 
         PagedList.Config config =
                 (new PagedList.Config.Builder())
@@ -31,6 +32,6 @@ public class HomeViewModel extends ViewModel {
                         .setEnablePlaceholders(false)
                         .build();
 
-        productPagedList = (new LivePagedListBuilder<Integer, Product>(homeProductsDataSourceFactory, config)).build();
+        productPagedList = (new LivePagedListBuilder<Integer, Product>(cartProductsDataSourceFactory, config)).build();
     }
 }

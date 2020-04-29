@@ -1,11 +1,13 @@
 package com.example.cshare.WebServices;
 
+import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -18,7 +20,7 @@ import retrofit2.http.Query;
 public interface OrderAPI {
 
     @GET("order/")
-    Observable<List<Product>> getOrderedProducts(
+    Call<ProductListResponse.ApiProductListResponse> getOrderedProducts(
             @Header("Authorization") String token,
             @Query("page") int page
     );

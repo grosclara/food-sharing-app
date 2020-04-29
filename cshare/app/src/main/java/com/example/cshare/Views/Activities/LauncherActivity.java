@@ -21,7 +21,7 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         // Instantiate view model
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(AuthViewModel.class);
         authViewModel.getIsLoggedInMutableLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isLoggedIn) {

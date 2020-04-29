@@ -127,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         configureValidator();
 
         //ViewModel
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(AuthViewModel.class);
         authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
             public void onChanged(LoginResponse loginResponse) {
