@@ -5,11 +5,14 @@ import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -25,10 +28,12 @@ public interface OrderAPI {
             @Query("page") int page
     );
 
+    @FormUrlEncoded
     @POST("order/")
     Observable<Product> order(
             @Header("Authorization") String token,
-            @Body int product);
+            @FieldMap Map<String, Integer> product
+    );
 
     @DELETE("order/{id}/")
     Observable<Product> cancelOrder(

@@ -23,15 +23,11 @@ import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.ViewModels.ProfileViewModel;
-import com.example.cshare.Models.Order;
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.ViewModels.ProductViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProductDialogFragment extends DialogFragment {
 

@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.RequestManager.Status;
+import com.example.cshare.ViewModels.CartViewModel;
 import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.example.cshare.Models.Product;
@@ -26,6 +27,7 @@ public class HomeFragment extends ProductListFragment {
     private ProfileViewModel profileViewModel;
     private HomeViewModel homeViewModel;
     private SharedViewModel sharedViewModel;
+    private CartViewModel cartViewModel;
 
     private static String tag;
 
@@ -41,6 +43,7 @@ public class HomeFragment extends ProductListFragment {
         profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
         homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
         sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+        cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
 
         homeViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
@@ -68,6 +71,8 @@ public class HomeFragment extends ProductListFragment {
             public void onChanged(ProductResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully ordered", Toast.LENGTH_SHORT).show();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());

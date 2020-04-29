@@ -18,6 +18,7 @@ import com.example.cshare.WebServices.ProductAPI;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -181,7 +182,9 @@ public class ProductRequestManager {
         /**
          * Request to the API to order a product and update its status from available to collected
          */
-        Observable<Product> observable = orderAPI.order(prefs.getToken(), order.getProductID());
+        Map<String, Integer> productIDMap = new HashMap<>();
+        productIDMap.put("product", order.getProductID());
+        Observable<Product> observable = orderAPI.order(prefs.getToken(), productIDMap);
         observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -192,40 +195,17 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "addOrder : on start subscription");
                         orderProductResponse.setValue(ProductResponse.loading());
                     }
-
                     @Override
-                    public void onNext(Product productIns) {
-                        // TODO See how to handle this addition
-                        /*String msg = String.format("addOrder : product status updated and order added");
+                    public void onNext(Product product) {
+                        String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
-                        orderProductResponse.setValue(ProductResponse.success(productIns));
-
-                        // Ordered product added to the cart
-                        List<Product> oldInCart = getInCartProductList().getValue().getApiProductListResponse().getProductList();
-                        oldInCart.add(0, productIns);
-
-                        // Remove the product from the home available list
-                        List<Product> oldAvailable = getAvailableProductList().getValue().getApiProductListResponse().getProductList();
-                        Product pAv = null;
-                        ListIterator<Product> itAv = oldAvailable.listIterator();
-                        while (itAv.hasNext() && pAv == null) {
-                            Product item = itAv.next();
-                            if (item.getId() == productIns.getId())
-                                pAv = item;
-                        }
-                        oldAvailable.remove(pAv);*/
-
-                        // Wrap these new lists in live data
-                        //inCartProductList.setValue(ProductListResponse.success(oldInCart));
-                        //availableProductList.setValue(ProductListResponse.success(oldAvailable));
+                        orderProductResponse.setValue(ProductResponse.success(product));
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "addOrder : error");
                         orderProductResponse.setValue(ProductResponse.error(e));
                     }
-
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getInCartProducts : All data received");
