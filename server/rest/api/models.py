@@ -102,10 +102,16 @@ class Product(models.Model): # Product table
         choices=CAMPUS_CHOICES) 
     objects = models.Manager()
 
+    def __str__(self):              # __unicode__ on Python 2
+        return self.name
+
 class Order(models.Model): # Order table
     client = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)   
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.id
 

@@ -120,8 +120,7 @@ Implementation of the dialogs to interact with products, 2h00"
 	      Product dialog listener to remove VM logic from product dialogs, 1h00
 	      Attempt to refresh UI every new minute, 30mn"
 "27/04 - BT : Send an email to the client too after an order, 1h00"
-
-
+"01/05 - BT : Custom admin dashbord, 1h00"
 
 
 
