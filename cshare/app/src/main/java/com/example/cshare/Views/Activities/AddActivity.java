@@ -33,8 +33,10 @@ import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
+import com.example.cshare.ViewModels.SharedViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Future;
@@ -61,13 +63,13 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
     @NotEmpty
-    @Future
-    private EditText editTextExpirationDate;
+    private TextView textViewExpirationDate;
     @NotEmpty
     private EditText editTextQuantity;
     private Spinner spinnerProductCategories;
     private Button buttonPhoto;
     private Button buttonSubmit;
+    private Button buttonExpirationDate;
 
     private String productName;
     private String[] productCategoriesArray;
@@ -86,6 +88,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     // ViewModels
     ProductViewModel productViewModel;
     ProfileViewModel profileViewModel;
+    HomeViewModel homeViewModel;
+    SharedViewModel sharedViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +108,11 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         // Bind views
         editTextProductName = findViewById(R.id.editTextProductName);
         editTextQuantity = findViewById(R.id.editTextQuantity);
-        editTextExpirationDate = findViewById(R.id.editTextExpirationDate);
+        textViewExpirationDate = findViewById(R.id.textViewExpirationDate);
         textViewPictureError = findViewById(R.id.textViewPictureError);
         buttonPhoto = findViewById(R.id.buttonPhoto);
         buttonSubmit = findViewById(R.id.buttonSubmit);
+        buttonExpirationDate = findViewById(R.id.buttonExpirationDate);
         spinnerProductCategories = findViewById(R.id.spinnerProductCategories);
         imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
 
@@ -119,7 +124,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         // Click listeners
         buttonPhoto.setOnClickListener(this);
         buttonSubmit.setOnClickListener(this);
-        editTextExpirationDate.setOnClickListener(this);
+        buttonExpirationDate.setOnClickListener(this);
         imageViewPreviewProduct.setOnClickListener(this);
 
         // Product spinner
@@ -130,6 +135,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         // Retrieve data from view model
         productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
         profileViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(HomeViewModel.class);
+        sharedViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(SharedViewModel.class);
 
         productViewModel.getAddProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
@@ -137,9 +144,10 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 if (productResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
                 } else if (productResponse.getStatus().equals(Status.SUCCESS)) {
-
                     Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
                     // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
+                    homeViewModel.refresh();
+                    sharedViewModel.refresh();
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
@@ -181,6 +189,44 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         });
     }
 
+    private void configureDatePicker(){
+
+        // Get Current Date
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        int realMonth = monthOfYear + 1;
+                        String strMonth = "";
+                        if (realMonth < 10){
+                            strMonth = "0"+ realMonth;
+                        } else {
+                            strMonth = String.valueOf(realMonth) ;
+                        }
+                        String strDay = "";
+                        if (dayOfMonth < 10){
+                            strDay = "0"+ dayOfMonth;
+                        } else {
+                            strDay = String.valueOf(dayOfMonth) ;
+                        }
+                        expiration_date = year + "-" + strMonth + "-" + strDay;
+                        textViewExpirationDate.setText(expiration_date);
+                    }
+                },
+                year, month, day);
+        datePickerDialog.show();
+
+        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        datePickerDialog.show();
+    }
+
     @Override
     public void onValidationSucceeded() {
         //Called when all your views pass all validations.
@@ -196,10 +242,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             String message = error.getCollatedErrorMessage(this);
 
             // Display error messages
-            if (view == editTextExpirationDate) {
-                editTextExpirationDate.setHintTextColor(Color.parseColor("#FF0000"));
-                editTextExpirationDate.setBackgroundColor(Color.parseColor("#33FF0000"));
-                editTextExpirationDate.setHint(message);
+            if (view == textViewExpirationDate) {
+                ((TextView) view).setError(message);
+                Toast.makeText(this, "Expiration date is required", Toast.LENGTH_LONG).show();
             } else if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
@@ -246,6 +291,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         } else if (v == buttonSubmit) {
 
+            Log.d(Constants.TAG, productCategory);
+
             // Validate the field
             validator.validate();
 
@@ -271,36 +318,11 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 productViewModel.addProduct(product);
 
             } else if (fileToUploadUri == null) {
-                Toast.makeText(this, "You must choose a product picture", Toast.LENGTH_SHORT).show();
                 textViewPictureError.setVisibility(View.VISIBLE);
             }
 
-        } else if (v == editTextExpirationDate) {
-            // Get Current Date
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            expiration_date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            editTextExpirationDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            editTextExpirationDate.setBackgroundColor(Color.WHITE);
-
-                        }
-                    },
-                    year, month, day);
-            datePickerDialog.show();
-
-            datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            datePickerDialog.show();
+        } else if (v == buttonExpirationDate) {
+            configureDatePicker();
         }
 
     }

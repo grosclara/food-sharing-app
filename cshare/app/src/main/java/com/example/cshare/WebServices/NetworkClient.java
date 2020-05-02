@@ -9,6 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class NetworkClient {
 
@@ -30,6 +31,9 @@ public class NetworkClient {
                 .client(okHttpClient)
                 // Adapt to the Retrofit instance that will allow it to automatically convert its data into Observables
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                // A converter which supports converting strings and both primitives
+                // and their boxed types to text/plain bodies.
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
