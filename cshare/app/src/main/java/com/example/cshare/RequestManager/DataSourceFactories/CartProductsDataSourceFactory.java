@@ -12,8 +12,6 @@ import com.example.cshare.Utils.PreferenceProvider;
 
 public class CartProductsDataSourceFactory extends DataSource.Factory {
 
-    private MutableLiveData<PageKeyedDataSource<Integer, Product>> cartProductsLiveDataSource = new MutableLiveData<>();
-
     private PreferenceProvider prefs;
     private Context context;
 
@@ -21,6 +19,8 @@ public class CartProductsDataSourceFactory extends DataSource.Factory {
         this.prefs = prefs;
         this.context = context;
     }
+
+    private MutableLiveData<PageKeyedDataSource<Integer, Product>> cartProductsLiveDataSource = new MutableLiveData<>();
 
     @Override
     public DataSource create() {

@@ -48,6 +48,11 @@ public class HomeFragment extends ProductListFragment {
         homeViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
             public void onChanged(PagedList<Product> products) {
+                Log.d(Constants.TAG, "SIZE"+products.size());
+                if (products.size() > 1) {
+                    Log.d(Constants.TAG, products.get(0).getProduct_picture());
+                    Log.d(Constants.TAG, products.get(0).getProduct_picture());
+                }
                 adapter.submitList(products);
             }
         });

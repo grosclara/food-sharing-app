@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
+import com.example.cshare.Utils.Constants;
 import com.squareup.picasso.Picasso;
 
 // The purpose here is to model the previously created XML view (representing a line
@@ -50,8 +51,6 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
                 break;
             default:
         }
-
-        Log.i("img", product.getProduct_picture());
         Picasso.get().load(product.getProduct_picture()).into(imageViewProduct);
     }
 

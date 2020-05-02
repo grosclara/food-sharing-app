@@ -1,27 +1,21 @@
 package com.example.cshare.Views.Fragments;
 
 
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
-import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.ViewUtils.ItemClickSupport;
-import com.example.cshare.Utils.ViewUtils.ProductAdapter;
 import com.example.cshare.Utils.ViewUtils.ProductPagedListAdapter;
 import com.example.cshare.Views.Activities.AddActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class

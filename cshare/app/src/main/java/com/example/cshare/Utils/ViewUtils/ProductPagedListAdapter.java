@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.DiffUtil;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
-import com.example.cshare.Utils.Constants;
-
-import java.util.Objects;
 
 public class ProductPagedListAdapter extends PagedListAdapter<Product, ProductViewHolder> {
 

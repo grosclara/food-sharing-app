@@ -23,6 +23,7 @@ from django.shortcuts import get_object_or_404
 class ProductViewSet(viewsets.ModelViewSet):
     """ 
     This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
+
     """
     model = Product
     lookup_field = 'id'
@@ -97,8 +98,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     # Path variable
     lookup_field = 'product'
 
-    serializer_class = OrderSerializer
-
+    serializer_class = ProductSerializer
     
     def get_queryset(self):
         """
@@ -117,18 +117,17 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         for order in queryset:
             product_ids.append(order.product.id)
+            print(order.product.product_picture)
         
-
         product_queryset = Product.objects.filter(id__in=product_ids).order_by('-updated_at')
-
 
         # Pagination
         paged_queryset = self.paginate_queryset(product_queryset)
         if paged_queryset is not None:
-            serializer = ProductSerializer(paged_queryset, many=True)
+            serializer = self.get_serializer(paged_queryset, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = ProductSerializer(products, many=True)
+        serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)
 
     def send_order_mails(self, client_mail, supplier_mail, product, client_name,supplier_name):

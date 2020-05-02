@@ -48,9 +48,7 @@ public class CartFragment extends ProductListFragment {
 
         cartViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
-            public void onChanged(PagedList<Product> products) {
-                adapter.submitList(products);
-            }
+            public void onChanged(PagedList<Product> products) { adapter.submitList(products); }
         });
         productViewModel.getCancelOrderResponse().observe(this, new Observer<ProductResponse>() {
             @Override
