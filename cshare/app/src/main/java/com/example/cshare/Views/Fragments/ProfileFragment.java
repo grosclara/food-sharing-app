@@ -28,7 +28,10 @@ import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.CartViewModel;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.SharedViewModel;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
@@ -55,7 +58,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     // ViewModel
     private ProfileViewModel profileViewModel;
     private AuthViewModel authViewModel;
-    private ProductViewModel productViewModel;
+    private SharedViewModel sharedViewModel;
+    private CartViewModel cartViewModel;
+    private HomeViewModel homeViewModel;
 
     // Form validation
     protected Validator validator;
@@ -155,7 +160,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         authViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(AuthViewModel.class);
         // Retrieve user details from profile view model
         profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
-        productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
+
+        // Update VM if the campus is changed
+        cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+        sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+
 
         authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
@@ -244,30 +254,25 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
+                Log.d(Constants.TAG, "USER PROFILE ON CHANGED "+response.getStatus());
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    // profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
                     Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
                     updateUserDetails(response.getUser());
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-        profileViewModel.getEditedProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
-            @Override
-            public void onChanged(ApiEmptyResponse response) {
-                Log.d(Constants.TAG, "onChanged edited" + response.getStatus());
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
-                    Toast.makeText(getContext(), "Profile info edited successfully", Toast.LENGTH_SHORT).show();
-                    // TODO update when changing cmapus
-                    //productViewModel.update();
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    profileViewModel.getEditedProfileMutableLiveData().setValue(ApiEmptyResponse.complete());
+                }
+
+                else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null ){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -391,6 +396,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
             if (validated) {
 
+                if (campus != profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getCampus()){
+                    sharedViewModel.refresh();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
+                }
+
                 // Retrieve user details from the edit text
                 lastName = editTextLastName.getText().toString().trim();
                 firstName = editTextFirstName.getText().toString().trim();
@@ -454,8 +465,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d(Constants.TAG, "TESTSTSTST0");
 
         // Result code is RESULT_OK only if the user selects an Image
         if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {

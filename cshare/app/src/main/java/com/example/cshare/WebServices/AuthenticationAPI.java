@@ -29,7 +29,7 @@ import retrofit2.http.Path;
 public interface AuthenticationAPI {
 
     @GET("rest-auth/user/")
-    Observable<User> getProfileInfo(
+    Call<User> getProfileInfo(
             @Header("Authorization") String token
     );
 

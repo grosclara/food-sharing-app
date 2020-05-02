@@ -53,8 +53,11 @@ public class ProductDialogFragment extends DialogFragment {
 
     public interface ProductDialogListener {
         void onOrderClicked(Product product, User customer);
+
         void onDeleteClicked(Product product);
+
         void onDeliverClicked(Product product);
+
         void onCancelOrderClicked(Product product);
     }
 
@@ -66,33 +69,44 @@ public class ProductDialogFragment extends DialogFragment {
         profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                if(response.getStatus().equals(Status.SUCCESS)){
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
                     Toast.makeText(getContext(), "Supplier info retrieved", Toast.LENGTH_SHORT).show();
                     fillInSupplierDetails(response.getUser());
-                }
-                else if (response.getStatus().equals(Status.LOADING)){
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                }
-                else if (response.getStatus().equals(Status.ERROR)){
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
         });
 
         profileViewModel.getUserProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                if(response.getStatus().equals(Status.SUCCESS)){
-                    Toast.makeText(getContext(), "User info retrieved", Toast.LENGTH_SHORT).show();
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    Toast.makeText(getContext(), "Profile info retrieved", Toast.LENGTH_SHORT).show();
                     customer = response.getUser();
-                }
-                else if (response.getStatus().equals(Status.LOADING)){
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                }
-                else if (response.getStatus().equals(Status.ERROR)){
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

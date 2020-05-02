@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.UserReponse;
@@ -14,6 +15,8 @@ import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.UserAPI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,6 +27,9 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -45,17 +51,10 @@ public class ProfileRequestManager {
 
     // Data sources dependencies
     private PreferenceProvider prefs;
-    // Insert API interface dependency here
-    private UserAPI userAPI;
-    private AuthenticationAPI authAPI;
 
     public ProfileRequestManager(PreferenceProvider prefs) {
 
         this.prefs = prefs;
-        // Define the URL endpoint for the HTTP request.
-        userAPI = NetworkClient.getInstance().getUserAPI();
-        authAPI = NetworkClient.getInstance().getAuthAPI();
-
         update();
     }
 
@@ -70,203 +69,125 @@ public class ProfileRequestManager {
     public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
     public MutableLiveData<ApiEmptyResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
-    public void getUserProfile() {
-        /**
-         * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
-         */
-        Observable<User> userObservable;
-        userObservable = authAPI.getProfileInfo(prefs.getToken());
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "getUser : on start subscription");
-                        userProfileResponse.postValue(UserReponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        Log.d(Constants.TAG, "getUser : live data filled");
-                        userProfileResponse.postValue(UserReponse.success(user));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "getUser : error");
-                        userProfileResponse.postValue(UserReponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getUser : Data received");
-                    }
-                });
-    }
-
-    public void getUserByID(int userID) {
-        /**
-         * Request to the API to fill the MutableLiveData attribute userProfile with user's info in database
-         */
-        Observable<User> userObservable;
-        userObservable = userAPI.getUserByID(prefs.getToken(), userID);
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "getUser : on start subscription");
-                        otherUserProfileResponse.postValue(UserReponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(User response) {
-                        Log.d(Constants.TAG, "getUser : live data filled");
-                        otherUserProfileResponse.postValue(UserReponse.success(response));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "getUser : error");
-                        otherUserProfileResponse.postValue(UserReponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getUser : Data received");
-                        otherUserProfileResponse.postValue(UserReponse.complete());
-                    }
-                });
-    }
-
-    public void editProfileWithPicture(EditProfileForm form) {
-        /**
-         * Request to the API to edit the user's profile with a profile  with a put request
-         * @param
-         */
-        Observable<User> userObservable;
-        userObservable = userAPI.updateProfileWithPicture(
-                prefs.getToken(),
-                prefs.getUserID(),
-                form.getProfile_picture(),
-                form.getFirst_name(),
-                form.getLast_name(),
-                form.getRoom_number(),
-                form.getCampus());
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Edit profile : on start subscription");
-                        userProfileResponse.postValue(UserReponse.loading());
-                        editedProfileResponse.postValue(ApiEmptyResponse.loading());
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        Log.d(Constants.TAG, "profile edited successfully");
-                        editPrefs(user.getCampus());
-                        userProfileResponse.postValue(UserReponse.success(user));
-                        editedProfileResponse.postValue(ApiEmptyResponse.success());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "Edit profile : error");
-                        userProfileResponse.postValue(UserReponse.error(e));
-                        editedProfileResponse.postValue(ApiEmptyResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Edit profile : completed");
-                        editedProfileResponse.postValue(ApiEmptyResponse.complete());
-                    }
-                });
-    }
-
     public void editPrefs(String campus){
         if(!prefs.getCampus().equals(campus)){
             prefs.updateCampus(campus);
         }
     }
 
+    public void getUserProfile() {
+        NetworkClient.getInstance()
+                .getAuthAPI()
+                .getProfileInfo(prefs.getToken())
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful()) {
+                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            UserReponse.UserError mError = new UserReponse.UserError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
+                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                    }
+                });
+    }
+
+    public void getUserByID(int userID) {
+        NetworkClient.getInstance()
+                .getUserAPI()
+                .getUserByID(prefs.getToken(), userID)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful()) {
+                            getOtherUserProfileResponse().setValue(UserReponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            UserReponse.UserError mError = new UserReponse.UserError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
+                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                    }
+                });
+    }
+
+    public void editProfileWithPicture(EditProfileForm form) {
+        NetworkClient.getInstance()
+                .getUserAPI()
+                .updateProfileWithPicture(prefs.getToken(),
+                        prefs.getUserID(),
+                        form.getProfile_picture(),
+                        form.getFirst_name(),
+                        form.getLast_name(),
+                        form.getRoom_number(),
+                        form.getCampus())
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful()) {
+                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            UserReponse.UserError mError = new UserReponse.UserError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
+                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                    }
+                });
+    }
+
     public void editProfileWithoutPicture(EditProfileForm editProfileForm) {
-        /**
-         * Request to the API to edit the user's profile without a profile  with a put request
-         * @param
-         */
-        Observable<User> userObservable;
-        userObservable = userAPI.updateProfileWithoutPicture(
-                prefs.getToken(),
-                prefs.getUserID(),
-                editProfileForm);
-        userObservable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<User>() {
+        NetworkClient.getInstance()
+                .getUserAPI()
+                .updateProfileWithoutPicture(prefs.getToken(), prefs.getUserID(), editProfileForm)
+                .enqueue(new Callback<User>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Edit profile : on start subscription");
-                        userProfileResponse.setValue(UserReponse.loading());
-                        editedProfileResponse.setValue(ApiEmptyResponse.loading());
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful()) {
+                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            UserReponse.UserError mError = new UserReponse.UserError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
+                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
                     }
-
                     @Override
-                    public void onNext(User user) {
-                        Log.d(Constants.TAG, "profile edited successfully");
-                        editPrefs(user.getCampus());
-                        userProfileResponse.setValue(UserReponse.success(user));
-                        editedProfileResponse.setValue(ApiEmptyResponse.success());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "error");
-                        userProfileResponse.postValue(UserReponse.error(e));
-                        editedProfileResponse.postValue(ApiEmptyResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Edit profile : completed");
-                        editedProfileResponse.setValue(ApiEmptyResponse.complete());
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
