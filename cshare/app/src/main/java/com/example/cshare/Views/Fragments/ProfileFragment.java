@@ -1,9 +1,7 @@
 package com.example.cshare.Views.Fragments;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
@@ -29,7 +28,10 @@ import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.CartViewModel;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
+import com.example.cshare.ViewModels.SharedViewModel;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
 import com.example.cshare.R;
@@ -37,7 +39,6 @@ import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.squareup.picasso.Picasso;
 
@@ -57,7 +58,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     // ViewModel
     private ProfileViewModel profileViewModel;
     private AuthViewModel authViewModel;
-    private ProductViewModel productViewModel;
+    private SharedViewModel sharedViewModel;
+    private CartViewModel cartViewModel;
+    private HomeViewModel homeViewModel;
 
     // Form validation
     protected Validator validator;
@@ -154,31 +157,49 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void configureViewModel() {
         // Retrieve auth data from view model (log out, change password)
-        authViewModel = new ViewModelProvider(getActivity()).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(AuthViewModel.class);
         // Retrieve user details from profile view model
-        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
 
-        authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
+        // Update VM if the campus is changed
+        cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+        sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+
+
+        authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
                     Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getChangePasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
+
+                    if (response.getError().getDetail() != null ){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (response.getError().getOld_password() != null) {
+                        Toast.makeText(getContext(), response.getError().getOld_password(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
-        authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
+        authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
@@ -186,19 +207,28 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
                     startActivity(toLoginActivityIntent);
 
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getLogoutResponseMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
 
-        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
+        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(UserReponse response) {
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
@@ -207,8 +237,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     startActivity(toLoginActivityIntent);
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getDeleteResponseMutableLiveData().setValue(UserReponse.complete());
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
@@ -216,29 +254,25 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
             @Override
             public void onChanged(UserReponse response) {
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
+                Log.d(Constants.TAG, "USER PROFILE ON CHANGED "+response.getStatus());
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    // profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
                     Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
                     updateUserDetails(response.getUser());
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-        profileViewModel.getEditedProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
-            @Override
-            public void onChanged(ApiEmptyResponse response) {
-                Log.d(Constants.TAG, "onChanged edited" + response.getStatus());
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
-                    Toast.makeText(getContext(), "Profile info edited successfully", Toast.LENGTH_SHORT).show();
-                    productViewModel.update();
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    profileViewModel.getEditedProfileMutableLiveData().setValue(ApiEmptyResponse.complete());
+                }
+
+                else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null ){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -362,6 +396,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
             if (validated) {
 
+                if (campus != profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getCampus()){
+                    sharedViewModel.refresh();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
+                }
+
                 // Retrieve user details from the edit text
                 lastName = editTextLastName.getText().toString().trim();
                 firstName = editTextFirstName.getText().toString().trim();
@@ -425,8 +465,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d(Constants.TAG, "TESTSTSTST0");
 
         // Result code is RESULT_OK only if the user selects an Image
         if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {

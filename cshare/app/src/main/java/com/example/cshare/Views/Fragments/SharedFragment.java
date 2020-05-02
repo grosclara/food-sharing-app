@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cshare.Models.ApiResponses.ProductResponse;
@@ -16,15 +17,17 @@ import com.example.cshare.Models.Product;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.ViewModels.HomeViewModel;
 import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
+import com.example.cshare.ViewModels.SharedViewModel;
 
 public class SharedFragment extends ProductListFragment {
 
     private ProductViewModel productViewModel;
     private ProfileViewModel profileViewModel;
-
-    private static final String tag = "shared";
+    private SharedViewModel sharedViewModel;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected BaseFragment newInstance() {
@@ -32,53 +35,46 @@ public class SharedFragment extends ProductListFragment {
     }
 
     @Override
-    protected void click(Product product) {
-        if (isClickable) {
-
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
-            productDetailsFragment.show(getChildFragmentManager(), tag);
-        }
-    }
-
-    @Override
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(getActivity()).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
-        // Set data
-        productViewModel.getSharedProductList().observe(getViewLifecycleOwner(), new Observer<ProductListResponse>() {
+        productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
+        sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+
+        sharedViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
-            public void onChanged(@Nullable ProductListResponse response) {
-                if (response.getStatus().equals(Status.SUCCESS)) {
-                    adapter.setProducts(response.getProductList());
-                    progressBar.setVisibility(View.GONE);
-                    isClickable = true;
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    isClickable = false;
-                } else if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.VISIBLE);
-                    isClickable = false;
-                }
+            public void onChanged(PagedList<Product> products) {
+                adapter.submitList(products);
             }
         });
         productViewModel.getDeleteProductResponse().observe(getViewLifecycleOwner(), new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {
+
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    // Reset the status
+                    sharedViewModel.refresh();
+                    homeViewModel.refresh();
+
                     productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+
                 } else if (response.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     @Override
@@ -86,16 +82,24 @@ public class SharedFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                productViewModel.updateSharedProducts();
+                sharedViewModel.refresh();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
             }
         });
 
     }
 
     @Override
-    protected void configureProgressBar() {
+    protected void configureProgressBar() { }
+
+    @Override
+    protected void click(Product product) {
+        if (isClickable) {
+
+            DialogFragment productDetailsFragment = new ProductDialogFragment(product, Constants.SHARED, profileViewModel);
+            productDetailsFragment.show(getChildFragmentManager(), Constants.SHARED);
+        }
     }
+
 }

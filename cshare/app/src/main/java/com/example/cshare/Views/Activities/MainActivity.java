@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     protected void configureViewModel() {
         // Retrieve data for view model
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
     }
 
     protected void configureDesign() {
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // Change the status attribute of the product object to not available
             Map<String, String> status = new HashMap<>();
             status.put("status", Constants.COLLECTED);
-            productViewModel.order(request, status);
+            productViewModel.order(request);
         }
     }
 
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Check the status
         if (product.getStatus().equals(Constants.AVAILABLE)) {
             // if still available, delete the product from the database
-            productViewModel.deleteProduct(product);
+            productViewModel.deleteProduct(product.getId());
         } else {
             Toast.makeText(this, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
         }
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Set status to delivered and send request to update in database
         Map<String, String> status = new HashMap<>();
         status.put("status", Constants.DELIVERED);
-        productViewModel.deliver(product.getId(), status);
+        productViewModel.deliver(product.getId());
     }
 
     @Override
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Delete order and set product status to available
         Map<String, String> status = new HashMap<>();
         status.put("status", Constants.AVAILABLE);
-        productViewModel.cancelOrder(product.getId(), status);
+        productViewModel.cancelOrder(product.getId());
     }
 
 }

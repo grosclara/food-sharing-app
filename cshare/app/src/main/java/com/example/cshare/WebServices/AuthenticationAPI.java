@@ -1,8 +1,10 @@
 package com.example.cshare.WebServices;
 
+import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
-import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.RegisterForm;
 import com.example.cshare.Models.User;
@@ -12,6 +14,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
@@ -26,13 +29,13 @@ import retrofit2.http.Path;
 public interface AuthenticationAPI {
 
     @GET("rest-auth/user/")
-    Observable<User> getProfileInfo(
+    Call<User> getProfileInfo(
             @Header("Authorization") String token
     );
 
     @Multipart
     @POST("rest-auth/registration/")
-    Observable<LoginResponse> createUserWithPicture(
+    Call<RegistrationResponse> createUserWithPicture(
             @Part MultipartBody.Part profilePictureBody,
             @Part("first_name") String firstName,
             @Part("last_name") String lastName,
@@ -44,33 +47,33 @@ public interface AuthenticationAPI {
     );
 
     @POST("rest-auth/registration/")
-    Observable<LoginResponse> createUserWithoutPicture(
+    Call<RegistrationResponse> createUserWithoutPicture(
             @Body RegisterForm user
     );
 
     @POST("rest-auth/login/")
-    Observable<LoginResponse> login(@Body LoginForm loginForm);
+    Call<LoginResponse> login(@Body LoginForm loginForm);
 
     @POST("rest-auth/logout/")
-    Observable<ApiEmptyResponse> logout(
+    Call<EmptyAuthResponse> logout(
             @Header("Authorization") String token
     );
 
     @POST("rest-auth/password/change/")
-    Observable<ApiEmptyResponse> changePassword(
+    Call<EmptyAuthResponse> changePassword(
             @Header("Authorization") String token,
             @Body PasswordForm passwordForm
     );
 
     @FormUrlEncoded
     @POST("rest-auth/password/reset/")
-    Observable<ApiEmptyResponse> resetPassword(
+    Call<EmptyAuthResponse> resetPassword(
             @FieldMap Map<String, String> status
     );
 
     @DELETE("user/{id}/")
-    Observable<User> delete(
+    Call<EmptyAuthResponse> delete(
             @Header("Authorization") String token,
-            @Path("id") int userId
+            @Path("id") int userID
     );
 }

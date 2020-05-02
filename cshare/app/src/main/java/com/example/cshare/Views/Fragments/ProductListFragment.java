@@ -1,26 +1,21 @@
 package com.example.cshare.Views.Fragments;
 
 
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.R;
-import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.ViewUtils.ItemClickSupport;
-import com.example.cshare.Utils.ViewUtils.ProductAdapter;
+import com.example.cshare.Utils.ViewUtils.ProductPagedListAdapter;
 import com.example.cshare.Views.Activities.AddActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class
@@ -40,7 +35,7 @@ ProductListFragment extends BaseFragment {
     // protected Disposable disposable;
     // Declare list of products (Product) & Adapter
     private List<Product> products;
-    protected ProductAdapter adapter;
+    protected ProductPagedListAdapter adapter;
 
     protected Boolean isClickable = true;
 
@@ -52,7 +47,7 @@ ProductListFragment extends BaseFragment {
     protected abstract BaseFragment newInstance();
 
     @Override
-    protected void updateDesign(){}
+    protected void updateDesign()   {}
 
     @Override
     protected int getFragmentLayout() {
@@ -92,19 +87,25 @@ ProductListFragment extends BaseFragment {
     protected void configureRecyclerView() {
         //recyclerView = findViewById
         // Reset list
-        products = new ArrayList<Product>();
+        //products = new ArrayList<Product>();
+
         // Create adapter passing the list of users
-        adapter = new ProductAdapter(products);
+        //adapter = new ProductAdapter(products);
+
         // Attach the adapter to the recycler view to populate items
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
+
         // setHasFixedSize makes sure that this change of size of RecyclerView is constant.
         // The height (or width) of the item won't change.
         // Every item added or removed will be the same.
         // If you dont set this it will check if the size of the item has changed and that's expensive
+        adapter = new ProductPagedListAdapter(getContext());
+        recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         // Set layout manager to position the items
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         configureOnItemClickedRecyclerView();
+
 
     }
 
@@ -116,7 +117,7 @@ ProductListFragment extends BaseFragment {
                                             @Override
                                             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                                                 // Get product from adapter
-                                                Product product = adapter.getProduct(position);
+                                                Product product = adapter.getItem(position);
                                                 click(product);
                                             }
                                         }

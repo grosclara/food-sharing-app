@@ -13,15 +13,23 @@ import static com.example.cshare.RequestManager.Status.SUCCESS;
 
 public class UserReponse {
 
+    public static class UserError{
+        private String detail;
+
+        public String getDetail() {
+            return detail;
+        }
+    }
+
     public final Status status;
 
     @Nullable
     public final User user;
 
     @Nullable
-    public final Throwable error;
+    public final UserError error;
 
-    private UserReponse(Status status, @Nullable User user, @Nullable Throwable error) {
+    private UserReponse(Status status, @Nullable User user, @Nullable UserError error) {
         this.status = status;
         this.user = user;
         this.error = error;
@@ -37,7 +45,7 @@ public class UserReponse {
     }
 
     @Nullable
-    public Throwable getError() {
+    public UserError getError() {
         return error;
     }
 
@@ -49,7 +57,7 @@ public class UserReponse {
         return new UserReponse(SUCCESS, user, null);
     }
 
-    public static UserReponse error(@NonNull Throwable error) {
+    public static UserReponse error(@NonNull UserError error) {
         return new UserReponse(ERROR, null, error);
     }
 

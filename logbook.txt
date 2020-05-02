@@ -119,7 +119,11 @@ Implementation of the dialogs to interact with products, 2h00"
 	      Back buttons, 30mn
 	      Product dialog listener to remove VM logic from product dialogs, 1h00
 	      Attempt to refresh UI every new minute, 30mn"
-"27/04 - BT : Send an email to the client too after an order, 1h00"
+"28/04 - CG : Modify every HTTP requests in Django to fit our needs more properly, 7h00
+	      Pagination on GET (lists) requests in Django, 1h00"
+"29/04 - CG : Improve HTTP requests in Django (ex : don't need to specify the product campus when a product is created (the auth user campus is automatically set as the campus attribute of the product, 1h00" 
+
+
 
 
 

@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
-import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
@@ -75,46 +77,63 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void configureViewModel() {
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(AuthViewModel.class);
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
-            public void onChanged(LoginResponse loginResponse) {
-                Log.d(Constants.TAG, "LOGIN "+loginResponse.getStatus());
-                if (loginResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(LoginResponse response) {
+                Log.d(Constants.TAG, "LOGIN "+ response.getStatus());
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.getLoginResponseMutableLiveData().setValue(LoginResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
-                    profileViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProfileViewModel.class);
-                    productViewModel = new ViewModelProvider(getViewModelStore(), getDefaultViewModelProviderFactory()).get(ProductViewModel.class);
+                    authViewModel.saveUserCredentials(response);
 
+                    //profileViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
+                    //productViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
                     // In case of success
-                    profileViewModel.update();
-                    productViewModel.update();
+                    // TODO : see whether it needs an update
+                    //profileViewModel.update();
+                    //productViewModel.update();
 
                     // Redirect to the MainActivity
                     Intent toMainActivityIntent = new Intent();
                     toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
                     startActivity(toMainActivityIntent);
 
-                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
                     authViewModel.getLoginResponseMutableLiveData().setValue(LoginResponse.complete());
+
                 }
             }
         });
 
-        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
+        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getResetPasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Password reset", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getResetPasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    authViewModel.getResetPasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
@@ -156,15 +175,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if (v == buttonLogin) {
             loginValidator.validate();
-
-        } else if (v == buttonCreateAccount) {
+        }
+        else if (v == buttonCreateAccount) {
 
             // Redirect to the Register Activity
             Intent toRegisterActivityIntent = new Intent();
             toRegisterActivityIntent.setClass(getApplicationContext(), RegisterActivity.class);
             startActivity(toRegisterActivityIntent);
 
-        } else if (v == buttonResetPassword) {
+        }
+        else if (v == buttonResetPassword) {
             // Alert Dialog to change password
             // Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

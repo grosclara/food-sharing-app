@@ -15,17 +15,44 @@ import static com.example.cshare.RequestManager.Status.SUCCESS;
 
 public class ProductListResponse {
 
-    public final Status status;
+    public class ApiProductListResponse {
+
+        private List<Product> results;
+        private int count;
+        private String previous;
+        private String next;
+
+        public ApiProductListResponse(List<Product> productList, int count, String previous, String next) {
+            this.results = productList;
+            this.count = count;
+            this.previous = previous;
+            this.next = next;
+        }
+
+        public List<Product> getProductList() {
+            return results;
+        }
+
+        public String getPrevious() {
+            return previous;
+        }
+
+        public String getNext() {
+            return next;
+        }
+    }
+
+    private Status status;
 
     @Nullable
-    public final List<Product> productList;
+    private final ApiProductListResponse apiProductListResponse;
 
     @Nullable
-    public final Throwable error;
+    private final Throwable error;
 
-    private ProductListResponse(Status status, @Nullable List<Product> productList, @Nullable Throwable error) {
+    private ProductListResponse(Status status, @Nullable ApiProductListResponse apiProductListResponse, @Nullable Throwable error) {
         this.status = status;
-        this.productList = productList;
+        this.apiProductListResponse = apiProductListResponse;
         this.error = error;
     }
 
@@ -34,8 +61,8 @@ public class ProductListResponse {
     }
 
     @Nullable
-    public List<Product> getProductList() {
-        return productList;
+    public ApiProductListResponse getApiProductListResponse() {
+        return apiProductListResponse;
     }
 
     @Nullable
@@ -47,8 +74,8 @@ public class ProductListResponse {
         return new ProductListResponse(LOADING, null, null);
     }
 
-    public static ProductListResponse success(@NonNull List<Product> productList) {
-        return new ProductListResponse(SUCCESS, productList, null);
+    public static ProductListResponse success(@NonNull ApiProductListResponse apiProductListResponse) {
+        return new ProductListResponse(SUCCESS, apiProductListResponse, null);
     }
 
     public static ProductListResponse error(@NonNull Throwable error) {

@@ -30,7 +30,7 @@ router=routers.DefaultRouter()
 
 router.register(r'api/v1/product',views.ProductViewSet,basename='product')
 router.register(r'api/v1/order',views.OrderViewSet,basename='order')
-router.register(r'api/v1/user',views.UserViewSet)
+router.register(r'api/v1/user',views.UserViewSet, basename='user')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

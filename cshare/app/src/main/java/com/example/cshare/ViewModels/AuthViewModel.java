@@ -7,6 +7,8 @@ import android.app.Application;
 
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.RegisterForm;
 import com.example.cshare.Models.ApiResponses.UserReponse;
@@ -23,11 +25,11 @@ public class AuthViewModel extends AndroidViewModel {
     // MutableLiveData object that contains the data
     private MutableLiveData<Boolean> isLoggedInMutableLiveData;
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
-    private MutableLiveData<ApiEmptyResponse> logoutResponseMutableLiveData;
-    private MutableLiveData<UserReponse> deleteResponseMutableLiveData;
-    private MutableLiveData<ApiEmptyResponse> changePasswordMutableLiveData;
-    private MutableLiveData<ApiEmptyResponse> resetPasswordMutableLiveData;
-    private MutableLiveData<LoginResponse> registrationResponseMutableLiveData;
+    private MutableLiveData<EmptyAuthResponse> logoutResponseMutableLiveData;
+    private MutableLiveData<EmptyAuthResponse> deleteResponseMutableLiveData;
+    private MutableLiveData<EmptyAuthResponse> changePasswordMutableLiveData;
+    private MutableLiveData<EmptyAuthResponse> resetPasswordMutableLiveData;
+    private MutableLiveData<RegistrationResponse> registrationResponseMutableLiveData;
 
     public AuthViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
@@ -48,11 +50,13 @@ public class AuthViewModel extends AndroidViewModel {
 
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() { return isLoggedInMutableLiveData; }
     public MutableLiveData<LoginResponse> getLoginResponseMutableLiveData(){ return loginResponseMutableLiveData; }
-    public MutableLiveData<ApiEmptyResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
-    public MutableLiveData<UserReponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
-    public MutableLiveData<ApiEmptyResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
-    public MutableLiveData<ApiEmptyResponse> getResetPasswordMutableLiveData() { return resetPasswordMutableLiveData; }
-    public MutableLiveData<LoginResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
+    public MutableLiveData<EmptyAuthResponse> getLogoutResponseMutableLiveData() { return logoutResponseMutableLiveData; }
+    public MutableLiveData<EmptyAuthResponse> getDeleteResponseMutableLiveData() { return deleteResponseMutableLiveData; }
+    public MutableLiveData<EmptyAuthResponse> getChangePasswordMutableLiveData() { return changePasswordMutableLiveData; }
+    public MutableLiveData<EmptyAuthResponse> getResetPasswordMutableLiveData() { return resetPasswordMutableLiveData; }
+    public MutableLiveData<RegistrationResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
+
+    public void saveUserCredentials(LoginResponse loginResponse){authRequestManager.saveUserCredentials(loginResponse);}
 
 
     public void logIn(LoginForm loginForm){

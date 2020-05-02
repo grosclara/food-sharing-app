@@ -20,9 +20,6 @@ public class ProductViewModel extends AndroidViewModel {
     private ProductRequestManager productRequestManager;
 
     // MutableLiveData object that contains the list of products
-    private MutableLiveData<ProductListResponse> availableProductList;
-    private MutableLiveData<ProductListResponse> sharedProductList;
-    private MutableLiveData<ProductListResponse> inCartProductList;
     private MutableLiveData<ProductResponse> addProductResponse;
     private MutableLiveData<ProductResponse> deleteProductResponse;
     private MutableLiveData<ProductResponse> cancelOrderResponse;
@@ -35,9 +32,6 @@ public class ProductViewModel extends AndroidViewModel {
         // Get request manager instance
         productRequestManager = ProductRequestManager.getInstance(application);
         // Retrieve product lists from request manager
-        availableProductList = productRequestManager.getAvailableProductList();
-        inCartProductList = productRequestManager.getInCartProductList();
-        sharedProductList = productRequestManager.getSharedProductList();
         addProductResponse = productRequestManager.getAddProductResponse();
         deleteProductResponse = productRequestManager.getDeleteProductResponse();
         cancelOrderResponse = productRequestManager.getCancelOrderResponse();
@@ -46,13 +40,6 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     // Getter method
-    public MutableLiveData<ProductListResponse> getAvailableProductList() { return availableProductList; }
-    public MutableLiveData<ProductListResponse> getInCartProductList() {
-        return inCartProductList;
-    }
-    public MutableLiveData<ProductListResponse> getSharedProductList() {
-        return sharedProductList;
-    }
     public MutableLiveData<ProductResponse> getAddProductResponse() { return addProductResponse; }
     public MutableLiveData<ProductResponse> getDeleteProductResponse() { return deleteProductResponse; }
     public MutableLiveData<ProductResponse> getCancelOrderResponse() { return cancelOrderResponse; }
@@ -60,41 +47,24 @@ public class ProductViewModel extends AndroidViewModel {
 
     public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
 
-    // Update products in request manager
-    public void update() {
-        productRequestManager.update();
-    }
-
-    public void updateAvailableProducts(){
-        productRequestManager.updateAvailableProducts();
-    }
-
-    public void updateSharedProducts(){
-        productRequestManager.updateSharedProducts();
-    }
-
-    public void updateInCartProducts(){
-        productRequestManager.updateInCartProducts();
-    }
-
     // Add a product
     public void addProduct(Product product) {
         productRequestManager.addProduct(product);
     }
 
-    public void order(Order request, Map status){
-        productRequestManager.order(request, status);
+    public void order(Order request){
+        productRequestManager.order(request);
     }
 
-    public void deliver(int productID, Map status){
-        productRequestManager.deliver(productID, status);
+    public void deliver(int productID){
+        productRequestManager.deliver(productID);
     }
 
-    public void cancelOrder(int productID, Map status){
-        productRequestManager.cancelOrder(productID, status);
+    public void cancelOrder(int productID){
+        productRequestManager.cancelOrder(productID);
     }
 
-    public void deleteProduct(Product product){
-        productRequestManager.deleteProduct(product);
+    public void deleteProduct(int productID){
+        productRequestManager.deleteProduct(productID);
     }
 }

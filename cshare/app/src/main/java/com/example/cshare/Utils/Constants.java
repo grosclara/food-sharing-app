@@ -5,11 +5,14 @@ import androidx.annotation.NonNull;
 public class Constants {
 
     // Temp variables
+    public static final String TOKEN = "Token 80a2fc33b76d00061bafe0b7ccfad323dadfb432";
 
     public static final String BASE_URL_API = "http://10.59.33.8:8000/api/v1/";
     //public static final String BASE_URL_API = "http://192.168.1.29:8000/api/v1/";
 
-    public static final String TAG = "tag";
+    public static final String TAG = "csharetag";
+
+    public static final int PAGE_SIZE = 12;
 
 
     public static final String SUCCESS = "success";

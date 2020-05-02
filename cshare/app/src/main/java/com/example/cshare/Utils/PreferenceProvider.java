@@ -7,6 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -54,11 +55,11 @@ public class PreferenceProvider {
         prefs.edit().putBoolean(LOG_STATUS_KEY, false).apply();
     }
 
-    public void fillPrefs(LoginResponse loginResponsetest) {
+    public void fillPrefs(LoginResponse loginResponse) {
         prefs.edit()
-                .putString(TOKEN_KEY, loginResponsetest.getToken())
-                .putString(CAMPUS_KEY, loginResponsetest.getUser().getCampus())
-                .putInt(ID_KEY, loginResponsetest.getUser().getId())
+                .putString(TOKEN_KEY, loginResponse.getToken())
+                .putString(CAMPUS_KEY, loginResponse.getUser().getCampus())
+                .putInt(ID_KEY, loginResponse.getUser().getId())
                 .putBoolean(LOG_STATUS_KEY, true)
                 .apply();
     }

@@ -6,16 +6,22 @@ import androidx.annotation.Nullable;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.Status;
 
+import java.util.List;
+
 import static com.example.cshare.RequestManager.Status.COMPLETE;
 import static com.example.cshare.RequestManager.Status.ERROR;
 import static com.example.cshare.RequestManager.Status.LOADING;
 import static com.example.cshare.RequestManager.Status.SUCCESS;
 
-/**
- * Login request response model
- * It makes easy the parsing of the response to a login request
- */
 public class LoginResponse {
+
+    public static class LoginError {
+        private List<String> non_field_errors;
+
+        public String getDetail() {
+            return non_field_errors.get(0);
+        }
+    }
 
     public final Status status;
 
@@ -25,9 +31,9 @@ public class LoginResponse {
     public final String key;
 
     @Nullable
-    public final Throwable error;
+    public final LoginError error;
 
-    private LoginResponse(Status status, @Nullable String token, @Nullable User data, @Nullable Throwable error) {
+    private LoginResponse(Status status, @Nullable String token, @Nullable User data, @Nullable LoginError error) {
         this.status = status;
         this.user = data;
         this.error = error;
@@ -46,7 +52,9 @@ public class LoginResponse {
         return key;
     }
 
-    public Throwable getError(){ return error; }
+    public LoginError getError() {
+        return error;
+    }
 
     public static LoginResponse loading() {
         return new LoginResponse(LOADING, null, null, null);
@@ -56,11 +64,11 @@ public class LoginResponse {
         return new LoginResponse(SUCCESS, token, user, null);
     }
 
-    public static LoginResponse error(@NonNull Throwable error) {
+    public static LoginResponse error(@NonNull LoginError error) {
         return new LoginResponse(ERROR, null, null, error);
     }
 
-    public static LoginResponse complete(){
+    public static LoginResponse complete() {
         return new LoginResponse(COMPLETE, null, null, null);
     }
 

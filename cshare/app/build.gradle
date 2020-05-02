@@ -51,24 +51,51 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // Adding Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+
+    // Adding OKHTTPLogInterceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    // Adding RXJava x Retrofit
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.0.4'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    // For form validation
+    // Adding view model
+    implementation "android.arch.lifecycle:extensions:2.2.0"
+    implementation "android.arch.lifecycle:viewmodel:2.2.0"
+
+    // Adding paging
+    implementation "android.arch.paging:runtime:2.1.2"
+
+    // Adding Recyclerview, Cardview and SwipeRefreshLayout
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    // Adding Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // Adding Saripaar form validation
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-    //circle ImageView
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-    // Encrypted Shared Preferences
+    // Adding encrypted shared preferences
     implementation "androidx.security:security-crypto:1.0.0-alpha02"
+
+    // Default implementations provided by Android
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 }
