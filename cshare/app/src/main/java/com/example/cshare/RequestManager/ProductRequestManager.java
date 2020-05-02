@@ -115,22 +115,22 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "addProduct : on start subscription");
-                        addProductResponse.setValue(ProductResponse.loading());
+                        addProductResponse.postValue(ProductResponse.loading());
                     }
                     @Override
                     public void onNext(Product product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
-                        addProductResponse.setValue(ProductResponse.success(product));
+                        addProductResponse.postValue(ProductResponse.success(product));
                     }
                     @Override
                     public void onError(Throwable e) {
-                        addProductResponse.setValue(ProductResponse.error(e));
+                        addProductResponse.postValue(ProductResponse.error(e));
                         Log.d(Constants.TAG, "addProduct : error");
                     }
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "addProduct : Product received successfully");
-                        addProductResponse.setValue(ProductResponse.complete());
+                        addProductResponse.postValue(ProductResponse.complete());
                     }
                 });
     }
@@ -149,13 +149,13 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "deleteProduct : on start subscription");
-                        deleteProductResponse.setValue(ProductResponse.loading());
+                        deleteProductResponse.postValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product response) {
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
-                        deleteProductResponse.setValue(ProductResponse.success(response));
+                        deleteProductResponse.postValue(ProductResponse.success(response));
                     }
 
                     @Override
@@ -167,7 +167,7 @@ public class ProductRequestManager {
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "deleteProduct : Deletion completed");
-                        deleteProductResponse.setValue(ProductResponse.complete());
+                        deleteProductResponse.postValue(ProductResponse.complete());
                     }
                 });
     }
@@ -187,26 +187,26 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "addOrder : on start subscription");
-                        orderProductResponse.setValue(ProductResponse.loading());
+                        orderProductResponse.postValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product product) {
                         String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
-                        orderProductResponse.setValue(ProductResponse.success(product));
+                        orderProductResponse.postValue(ProductResponse.success(product));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "addOrder : error");
-                        orderProductResponse.setValue(ProductResponse.error(e));
+                        orderProductResponse.postValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getInCartProducts : All data received");
-                        orderProductResponse.setValue(ProductResponse.complete());
+                        orderProductResponse.postValue(ProductResponse.complete());
                     }
                 });
     }
@@ -221,25 +221,25 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Deliver : on start subscription");
-                        deliverProductResponse.setValue(ProductResponse.loading());
+                        deliverProductResponse.postValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product product) {
                         Log.d(Constants.TAG, " Deliver : Live data filled");
-                        deliverProductResponse.setValue(ProductResponse.success(product));
+                        deliverProductResponse.postValue(ProductResponse.success(product));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Deliver : error");
-                        deliverProductResponse.setValue(ProductResponse.error(e));
+                        deliverProductResponse.postValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, " Deliver : Complete");
-                        deliverProductResponse.setValue(ProductResponse.complete());
+                        deliverProductResponse.postValue(ProductResponse.complete());
                     }
                 });
     }
@@ -256,25 +256,25 @@ public class ProductRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Cancel order : start subscription");
-                        cancelOrderResponse.setValue(ProductResponse.loading());
+                        cancelOrderResponse.postValue(ProductResponse.loading());
                     }
 
                     @Override
                     public void onNext(Product productAv) {
                         Log.d(Constants.TAG, "Cancel order : live data filled");
-                        cancelOrderResponse.setValue(ProductResponse.success(productAv));
+                        cancelOrderResponse.postValue(ProductResponse.success(productAv));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Cancel order : error");
-                        cancelOrderResponse.setValue(ProductResponse.error(e));
+                        cancelOrderResponse.postValue(ProductResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Cancel order : All data received");
-                        cancelOrderResponse.setValue(ProductResponse.complete());
+                        cancelOrderResponse.postValue(ProductResponse.complete());
                     }
                 });
     }

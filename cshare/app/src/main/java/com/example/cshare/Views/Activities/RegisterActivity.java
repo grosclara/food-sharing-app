@@ -22,7 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
@@ -128,12 +128,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //ViewModel
         authViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(AuthViewModel.class);
-        authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
+        authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<RegistrationResponse>() {
             @Override
-            public void onChanged(LoginResponse loginResponse) {
-                if (loginResponse.getStatus().equals(Status.LOADING)) {
+            public void onChanged(RegistrationResponse registrationResponse) {
+                Log.d(Constants.TAG, registrationResponse.getStatus().toString());
+
+                if (registrationResponse.getStatus().equals(Status.LOADING)) {
                     Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
+
+                } else if (registrationResponse.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.getRegistrationResponseMutableLiveData().setValue(RegistrationResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Account successfully created !", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the LoginActivity
@@ -141,9 +147,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
                     startActivity(toLoginActivityIntent);
 
-                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getRegistrationResponseMutableLiveData().setValue(LoginResponse.complete());
+                } else if (registrationResponse.getStatus().equals(Status.ERROR)) {
+
+                    if (registrationResponse.getError().getEmail() != null) {
+
+                        Toast.makeText(getApplicationContext(), registrationResponse.getError().getEmail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    authViewModel.getRegistrationResponseMutableLiveData().setValue(RegistrationResponse.complete());
                 }
             }
         });

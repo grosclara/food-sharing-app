@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
+import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
-import com.example.cshare.Models.ApiResponses.LoginResponse;
+import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
@@ -79,18 +81,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         authViewModel.getLoginResponseMutableLiveData().observe(this, new Observer<LoginResponse>() {
             @Override
-            public void onChanged(LoginResponse loginResponse) {
-                Log.d(Constants.TAG, "LOGIN "+loginResponse.getStatus());
-                if (loginResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (loginResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(LoginResponse response) {
+                Log.d(Constants.TAG, "LOGIN "+ response.getStatus());
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.getLoginResponseMutableLiveData().setValue(LoginResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
 
-                    authViewModel.saveUserCredentials(loginResponse);
+                    authViewModel.saveUserCredentials(response);
 
-                    profileViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
-                    productViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
-
+                    //profileViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
+                    //productViewModel = new ViewModelProvider(getViewModelStore(), new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
                     // In case of success
                     // TODO : see whether it needs an update
                     //profileViewModel.update();
@@ -101,23 +104,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     toMainActivityIntent.setClass(getApplicationContext(), MainActivity.class);
                     startActivity(toMainActivityIntent);
 
-                } else if (loginResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), loginResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
                     authViewModel.getLoginResponseMutableLiveData().setValue(LoginResponse.complete());
+
                 }
             }
         });
 
-        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
+        authViewModel.getResetPasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getResetPasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Password reset", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getResetPasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    authViewModel.getResetPasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });

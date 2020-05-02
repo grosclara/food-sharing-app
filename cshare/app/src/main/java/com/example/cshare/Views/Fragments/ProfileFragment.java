@@ -1,9 +1,7 @@
 package com.example.cshare.Views.Fragments;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
@@ -37,7 +36,6 @@ import com.example.cshare.ViewModels.AuthViewModel;
 import com.example.cshare.ViewModels.ProfileViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.squareup.picasso.Picasso;
 
@@ -159,26 +157,39 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
         productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
 
-        authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<ApiEmptyResponse>() {
+        authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
                     Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getChangePasswordMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
+
+                    if (response.getError().getDetail() != null ){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (response.getError().getOld_password() != null) {
+                        Toast.makeText(getContext(), response.getError().getOld_password(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
-        authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<ApiEmptyResponse>() {
+        authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(ApiEmptyResponse apiEmptyResponse) {
-                if (apiEmptyResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (apiEmptyResponse.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
@@ -186,19 +197,28 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
                     startActivity(toLoginActivityIntent);
 
-                } else if (apiEmptyResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), apiEmptyResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getLogoutResponseMutableLiveData().setValue(ApiEmptyResponse.complete());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
 
-        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
+        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
-            public void onChanged(UserReponse response) {
-                if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (response.getStatus().equals(Status.SUCCESS)) {
+            public void onChanged(EmptyAuthResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+
                     Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
@@ -207,8 +227,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     startActivity(toLoginActivityIntent);
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    authViewModel.getDeleteResponseMutableLiveData().setValue(UserReponse.complete());
+
+                    if (response.getError().getDetail() != null) {
+
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });

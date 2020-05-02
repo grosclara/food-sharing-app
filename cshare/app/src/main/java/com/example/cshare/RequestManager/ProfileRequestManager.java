@@ -91,13 +91,13 @@ public class ProfileRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getUser : on start subscription");
-                        userProfileResponse.setValue(UserReponse.loading());
+                        userProfileResponse.postValue(UserReponse.loading());
                     }
 
                     @Override
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "getUser : live data filled");
-                        userProfileResponse.setValue(UserReponse.success(user));
+                        userProfileResponse.postValue(UserReponse.success(user));
                     }
 
                     @Override
@@ -134,25 +134,25 @@ public class ProfileRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "getUser : on start subscription");
-                        otherUserProfileResponse.setValue(UserReponse.loading());
+                        otherUserProfileResponse.postValue(UserReponse.loading());
                     }
 
                     @Override
                     public void onNext(User response) {
                         Log.d(Constants.TAG, "getUser : live data filled");
-                        otherUserProfileResponse.setValue(UserReponse.success(response));
+                        otherUserProfileResponse.postValue(UserReponse.success(response));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "getUser : error");
-                        otherUserProfileResponse.setValue(UserReponse.error(e));
+                        otherUserProfileResponse.postValue(UserReponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getUser : Data received");
-                        otherUserProfileResponse.setValue(UserReponse.complete());
+                        otherUserProfileResponse.postValue(UserReponse.complete());
                     }
                 });
     }
@@ -186,29 +186,29 @@ public class ProfileRequestManager {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(Constants.TAG, "Edit profile : on start subscription");
-                        userProfileResponse.setValue(UserReponse.loading());
-                        editedProfileResponse.setValue(ApiEmptyResponse.loading());
+                        userProfileResponse.postValue(UserReponse.loading());
+                        editedProfileResponse.postValue(ApiEmptyResponse.loading());
                     }
 
                     @Override
                     public void onNext(User user) {
                         Log.d(Constants.TAG, "profile edited successfully");
                         editPrefs(user.getCampus());
-                        userProfileResponse.setValue(UserReponse.success(user));
-                        editedProfileResponse.setValue(ApiEmptyResponse.success());
+                        userProfileResponse.postValue(UserReponse.success(user));
+                        editedProfileResponse.postValue(ApiEmptyResponse.success());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Edit profile : error");
-                        userProfileResponse.setValue(UserReponse.error(e));
-                        editedProfileResponse.setValue(ApiEmptyResponse.error(e));
+                        userProfileResponse.postValue(UserReponse.error(e));
+                        editedProfileResponse.postValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Edit profile : completed");
-                        editedProfileResponse.setValue(ApiEmptyResponse.complete());
+                        editedProfileResponse.postValue(ApiEmptyResponse.complete());
                     }
                 });
     }
@@ -259,8 +259,8 @@ public class ProfileRequestManager {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "error");
-                        userProfileResponse.setValue(UserReponse.error(e));
-                        editedProfileResponse.setValue(ApiEmptyResponse.error(e));
+                        userProfileResponse.postValue(UserReponse.error(e));
+                        editedProfileResponse.postValue(ApiEmptyResponse.error(e));
                     }
 
                     @Override
