@@ -155,8 +155,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         data.update(request.data)
         data["customer"] = request.user.id
 
+        print(data["product"])
+
         product = Product.objects.get(pk = data["product"])
-        product_serializer = ProductSerializer(product)
+        print(product.name)
+        product_serializer = self.get_serializer(product)
 
         if product.supplier != request.user :
 
@@ -164,7 +167,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
                 if product.campus == request.user.campus :
             
-                    serializer = self.get_serializer(data=data)
+                    serializer = OrderSerializer(data=data)
                     serializer.is_valid(raise_exception=True)
                     self.perform_create(serializer)
 
