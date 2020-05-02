@@ -9,9 +9,12 @@ import androidx.paging.PageKeyedDataSource;
 
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Models.Product;
+import com.example.cshare.RequestManager.ApiError;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.WebServices.NetworkClient;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -45,12 +48,14 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
                             Integer key = (response.body().getNext() != null) ? FIRST_PAGE+ 1  : null;
                             callback.onResult(response.body().getProductList(), null, key);
                         } else {
+                            Gson gson = new GsonBuilder().create();
+                            ApiError mError = new ApiError();
                             try {
-                                Log.d(Constants.TAG, response.errorBody().string());
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.class);
+                                Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                // handle failure to read error
                             }
-                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -80,12 +85,14 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
                             Integer key = (params.key > 1) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
+                            Gson gson = new GsonBuilder().create();
+                            ApiError mError = new ApiError();
                             try {
-                                Log.d(Constants.TAG, response.errorBody().string());
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.class);
+                                Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                // handle failure to read error
                             }
-                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -112,12 +119,14 @@ public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
+                            Gson gson = new GsonBuilder().create();
+                            ApiError mError = new ApiError();
                             try {
-                                Log.d(Constants.TAG, response.errorBody().string());
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.class);
+                                Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                // handle failure to read error
                             }
-                            Toast.makeText(context, String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                         }
                     }
 
