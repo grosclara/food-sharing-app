@@ -45,6 +45,7 @@ public class SharedFragment extends ProductListFragment {
         sharedViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
             public void onChanged(PagedList<Product> products) {
+                Log.d(Constants.TAG, "OBSERVE");
                 adapter.submitList(products);
             }
         });

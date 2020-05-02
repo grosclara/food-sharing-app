@@ -49,7 +49,8 @@ public class SharedViewModel extends AndroidViewModel {
     }
 
     public void refresh(){
-        sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue().invalidate();
-        //getProductPagedList().getValue().getDataSource().invalidate();
+        if (sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue() != null){
+            sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue().invalidate();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.cshare.ViewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -48,6 +49,8 @@ public class CartViewModel extends AndroidViewModel {
     }
 
     public void refresh(){
-        cartProductsDataSourceFactory.getCartProductsLiveDataSource().getValue().invalidate();
+        if (cartProductsDataSourceFactory.getCartProductsLiveDataSource().getValue() != null) {
+            cartProductsDataSourceFactory.getCartProductsLiveDataSource().getValue().invalidate();
+        }
     }
 }

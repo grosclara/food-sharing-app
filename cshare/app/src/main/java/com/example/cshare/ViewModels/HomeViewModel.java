@@ -1,6 +1,7 @@
 package com.example.cshare.ViewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -46,7 +47,8 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void refresh(){
-        homeProductsDataSourceFactory.getHomeProductsLiveDataSource().getValue().invalidate();
-        //getProductPagedList().getValue().getDataSource().invalidate();
+        if(homeProductsDataSourceFactory.getHomeProductsLiveDataSource().getValue() != null) {
+            homeProductsDataSourceFactory.getHomeProductsLiveDataSource().getValue().invalidate();
+        }
     }
 }

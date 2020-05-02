@@ -70,23 +70,29 @@ public class ProductRequestManager {
     public MutableLiveData<ProductResponse> getAddProductResponse() {
         return addProductResponse;
     }
+
     public MutableLiveData<ProductResponse> getDeleteProductResponse() {
         return deleteProductResponse;
     }
-    public MutableLiveData<ProductResponse> getDeliverProductResponse() { return deliverProductResponse; }
+
+    public MutableLiveData<ProductResponse> getDeliverProductResponse() {
+        return deliverProductResponse;
+    }
+
     public MutableLiveData<ProductResponse> getCancelOrderResponse() {
         return cancelOrderResponse;
     }
-    public MutableLiveData<ProductResponse> getOrderProductResponse() { return orderProductResponse; }
+
+    public MutableLiveData<ProductResponse> getOrderProductResponse() {
+        return orderProductResponse;
+    }
 
     public void addProduct(Product product) {
         /**
          * Request to the API to post the product taken in param and update the repository
          * @param productToPost
          */
-
-        Observable<Product> productObservable;
-        productObservable = productAPI.addProduct(
+        Observable<Product> observable = productAPI.addProduct(
                 prefs.getToken(),
                 product.getProduct_picture_body(),
                 product.getName(),
@@ -94,7 +100,7 @@ public class ProductRequestManager {
                 product.getQuantity(),
                 product.getExpiration_date());
 
-        productObservable
+        observable
                 // Run the Observable in a dedicated thread (Schedulers.io)
                 .subscribeOn(Schedulers.io())
                 // Allows to tell all Subscribers to listen to the Observable data stream on the
@@ -111,31 +117,16 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "addProduct : on start subscription");
                         addProductResponse.setValue(ProductResponse.loading());
                     }
-
                     @Override
                     public void onNext(Product product) {
                         Log.d(Constants.TAG, "addProduct : Product added successfully");
-
-                        // TODO See how to handle the addition of a new product
                         addProductResponse.setValue(ProductResponse.success(product));
-                        // New product list to which we add the new product
-                        /*List oldAvailable = getAvailableProductList().getValue().getApiProductListResponse().getProductList();
-                        List oldShared = getSharedProductList().getValue().getApiProductListResponse().getProductList();
-                        oldAvailable.add(0, product);
-                        oldShared.add(0, product);*/
-
-                        // Wrap this new list in live data
-                        //availableProductList.setValue(ProductListResponse.success(oldAvailable));
-                        //sharedProductList.setValue(ProductListResponse.success(oldShared));
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         addProductResponse.setValue(ProductResponse.error(e));
                         Log.d(Constants.TAG, "addProduct : error");
                     }
-
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "addProduct : Product received successfully");
@@ -160,16 +151,19 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "deleteProduct : on start subscription");
                         deleteProductResponse.setValue(ProductResponse.loading());
                     }
+
                     @Override
                     public void onNext(Product response) {
                         Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
                         deleteProductResponse.setValue(ProductResponse.success(response));
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "deleteProduct : error");
-                        deleteProductResponse.setValue(ProductResponse.error(e));
+                        deleteProductResponse.postValue(ProductResponse.error(e));
                     }
+
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "deleteProduct : Deletion completed");
@@ -195,17 +189,20 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "addOrder : on start subscription");
                         orderProductResponse.setValue(ProductResponse.loading());
                     }
+
                     @Override
                     public void onNext(Product product) {
                         String msg = String.format("addOrder : product status updated and order added");
                         Log.d(Constants.TAG, msg);
                         orderProductResponse.setValue(ProductResponse.success(product));
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "addOrder : error");
                         orderProductResponse.setValue(ProductResponse.error(e));
                     }
+
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "getInCartProducts : All data received");
@@ -226,16 +223,19 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "Deliver : on start subscription");
                         deliverProductResponse.setValue(ProductResponse.loading());
                     }
+
                     @Override
                     public void onNext(Product product) {
                         Log.d(Constants.TAG, " Deliver : Live data filled");
                         deliverProductResponse.setValue(ProductResponse.success(product));
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Deliver : error");
                         deliverProductResponse.setValue(ProductResponse.error(e));
                     }
+
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, " Deliver : Complete");
@@ -258,16 +258,19 @@ public class ProductRequestManager {
                         Log.d(Constants.TAG, "Cancel order : start subscription");
                         cancelOrderResponse.setValue(ProductResponse.loading());
                     }
+
                     @Override
                     public void onNext(Product productAv) {
                         Log.d(Constants.TAG, "Cancel order : live data filled");
                         cancelOrderResponse.setValue(ProductResponse.success(productAv));
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.d(Constants.TAG, "Cancel order : error");
                         cancelOrderResponse.setValue(ProductResponse.error(e));
                     }
+
                     @Override
                     public void onComplete() {
                         Log.d(Constants.TAG, "Cancel order : All data received");
