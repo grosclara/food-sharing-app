@@ -13,15 +13,23 @@ import static com.example.cshare.RequestManager.Status.SUCCESS;
 
 public class ProductResponse {
 
+    public static class ProductError{
+        private String detail;
+
+        public String getDetail() {
+            return detail;
+        }
+    }
+
     public final Status status;
 
     @Nullable
     public final Product product;
 
     @Nullable
-    public final Throwable error;
+    public final ProductError error;
 
-    private ProductResponse(Status status, @Nullable Product product, @Nullable Throwable error) {
+    private ProductResponse(Status status, @Nullable Product product, @Nullable ProductError error) {
         this.status = status;
         this.product = product;
         this.error = error;
@@ -37,7 +45,7 @@ public class ProductResponse {
     }
 
     @Nullable
-    public Throwable getError() {
+    public ProductError getError() {
         return error;
     }
 
@@ -49,7 +57,7 @@ public class ProductResponse {
         return new ProductResponse(SUCCESS, product, null);
     }
 
-    public static ProductResponse error(@NonNull Throwable error) {
+    public static ProductResponse error(@NonNull ProductError error) {
         return new ProductResponse(ERROR, null, error);
     }
 

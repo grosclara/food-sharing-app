@@ -40,7 +40,7 @@ public interface  ProductAPI {
 
     @Multipart
     @POST("product/")
-    Observable<Product> addProduct(
+    Call<Product> addProduct(
             @Header("Authorization") String token,
             @Part MultipartBody.Part product_picture,
             @Part("name") String name,
@@ -50,7 +50,7 @@ public interface  ProductAPI {
     );
 
     @DELETE("product/{id}/")
-    Observable<Product> deleteProduct(
+    Call<Product> deleteProduct(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

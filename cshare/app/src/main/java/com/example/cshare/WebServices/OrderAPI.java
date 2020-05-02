@@ -30,19 +30,19 @@ public interface OrderAPI {
 
     @FormUrlEncoded
     @POST("order/")
-    Observable<Product> order(
+    Call<Product> order(
             @Header("Authorization") String token,
             @FieldMap Map<String, Integer> product
     );
 
     @DELETE("order/{id}/")
-    Observable<Product> cancelOrder(
+    Call<Product> cancelOrder(
             @Header("Authorization") String token,
             @Path("id") int productID
     );
 
     @PATCH("order/{id}/")
-    Observable<Product> deliverOrder(
+    Call<Product> deliverOrder(
             @Header("Authorization") String token,
             @Path("id") int productID
     );

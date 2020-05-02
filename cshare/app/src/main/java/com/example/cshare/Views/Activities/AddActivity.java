@@ -141,9 +141,11 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         productViewModel.getAddProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse productResponse) {
-                if (productResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-                } else if (productResponse.getStatus().equals(Status.SUCCESS)) {
+
+                if (productResponse.getStatus().equals(Status.SUCCESS)) {
+
+                    productViewModel.getAddProductResponse().setValue(ProductResponse.complete());
+
                     Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
                     // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
                     homeViewModel.refresh();
@@ -152,9 +154,17 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
 
-                    //((BottomNavigationView) findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.nav_home);
                 } else if (productResponse.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getApplicationContext(), productResponse.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+                    if (productResponse.getError().getDetail() != null){
+                        Toast.makeText(getApplicationContext(), productResponse.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getAddProductResponse().setValue(ProductResponse.complete());
+
                 }
 
             }

@@ -48,41 +48,56 @@ public class HomeFragment extends ProductListFragment {
         homeViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
             public void onChanged(PagedList<Product> products) {
-                Log.d(Constants.TAG, "SIZE"+products.size());
-                if (products.size() > 1) {
-                    Log.d(Constants.TAG, products.get(0).getProduct_picture());
-                    Log.d(Constants.TAG, products.get(0).getProduct_picture());
-                }
                 adapter.submitList(products);
             }
         });
         productViewModel.getDeleteProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {
+
                 if (response.getStatus().equals(Status.SUCCESS)) {
+
                     Toast.makeText(getContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
                     homeViewModel.refresh();
                     sharedViewModel.refresh();
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
                     productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
-                } else if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
                 }
             }
         });
         productViewModel.getOrderProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse response) {
+
                 if (response.getStatus().equals(Status.SUCCESS)) {
+
                     Toast.makeText(getContext(), "Product successfully ordered", Toast.LENGTH_SHORT).show();
                     homeViewModel.refresh();
                     cartViewModel.refresh();
-                } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
                     productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());
-                } else if (response.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());
                 }
             }
         });

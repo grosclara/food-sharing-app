@@ -45,7 +45,6 @@ public class SharedFragment extends ProductListFragment {
         sharedViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
             public void onChanged(PagedList<Product> products) {
-                Log.d(Constants.TAG, "OBSERVE");
                 adapter.submitList(products);
             }
         });
@@ -58,8 +57,17 @@ public class SharedFragment extends ProductListFragment {
                     sharedViewModel.refresh();
                     homeViewModel.refresh();
 
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+
                 } else if (response.getStatus().equals(Status.ERROR)) {
-                    Toast.makeText(getContext(), response.getError().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+                    if (response.getError().getDetail() != null){
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
                     productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
 
                 } else if (response.getStatus().equals(Status.LOADING)) {

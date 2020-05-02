@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.ApiResponses.ProductResponse;
 import com.example.cshare.Models.ApiResponses.ProductListResponse;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -15,6 +16,8 @@ import com.example.cshare.Utils.Constants;
 import com.example.cshare.WebServices.NetworkClient;
 import com.example.cshare.WebServices.OrderAPI;
 import com.example.cshare.WebServices.ProductAPI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -88,193 +91,150 @@ public class ProductRequestManager {
     }
 
     public void addProduct(Product product) {
-        /**
-         * Request to the API to post the product taken in param and update the repository
-         * @param productToPost
-         */
-        Observable<Product> observable = productAPI.addProduct(
-                prefs.getToken(),
-                product.getProduct_picture_body(),
-                product.getName(),
-                product.getCategory(),
-                product.getQuantity(),
-                product.getExpiration_date());
+        NetworkClient.getInstance()
+                .getProductAPI()
+                .addProduct(prefs.getToken(),
+                        product.getProduct_picture_body(),
+                        product.getName(),
+                        product.getCategory(),
+                        product.getQuantity(),
+                        product.getExpiration_date())
+                .enqueue(new Callback<Product>() {
+                    @Override
+                    public void onResponse(Call<Product> call, Response<Product> response) {
+                        if (response.isSuccessful()) {
+                            addProductResponse.setValue(ProductResponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                addProductResponse.setValue(ProductResponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
+                    }
 
-        observable
-                // Run the Observable in a dedicated thread (Schedulers.io)
-                .subscribeOn(Schedulers.io())
-                // Allows to tell all Subscribers to listen to the Observable data stream on the
-                // main thread (AndroidSchedulers.mainThread) which will allow us to modify elements
-                // of the graphical interface from the  method
-                .observeOn(AndroidSchedulers.mainThread())
-                // If the Subscriber has not sent data before the defined time (10 seconds),
-                // the data transmission will be stopped and a Timeout error will be sent to the
-                // Subscribers via their onError() method.
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "addProduct : on start subscription");
-                        addProductResponse.postValue(ProductResponse.loading());
-                    }
-                    @Override
-                    public void onNext(Product product) {
-                        Log.d(Constants.TAG, "addProduct : Product added successfully");
-                        addProductResponse.postValue(ProductResponse.success(product));
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        addProductResponse.postValue(ProductResponse.error(e));
-                        Log.d(Constants.TAG, "addProduct : error");
-                    }
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "addProduct : Product received successfully");
-                        addProductResponse.postValue(ProductResponse.complete());
+                    public void onFailure(Call<Product> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
 
     public void deleteProduct(int productID) {
-        /**
-         * Request to the API to delete the product taken in param and update the repository
-         * @param productToPost
-         */
-        Observable<Product> observable = productAPI.deleteProduct(prefs.getToken(), productID);
-        observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
+        NetworkClient.getInstance()
+                .getProductAPI()
+                .deleteProduct(prefs.getToken(),productID)
+                .enqueue(new Callback<Product>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "deleteProduct : on start subscription");
-                        deleteProductResponse.postValue(ProductResponse.loading());
+                    public void onResponse(Call<Product> call, Response<Product> response) {
+                        if (response.isSuccessful()) {
+                            deleteProductResponse.setValue(ProductResponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                deleteProductResponse.setValue(ProductResponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
                     }
 
                     @Override
-                    public void onNext(Product response) {
-                        Log.d(Constants.TAG, "deleteProduct : Product deleted successfully");
-                        deleteProductResponse.postValue(ProductResponse.success(response));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "deleteProduct : error");
-                        deleteProductResponse.postValue(ProductResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "deleteProduct : Deletion completed");
-                        deleteProductResponse.postValue(ProductResponse.complete());
+                    public void onFailure(Call<Product> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
 
     public void order(Order order) {
-        /**
-         * Request to the API to order a product and update its status from available to collected
-         */
         Map<String, Integer> productIDMap = new HashMap<>();
         productIDMap.put("product", order.getProductID());
-        Observable<Product> observable = orderAPI.order(prefs.getToken(), productIDMap);
-        observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
+
+        NetworkClient.getInstance()
+                .getOrderApi()
+                .order(prefs.getToken(), productIDMap)
+                .enqueue(new Callback<Product>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "addOrder : on start subscription");
-                        orderProductResponse.postValue(ProductResponse.loading());
+                    public void onResponse(Call<Product> call, Response<Product> response) {
+                        if (response.isSuccessful()) {
+                            orderProductResponse.setValue(ProductResponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                orderProductResponse.setValue(ProductResponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
                     }
 
                     @Override
-                    public void onNext(Product product) {
-                        String msg = String.format("addOrder : product status updated and order added");
-                        Log.d(Constants.TAG, msg);
-                        orderProductResponse.postValue(ProductResponse.success(product));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "addOrder : error");
-                        orderProductResponse.postValue(ProductResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "getInCartProducts : All data received");
-                        orderProductResponse.postValue(ProductResponse.complete());
+                    public void onFailure(Call<Product> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
 
     public void deliver(int productID) {
-        Observable<Product> observable = orderAPI.deliverOrder(prefs.getToken(), productID);
-        observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
+        NetworkClient.getInstance()
+                .getOrderApi()
+                .deliverOrder(prefs.getToken(),productID)
+                .enqueue(new Callback<Product>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Deliver : on start subscription");
-                        deliverProductResponse.postValue(ProductResponse.loading());
+                    public void onResponse(Call<Product> call, Response<Product> response) {
+                        if (response.isSuccessful()) {
+                            deliverProductResponse.setValue(ProductResponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                deliverProductResponse.setValue(ProductResponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
                     }
 
                     @Override
-                    public void onNext(Product product) {
-                        Log.d(Constants.TAG, " Deliver : Live data filled");
-                        deliverProductResponse.postValue(ProductResponse.success(product));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "Deliver : error");
-                        deliverProductResponse.postValue(ProductResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, " Deliver : Complete");
-                        deliverProductResponse.postValue(ProductResponse.complete());
+                    public void onFailure(Call<Product> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
 
     public void cancelOrder(int productID) {
 
-        Observable<Product> observable;
-        observable = orderAPI.cancelOrder(prefs.getToken(), productID);
-        observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(new Observer<Product>() {
+        NetworkClient.getInstance()
+                .getOrderApi()
+                .cancelOrder(prefs.getToken(),productID)
+                .enqueue(new Callback<Product>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(Constants.TAG, "Cancel order : start subscription");
-                        cancelOrderResponse.postValue(ProductResponse.loading());
+                    public void onResponse(Call<Product> call, Response<Product> response) {
+                        if (response.isSuccessful()) {
+                            cancelOrderResponse.setValue(ProductResponse.success(response.body()));
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            try {
+                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                cancelOrderResponse.setValue(ProductResponse.error(mError));
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
                     }
 
                     @Override
-                    public void onNext(Product productAv) {
-                        Log.d(Constants.TAG, "Cancel order : live data filled");
-                        cancelOrderResponse.postValue(ProductResponse.success(productAv));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(Constants.TAG, "Cancel order : error");
-                        cancelOrderResponse.postValue(ProductResponse.error(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(Constants.TAG, "Cancel order : All data received");
-                        cancelOrderResponse.postValue(ProductResponse.complete());
+                    public void onFailure(Call<Product> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
                     }
                 });
     }
