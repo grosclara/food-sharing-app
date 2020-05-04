@@ -1,7 +1,9 @@
 package com.example.cshare.RequestManager;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -52,8 +54,10 @@ public class ProfileRequestManager {
     // Data sources dependencies
     private PreferenceProvider prefs;
 
-    public ProfileRequestManager(PreferenceProvider prefs) {
+    private Context context;
 
+    public ProfileRequestManager(Context context, PreferenceProvider prefs) {
+        this.context = context;
         this.prefs = prefs;
         update();
     }
@@ -68,12 +72,6 @@ public class ProfileRequestManager {
     }
     public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
     public MutableLiveData<ApiEmptyResponse> getEditedProfileResponse() { return editedProfileResponse; }
-
-    public void editPrefs(String campus){
-        if(!prefs.getCampus().equals(campus)){
-            prefs.updateCampus(campus);
-        }
-    }
 
     public void getUserProfile() {
         NetworkClient.getInstance()
@@ -99,6 +97,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -127,6 +126,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -161,6 +161,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -188,6 +189,7 @@ public class ProfileRequestManager {
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -199,7 +201,7 @@ public class ProfileRequestManager {
          * else it creates new repository and returns it
          */
         if (profileRequestManager == null) {
-            profileRequestManager = new ProfileRequestManager(new PreferenceProvider(application));
+            profileRequestManager = new ProfileRequestManager(application, new PreferenceProvider(application));
         }
         return profileRequestManager;
     }

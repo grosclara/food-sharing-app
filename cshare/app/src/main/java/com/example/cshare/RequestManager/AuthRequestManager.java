@@ -1,7 +1,9 @@
 package com.example.cshare.RequestManager;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -52,8 +54,10 @@ public class AuthRequestManager {
     // Data sources dependencies
     private PreferenceProvider prefs;
 
-    public AuthRequestManager(PreferenceProvider prefs) {
+    private Context context;
 
+    public AuthRequestManager(Context context, PreferenceProvider prefs) {
+        this.context = context;
         this.prefs = prefs;
         // Initialize the value of the boolean isLoggedIn
         isLoggedIn();
@@ -65,7 +69,7 @@ public class AuthRequestManager {
          * else it creates new repository and returns it
          */
         if (authRequestManager == null) {
-            authRequestManager = new AuthRequestManager(new PreferenceProvider(application));
+            authRequestManager = new AuthRequestManager(application, new PreferenceProvider(application));
         }
         return authRequestManager;
     }
@@ -127,7 +131,7 @@ public class AuthRequestManager {
                     }
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -161,6 +165,7 @@ public class AuthRequestManager {
                 @Override
                 public void onFailure(Call<EmptyAuthResponse> call, Throwable t) {
                     Log.d(Constants.TAG, t.getLocalizedMessage());
+                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
     }
@@ -189,6 +194,7 @@ public class AuthRequestManager {
                     @Override
                     public void onFailure(Call<RegistrationResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -224,6 +230,7 @@ public class AuthRequestManager {
                     @Override
                     public void onFailure(Call<RegistrationResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -253,6 +260,7 @@ public class AuthRequestManager {
                     @Override
                     public void onFailure(Call<EmptyAuthResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -285,6 +293,7 @@ public class AuthRequestManager {
                     @Override
                     public void onFailure(Call<EmptyAuthResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -312,6 +321,8 @@ public class AuthRequestManager {
                     @Override
                     public void onFailure(Call<EmptyAuthResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+
                     }
                 });
     }

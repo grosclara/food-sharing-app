@@ -1,6 +1,7 @@
 package com.example.cshare.RequestManager;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,23 +51,18 @@ public class ProductRequestManager {
     private MutableLiveData<ProductResponse> deliverProductResponse = new MutableLiveData<>();
     private MutableLiveData<ProductResponse> orderProductResponse = new MutableLiveData<>();
 
+    private Context context;
     // Data sources dependencies
     private PreferenceProvider prefs;
-    // Insert API interface dependency here
-    private ProductAPI productAPI;
-    private OrderAPI orderAPI;
 
-    public ProductRequestManager(PreferenceProvider prefs) {
+    public ProductRequestManager(Context context, PreferenceProvider prefs) {
         /**
          * Constructor that fetch all the list of available products and store it in the
          * products attributes
          */
         // Define the URL endpoint for the HTTP request.
-
+        this.context = context;
         this.prefs = prefs;
-
-        productAPI = NetworkClient.getInstance().getProductAPI();
-        orderAPI = NetworkClient.getInstance().getOrderApi();
     }
 
     // Getter method
@@ -119,6 +115,7 @@ public class ProductRequestManager {
                     @Override
                     public void onFailure(Call<Product> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -147,6 +144,7 @@ public class ProductRequestManager {
                     @Override
                     public void onFailure(Call<Product> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -178,6 +176,7 @@ public class ProductRequestManager {
                     @Override
                     public void onFailure(Call<Product> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -206,6 +205,7 @@ public class ProductRequestManager {
                     @Override
                     public void onFailure(Call<Product> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -235,6 +235,7 @@ public class ProductRequestManager {
                     @Override
                     public void onFailure(Call<Product> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -245,8 +246,7 @@ public class ProductRequestManager {
          * else it creates new repository and returns it
          */
         if (productRequestManager == null) {
-            Log.d("tag", "new instance +1");
-            productRequestManager = new ProductRequestManager(new PreferenceProvider(application));
+            productRequestManager = new ProductRequestManager(application, new PreferenceProvider(application));
         }
         return productRequestManager;
     }
