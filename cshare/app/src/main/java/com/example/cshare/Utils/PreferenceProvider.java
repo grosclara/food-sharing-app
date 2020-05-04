@@ -23,7 +23,6 @@ public class PreferenceProvider {
     private static final String LOG_STATUS_KEY = "logStatus";
     private static final String TOKEN_KEY = "token";
     private static final String ID_KEY = "id";
-    private static final String CAMPUS_KEY = "campus";
 
     public PreferenceProvider(Context context) throws GeneralSecurityException, IOException {
         this.appContext = context.getApplicationContext();
@@ -58,7 +57,6 @@ public class PreferenceProvider {
     public void fillPrefs(LoginResponse loginResponse) {
         prefs.edit()
                 .putString(TOKEN_KEY, loginResponse.getToken())
-                .putString(CAMPUS_KEY, loginResponse.getUser().getCampus())
                 .putInt(ID_KEY, loginResponse.getUser().getId())
                 .putBoolean(LOG_STATUS_KEY, true)
                 .apply();
@@ -68,18 +66,8 @@ public class PreferenceProvider {
         return "token "+prefs.getString(TOKEN_KEY, "invalidToken");
     }
 
-    public String getCampus() {
-        return prefs.getString(CAMPUS_KEY, "invalidCampus");
-    }
-
     public int getUserID() {
         return prefs.getInt(ID_KEY, -1);
-    }
-
-    public void updateCampus(String campus){
-        prefs.edit()
-                .putString(CAMPUS_KEY, campus)
-                .apply();
     }
 
 }
