@@ -58,12 +58,11 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
-
+    
 class Order(models.Model):
 
     customer = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     product = models.ForeignKey(settings.PRODUCT_MODEL, on_delete=models.CASCADE)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
