@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_extensions',
+
     'rest_framework',
 
     'rest_framework.authtoken',
@@ -199,3 +201,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'centralesupelecshare@gmail.com'
 EMAIL_HOST_PASSWORD = 'P@ssword01'
 EMAIL_PORT = 587
+
+# Default settings to print graphs
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
