@@ -32,13 +32,15 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name','expiration_date','status','category', 'supplier')
     list_filter = ('status','category','supplier')
     fields = ('name', 'supplier', 'status', 'campus', 'room_number','expiration_date', 'quantity' )
-    readonly_fields = ('name', 'supplier', 'status', 'campus', 'room_number','expiration_date', 'quantity')
+    readonly_fields = ('name', 'supplier', 'status', 'campus', 'expiration_date', 'quantity')
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id','product', 'client', 'created_at')
-    list_filter = ('client',)
-    fields = ('client', 'product', 'fields')
-    readonly_fields = ('client', 'product', 'fields')
+    list_display = ('id','product', 'customer', 'created_at')
+    list_filter = ('customer',)
+    fields = ('customer', 'product', 'fields')
+    readonly_fields = ('customer', 'product', 'fields')
+
+
 admin.site.site_header = "CShare admin dashboard"
 # Indicates the tables on which the administrator can operate
 admin.site.register(User, UserAdminModel)
