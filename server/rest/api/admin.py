@@ -9,7 +9,15 @@ from django.urls import reverse
 from django.utils.html import format_html
 from allauth.account.admin import EmailAddressAdmin, EmailAddress
 
-# Provide an admin interface
+"""
+    Provides an administrator interface to view the list of products, orders and users in the database. 
+    The administrator also has the ability to ban users or delete products / orders if he wants to. 
+    
+    To access this interface, it is necessary to be at least a member of the staff 
+    and therefore have an email address and a valid password to log in.
+
+    To create a new staff member or a superuser, use the py commands createsuperuser or createstaff
+"""
 
 # email : admin@admin.fr
 # password : P@ssword1
@@ -27,17 +35,16 @@ class UserAdmin(admin.ModelAdmin):
         ('Permissions', {'fields': ('is_active','is_superuser','is_staff', 'user_permissions')}),
         ('Login information', {'fields': ('date_joined', 'last_login')})
         )  
-
+    
     readonly_fields = ('email', 'first_name', 'last_name', 'profile_picture', 'campus', 'room_number', 'date_joined', 'last_login')
 
     search_fields = ['email', 'room_number', 'last_name']
-
-    # This will help you to disable create functionality
-    def has_add_permission(self, request, obj=None):
-        return False
     
     # This will help you to disable delete functionality
     def has_delete_permission(self, request, obj=None):
+        return False
+    
+    def has_add_permission(self, request, obj=None):
         return False
 
     def ban(self, request, queryset):
