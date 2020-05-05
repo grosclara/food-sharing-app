@@ -4,50 +4,182 @@ from django.conf import settings
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from rest_framework.authtoken.admin import Token
-from django.contrib.sites.admin import SiteAdmin
-#from allauth.account.admin import EmailAddressAdmin
-#from allauth.socialaccount.admin import SocialAppAdmin, SocialTokenAdmin, SocialAccountAdmin
-#from allauth.socialaccount.models import SocialApp, SocialToken, SocialAccount
-# Provide a admin interface
+from django.contrib.sites.admin import SiteAdmin, Site
+from django.urls import reverse
+from django.utils.html import format_html
+from allauth.account.admin import EmailAddressAdmin, EmailAddress
+
+# Provide an admin interface
 
 # email : admin@admin.fr
 # password : P@ssword1
 
+class UserAdmin(admin.ModelAdmin):
 
-#this will be the custom admin
-class UserAdmin(UserAdmin):
-    model = User
-    ordering = ()
-    filter_horizontal = () # Leave it empty. You have neither `groups` or `user_permissions`
-    add_fieldsets = ((None, {'fields': ('email','password1','password2')}),('Personal info', {'fields': ('last_name','first_name','date_joined','room_number','campus','profile_picture')}),('Permissions', {'fields': ('is_active','is_superuser','is_staff')}),)  
-    fieldsets = (('Personal info', {'fields': ('room_number','campus','profile_picture')}),('Permissions', {'fields': ('is_active','is_superuser','is_staff')}),)  
+    list_display = ('email', 'campus', 'date_joined', 'is_active')
+    list_filter = ['campus', 'date_joined', 'is_active', 'is_staff', 'is_superuser']
 
-class UserAdminModel(admin.ModelAdmin):
-    list_display = ('email', 'campus')
-    list_filter = ['campus', 'is_active', 'is_staff']
-    fields = ('email','campus','first_name', 'last_name', 'date_joined', 'last_login', 'is_active' )
-    readonly_fields = ('email', 'campus', 'first_name', 'last_name', 'date_joined', 'last_login',)
+    ordering = ('email',)
+
+    fieldsets = (
+        ('Personal info', {'fields': ('email','first_name','last_name','profile_picture')}),
+        ('Location', {'fields': ('campus', 'room_number')}),
+        ('Permissions', {'fields': ('is_active','is_superuser','is_staff', 'user_permissions')}),
+        ('Login information', {'fields': ('date_joined', 'last_login')})
+        )  
+
+    readonly_fields = ('email', 'first_name', 'last_name', 'profile_picture', 'campus', 'room_number', 'date_joined', 'last_login')
+
+    search_fields = ['email', 'room_number', 'last_name']
+
+    # This will help you to disable create functionality
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    # This will help you to disable delete functionality
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def ban(self, request, queryset):
+        rows_updated = queryset.update(is_active='False')
+
+        if rows_updated == 1:
+            message_bit = "1 user was"
+        else:
+            message_bit = "%s users were" % rows_updated
+
+        self.message_user(request, "%s successfully banned." % message_bit)
+    ban.short_description = "Ban user"
+    
+
+    def activate(self, request, queryset):
+        rows_updated = queryset.update(is_active='True')
+
+        if rows_updated == 1:
+            message_bit = "1 user was"
+        else:
+            message_bit = "%s users were" % rows_updated
+
+        self.message_user(request, "%s successfully activated." % message_bit)
+    activate.short_description = "Activate user"
+
+    actions = [ban, activate]
+
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name','expiration_date','status','category', 'supplier')
-    list_filter = ('status','category','supplier')
-    fields = ('name', 'supplier', 'status', 'campus', 'room_number','expiration_date', 'quantity' )
-    readonly_fields = ('name', 'supplier', 'status', 'campus', 'expiration_date', 'quantity')
+
+    def link_to_supplier(self, obj):
+        link = reverse("admin:api_user_change", args=[obj.supplier.id])
+        return format_html('<a href="{}">{}</a>', link, obj.supplier.email)
+    link_to_supplier.short_description = 'Supplier'
+
+    list_display = ('name','expiration_date','campus','status','category','link_to_supplier','created_at')
+    list_filter = ('status','campus','category','expiration_date','created_at')
+
+    ordering = ('-expiration_date',)
+
+    fieldsets = (
+        ('Product details', {'fields': ('name','status','category','quantity','expiration_date')}),
+        ('Location', {'fields': ('campus',)}),
+        ('Supplier', {'fields': ('link_to_supplier','created_at','updated_at')}),
+        )
+
+    # This will help you to disable create functionality
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    # This will help you to disable change functionality
+    def has_change_permission(self, request, obj=None):
+        return False
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id','product', 'customer', 'created_at')
-    list_filter = ('customer',)
-    fields = ('customer', 'product', 'fields')
-    readonly_fields = ('customer', 'product', 'fields')
 
+    def link_to_customer(self, obj):
+        link = reverse("admin:api_user_change", args=[obj.customer.id])
+        return format_html('<a href="{}">{}</a>', link, obj.customer.email)
+    link_to_customer.short_description = 'Customer'
+
+    def link_to_product(self, obj):
+        link = reverse("admin:api_product_change", args=[obj.product.id])
+        return format_html('<a href="{}">{}</a>', link, obj.product.name)
+    link_to_product.short_description = 'Product'
+
+    class StatusFilter(admin.SimpleListFilter):
+        title = 'Product status'
+        parameter_name = 'status'
+
+        def lookups(self, request, model_admin):
+            return [ 
+                ('Available', 'Available'),
+                ('Collected', 'Collected'),
+                ('Delivered', 'Delivered')]
+
+        def queryset(self, request, queryset):
+            if self.value() != None :
+                array = []
+                for element in queryset:
+                    if element.product.status == self.value():
+                        array.append(element.id)
+                return queryset.filter(pk__in=array)
+            return queryset
+
+    class CampusFilter(admin.SimpleListFilter):
+        title = 'Product location'
+        parameter_name = 'product'
+
+        def lookups(self, request, model_admin):
+            return [ 
+                ('Gif', 'Gif'),
+                ('Metz', 'Metz'),
+                ('Rennes', 'Rennes')]
+
+        def queryset(self, request, queryset):
+            if self.value() != None :
+                array = []
+                for element in queryset:
+                    if element.product.campus == self.value():
+                        array.append(element.id)
+                return queryset.filter(pk__in=array)
+            return queryset
+
+    def status(self,obj):
+        return obj.product.status
+    
+    def campus(self,obj):
+        return obj.product.campus
+
+    list_display = ('link_to_product', 'status', 'campus', 'link_to_customer', 'created_at', 'updated_at')
+
+    list_filter = ('created_at',StatusFilter,CampusFilter)
+    ordering = ('-updated_at',)
+
+    # This will help you to disable create functionality
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    # This will help you to disable change functionality
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+
+class CustomAllauthAdmin(EmailAddressAdmin):
+
+    def get_queryset(self, request):
+        qs = super(EmailAddressAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user__profile__country=request.user.profile.country)
 
 admin.site.site_header = "CShare admin dashboard"
+
 # Indicates the tables on which the administrator can operate
-admin.site.register(User, UserAdminModel)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(User, UserAdmin)
 
 admin.site.unregister(Group)
 admin.site.unregister(Token)
-#admin.site.unregister(SiteAdmin)
-#admin.site.unregister(EmailAddressAdmin)
+admin.site.unregister(EmailAddress)
+
+admin.site.unregister(Site)
