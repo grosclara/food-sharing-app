@@ -57,6 +57,7 @@ public class AuthViewModel extends AndroidViewModel {
     public MutableLiveData<RegistrationResponse> getRegistrationResponseMutableLiveData() {return registrationResponseMutableLiveData; }
 
     public void saveUserCredentials(LoginResponse loginResponse){authRequestManager.saveUserCredentials(loginResponse);}
+    public void updateUserCredentials(){authRequestManager.updateUserCredentials();}
 
 
     public void logIn(LoginForm loginForm){

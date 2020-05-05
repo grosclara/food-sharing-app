@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.cshare.R;
+import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
 
 public class LauncherActivity extends AppCompatActivity {

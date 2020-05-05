@@ -123,6 +123,11 @@ Implementation of the dialogs to interact with products, 2h00"
 	      Pagination on GET (lists) requests in Django, 1h00"
 "29/04 - CG : Improve HTTP requests in Django (ex : don't need to specify the product campus when a product is created (the auth user campus is automatically set as the campus attribute of the product, 1h00" 
 "01/05 - BT : Custom admin dashbord, 1h00"
+"02/05 - CG : Handling request errors with Retrofit (deletion of RXJava), 2h00"
+"04/05 - CG : Fix auth issue, 30mn
+	      Generate server architecture diagram, 1h00
+	      Review of Babacar's work on the admin panel, 30 mn"
+
 
 
 
