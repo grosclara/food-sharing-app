@@ -12,7 +12,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = None
 
     email = models.EmailField(('email'), unique=True)
-    date_joined = models.DateTimeField(default=timezone.now)
+    
+    date_joined = models.DateTimeField(auto_now_add=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -20,14 +22,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length = 50)
     last_name = models.CharField(max_length = 50)
     profile_picture = models.ImageField(upload_to="media/user/", default='media/user/android.png')
-    room_number = models.CharField(max_length = 50)
+    room_number = models.CharField(max_length = 50, null = True)
     campus = models.CharField(
         max_length=10,
         choices=CAMPUS_CHOICES,
-        default=GIF)
+        default=GIF, null = True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name','last_name','room_number','campus']
+    REQUIRED_FIELDS = ['first_name','last_name']
 
     objects = CustomUserManager()
 
@@ -35,7 +37,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=200)
 
-    supplier = models.ForeignKey(settings.AUTH_USER_MODEL , on_delete=models.CASCADE)
+    supplier = models.ForeignKey('api.User', on_delete=models.CASCADE)
     category = models.CharField(
         max_length=50,
         choices=PRODUCT_CHOICES,
@@ -61,8 +63,8 @@ class Product(models.Model):
 
 class Order(models.Model):
 
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    product = models.ForeignKey(settings.PRODUCT_MODEL, on_delete=models.CASCADE)
+    customer = models.ForeignKey('api.User',on_delete=models.CASCADE)
+    product = models.ForeignKey('api.Product', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
