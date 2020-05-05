@@ -143,6 +143,12 @@ public class AuthRequestManager {
         isLoggedIn();
     }
 
+    public void updateUserCredentials() {
+        prefs.logOut();
+        // Update isLoggedInMutableLiveData
+        isLoggedIn();
+    }
+
     public void logOut() {NetworkClient.getInstance()
             .getAuthAPI()
             .logout(prefs.getToken())

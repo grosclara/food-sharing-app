@@ -131,12 +131,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         authViewModel.getRegistrationResponseMutableLiveData().observe(this, new Observer<RegistrationResponse>() {
             @Override
             public void onChanged(RegistrationResponse registrationResponse) {
-                Log.d(Constants.TAG, registrationResponse.getStatus().toString());
 
-                if (registrationResponse.getStatus().equals(Status.LOADING)) {
-                    Toast.makeText(getApplicationContext(), "Loading", Toast.LENGTH_SHORT).show();
-
-                } else if (registrationResponse.getStatus().equals(Status.SUCCESS)) {
+                if (registrationResponse.getStatus().equals(Status.SUCCESS)) {
 
                     authViewModel.getRegistrationResponseMutableLiveData().setValue(RegistrationResponse.complete());
 

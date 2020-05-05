@@ -198,6 +198,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
                 if (response.getStatus().equals(Status.SUCCESS)) {
 
+                    authViewModel.updateUserCredentials();
+
                     authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
 
                     Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
@@ -227,6 +229,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             public void onChanged(EmptyAuthResponse response) {
 
                 if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    authViewModel.updateUserCredentials();
+
                     authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
 
                     Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
