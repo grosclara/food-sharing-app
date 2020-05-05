@@ -1,4 +1,4 @@
-"""rest URL Configuration
+""" Rest URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -13,30 +13,37 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
-from api import views
-from django.conf.urls.static import static
+
 from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import include, path, re_path
-from rest_auth.views import PasswordResetConfirmView
-
 from rest_framework import routers
+from rest_auth.views import PasswordResetConfirmView
+from api import views
 
-router=routers.DefaultRouter()
-# Router that includes a default API root view,
-# that returns a response containing hyperlinks to all the list views.
-# It also generates routes for optional .json style format suffixes.
+# Resource routing allows you to quickly declare all of the common routes for a given resourceful controller.
+# This router includes routes for the standard set of list, create, retrieve, update, partial_update and destroy actions.
+router = routers.SimpleRouter()
 
-router.register(r'api/v1/product',views.ProductViewSet,basename='product')
-router.register(r'api/v1/order',views.OrderViewSet,basename='order')
-router.register(r'api/v1/user',views.UserViewSet, basename='user')
+# Registering the viewsets with the router is similar to providing a urlpattern.
+router.register(r'api/v1/product', views.ProductViewSet, basename = 'product')
+router.register(r'api/v1/order', views.OrderViewSet, basename = 'order')
+router.register(r'api/v1/user', views.UserViewSet, basename = 'user')
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^',include(router.urls)),
-    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
-    re_path(r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', PasswordResetConfirmView.as_view(),
-            name='password_reset_confirm')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Admin panel
+    path('admin/', admin.site.urls),
+    # Path to the documentation in the admin panel
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
+    # The API URLs are now determined automatically by the router.
+    path('',include(router.urls)),
+    # Add rest_auth urls
+    path('api/v1/rest-auth/', include('rest_auth.urls')),
+    # Add rest_auth.registration urls
+    path('api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    # Redirect the user to the confirm page after having reset password
+    re_path('rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', PasswordResetConfirmView.as_view(),
+        name = 'password_reset_confirm')
+
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT) # Helper function to return a URL pattern for serving files in debug mode
