@@ -1,17 +1,7 @@
 from rest_framework import serializers
 from .models import  Product, Order, User
-from rest_auth.serializers import UserDetailsSerializer
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
-from django.conf import settings
-from rest_framework.authtoken.views import ObtainAuthToken
-from allauth.account import app_settings as allauth_settings
-from allauth.utils import (email_address_exists, get_username_max_length)
-from allauth.account.adapter import get_adapter
-from allauth.account.utils import setup_user_email
-from allauth.socialaccount.helpers import complete_social_login
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount.providers.base import AuthProcess
 
 """
     Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes 
@@ -112,7 +102,7 @@ class CustomTokenSerializer(serializers.ModelSerializer):
         # The key should be prefixed by the string literal "Token", with whitespace separating the two strings.
         # For example : Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         model = Token
-        fields = ('key, user')
+        fields = ('key', 'user')
 
 
 class ProductSerializer(serializers.ModelSerializer):
