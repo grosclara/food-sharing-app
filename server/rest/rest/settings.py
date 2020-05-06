@@ -196,8 +196,8 @@ SITE_ID = 1
 OLD_PASSWORD_FIELD_ENABLED = True
 REST_AUTH_SERIALIZERS = {
     # Serializer class in rest_auth.views.UserDetailsView
-    'USER_DETAILS_SERIALIZER': 'api.serializers.CustomUserDetailsSerializer',
-    # Response for successful authentication in rest_auth.views.LoginView
+    'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer',
+    # Response for successful authentication in rest_auth.views.LoginView and rest_auth.views.RegisterView
     'TOKEN_SERIALIZER': 'api.serializers.CustomTokenSerializer'
 }
 REST_AUTH_REGISTER_SERIALIZERS = {

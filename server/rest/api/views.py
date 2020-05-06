@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from .models import Product, Order, User
-from .serializers import ProductSerializer, OrderSerializer, CustomUserDetailsSerializer
+from .serializers import ProductSerializer, OrderSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
@@ -21,10 +21,19 @@ from .constants import AVAILABLE, COLLECTED, DELIVERED
 from django.shortcuts import get_object_or_404
 
 class ProductViewSet(viewsets.ModelViewSet):
-    """ 
-    This viewset provides default create(), retrieve(), update(), partial_update(), destroy() and list() actions
-
     """
+    Display an individual :model:`myapp.MyModel`.
+
+    **Context**
+
+    ``mymodel``
+        An instance of :model:`myapp.MyModel`.
+
+    **Template:**
+
+    :template:`myapp/my_template.html`
+    """
+
     model = Product
     lookup_field = 'id'
 
@@ -279,7 +288,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
-    serializer_class = CustomUserDetailsSerializer
+    serializer_class = UserSerializer
 
     def partial_update(self, request, *args, **kwargs):
         """
