@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     # as well as multiple strategies for account verification (ranging from none to e-mail verification).
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
 
     # Filtering support
     'django_filters',

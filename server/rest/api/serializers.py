@@ -76,8 +76,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
-        adapter.save_user(request, user, self)
         self.custom_signup(request, user)
+        adapter.save_user(request, user, self)
         setup_user_email(request, user, [])
         return user
 
