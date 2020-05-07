@@ -46,14 +46,6 @@ class CustomUserManager(BaseUserManager):
         # Normalize email
         email = self.normalize_email(email)
 
-        # Provide default null value if the following fields are not specified (especially for a staff member creation)
-        """ if not campus:
-            campus = None
-        if not room_number:
-            room_number = None
-        if not profile_picture:
-            profile_picture = None """
-
         # Creation of the user from the User model defined in models.py
         user = self.model(email=email,
                           first_name = first_name,
