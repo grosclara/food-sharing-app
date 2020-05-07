@@ -1,28 +1,9 @@
 from rest_framework import serializers
+from django.conf import settings
 from .models import  Product, Order, User
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
 
-
-from allauth.account.adapter import get_adapter
-from django.http import HttpRequest
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
-
-try:
-    from allauth.account import app_settings as allauth_settings
-    from allauth.utils import (email_address_exists,
-                               get_username_max_length)
-    from allauth.account.adapter import get_adapter
-    from allauth.account.utils import setup_user_email
-    from allauth.socialaccount.helpers import complete_social_login
-    from allauth.socialaccount.models import SocialAccount
-    from allauth.socialaccount.providers.base import AuthProcess
-except ImportError:
-    raise ImportError("allauth needs to be added to INSTALLED_APPS.")
-
-from rest_framework import serializers
-from requests.exceptions import HTTPError
 
 """
     Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes 

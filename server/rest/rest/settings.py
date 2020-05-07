@@ -189,6 +189,11 @@ ACCOUNT_USER_EMAIL_FIELD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
+AUTHENTICATION_BACKENDS = (
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 # Rest auth configuration
 
 SITE_ID = 1
@@ -198,7 +203,8 @@ REST_AUTH_SERIALIZERS = {
     # Serializer class in rest_auth.views.UserDetailsView
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer',
     # Response for successful authentication in rest_auth.views.LoginView and rest_auth.views.RegisterView
-    'TOKEN_SERIALIZER': 'api.serializers.CustomTokenSerializer'
+    'TOKEN_SERIALIZER': 'api.serializers.CustomTokenSerializer',
+    #'LOGIN_SERIALIZER': 'api.serializers.LoginSerializer',
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     # Serializer class in rest_auth.registration.views.RegisterView
