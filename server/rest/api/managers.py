@@ -35,8 +35,6 @@ class CustomUserManager(BaseUserManager):
         :rtype: UserObject
         """
 
-        print('lol')
-
         # Activate the user account as soon as it is created
         extra_fields.setdefault('is_active', True)
         # By default, the user created is not part of the staff team neither a superuser
@@ -49,12 +47,12 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
 
         # Provide default null value if the following fields are not specified (especially for a staff member creation)
-        if not campus:
+        """ if not campus:
             campus = None
         if not room_number:
             room_number = None
         if not profile_picture:
-            profile_picture = None
+            profile_picture = None """
 
         # Creation of the user from the User model defined in models.py
         user = self.model(email=email,
@@ -97,7 +95,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(email, password, first_name, last_name, profile_picture = None, campus = None, room_number = None, **extra_fields)
+        return self.create_user(email, password, first_name, last_name, profile_picture = 'media/user/superuser.jpeg', campus = None, room_number = None, **extra_fields)
 
     def create_staffuser(self, email, password, first_name, last_name, **extra_fields):
 
@@ -125,4 +123,4 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
 
-        return self.create_user(email, password, first_name, last_name, profile_picture = None, campus = None, room_number = None, **extra_fields)
+        return self.create_user(email, password, first_name, last_name, profile_picture = 'media/user/superuser.jpeg', campus = None, room_number = None, **extra_fields)

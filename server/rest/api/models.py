@@ -31,10 +31,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(('Last name'), max_length = 50)
 
     profile_picture = models.ImageField(('Profile picture url'), upload_to="media/user/", default='media/user/android.png')
-    room_number = models.CharField(('Room number'), max_length = 50)
+    room_number = models.CharField(('Room number'), max_length = 50, null=True)
     campus = models.CharField(('Campus'), 
         max_length=10,
-        choices=CAMPUS_CHOICES)
+        choices=CAMPUS_CHOICES,
+        null=True)
 
     
     # Key implementation details to provide with AbstractBaseUser
