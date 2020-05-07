@@ -35,6 +35,8 @@ class CustomUserManager(BaseUserManager):
         :rtype: UserObject
         """
 
+        print('lol')
+
         # Activate the user account as soon as it is created
         extra_fields.setdefault('is_active', True)
         # By default, the user created is not part of the staff team neither a superuser
@@ -42,7 +44,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', False)
 
         if not email:
-            raise ValueError(_('The Email must be set'))
+            raise ValueError(('The Email must be set'))
         # Normalize email
         email = self.normalize_email(email)
 

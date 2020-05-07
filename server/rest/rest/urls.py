@@ -20,16 +20,16 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework import routers
 from rest_auth.views import PasswordResetConfirmView
-from api import views
+from api.views import ProductViewSet, OrderViewSet, UserViewSet
 
 # Resource routing allows you to quickly declare all of the common routes for a given resourceful controller.
 # This router includes routes for the standard set of list, create, retrieve, update, partial_update and destroy actions.
 router = routers.SimpleRouter()
 
 # Registering the viewsets with the router is similar to providing a urlpattern.
-router.register(r'api/v1/product', views.ProductViewSet, basename = 'product')
-router.register(r'api/v1/order', views.OrderViewSet, basename = 'order')
-router.register(r'api/v1/user', views.UserViewSet, basename = 'user')
+router.register(r'api/v1/product', ProductViewSet, basename = 'product')
+router.register(r'api/v1/order', OrderViewSet, basename = 'order')
+router.register(r'api/v1/user', UserViewSet, basename = 'user')
 
 urlpatterns = [
     # Admin panel
