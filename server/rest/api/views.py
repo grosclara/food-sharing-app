@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from .models import Product, Order, User
-from .serializers import ProductSerializer, OrderSerializer, UserSerializer
+from .serializers import ProductSerializer, OrderSerializer, UserSerializer, CustomRegisterSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LogoutView, UserDetailsView
@@ -19,6 +19,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.http import QueryDict
 from .constants import AVAILABLE, COLLECTED, DELIVERED
+
 
 class ProductViewSet(mixins.CreateModelMixin,
                     mixins.RetrieveModelMixin,

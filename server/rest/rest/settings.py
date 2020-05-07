@@ -149,7 +149,7 @@ REST_FRAMEWORK = {
 
     # The IsAuthenticated permission class will deny permission to any unauthenticated user, and allow permission otherwise.
     # This permission is suitable if you want your API to only be accessible to registered users.
-    'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAuthenticated' ),
+    'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAuthenticated',   ),
 
     # Pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

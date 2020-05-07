@@ -3,6 +3,27 @@ from .models import  Product, Order, User
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
 
+
+from allauth.account.adapter import get_adapter
+from django.http import HttpRequest
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_user_model
+
+try:
+    from allauth.account import app_settings as allauth_settings
+    from allauth.utils import (email_address_exists,
+                               get_username_max_length)
+    from allauth.account.adapter import get_adapter
+    from allauth.account.utils import setup_user_email
+    from allauth.socialaccount.helpers import complete_social_login
+    from allauth.socialaccount.models import SocialAccount
+    from allauth.socialaccount.providers.base import AuthProcess
+except ImportError:
+    raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+
+from rest_framework import serializers
+from requests.exceptions import HTTPError
+
 """
     Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes 
     that can then be easily rendered into JSON, XML or other content types. Serializers also provide deserialization, 
@@ -61,6 +82,21 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.profile_picture = self.cleaned_data.get('profile_picture')
         user.campus = self.cleaned_data.get('campus')
         user.room_number = self.cleaned_data.get('room_number')
+    
+    def save(self, request):
+
+        """
+            Save the user in the databse
+            Call the custom_signup before save actions to provide other necessary information
+        """
+
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        self.custom_signup(request, user)
+        adapter.save_user(request, user, self)
+        setup_user_email(request, user, [])
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):
