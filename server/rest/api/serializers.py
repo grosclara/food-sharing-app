@@ -3,6 +3,8 @@ from django.conf import settings
 from .models import  Product, Order, User
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
 
 
 """
@@ -14,7 +16,6 @@ from rest_framework.authtoken.models import Token
     DRF provides a Serializer class which gives a powerful, generic way to control the output of your responses, 
     as well as a ModelSerializer class which provides a useful shortcut for creating serializers that deal with model instances and querysets.
 """
-
 
 class CustomRegisterSerializer(RegisterSerializer):
 
@@ -43,7 +44,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         """
 
         return {
-            'email': super(CustomRegisterSerializer, self).get_cleaned_data().get('email'),
+            'email': self.validated_data.get('email', ''),
+            'password1': self.validated_data.get('password1', ''),
             'first_name': self.validated_data.get('first_name'),
             'last_name': self.validated_data.get('last_name'),
             'profile_picture': self.validated_data.get('profile_picture'), 
@@ -74,8 +76,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
-        self.custom_signup(request, user)
         adapter.save_user(request, user, self)
+        self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
 

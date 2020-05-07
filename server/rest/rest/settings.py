@@ -190,8 +190,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Rest auth configuration
@@ -204,7 +205,6 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer',
     # Response for successful authentication in rest_auth.views.LoginView and rest_auth.views.RegisterView
     'TOKEN_SERIALIZER': 'api.serializers.CustomTokenSerializer',
-    #'LOGIN_SERIALIZER': 'api.serializers.LoginSerializer',
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     # Serializer class in rest_auth.registration.views.RegisterView
