@@ -18,22 +18,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".Views.Activities.LauncherActivity">
+        <activity android:name=".ui.activities.auth.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".Views.Activities.LoginActivity"/>
+        <activity android:name=".ui.activities.auth.LoginActivity"/>
 
-        <activity android:name=".Views.Activities.RegisterActivity"
-            android:parentActivityName=".Views.Activities.LoginActivity"/>
+        <activity android:name=".ui.activities.auth.RegisterActivity"
+            android:parentActivityName=".ui.activities.auth.LoginActivity"/>
 
-        <activity android:name=".Views.Activities.MainActivity"/>
+        <activity android:name=".ui.activities.HomeScreenActivity"/>
 
-        <activity android:name=".Views.Activities.AddActivity"
-            android:parentActivityName=".Views.Activities.MainActivity"/>
+        <activity android:name=".ui.activities.AddActivity"
+            android:parentActivityName=".ui.activities.HomeScreenActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
