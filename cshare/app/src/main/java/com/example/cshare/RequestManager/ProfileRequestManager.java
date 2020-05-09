@@ -12,7 +12,9 @@ import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
+import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
+import com.example.cshare.WebServices.UserAPI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,11 +44,15 @@ public class ProfileRequestManager {
 
     // Data sources dependencies
     private PreferenceProvider prefs;
-
+    private NetworkClient networkClient = NetworkClient.getInstance();
+    private AuthenticationAPI authenticationAPI;
+    private UserAPI userAPI;
     private Context context;
 
     public ProfileRequestManager(Context context, PreferenceProvider prefs) {
         this.context = context;
+        this.authenticationAPI = networkClient.getAuthAPI();
+        this.userAPI = networkClient.getUserAPI();
         this.prefs = prefs;
         update();
     }
@@ -63,8 +69,7 @@ public class ProfileRequestManager {
     public MutableLiveData<ApiEmptyResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
-        NetworkClient.getInstance()
-                .getAuthAPI()
+        authenticationAPI
                 .getProfileInfo(prefs.getToken())
                 .enqueue(new Callback<User>() {
                     @Override
@@ -92,8 +97,7 @@ public class ProfileRequestManager {
     }
 
     public void getUserByID(int userID) {
-        NetworkClient.getInstance()
-                .getUserAPI()
+        userAPI
                 .getUserByID(prefs.getToken(), userID)
                 .enqueue(new Callback<User>() {
                     @Override
@@ -121,8 +125,7 @@ public class ProfileRequestManager {
     }
 
     public void editProfileWithPicture(User editProfileForm) {
-        NetworkClient.getInstance()
-                .getUserAPI()
+        userAPI
                 .updateProfileWithPicture(prefs.getToken(),
                         prefs.getUserID(),
                         editProfileForm.getProfilePictureBody(),
@@ -156,8 +159,7 @@ public class ProfileRequestManager {
     }
 
     public void editProfileWithoutPicture(User editProfileForm) {
-        NetworkClient.getInstance()
-                .getUserAPI()
+        userAPI
                 .updateProfileWithoutPicture(prefs.getToken(), prefs.getUserID(), editProfileForm)
                 .enqueue(new Callback<User>() {
                     @Override
