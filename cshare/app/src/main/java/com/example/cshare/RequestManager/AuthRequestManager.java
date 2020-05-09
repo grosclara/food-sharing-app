@@ -42,11 +42,12 @@ public class AuthRequestManager {
     private PreferenceProvider prefs;
     private AuthenticationAPI authenticationAPI;
     private Context context;
+    private NetworkClient networkClient = NetworkClient.getInstance();
 
     public AuthRequestManager(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.prefs = prefs;
-        this.authenticationAPI = NetworkClient.getInstance().getAuthAPI();
+        this.authenticationAPI = this.networkClient.getAuthAPI();
         // Initialize the value of the boolean isLoggedIn
         isLoggedIn();
     }
