@@ -21,16 +21,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
-import com.example.cshare.Models.Forms.PasswordForm;
-import com.example.cshare.Models.Forms.EditProfileForm;
-import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.CartViewModel;
 import com.example.cshare.ViewModels.HomeViewModel;
-import com.example.cshare.ViewModels.ProductViewModel;
 import com.example.cshare.ViewModels.SharedViewModel;
 import com.example.cshare.Views.Activities.LoginActivity;
 import com.example.cshare.Models.User;
@@ -84,7 +80,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private String lastName;
     private String roomNumber;
 
-    private EditProfileForm editProfileForm;
+    private User editProfileForm;
+    private User changePasswordForm;
 
     // Path to the location of the picture taken by the phone
     private Uri pictureFileUri;
@@ -342,20 +339,20 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK button -> change password
-                            PasswordForm passwordForm = new PasswordForm(editTextOldPassword.getText().toString().trim(),
+                            changePasswordForm = new User(editTextOldPassword.getText().toString().trim(),
                                     editTextNewPassword.getText().toString().trim(),
                                     editTextConfirmNewPassword.getText().toString().trim());
 
                             // Validation
-                            if (passwordForm.getOld_password().isEmpty()){
+                            if (changePasswordForm.getOldPassword().isEmpty()){
                                 Toast.makeText(getContext(),"Enter your current password", Toast.LENGTH_SHORT).show();
                             }
-                            else if (passwordForm.getNew_password1().length() < 6) {
+                            else if (changePasswordForm.getPassword1().length() < 6) {
                                 Toast.makeText(getContext(),"Passwords should be at least 6 characters long", Toast.LENGTH_SHORT).show();
-                            } else if (!passwordForm.getNew_password1().equals(passwordForm.getNew_password2())) {
+                            } else if (!changePasswordForm.getPassword2().equals(changePasswordForm.getPassword2())) {
                                 Toast.makeText(getContext(),"Passwords should match", Toast.LENGTH_SHORT).show();
                             } else {
-                                authViewModel.changePassword(passwordForm);
+                                authViewModel.changePassword(changePasswordForm);
                             }
                         }
                     })
@@ -412,7 +409,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 firstName = editTextFirstName.getText().toString().trim();
                 roomNumber = editTextRoomNumber.getText().toString().trim();
 
-                editProfileForm = new EditProfileForm(lastName, firstName, roomNumber, campus);
+                editProfileForm = new User(lastName, firstName, roomNumber, campus);
 
                 if (fileToUploadUri != null) {
 
@@ -422,7 +419,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     // MultipartBody.Part is used to send also the actual file name
                     MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
 
-                    editProfileForm.setProfile_picture(profilePictureBody);
+                    editProfileForm.setProfilePictureBody(profilePictureBody);
                 }
 
                 profileViewModel.editProfile(editProfileForm);

@@ -7,32 +7,21 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
-import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Utils.PreferenceProvider;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
-import com.example.cshare.WebServices.AuthenticationAPI;
 import com.example.cshare.WebServices.NetworkClient;
-import com.example.cshare.WebServices.UserAPI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * ProfileRequestManager is a class that sends api calls and holds the user data as
@@ -131,16 +120,16 @@ public class ProfileRequestManager {
                 });
     }
 
-    public void editProfileWithPicture(EditProfileForm form) {
+    public void editProfileWithPicture(User editProfileForm) {
         NetworkClient.getInstance()
                 .getUserAPI()
                 .updateProfileWithPicture(prefs.getToken(),
                         prefs.getUserID(),
-                        form.getProfile_picture(),
-                        form.getFirst_name(),
-                        form.getLast_name(),
-                        form.getRoom_number(),
-                        form.getCampus())
+                        editProfileForm.getProfilePictureBody(),
+                        editProfileForm.getFirstName(),
+                        editProfileForm.getLastName(),
+                        editProfileForm.getRoomNumber(),
+                        editProfileForm.getCampus())
                 .enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
@@ -166,7 +155,7 @@ public class ProfileRequestManager {
                 });
     }
 
-    public void editProfileWithoutPicture(EditProfileForm editProfileForm) {
+    public void editProfileWithoutPicture(User editProfileForm) {
         NetworkClient.getInstance()
                 .getUserAPI()
                 .updateProfileWithoutPicture(prefs.getToken(), prefs.getUserID(), editProfileForm)

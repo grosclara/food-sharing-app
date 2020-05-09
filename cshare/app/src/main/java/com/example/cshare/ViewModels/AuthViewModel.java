@@ -8,7 +8,6 @@ import android.app.Application;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
-import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.AuthRequestManager;
 
@@ -73,8 +72,8 @@ public class AuthViewModel extends AndroidViewModel {
         } else { authRequestManager.registerWithoutPicture(registerForm); }
     }
 
-    public void changePassword(PasswordForm passwordForm){
-        authRequestManager.changePassword(passwordForm);
+    public void changePassword(User changePasswordForm){
+        authRequestManager.changePassword(changePasswordForm);
     }
 
     public void resetPassword(User resetPasswordForm){

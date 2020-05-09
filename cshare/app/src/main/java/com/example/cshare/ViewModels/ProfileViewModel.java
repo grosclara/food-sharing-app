@@ -5,9 +5,9 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.UserReponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.ProfileRequestManager;
 
 import java.io.IOException;
@@ -48,8 +48,8 @@ public class ProfileViewModel extends AndroidViewModel {
         profileRequestManager.getUserByID(userID);
     }
 
-    public void editProfile(EditProfileForm editProfileForm){
-        if (editProfileForm.getProfile_picture() != null){
+    public void editProfile(User editProfileForm){
+        if (editProfileForm.getProfilePictureBody() != null){
             profileRequestManager.editProfileWithPicture(editProfileForm);
         } else { profileRequestManager.editProfileWithoutPicture(editProfileForm); }
     }

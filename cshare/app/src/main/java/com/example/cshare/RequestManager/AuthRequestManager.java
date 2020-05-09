@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
-import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
@@ -229,9 +228,9 @@ public class AuthRequestManager {
 
     }
 
-    public void changePassword(PasswordForm passwordForm) {
+    public void changePassword(User changePasswordForm) {
         authenticationAPI
-                .changePassword(prefs.getToken(), passwordForm)
+                .changePassword(prefs.getToken(), changePasswordForm)
                 .enqueue(new Callback<EmptyAuthResponse>() {
                     @Override
                     public void onResponse(Call<EmptyAuthResponse> call, Response<EmptyAuthResponse> response) {

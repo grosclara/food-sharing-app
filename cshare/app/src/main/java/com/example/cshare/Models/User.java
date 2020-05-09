@@ -64,7 +64,14 @@ public class User {
         this.old_password = oldPassword;
     }
 
-    public User() {}
+    // Constructor to add a new product to the VM in the add fragment
+    public User(String last_name, String first_name, String room_number, String campus) {
+        this.last_name = last_name;
+        this.first_name = first_name;
+        this.room_number = room_number;
+        this.campus = campus;
+    }
+
 
     public String getEmail() {
         return email;
@@ -95,6 +102,8 @@ public class User {
     public MultipartBody.Part getProfilePictureBody() {
         return profilePictureBody;
     }
+
+    public String getOldPassword() {return old_password; }
 
     public String getPassword1() { return password1; }
 

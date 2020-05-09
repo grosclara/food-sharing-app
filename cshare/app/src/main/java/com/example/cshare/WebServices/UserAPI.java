@@ -1,9 +1,7 @@
 package com.example.cshare.WebServices;
 
-import com.example.cshare.Models.Forms.EditProfileForm;
 import com.example.cshare.Models.User;
 
-import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -37,7 +35,7 @@ public interface UserAPI {
     Call<User> updateProfileWithoutPicture(
             @Header("Authorization") String token,
             @Path("id") int id,
-            @Body EditProfileForm form
+            @Body User editProfileForm
     );
 
 }

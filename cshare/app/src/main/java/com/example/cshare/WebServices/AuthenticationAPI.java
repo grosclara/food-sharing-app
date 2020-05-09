@@ -3,7 +3,6 @@ package com.example.cshare.WebServices;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
-import com.example.cshare.Models.Forms.PasswordForm;
 import com.example.cshare.Models.User;
 
 import okhttp3.MultipartBody;
@@ -54,7 +53,7 @@ public interface AuthenticationAPI {
     @POST("rest-auth/password/change/")
     Call<EmptyAuthResponse> changePassword(
             @Header("Authorization") String token,
-            @Body PasswordForm passwordForm
+            @Body User changePasswordForm
     );
 
     @FormUrlEncoded
