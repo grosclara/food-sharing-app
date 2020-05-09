@@ -14,6 +14,7 @@ public class HomeProductsDataSourceFactory extends DataSource.Factory {
 
     private PreferenceProvider prefs;
     private Context context;
+    private HomeProductsDataSource homeProductsDataSource;
 
     public HomeProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.prefs = prefs;
@@ -24,7 +25,7 @@ public class HomeProductsDataSourceFactory extends DataSource.Factory {
 
     @Override
     public DataSource create() {
-        HomeProductsDataSource homeProductsDataSource = new HomeProductsDataSource(context, prefs.getToken());
+        homeProductsDataSource = new HomeProductsDataSource(context, prefs.getToken());
         homeProductsLiveDataSource.postValue(homeProductsDataSource);
         return homeProductsDataSource;
     }

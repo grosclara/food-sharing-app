@@ -8,12 +8,14 @@ import androidx.paging.PageKeyedDataSource;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSources.CartProductsDataSource;
+import com.example.cshare.RequestManager.DataSources.HomeProductsDataSource;
 import com.example.cshare.Utils.PreferenceProvider;
 
 public class CartProductsDataSourceFactory extends DataSource.Factory {
 
     private PreferenceProvider prefs;
     private Context context;
+    private CartProductsDataSource cartProductsDataSource;
 
     public CartProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.prefs = prefs;
@@ -24,7 +26,7 @@ public class CartProductsDataSourceFactory extends DataSource.Factory {
 
     @Override
     public DataSource create() {
-        CartProductsDataSource cartProductsDataSource = new CartProductsDataSource(context, prefs.getToken());
+        cartProductsDataSource = new CartProductsDataSource(context, prefs.getToken());
         cartProductsLiveDataSource.postValue(cartProductsDataSource);
         return cartProductsDataSource;
     }

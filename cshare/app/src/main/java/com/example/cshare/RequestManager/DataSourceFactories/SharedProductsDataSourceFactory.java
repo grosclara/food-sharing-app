@@ -18,6 +18,7 @@ public class SharedProductsDataSourceFactory extends DataSource.Factory {
 
     private PreferenceProvider prefs;
     private Context context;
+    private SharedProductsDataSource sharedProductsDataSource;
 
     public SharedProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.context = context;
@@ -27,9 +28,7 @@ public class SharedProductsDataSourceFactory extends DataSource.Factory {
     @Override
     public DataSource create() {
 
-        Log.d(Constants.TAG, "DATASOURCE CREATED");
-
-        SharedProductsDataSource sharedProductsDataSource = new SharedProductsDataSource(context, prefs.getToken());
+        sharedProductsDataSource = new SharedProductsDataSource(context, prefs.getToken());
         sharedProductsLiveDataSource.postValue(sharedProductsDataSource);
         return sharedProductsDataSource;
     }
