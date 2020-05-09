@@ -1,5 +1,7 @@
 package com.example.cshare.Models;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 import okhttp3.MultipartBody;
@@ -14,7 +16,7 @@ import okhttp3.MultipartBody;
  * @version 1.0
  */
 
-public class User implements Serializable {
+public class User {
 
     private int id;
     private String email;
@@ -28,49 +30,38 @@ public class User implements Serializable {
     private String first_name;
     private String room_number;
     private String campus;
-    private String token;
     // Correspond to the url of the picture in the server (ex: "http://127.0.0.1:8000/media/user/android.png/")
     private String profile_picture;
+    @Nullable
     private MultipartBody.Part profilePictureBody;
 
-    public User(MultipartBody.Part profilePictureBody, String firstName, String lastName, String roomNumber, String campus, String email, String password1, String password2) {
-        this.profilePictureBody = profilePictureBody;
-        this.first_name = firstName;
-        this.last_name = lastName;
-        this.room_number = roomNumber;
-        this.campus = campus;
-        this.email = email;
-        this.password1 = password1;
-        this.password2 = password2;
-    }
-
-    /*
-     * Constructor of the User class.
-     * Only take a few attributes in argument because the server auto adds the others (id, created_at, updated_at)
-     */
-    public User(String email, String lastName, String firstName, String password1, String password2, String campus, String roomNumber) {
-        this.email = email;
-        this.last_name = lastName;
-        this.first_name = firstName;
-        this.password1 = password1;
-        this.password2 = password2;
-        this.campus = campus;
-        this.room_number = roomNumber;
-    }
-
+    // LoginForm
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    // ResetPasswordForm
+    public User(String email) {
+        this.email = email;
+    }
+
+    // RegisterForm
+    public User(String email, String password1, String password2, String last_name, String first_name, String room_number,
+                        String campus) {
+        this.email = email;
+        this.password1 = password1;
+        this.password2 = password2;
+        this.last_name = last_name;
+        this.first_name = first_name;
+        this.room_number = room_number;
+        this.campus = campus;
     }
 
     public User(String oldPassword, String password1, String password2) {
         this.new_password1 = password1;
         this.new_password2 = password2;
         this.old_password = oldPassword;
-    }
-
-    public User(String email) {
-        this.email = email;
     }
 
     public User() {}
@@ -113,8 +104,8 @@ public class User implements Serializable {
         return id;
     }
 
-    public String getToken() {
-        return token;
+    public void setProfilePictureBody(@Nullable MultipartBody.Part profilePictureBody) {
+        this.profilePictureBody = profilePictureBody;
     }
 }
 

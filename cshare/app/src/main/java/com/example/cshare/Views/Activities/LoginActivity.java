@@ -18,15 +18,11 @@ import android.widget.Toast;
 
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
-import com.example.cshare.Models.Forms.LoginForm;
-import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
-import com.example.cshare.Models.ApiResponses.RegistrationResponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.ViewModels.AuthViewModel;
-import com.example.cshare.ViewModels.ProductViewModel;
-import com.example.cshare.ViewModels.ProfileViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -38,10 +34,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // Form validation
     private Validator loginValidator;
+    private User loginForm;
+    private User resetPasswordForm;
 
     private AuthViewModel authViewModel;
-    private ProductViewModel productViewModel;
-    private ProfileViewModel profileViewModel;
 
     // Views
     @Email
@@ -142,10 +138,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onValidationSucceeded() {
                 // Retrieve information from the UI
-                LoginForm loginUser = new LoginForm(emailAddressEditText.getText().toString().trim().toLowerCase(),
+                loginForm = new User(emailAddressEditText.getText().toString().trim().toLowerCase(),
                         passwordEditText.getText().toString().trim());
 
-                authViewModel.logIn(loginUser);
+                authViewModel.logIn(loginForm);
             }
 
             @Override
@@ -168,7 +164,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v == buttonLogin) {
+
             loginValidator.validate();
+
         }
         else if (v == buttonCreateAccount) {
 
@@ -200,7 +198,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // User clicked OK button -> reset password
                             String email = resetPasswordEditText.getText().toString().trim().toLowerCase();
                             if (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                                authViewModel.resetPassword(email);
+                                resetPasswordForm = new User(email);
+                                authViewModel.resetPassword(resetPasswordForm);
                             }else {
                                 String message = "Invalid email";
                                 // Display error messages

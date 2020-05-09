@@ -78,6 +78,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private String quantity;
     private User supplier;
 
+    private Product product;
 
     // Path to the location of the picture taken by the phone
     private Uri pictureFileUri;
@@ -323,7 +324,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 String imageFileName = Constants.BASE_URL_API + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
 
                 // HTTP Post request
-                Product product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplier.getId(), imageFileName, supplier.getCampus(), supplier.getRoomNumber());
+                product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplier.getId(), imageFileName, supplier.getCampus(), supplier.getRoomNumber());
 
                 productViewModel.addProduct(product);
 

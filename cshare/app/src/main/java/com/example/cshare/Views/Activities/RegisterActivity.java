@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.cshare.Models.Forms.RegisterForm;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.R;
 import com.example.cshare.RequestManager.Status;
 import com.example.cshare.Utils.Camera;
@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private String[] campusArray;
 
-    private RegisterForm registerForm;
+    private User registerForm;
 
     private String email;
     private String lastName;
@@ -211,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 password2 = editTextPasswordConfirm.getText().toString().trim();
                 roomNumber = editTextRoomNumber.getText().toString().trim();
 
-                registerForm = new RegisterForm(email, password1, password2, lastName, firstName, roomNumber, campus);
+                registerForm = new User(email, password1, password2, lastName, firstName, roomNumber, campus);
 
                 if (fileToUploadUri != null) {
 
@@ -221,7 +221,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     // MultipartBody.Part is used to send also the actual file name
                     MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
 
-                    registerForm.setProfile_picture(profilePictureBody);
+                    registerForm.setProfilePictureBody(profilePictureBody);
                 }
 
                 authViewModel.register(registerForm);

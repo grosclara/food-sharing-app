@@ -5,15 +5,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
-import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
-import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.ApiResponses.UserReponse;
+import com.example.cshare.Models.User;
 import com.example.cshare.RequestManager.AuthRequestManager;
-import com.example.cshare.Models.Forms.LoginForm;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -60,7 +57,7 @@ public class AuthViewModel extends AndroidViewModel {
     public void updateUserCredentials(){authRequestManager.updateUserCredentials();}
 
 
-    public void logIn(LoginForm loginForm){
+    public void logIn(User loginForm){
         authRequestManager.logIn(loginForm);
     }
 
@@ -70,8 +67,8 @@ public class AuthViewModel extends AndroidViewModel {
 
     public void deleteAccount() {authRequestManager.deleteAccount();}
 
-    public void register(RegisterForm registerForm){
-        if (registerForm.getProfile_picture() != null){
+    public void register(User registerForm){
+        if (registerForm.getProfilePictureBody() != null){
             authRequestManager.registerWithPicture(registerForm);
         } else { authRequestManager.registerWithoutPicture(registerForm); }
     }
@@ -80,7 +77,7 @@ public class AuthViewModel extends AndroidViewModel {
         authRequestManager.changePassword(passwordForm);
     }
 
-    public void resetPassword(String email){
-        authRequestManager.resetPassword(email);
+    public void resetPassword(User resetPasswordForm){
+        authRequestManager.resetPassword(resetPasswordForm);
     }
 }

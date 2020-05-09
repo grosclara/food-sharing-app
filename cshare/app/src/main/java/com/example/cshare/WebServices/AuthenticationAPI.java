@@ -2,22 +2,14 @@ package com.example.cshare.WebServices;
 
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
-import com.example.cshare.Models.Forms.LoginForm;
-import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
 import com.example.cshare.Models.Forms.PasswordForm;
-import com.example.cshare.Models.Forms.RegisterForm;
 import com.example.cshare.Models.User;
-
-import java.util.Map;
-
-import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -48,11 +40,11 @@ public interface AuthenticationAPI {
 
     @POST("rest-auth/registration/")
     Call<RegistrationResponse> createUserWithoutPicture(
-            @Body RegisterForm user
+            @Body User registerForm
     );
 
     @POST("rest-auth/login/")
-    Call<LoginResponse> login(@Body LoginForm loginForm);
+    Call<LoginResponse> login(@Body User loginForm);
 
     @POST("rest-auth/logout/")
     Call<EmptyAuthResponse> logout(
@@ -68,7 +60,7 @@ public interface AuthenticationAPI {
     @FormUrlEncoded
     @POST("rest-auth/password/reset/")
     Call<EmptyAuthResponse> resetPassword(
-            @FieldMap Map<String, String> status
+            @Body User resetPasswordForm
     );
 
     @DELETE("user/{id}/")

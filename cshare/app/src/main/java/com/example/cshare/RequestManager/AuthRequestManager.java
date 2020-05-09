@@ -9,12 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.Models.ApiResponses.LoginResponse;
 import com.example.cshare.Models.ApiResponses.EmptyAuthResponse;
-import com.example.cshare.Models.Forms.LoginForm;
 import com.example.cshare.Models.Forms.PasswordForm;
-import com.example.cshare.Models.Forms.RegisterForm;
-import com.example.cshare.Models.ApiResponses.ApiEmptyResponse;
 import com.example.cshare.Models.ApiResponses.RegistrationResponse;
-import com.example.cshare.Models.ApiResponses.UserReponse;
 import com.example.cshare.Models.User;
 import com.example.cshare.Utils.Constants;
 import com.example.cshare.Utils.PreferenceProvider;
@@ -25,15 +21,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,12 +41,13 @@ public class AuthRequestManager {
 
     // Data sources dependencies
     private PreferenceProvider prefs;
-
+    private AuthenticationAPI authenticationAPI;
     private Context context;
 
     public AuthRequestManager(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.prefs = prefs;
+        this.authenticationAPI = NetworkClient.getInstance().getAuthAPI();
         // Initialize the value of the boolean isLoggedIn
         isLoggedIn();
     }
@@ -109,7 +98,7 @@ public class AuthRequestManager {
         isLoggedInMutableLiveData.setValue(prefs.isLoggedIn());
     }
 
-    public void logIn(LoginForm loginForm){
+    public void logIn(User loginForm){
         NetworkClient.getInstance()
                 .getAuthAPI()
                 .login(loginForm)
@@ -176,10 +165,9 @@ public class AuthRequestManager {
             });
     }
 
-    public void registerWithoutPicture(RegisterForm user){
-        NetworkClient.getInstance()
-                .getAuthAPI()
-                .createUserWithoutPicture(user)
+    public void registerWithoutPicture(User registerForm){
+        authenticationAPI
+                .createUserWithoutPicture(registerForm)
                 .enqueue(new Callback<RegistrationResponse>() {
                     @Override
                     public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
@@ -206,17 +194,16 @@ public class AuthRequestManager {
 
     }
 
-    public void registerWithPicture(RegisterForm user){
-        NetworkClient.getInstance()
-                .getAuthAPI()
-                .createUserWithPicture(user.getProfile_picture(),
-                user.getFirst_name(),
-                user.getLast_name(),
-                user.getRoom_number(),
-                user.getCampus(),
-                user.getEmail(),
-                user.getPassword1(),
-                user.getPassword2())
+    public void registerWithPicture(User registerForm){
+        authenticationAPI
+                .createUserWithPicture(registerForm.getProfilePictureBody(),
+                registerForm.getFirstName(),
+                registerForm.getLastName(),
+                registerForm.getRoomNumber(),
+                registerForm.getCampus(),
+                registerForm.getEmail(),
+                registerForm.getPassword1(),
+                registerForm.getPassword2())
                 .enqueue(new Callback<RegistrationResponse>() {
                     @Override
                     public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
@@ -243,8 +230,7 @@ public class AuthRequestManager {
     }
 
     public void changePassword(PasswordForm passwordForm) {
-        NetworkClient.getInstance()
-                .getAuthAPI()
+        authenticationAPI
                 .changePassword(prefs.getToken(), passwordForm)
                 .enqueue(new Callback<EmptyAuthResponse>() {
                     @Override
@@ -271,14 +257,10 @@ public class AuthRequestManager {
                 });
     }
 
-    public void resetPassword(String email) {
+    public void resetPassword(User resetPasswordForm) {
 
-        Map<String, String> emailFieldMap = new HashMap<>();
-        emailFieldMap.put("email", email);
-
-        NetworkClient.getInstance()
-                .getAuthAPI()
-                .resetPassword(emailFieldMap)
+        authenticationAPI
+                .resetPassword(resetPasswordForm)
                 .enqueue(new Callback<EmptyAuthResponse>() {
                     @Override
                     public void onResponse(Call<EmptyAuthResponse> call, Response<EmptyAuthResponse> response) {
@@ -305,8 +287,7 @@ public class AuthRequestManager {
     }
 
     public void deleteAccount() {
-        NetworkClient.getInstance()
-                .getAuthAPI()
+        authenticationAPI
                 .delete(prefs.getToken(), prefs.getUserID())
                 .enqueue(new Callback<EmptyAuthResponse>() {
                     @Override
