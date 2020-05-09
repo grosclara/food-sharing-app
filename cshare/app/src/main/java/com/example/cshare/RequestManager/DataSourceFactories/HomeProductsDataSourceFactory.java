@@ -8,7 +8,6 @@ import androidx.paging.PageKeyedDataSource;
 
 import com.example.cshare.Models.Product;
 import com.example.cshare.RequestManager.DataSources.HomeProductsDataSource;
-import com.example.cshare.RequestManager.ProductRequestManager;
 import com.example.cshare.Utils.PreferenceProvider;
 
 public class HomeProductsDataSourceFactory extends DataSource.Factory {
