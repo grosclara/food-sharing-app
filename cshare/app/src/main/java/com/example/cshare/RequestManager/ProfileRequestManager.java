@@ -39,7 +39,7 @@ public class ProfileRequestManager {
 
     // MutableLiveData object that contains the user data
     private MutableLiveData<UserReponse> userProfileResponse = new MutableLiveData<>();
-    private MutableLiveData<ApiEmptyResponse> editedProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<UserReponse> editedProfileResponse = new MutableLiveData<>();
     private MutableLiveData<UserReponse> otherUserProfileResponse = new MutableLiveData<>();
 
     // Data sources dependencies
@@ -66,7 +66,7 @@ public class ProfileRequestManager {
         return userProfileResponse;
     }
     public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
-    public MutableLiveData<ApiEmptyResponse> getEditedProfileResponse() { return editedProfileResponse; }
+    public MutableLiveData<UserReponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
         authenticationAPI
