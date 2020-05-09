@@ -53,6 +53,9 @@ public class ProductRequestManager {
 
     private Context context;
     // Data sources dependencies
+    private NetworkClient networkClient = NetworkClient.getInstance();
+    private ProductAPI productAPI;
+    private OrderAPI orderAPI;
     private PreferenceProvider prefs;
 
     public ProductRequestManager(Context context, PreferenceProvider prefs) {
@@ -62,6 +65,7 @@ public class ProductRequestManager {
          */
         // Define the URL endpoint for the HTTP request.
         this.context = context;
+        this.productAPI = networkClient.getProductAPI();
         this.prefs = prefs;
     }
 
@@ -87,8 +91,7 @@ public class ProductRequestManager {
     }
 
     public void addProduct(Product product) {
-        NetworkClient.getInstance()
-                .getProductAPI()
+        productAPI
                 .addProduct(prefs.getToken(),
                         product.getProduct_picture_body(),
                         product.getName(),
@@ -121,8 +124,7 @@ public class ProductRequestManager {
     }
 
     public void deleteProduct(int productID) {
-        NetworkClient.getInstance()
-                .getProductAPI()
+       productAPI
                 .deleteProduct(prefs.getToken(),productID)
                 .enqueue(new Callback<Product>() {
                     @Override
@@ -153,8 +155,7 @@ public class ProductRequestManager {
         Map<String, Integer> productIDMap = new HashMap<>();
         productIDMap.put("product", order.getProductID());
 
-        NetworkClient.getInstance()
-                .getOrderApi()
+        orderAPI
                 .order(prefs.getToken(), productIDMap)
                 .enqueue(new Callback<Product>() {
                     @Override
@@ -182,8 +183,7 @@ public class ProductRequestManager {
     }
 
     public void deliver(int productID) {
-        NetworkClient.getInstance()
-                .getOrderApi()
+        orderAPI
                 .deliverOrder(prefs.getToken(),productID)
                 .enqueue(new Callback<Product>() {
                     @Override
@@ -212,8 +212,7 @@ public class ProductRequestManager {
 
     public void cancelOrder(int productID) {
 
-        NetworkClient.getInstance()
-                .getOrderApi()
+        orderAPI
                 .cancelOrder(prefs.getToken(),productID)
                 .enqueue(new Callback<Product>() {
                     @Override
