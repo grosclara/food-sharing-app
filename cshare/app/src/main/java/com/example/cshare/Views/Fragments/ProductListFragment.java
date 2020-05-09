@@ -34,7 +34,6 @@ ProductListFragment extends BaseFragment {
     //FOR DATA
     // protected Disposable disposable;
     // Declare list of products (Product) & Adapter
-    private List<Product> products;
     protected ProductPagedListAdapter adapter;
 
     protected Boolean isClickable = true;
