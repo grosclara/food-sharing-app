@@ -21,15 +21,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Product> {
+public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
     private String token;
     private Context context;
 
-    public SharedProductsDataSource(Context context, String token) {
-        this.context = context;
+    public HomeDataSource(Context context, String token) {
         this.token = token;
+        this.context = context;
     }
 
     // Load the initial data
@@ -38,7 +38,7 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(token, null, null, 1, FIRST_PAGE)
+                .getProducts(token, Constants.AVAILABLE, null, 0, FIRST_PAGE)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -56,7 +56,6 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
                                 // handle failure to read error
                             }
                         }
-
                     }
 
                     @Override
@@ -75,7 +74,7 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(token, null, null, 1, params.key)
+                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -84,14 +83,14 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
                             Integer key = (params.key > 1) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
-                            Gson gson = new GsonBuilder().create();
-                            ApiError mError = new ApiError();
-                            try {
-                                mError= gson.fromJson(response.errorBody().string(), ApiError.class);
-                                Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                // handle failure to read error
-                            }
+                                Gson gson = new GsonBuilder().create();
+                                ApiError mError = new ApiError();
+                                try {
+                                    mError= gson.fromJson(response.errorBody().string(), ApiError.class);
+                                    Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    // handle failure to read error
+                                }
                         }
                     }
 
@@ -107,13 +106,13 @@ public class SharedProductsDataSource extends PageKeyedDataSource<Integer, Produ
     // Load the further data when scrolling down
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(token, null, null, 1, params.key)
+                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
-
                         if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);

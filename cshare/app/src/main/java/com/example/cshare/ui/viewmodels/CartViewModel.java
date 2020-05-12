@@ -9,7 +9,7 @@ import androidx.paging.PageKeyedDataSource;
 import androidx.paging.PagedList;
 
 import com.example.cshare.data.models.Product;
-import com.example.cshare.data.sources.factories.CartProductsDataSourceFactory;
+import com.example.cshare.data.sources.factories.CartDataSourceFactory;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.data.sources.PreferenceProvider;
 
@@ -18,7 +18,7 @@ import java.security.GeneralSecurityException;
 
 public class CartViewModel extends AndroidViewModel {
 
-    private CartProductsDataSourceFactory cartProductsDataSourceFactory;
+    private CartDataSourceFactory cartProductsDataSourceFactory;
 
     private LiveData<PagedList<Product>> productPagedList;
     private LiveData<PageKeyedDataSource<Integer, Product>> liveDataSource;
@@ -34,7 +34,7 @@ public class CartViewModel extends AndroidViewModel {
     public CartViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
-        cartProductsDataSourceFactory = new CartProductsDataSourceFactory(application, new PreferenceProvider(application));
+        cartProductsDataSourceFactory = new CartDataSourceFactory(application, new PreferenceProvider(application));
         liveDataSource = cartProductsDataSourceFactory.getCartProductsLiveDataSource();
 
         PagedList.Config config =

@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.auth;
+package com.example.cshare.ui.views.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import com.example.cshare.R;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
-import com.example.cshare.ui.activities.HomeScreenActivity;
+import com.example.cshare.ui.views.HomeScreenActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 

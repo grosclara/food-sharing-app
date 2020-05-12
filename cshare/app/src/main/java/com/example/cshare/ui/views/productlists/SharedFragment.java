@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.productFragment;
+package com.example.cshare.ui.views.productlists;
 
 import android.widget.Toast;
 
@@ -16,7 +16,7 @@ import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;
-import com.example.cshare.ui.activities.BaseFragment;
+import com.example.cshare.ui.views.BaseFragment;
 
 public class SharedFragment extends ProductListFragment {
 

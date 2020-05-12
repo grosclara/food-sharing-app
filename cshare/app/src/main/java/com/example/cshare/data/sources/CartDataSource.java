@@ -21,13 +21,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CartProductsDataSource extends PageKeyedDataSource<Integer, Product> {
+public class CartDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
     private String token;
     private Context context;
 
-    public CartProductsDataSource(Context context, String token) {
+    public CartDataSource(Context context, String token) {
         this.token = token;
         this.context = context;
     }

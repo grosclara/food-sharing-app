@@ -9,7 +9,7 @@ import androidx.paging.PageKeyedDataSource;
 import androidx.paging.PagedList;
 
 import com.example.cshare.data.models.Product;
-import com.example.cshare.data.sources.factories.SharedProductsDataSourceFactory;
+import com.example.cshare.data.sources.factories.SharedDataSourceFactory;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.data.sources.PreferenceProvider;
 
@@ -18,7 +18,7 @@ import java.security.GeneralSecurityException;
 
 public class SharedViewModel extends AndroidViewModel {
 
-    private SharedProductsDataSourceFactory sharedProductsDataSourceFactory;
+    private SharedDataSourceFactory sharedDataSourceFactory;
 
     private LiveData<PagedList<Product>> productPagedList;
     private LiveData<PageKeyedDataSource<Integer, Product>> liveDataSource;
@@ -34,8 +34,8 @@ public class SharedViewModel extends AndroidViewModel {
     public SharedViewModel(Application application) throws GeneralSecurityException, IOException {
         super(application);
 
-        sharedProductsDataSourceFactory = new SharedProductsDataSourceFactory(application, new PreferenceProvider(application));
-        liveDataSource = sharedProductsDataSourceFactory.getSharedProductsLiveDataSource();
+        sharedDataSourceFactory = new SharedDataSourceFactory(application, new PreferenceProvider(application));
+        liveDataSource = sharedDataSourceFactory.getSharedProductsLiveDataSource();
 
         PagedList.Config config =
                 (new PagedList.Config.Builder())
@@ -43,12 +43,12 @@ public class SharedViewModel extends AndroidViewModel {
                         .setEnablePlaceholders(false)
                         .build();
 
-        productPagedList = (new LivePagedListBuilder<Integer, Product>(sharedProductsDataSourceFactory, config)).build();
+        productPagedList = (new LivePagedListBuilder<Integer, Product>(sharedDataSourceFactory, config)).build();
     }
 
     public void refresh(){
-        if (sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue() != null){
-            sharedProductsDataSourceFactory.getSharedProductsLiveDataSource().getValue().invalidate();
+        if (sharedDataSourceFactory.getSharedProductsLiveDataSource().getValue() != null){
+            sharedDataSourceFactory.getSharedProductsLiveDataSource().getValue().invalidate();
         }
     }
 }

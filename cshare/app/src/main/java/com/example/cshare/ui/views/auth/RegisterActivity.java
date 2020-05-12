@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.auth;
+package com.example.cshare.ui.views.auth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;

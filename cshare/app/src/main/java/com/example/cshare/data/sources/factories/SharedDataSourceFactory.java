@@ -7,18 +7,18 @@ import androidx.paging.DataSource;
 import androidx.paging.PageKeyedDataSource;
 
 import com.example.cshare.data.models.Product;
-import com.example.cshare.data.sources.SharedProductsDataSource;
+import com.example.cshare.data.sources.SharedDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
-public class SharedProductsDataSourceFactory extends DataSource.Factory {
+public class SharedDataSourceFactory extends DataSource.Factory {
 
     private MutableLiveData<PageKeyedDataSource<Integer, Product>> sharedProductsLiveDataSource = new MutableLiveData<>();
 
     private PreferenceProvider prefs;
     private Context context;
-    private SharedProductsDataSource sharedProductsDataSource;
+    private SharedDataSource sharedProductsDataSource;
 
-    public SharedProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
+    public SharedDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.prefs = prefs;
     }
@@ -26,7 +26,7 @@ public class SharedProductsDataSourceFactory extends DataSource.Factory {
     @Override
     public DataSource create() {
 
-        sharedProductsDataSource = new SharedProductsDataSource(context, prefs.getToken());
+        sharedProductsDataSource = new SharedDataSource(context, prefs.getToken());
         sharedProductsLiveDataSource.postValue(sharedProductsDataSource);
         return sharedProductsDataSource;
     }

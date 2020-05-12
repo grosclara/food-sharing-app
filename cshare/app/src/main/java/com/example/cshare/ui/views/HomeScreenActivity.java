@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities;
+package com.example.cshare.ui.views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +19,10 @@ import com.example.cshare.data.models.User;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.R;
-import com.example.cshare.ui.activities.productFragment.CartFragment;
-import com.example.cshare.ui.activities.productFragment.HomeFragment;
-import com.example.cshare.ui.activities.productFragment.ProductDialogFragment;
-import com.example.cshare.ui.activities.productFragment.SharedFragment;
+import com.example.cshare.ui.views.productlists.CartFragment;
+import com.example.cshare.ui.views.productlists.HomeFragment;
+import com.example.cshare.ui.views.productlists.ProductDialogFragment;
+import com.example.cshare.ui.views.productlists.SharedFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.productFragment.adapter;
+package com.example.cshare.ui.views.productlists.adapter;
 
 import android.view.View;
 

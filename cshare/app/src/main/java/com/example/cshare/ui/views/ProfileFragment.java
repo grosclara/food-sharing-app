@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities;
+package com.example.cshare.ui.views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +28,7 @@ import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.CartViewModel;
 import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;
-import com.example.cshare.ui.activities.auth.LoginActivity;
+import com.example.cshare.ui.views.auth.LoginActivity;
 import com.example.cshare.data.models.User;
 import com.example.cshare.R;
 import com.example.cshare.ui.viewmodels.AuthViewModel;

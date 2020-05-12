@@ -21,15 +21,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product> {
+public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
 
     private static final int FIRST_PAGE = 1;
     private String token;
     private Context context;
 
-    public HomeProductsDataSource(Context context, String token) {
-        this.token = token;
+    public SharedDataSource(Context context, String token) {
         this.context = context;
+        this.token = token;
     }
 
     // Load the initial data
@@ -38,7 +38,7 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
 
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(token, Constants.AVAILABLE, null, 0, FIRST_PAGE)
+                .getProducts(token, null, null, 1, FIRST_PAGE)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
@@ -46,6 +46,43 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
                         if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? FIRST_PAGE + 1 : null;
                             callback.onResult(response.body().getProductList(), null, key);
+                        } else {
+                            Gson gson = new GsonBuilder().create();
+                            ApiError mError = new ApiError();
+                            try {
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.class);
+                                Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                // handle failure to read error
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
+                        Log.d(Constants.TAG, t.getLocalizedMessage());
+                        Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
+
+    // Load the former data when scrolling up
+    @Override
+    public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+
+        NetworkClient.getInstance()
+                .getProductAPI()
+                .getProducts(token, null, null, 1, params.key)
+                .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
+                    @Override
+                    public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
+
+                        if (response.isSuccessful()) {
+                            Integer key = (params.key > 1) ? params.key - 1 : null;
+                            callback.onResult(response.body().getProductList(), key);
                         } else {
                             Gson gson = new GsonBuilder().create();
                             ApiError mError = new ApiError();
@@ -65,54 +102,18 @@ public class HomeProductsDataSource extends PageKeyedDataSource<Integer, Product
                     }
                 });
 
-
-    }
-
-    // Load the former data when scrolling up
-    @Override
-    public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
-
-        NetworkClient.getInstance()
-                .getProductAPI()
-                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
-                .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
-                    @Override
-                    public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
-
-                        if (response.isSuccessful()) {
-                            Integer key = (params.key > 1) ? params.key - 1 : null;
-                            callback.onResult(response.body().getProductList(), key);
-                        } else {
-                                Gson gson = new GsonBuilder().create();
-                                ApiError mError = new ApiError();
-                                try {
-                                    mError= gson.fromJson(response.errorBody().string(), ApiError.class);
-                                    Toast.makeText(context, response.code() + ": " + mError.getDetail(), Toast.LENGTH_LONG).show();
-                                } catch (IOException e) {
-                                    // handle failure to read error
-                                }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
-                        Log.d(Constants.TAG, t.getLocalizedMessage());
-                        Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
     }
 
     // Load the further data when scrolling down
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
-
         NetworkClient.getInstance()
                 .getProductAPI()
-                .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
+                .getProducts(token, null, null, 1, params.key)
                 .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
+
                         if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);

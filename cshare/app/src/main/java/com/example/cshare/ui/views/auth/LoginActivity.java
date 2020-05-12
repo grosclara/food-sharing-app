@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.auth;
+package com.example.cshare.ui.views.auth;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +23,7 @@ import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
-import com.example.cshare.ui.activities.HomeScreenActivity;
+import com.example.cshare.ui.views.HomeScreenActivity;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;

@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities;
+package com.example.cshare.ui.views;
 
 
 import android.os.Bundle;

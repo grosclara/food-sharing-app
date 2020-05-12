@@ -1,4 +1,4 @@
-package com.example.cshare.ui.activities.productFragment;
+package com.example.cshare.ui.views.productlists;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,10 +11,10 @@ import android.widget.ProgressBar;
 
 import com.example.cshare.data.models.Product;
 import com.example.cshare.R;
-import com.example.cshare.ui.activities.AddActivity;
-import com.example.cshare.ui.activities.BaseFragment;
-import com.example.cshare.ui.activities.productFragment.adapter.ItemClickSupport;
-import com.example.cshare.ui.activities.productFragment.adapter.ProductPagedListAdapter;
+import com.example.cshare.ui.views.AddActivity;
+import com.example.cshare.ui.views.BaseFragment;
+import com.example.cshare.ui.views.productlists.adapter.ItemClickSupport;
+import com.example.cshare.ui.views.productlists.adapter.ProductPagedListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public abstract class

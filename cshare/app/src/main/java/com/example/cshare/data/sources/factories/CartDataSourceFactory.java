@@ -7,16 +7,16 @@ import androidx.paging.DataSource;
 import androidx.paging.PageKeyedDataSource;
 
 import com.example.cshare.data.models.Product;
-import com.example.cshare.data.sources.CartProductsDataSource;
+import com.example.cshare.data.sources.CartDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
-public class CartProductsDataSourceFactory extends DataSource.Factory {
+public class CartDataSourceFactory extends DataSource.Factory {
 
     private PreferenceProvider prefs;
     private Context context;
-    private CartProductsDataSource cartProductsDataSource;
+    private CartDataSource cartProductsDataSource;
 
-    public CartProductsDataSourceFactory(Context context, PreferenceProvider prefs) {
+    public CartDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.prefs = prefs;
         this.context = context;
     }
@@ -25,7 +25,7 @@ public class CartProductsDataSourceFactory extends DataSource.Factory {
 
     @Override
     public DataSource create() {
-        cartProductsDataSource = new CartProductsDataSource(context, prefs.getToken());
+        cartProductsDataSource = new CartDataSource(context, prefs.getToken());
         cartProductsLiveDataSource.postValue(cartProductsDataSource);
         return cartProductsDataSource;
     }
