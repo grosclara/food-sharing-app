@@ -52,6 +52,7 @@ public class ProductRequestManager {
         // Define the URL endpoint for the HTTP request.
         this.context = context;
         this.productAPI = networkClient.getProductAPI();
+        this.orderAPI = networkClient.getOrderApi();
         this.prefs = prefs;
     }
 
@@ -140,9 +141,10 @@ public class ProductRequestManager {
     public void order(Order order) {
         Map<String, Integer> productIDMap = new HashMap<>();
         productIDMap.put("product", order.getProductID());
+        Log.d(Constants.TAG, productIDMap.toString());
 
         orderAPI
-                .order(prefs.getToken(), productIDMap)
+                .order(prefs.getToken(), order.getProductID())
                 .enqueue(new Callback<Product>() {
                     @Override
                     public void onResponse(Call<Product> call, Response<Product> response) {

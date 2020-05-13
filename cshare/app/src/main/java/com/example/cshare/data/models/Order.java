@@ -9,7 +9,7 @@ package com.example.cshare.data.models;
  */
 
 public class Order {
-    private int client;
+    private int customer;
     private int product;
 
     /*
@@ -17,8 +17,8 @@ public class Order {
      * Only take a few attributes in argument because the server auto adds the id
      */
 
-    public Order(int clientID, int productID) {
-        this.client = clientID;
+    public Order(int customerID, int productID) {
+        this.customer = customerID;
         this.product = productID;
     }
 

@@ -26,9 +26,9 @@ public interface UserAPI {
     /**
      * Returns a Call object that contains the response to the API's getUserByID request.
      *
-     * @param  token  a String of the form "token eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9" which corresponds
-     *                to the token of the authenticated user
-     * @param  userID an integer that corresponds to the ID of the authenticated user
+     * @param  token  (String) of the form "token eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9" which corresponds
+     *                to the token of the authenticated user and it is passed in the request header
+     * @param  userID an integer that corresponds to the ID of the authenticated user in the url path
      * @return (Call) A Call object containing the user information in a {@link User} object
      * @see User
      * @see com.example.cshare.data.sources.ProfileRequestManager#getUserByID(int)
@@ -44,11 +44,11 @@ public interface UserAPI {
      * user wants to update its profile picture
      *
      * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
-     *              to the token of the authenticated user
-     * @param userID (int) corresponds to the ID of the authenticated user
-     * @param profile_picture New profile picture of the authenticated user
-     * @param roomNumber (String) New room number of the authenticated user
-     * @param campus (String) New campus of the authenticated user
+     *              to the token of the authenticated user and it is passed in the request header
+     * @param userID (int) corresponds to the ID of the authenticated user in the url path
+     * @param profile_picture (Image) New profile picture of the authenticated user (request body)
+     * @param roomNumber (String) New room number of the authenticated user (request body)
+     * @param campus (String) New campus of the authenticated user (request body)
      * @return (Call) A Call object containing the user information in a {@link User} object
      * @see User
      * @see #updateProfileWithoutPicture(String, int, User)
@@ -70,9 +70,9 @@ public interface UserAPI {
      * room number and/or campus.
      *
      * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
-     *              to the token of the authenticated user
-     * @param userID (int) corresponds to the ID of the authenticated user
-     * @param editProfileForm (User) Contains the campus, and room number attributes to change
+     *              to the token of the authenticated user and it is passed in the request header
+     * @param userID (int) corresponds to the ID of the authenticated user in the url path
+     * @param editProfileForm (User) Contains the campus, and room number attributes to change (request body)
      * @return (Call) A Call object containing the user information in a {@link User} object
      * @see User
      * @see #updateProfileWithPicture(String, int, MultipartBody.Part, String, String)

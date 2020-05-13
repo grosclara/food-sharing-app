@@ -67,6 +67,7 @@ public class ProfileRequestManager {
     public MutableLiveData<UserReponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
+        Log.d(Constants.TAG, "get userprofile");
         authenticationAPI
                 .getProfileInfo(prefs.getToken())
                 .enqueue(new Callback<User>() {
