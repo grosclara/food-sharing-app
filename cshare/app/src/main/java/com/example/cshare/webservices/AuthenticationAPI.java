@@ -1,7 +1,7 @@
 package com.example.cshare.webservices;
 
-import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.EmptyAuthResponse;
+import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.RegistrationResponse;
 import com.example.cshare.data.models.User;
 
@@ -17,8 +17,24 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
+/**
+ * Interface that defines the authentication-related API endpoints.
+ * <p>
+ * Provides endpoints for registering, logging in or out, changing and resetting password or
+ * deleting account information.
+ *
+ * @since 1.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public interface AuthenticationAPI {
 
+    /**
+     * Define the authentication-related API endpoints.
+     *
+     * @param token
+     * @return
+     */
     @GET("rest-auth/user/")
     Call<User> getProfileInfo(
             @Header("Authorization") String token

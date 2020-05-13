@@ -14,13 +14,16 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface  ProductAPI {
-
-    @GET("product/{id}/")
-    Call<Product> getProductById(
-            @Header("Authorization") String token,
-            @Path("id") int productID
-    );
+/**
+ * Interface that defines the product-related API endpoints.
+ * <p>
+ * Provides endpoints to retrieve products, to add a new product, or to delete an existing product.
+ *
+ * @since 1.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
+public interface ProductAPI {
 
     @GET("product/")
     Call<ProductListResponse.ApiProductListResponse> getProducts(

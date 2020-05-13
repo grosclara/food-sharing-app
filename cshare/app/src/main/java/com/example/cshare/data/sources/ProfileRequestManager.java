@@ -127,8 +127,6 @@ public class ProfileRequestManager {
                 .updateProfileWithPicture(prefs.getToken(),
                         prefs.getUserID(),
                         editProfileForm.getProfilePictureBody(),
-                        editProfileForm.getFirstName(),
-                        editProfileForm.getLastName(),
                         editProfileForm.getRoomNumber(),
                         editProfileForm.getCampus())
                 .enqueue(new Callback<User>() {

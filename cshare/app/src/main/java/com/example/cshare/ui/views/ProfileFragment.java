@@ -63,10 +63,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private boolean validated;
 
     //Views
-    @NotEmpty
-    private EditText editTextFirstName;
-    @NotEmpty
-    private EditText editTextLastName;
+    private TextView textViewFirstName;
+    private TextView textViewLastName;
     private Spinner spinnerCampus;
     @NotEmpty
     private EditText editTextRoomNumber;
@@ -113,8 +111,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     protected void configureDesign(View view) {
 
         // Bind views
-        editTextFirstName = view.findViewById(R.id.editTextFirstName);
-        editTextLastName = view.findViewById(R.id.editTextLastName);
+        textViewFirstName = view.findViewById(R.id.textViewFirstName);
+        textViewLastName = view.findViewById(R.id.textViewLastName);
         spinnerCampus = view.findViewById(R.id.spinnerCampus);
         editTextRoomNumber = view.findViewById(R.id.editTextRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
@@ -282,8 +280,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     private void updateUserDetails(User profile) {
         textViewEmail.setText(profile.getEmail());
-        editTextLastName.setText(profile.getLastName());
-        editTextFirstName.setText(profile.getFirstName());
+        textViewLastName.setText(profile.getLastName());
+        textViewFirstName.setText(profile.getFirstName());
         spinnerCampus.setSelection(((ArrayAdapter) spinnerCampus.getAdapter()).getPosition(profile.getCampus()));
         textViewEmail.setText(profile.getEmail());
         editTextRoomNumber.setText(profile.getRoomNumber());
@@ -405,8 +403,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
 
                 // Retrieve user details from the edit text
-                lastName = editTextLastName.getText().toString().trim();
-                firstName = editTextFirstName.getText().toString().trim();
                 roomNumber = editTextRoomNumber.getText().toString().trim();
 
                 editProfileForm = new User(lastName, firstName, roomNumber, campus);

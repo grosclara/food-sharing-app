@@ -16,6 +16,16 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * Interface that defines the order-related API endpoints.
+ * <p>
+ * Provides endpoints to retrieve ordered products, to order a product, to cancel an order or to
+ * confirm receipt of the product.
+ *
+ * @since 1.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public interface OrderAPI {
 
     @GET("order/")
