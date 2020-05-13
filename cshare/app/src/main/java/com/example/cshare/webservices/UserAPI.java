@@ -72,7 +72,7 @@ public interface UserAPI {
      * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
      *              to the token of the authenticated user
      * @param userID (int) corresponds to the ID of the authenticated user
-     * @param editProfileForm (User) New room number of the authenticated user
+     * @param editProfileForm (User) Contains the campus, and room number attributes to change
      * @return (Call) A Call object containing the user information in a {@link User} object
      * @see User
      * @see #updateProfileWithPicture(String, int, MultipartBody.Part, String, String)
