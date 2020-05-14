@@ -4,6 +4,8 @@ import com.example.cshare.data.apiresponses.EmptyAuthResponse;
 import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.RegistrationResponse;
 import com.example.cshare.data.models.User;
+import com.example.cshare.data.sources.AuthRequestManager;
+import com.example.cshare.data.sources.ProfileRequestManager;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -30,16 +32,39 @@ import retrofit2.http.Path;
 public interface AuthenticationAPI {
 
     /**
-     * Define the authentication-related API endpoints.
+     * Returns a Call object that contains the response to the API's getProfileInfo request.
      *
-     * @param token
-     * @return
+     * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
+     *              to the token of the authenticated user and it is passed in the request header
+     * @return (Call) A Call object containing the authenticated user in a {@link User} object
+     * @see User
+     * @see ProfileRequestManager#getUserProfile()
      */
     @GET("rest-auth/user/")
     Call<User> getProfileInfo(
             @Header("Authorization") String token
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's register request.
+     * <p>
+     * Multipart annotation is used to upload the profile picture image to the server.
+     *
+     * @param profilePictureBody (Image) Profile picture
+     * @param firstName (String) First name
+     * @param lastName (String) Last name
+     * @param roomNumber (String) Room number
+     * @param campus (String) Campus
+     * @param email (String) Email
+     * @param password1 (String) Password
+     * @param password2 (String) Password confirmation
+     * @return (Call) A Call object containing the registered user and its token in a
+     * {@link RegistrationResponse} object
+     * @see User
+     * @see com.example.cshare.data.sources.AuthRequestManager#registerWithPicture(User)
+     * @see #createUserWithoutPicture(User)
+     * @see RegistrationResponse
+     */
     @Multipart
     @POST("rest-auth/registration/")
     Call<RegistrationResponse> createUserWithPicture(
@@ -53,31 +78,93 @@ public interface AuthenticationAPI {
             @Part("password2") String password2
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's register request.
+     * <p>
+     * No profile picture is uploaded in this method.
+     *
+     * @param registerForm (User) contains the first_name, last_name, room_number, campus,
+     *                     email, password1, password2 attributes
+     * @return (Call) A Call object containing the registered user and its token in a
+     * {@link RegistrationResponse} object
+     * @see User
+     * @see RegistrationResponse
+     * @see com.example.cshare.data.sources.AuthRequestManager#registerWithPicture(User)
+     * @see #createUserWithPicture(MultipartBody.Part, String, String, String, String, String, String, String)
+     */
     @POST("rest-auth/registration/")
     Call<RegistrationResponse> createUserWithoutPicture(
             @Body User registerForm
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's login request.
+     *
+     * @param loginForm (User) contains the credentials (eg. email and password) of the user
+     * @return (Call) A Call object containing the logged in user and its token in a
+     * {@link LoginResponse} object
+     * @see User
+     * @see LoginResponse
+     * @see com.example.cshare.data.sources.AuthRequestManager#logIn(User)
+     */
     @POST("rest-auth/login/")
     Call<LoginResponse> login(@Body User loginForm);
 
+    /**
+     * Returns a Call object that contains the response to the API's logout request.
+     *
+     * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
+     *              to the token of the authenticated user and it is passed in the request header
+     * @return (Call) A Call object containing an {@link EmptyAuthResponse} object
+     * @see EmptyAuthResponse
+     * @see AuthRequestManager#logOut()
+     */
     @POST("rest-auth/logout/")
     Call<EmptyAuthResponse> logout(
             @Header("Authorization") String token
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's change password request.
+     *
+     * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
+     *        to the token of the authenticated user and it is passed in the request header
+     * @param changePasswordForm (User) contains the new password, its confirmation and the old
+     *                          password of the user
+     * @return (Call) A Call object containing an {@link EmptyAuthResponse} object
+     * @see EmptyAuthResponse
+     * @see AuthRequestManager#changePassword(User)
+     */
     @POST("rest-auth/password/change/")
     Call<EmptyAuthResponse> changePassword(
             @Header("Authorization") String token,
             @Body User changePasswordForm
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's reset password request.
+     *
+     * @param resetPasswordForm (User) contains the user email address
+     * @return (Call) A Call object containing an {@link EmptyAuthResponse} object
+     * @see EmptyAuthResponse
+     * @see AuthRequestManager#resetPassword(User)
+     */
     @FormUrlEncoded
     @POST("rest-auth/password/reset/")
     Call<EmptyAuthResponse> resetPassword(
             @Body User resetPasswordForm
     );
 
+    /**
+     * Returns a Call object that contains the response to the API's delete account request.
+     *
+     * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds
+     *        to the token of the authenticated user and it is passed in the request header
+     * @param userID (int) ID of the user to delete
+     * @return (Call) A Call object containing an {@link EmptyAuthResponse} object
+     * @see EmptyAuthResponse
+     * @see AuthRequestManager#deleteAccount()
+     */
     @DELETE("user/{id}/")
     Call<EmptyAuthResponse> delete(
             @Header("Authorization") String token,

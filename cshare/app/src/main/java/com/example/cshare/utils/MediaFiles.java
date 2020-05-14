@@ -26,9 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Camera {
-
-    // TODO : Create a File class in Utils
+/**
+ *
+ */
+public class MediaFiles {
 
     // Camera activity request codes
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
@@ -50,7 +51,7 @@ public class Camera {
             // Checking whether device has camera hardware or not
             if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
                 // start the image capture Intent
-                activity.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                activity.startActivityForResult(takePictureIntent, MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
             }
         } else if (fragment != null){
             // Create a file to store the picture taken
@@ -62,7 +63,7 @@ public class Camera {
             // Checking whether device has camera hardware or not
             if (takePictureIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
                 // start the image capture Intent
-                fragment.startActivityForResult(takePictureIntent, Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                fragment.startActivityForResult(takePictureIntent, MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
             }
         }
        return pictureFileUri;
@@ -86,9 +87,9 @@ public class Camera {
         // Create a chooser in case there are third parties app and launch the Intent
         if (activity != null){
             Log.d(Constants.TAG, "choosePictureFromGallery");
-            activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+            activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
         } else if (fragment != null) {
-            fragment.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+            fragment.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
         }
     }
 
@@ -104,9 +105,9 @@ public class Camera {
 
         if (uri != null) {
             // Rotate if necessary and reduce size
-            Bitmap bitmap = Camera.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
+            Bitmap bitmap = MediaFiles.handleSamplingAndRotationBitmap(context.getContentResolver(), uri);
             // Save new picture to fileToUpload
-            fileToUpload = Camera.saveBitmap(context, bitmap);
+            fileToUpload = MediaFiles.saveBitmap(context, bitmap);
 
         } else {
             Toast.makeText(context,

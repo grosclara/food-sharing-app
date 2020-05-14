@@ -25,7 +25,7 @@ import com.example.cshare.data.apiresponses.RegistrationResponse;
 import com.example.cshare.data.models.User;
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.utils.Camera;
+import com.example.cshare.utils.MediaFiles;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -247,11 +247,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                Camera.choosePictureFromGallery(activity, null);
+                                MediaFiles.choosePictureFromGallery(activity, null);
                                 break;
                             case 1:
                                 try {
-                                    pictureFileUri = Camera.captureImage(activity, null);
+                                    pictureFileUri = MediaFiles.captureImage(activity, null);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -271,31 +271,31 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result code is RESULT_OK only if the user selects an Image
-        if (requestCode == Camera.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
 
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
 
             // modify the raw picture taken in a new file and retrieve its Uri
             try {
-                fileToUpload = Camera.processPicture(this, pictureFileUri);
+                fileToUpload = MediaFiles.processPicture(this, pictureFileUri);
 
                 fileToUploadPath = fileToUpload.getAbsolutePath();
-                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+                fileToUploadUri = MediaFiles.getOutputMediaFileUri(this, fileToUpload);
 
                 Picasso.get().load(fileToUploadUri).into(imageViewGallery);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == Camera.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+        } else if (requestCode == MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
 
             try {
                 Log.d(Constants.TAG, pictureFileUri.toString());
-                fileToUpload = Camera.processPicture(this, pictureFileUri); // modify the raw picture taken
+                fileToUpload = MediaFiles.processPicture(this, pictureFileUri); // modify the raw picture taken
                 fileToUploadPath = fileToUpload.getAbsolutePath();
-                fileToUploadUri = Camera.getOutputMediaFileUri(this, fileToUpload);
+                fileToUploadUri = MediaFiles.getOutputMediaFileUri(this, fileToUpload);
 
                 Picasso.get().load(fileToUploadUri).into(imageViewGallery);
 

@@ -40,7 +40,9 @@ public interface UserAPI {
 
     /**
      * Returns a Call object that contains the response to the API's updateProfile
-     * request. This method takes a MultipartBody.Part profile picture as argument which means the
+     * request.
+     * <p>
+     * This method takes a MultipartBody.Part profile picture as argument which means the
      * user wants to update its profile picture
      *
      * @param token (String) of the form "token eyJ0eXAiOiAianFsZyI6ICJIUzUxMiJ9", it corresponds

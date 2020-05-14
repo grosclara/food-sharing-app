@@ -141,10 +141,9 @@ public class ProductRequestManager {
     public void order(Order order) {
         Map<String, Integer> productIDMap = new HashMap<>();
         productIDMap.put("product", order.getProductID());
-        Log.d(Constants.TAG, productIDMap.toString());
 
         orderAPI
-                .order(prefs.getToken(), order.getProductID())
+                .order(prefs.getToken(), productIDMap)
                 .enqueue(new Callback<Product>() {
                     @Override
                     public void onResponse(Call<Product> call, Response<Product> response) {
