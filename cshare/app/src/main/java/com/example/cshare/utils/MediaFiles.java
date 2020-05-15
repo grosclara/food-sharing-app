@@ -18,6 +18,8 @@ import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 
+import com.example.cshare.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,14 +29,49 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Utility public class that allows the management of multimedia files and images.
+ * <p>
+ * Provides methods for retrieving images from the camera or from the gallery and then proposes a
+ * treatment of these images (in terms of rotation and compression).
+ * The class also contains methods needed to create and retrieve files to store these images.
  *
+ * @see com.example.cshare.ui.views.auth.RegisterActivity
+ * @see com.example.cshare.ui.views.ProfileFragment
+ * @see com.example.cshare.ui.views.AddActivity
+ * @since 1.0
+ * @author Clara Gros
+ * @author Babacar Toure
  */
 public class MediaFiles {
 
-    // Camera activity request codes
-    public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int CAMERA_CHOOSE_IMAGE_REQUEST_CODE = 200;
+    /**
+     * Capture image request code
+     */
+    public static final int CAPTURE_IMAGE_REQUEST_CODE = 100;
+    /**
+     * Select image from gallery applications request code
+     */
+    public static final int CHOOSE_IMAGE_REQUEST_CODE = 200;
 
+    /**
+     * Launches the camera application to capture an image, creates a file to store the picture and
+     * returns its URI (Unique Resource Identifier). Call the startActivityForResult method in the
+     * activity/fragment where the method is called.
+     * <p>
+     * In case of a failed or interrupted I/O operation, throws a {@link IOException}
+     * <p>
+     * The method parameters are used to inform the context in which the method is called and to
+     * call the startActivityForResult method.
+     * If the method is called inside an activity, then the fragment parameter will be null
+     * and vice versa.
+     *
+     * @param activity (Activity) null if the method is called within a fragment
+     * @param fragment (Fragment) null if the method is called within an activity
+     * @return (Uri) Picture file uri
+     * @throws IOException
+     * @see #getOutputMediaFileUri(Context, File)
+     * @see #createImageFile(Context)
+     */
     public static Uri captureImage(Activity activity, Fragment fragment) throws IOException {
         // Launching camera app to capture image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -46,59 +83,79 @@ public class MediaFiles {
             File pictureFile = createImageFile(activity);
             // Retrieve its Uri
             pictureFileUri = getOutputMediaFileUri(activity, pictureFile);
-            // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
+            // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided
+            // in EXTRA_OUTPUT
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
             // Checking whether device has camera hardware or not
             if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
-                // start the image capture Intent
-                activity.startActivityForResult(takePictureIntent, MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                // Start the image capture intent
+                activity.startActivityForResult(takePictureIntent, MediaFiles.CAPTURE_IMAGE_REQUEST_CODE);
             }
         } else if (fragment != null){
-            // Create a file to store the picture taken
             File pictureFile = createImageFile(fragment.getContext());
-            // Retrieve its Uri
             pictureFileUri = getOutputMediaFileUri(fragment.getContext(), pictureFile);
-            // Specifying EXTRA_OUTPUT allows to go get the photo from the uri that you provided in EXTRA_OUTPUT
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFileUri);
-            // Checking whether device has camera hardware or not
             if (takePictureIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
-                // start the image capture Intent
-                fragment.startActivityForResult(takePictureIntent, MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                fragment.startActivityForResult(takePictureIntent, MediaFiles.CAPTURE_IMAGE_REQUEST_CODE);
             }
         }
        return pictureFileUri;
     }
 
+    /**
+     * Creates an chooser Intent to retrieve an image (.png or .jpeg) from a gallery application,
+     * the Intent will store the fileUri in the data attribute and call for the
+     * startActivityForResult method of the view within the method is called.
+     * <p>
+     * The method parameters are used to inform the context in which the method is called and to
+     * call the startActivityForResult method.
+     * If the method is called inside an activity, then the fragment parameter will be null and
+     * vice versa.
+     *
+     * @param activity (Activity) null if the method is called within a fragment
+     * @param fragment (Fragment) null if the method is called within an activity
+     */
     public static void choosePictureFromGallery(Activity activity, Fragment fragment) {
 
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
 
-
         // Create an Intent with action as ACTION_PICK
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         // Sets the type as image/*. This ensures only components of type image are selected
         pickIntent.setType("image/*");
 
-        // We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+        // We pass an extra array with the accepted mime types.
+        // This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
         pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         // Create a chooser in case there are third parties app and launch the Intent
         if (activity != null){
             Log.d(Constants.TAG, "choosePictureFromGallery");
-            activity.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+            activity.startActivityForResult(Intent.createChooser(pickIntent,
+                    activity.getString(R.string.select_picture)),
+                    MediaFiles.CHOOSE_IMAGE_REQUEST_CODE);
         } else if (fragment != null) {
-            fragment.startActivityForResult(Intent.createChooser(pickIntent, "Select Picture"), MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE);
+            fragment.startActivityForResult(Intent.createChooser(pickIntent,
+                    fragment.getString(R.string.select_picture)),
+                    MediaFiles.CHOOSE_IMAGE_REQUEST_CODE);
         }
     }
 
-    // Creating file uri to store image
-    public static Uri getOutputMediaFileUri(Context context, File file) throws IOException {
-        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
-                file);
-    }
-
+    /**
+     * Takes the uri of the picture to process and then returns the processed picture
+     * <p>
+     * In case of a failed or interrupted I/O operation, throws a {@link IOException}
+     *
+     * @param context (Context) Current context
+     * @param uri (Uri) File uri to process
+     * @return
+     * @throws IOException
+     * @see #handleSamplingAndRotationBitmap(ContentResolver, Uri)
+     * @see #saveBitmap(Context, Bitmap)
+     */
     public static File processPicture(Context context, Uri uri) throws IOException {
 
         File fileToUpload = null;
@@ -110,32 +167,10 @@ public class MediaFiles {
             fileToUpload = MediaFiles.saveBitmap(context, bitmap);
 
         } else {
-            Toast.makeText(context,
-                    "Sorry, file uri is missing!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.file_uri_missing, Toast.LENGTH_LONG).show();
         }
 
         return fileToUpload;
-    }
-
-    public static File createImageFile(Context context) throws IOException {
-        /**
-         * Method that creates a file for the photo with a unique name
-         * @return
-         * @throws IOException
-         */
-
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss",
-                        Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return image;
     }
 
     /**
@@ -168,17 +203,6 @@ public class MediaFiles {
         Bitmap bitmap = BitmapFactory.decodeStream(imageStream, null, options);
         bitmap = rotateImageIfRequired(contentResolver, bitmap, selectedImage);
         return bitmap;
-    }
-
-    public static File saveBitmap(Context context, Bitmap bmp) throws IOException {
-        File file = createImageFile(context);
-        try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
-            bmp.compress(Bitmap.CompressFormat.JPEG, 40, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
     }
 
     /**
@@ -233,7 +257,7 @@ public class MediaFiles {
     /**
      * Rotate an image if required.
      *
-     * @param img           The image bitmap
+     * @param img The image bitmap
      * @param selectedImage Image URI
      * @return The resulted Bitmap after manipulation
      */
@@ -260,6 +284,13 @@ public class MediaFiles {
         }
     }
 
+    /**
+     * Rotates an image from the angle passed in parameter and returns the rotated image
+     *
+     * @param img (Bitmap) The image to be rotated
+     * @param degree (int) Rotation angle
+     * @return (Bitmap) The rotated bitmap
+     */
     private static Bitmap rotateImage(Bitmap img, int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
@@ -268,4 +299,70 @@ public class MediaFiles {
         img.recycle();
         return rotatedImg;
     }
+
+    /**
+     * To securely offer a file from this app to another app, you need to configure your app to
+     * offer a secure handle to the file, in the form of a content URI. The Android
+     * {@link FileProvider} component generates content URIs for files,
+     * based on specifications you provide in XML.
+     *
+     * @param context
+     * @param file
+     * @return
+     * @see FileProvider
+     */
+    public static Uri getOutputMediaFileUri(Context context, File file) {
+        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
+                file);
+    }
+
+    /**
+     * Method that creates a file with a unique filename using a timeStamp.
+     * <p>
+     * In case of a failed or interrupted I/O operation, throws a {@link IOException}
+     *
+     * @return (File) the created file
+     * @throws IOException
+     * @see File#createTempFile(String, String, File)
+     */
+    public static File createImageFile(Context context) throws IOException {
+        // Create a time stamp
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        // Retrieve the directory where to store the file
+        File storageDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        // Create temporary file
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",   /* suffix */
+                storageDir      /* directory */
+        );
+        return image;
+    }
+
+    /**
+     * Creates a file and store the image passed as a parameter in it.
+     * <p>
+     * In case of a failed or interrupted I/O operation, throws a {@link IOException}
+     *
+     * @param context (Context) The current context
+     * @param bmp (Bitmap) The image to store
+     * @return (File) The created file in which is stored the image
+     * @throws IOException
+     * @see #createImageFile(Context)
+     */
+    public static File saveBitmap(Context context, Bitmap bmp) throws IOException {
+        File file = MediaFiles.createImageFile(context);
+        try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
+            // PNG is a lossless format, the compression factor (100) is ignored
+            bmp.compress(Bitmap.CompressFormat.JPEG, 40, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
 }

@@ -21,4 +21,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="file_uri_missing">Sorry, file uri is missing!</string>
 </resources>

@@ -373,7 +373,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result code is RESULT_OK only if the user selects an Image
-        if (requestCode == MediaFiles.CAMERA_CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == MediaFiles.CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
 
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
@@ -390,7 +390,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == MediaFiles.CAMERA_CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+        } else if (requestCode == MediaFiles.CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
 
             try {
