@@ -175,7 +175,7 @@ public class MediaFiles {
 
     /**
      * This method is responsible for solving the rotation issue if exist. Also scale the images to
-     * 1024x1024 resolution
+     * 200 x 200 resolution
      *
      * @param contentResolver The current context.getContentResolver()
      * @param selectedImage The Image URI
@@ -184,8 +184,8 @@ public class MediaFiles {
      */
     public static Bitmap handleSamplingAndRotationBitmap(ContentResolver contentResolver, Uri selectedImage)
             throws IOException {
-        int MAX_HEIGHT = 1024;
-        int MAX_WIDTH = 1024;
+        int MAX_HEIGHT = 200;
+        int MAX_WIDTH = 200;
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -358,7 +358,7 @@ public class MediaFiles {
         File file = MediaFiles.createImageFile(context);
         try (FileOutputStream out = new FileOutputStream(file.getAbsolutePath())) {
             // PNG is a lossless format, the compression factor (100) is ignored
-            bmp.compress(Bitmap.CompressFormat.JPEG, 40, out);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out);
         } catch (IOException e) {
             e.printStackTrace();
         }
