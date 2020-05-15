@@ -4,6 +4,17 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * This utility class will simply be used to more easily manage user clicks on the RecyclerView.
+ * <p>
+ * Roughly speaking, this one will create Listeners for each item in our RecyclerView,
+ * taking care to delete them as soon as they are no longer displayed in the RecyclerView
+ * (to avoid too much memory usage).
+ *
+ * @since 2.1
+ * @author Babacar Toure
+ * @author Clara Gros
+ */
 public class ItemClickSupport {
 
     private final Boolean isClickable;
