@@ -1,38 +1,42 @@
 package com.example.cshare.ui.views.productlists;
 
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Intent;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.example.cshare.data.models.Product;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.cshare.R;
+import com.example.cshare.data.models.Product;
 import com.example.cshare.ui.views.AddActivity;
 import com.example.cshare.ui.views.BaseFragment;
 import com.example.cshare.ui.views.productlists.adapter.ItemClickSupport;
 import com.example.cshare.ui.views.productlists.adapter.ProductPagedListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public abstract class
-ProductListFragment extends BaseFragment {
+/**
+ * Abstract ProductListFragment class, inheriting from the BaseFragment class, within which
+ * the global logic for recycler view is implemented
+ *
+ * @see BaseFragment
+ *
+ * @since 1.1
+ * @author Clara Gros
+ * @atuhor Babacar Toure
+ */
+public abstract class ProductListFragment extends BaseFragment {
 
-    // FOR DESIGN
-    // Declare RecyclerView
+    // Declare the RecyclerView
     RecyclerView recyclerView;
-    // Declare progress bar
-    ProgressBar progressBar;
     // Declare the SwipeRefreshLayout
     SwipeRefreshLayout swipeRefreshLayout;
-    // FAB
+    // Declare the Floating Action Button
     FloatingActionButton buttonFab;
 
-    //FOR DATA
-    // protected Disposable disposable;
-    // Declare list of products (Product) & Adapter
+    // Declare the custom Adapter
     protected ProductPagedListAdapter adapter;
 
     // --------------
@@ -52,12 +56,13 @@ ProductListFragment extends BaseFragment {
         // Bind views
         recyclerView = view.findViewById(R.id.products_recycler_view);
         swipeRefreshLayout = view.findViewById(R.id.fragment_product_list_swipe_container);
-        progressBar = view.findViewById(R.id.progressBar);
         buttonFab = view.findViewById(R.id.button_add_product);
 
+        // Set on click listeners
         buttonFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Redirect to the Add Activity
                 Intent intent = new Intent(getActivity(), AddActivity.class);
                 startActivity(intent);
             }
@@ -69,48 +74,36 @@ ProductListFragment extends BaseFragment {
         // Configure the SwipeRefreshLayout
         this.configureSwipeRefreshLayout();
 
-        this.configureProgressBar();
     }
 
     // -----------------
     // CONFIGURATION
     // -----------------
 
-    // Configure RecyclerView, Adapter, LayoutManager & glue it together
+    /**
+     * Configure RecyclerView, Adapter, LayoutManager & glue it together
+     */
     protected void configureRecyclerView() {
-        //recyclerView = findViewById
-        // Reset list
-        //products = new ArrayList<Product>();
 
-        // Create adapter passing the list of users
-        //adapter = new ProductAdapter(products);
-
-        // Attach the adapter to the recycler view to populate items
-        //recyclerView.setAdapter(adapter);
-
-        // setHasFixedSize makes sure that this change of size of RecyclerView is constant.
-        // The height (or width) of the item won't change.
-        // Every item added or removed will be the same.
-        // If you dont set this it will check if the size of the item has changed and that's expensive
+        // Create adapter
         adapter = new ProductPagedListAdapter(getContext());
+        // Attach the adapter to the recycler view to populate items
         recyclerView.setAdapter(adapter);
+
+        // Asserts the height (or width) of the item won't change
+        // If you dont set this it will check if the size of the item has changed and that's expensive
         recyclerView.setHasFixedSize(true);
-        // Set layout manager to position the items
-        // Permet de positionner correctement l'ensemble des données de la liste.
+
+        // Allows to position all the data in the list correctly.
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        configureOnItemClickedRecyclerView();
-
-
-    }
-
-    protected void configureOnItemClickedRecyclerView() {
 
         // Configure item click on RecyclerView
-        // Quand un clic se produit, la méthode  onItemClicked()  est automatiquement appelée.
         ItemClickSupport.addTo(recyclerView, R.layout.product_list_item)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                             @Override
-                                            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                                            public void onItemClicked(RecyclerView recyclerView,
+                                                                      int position,
+                                                                      View v) {
                                                 // Get product from adapter
                                                 Product product = adapter.getItem(position);
                                                 click(product);
@@ -120,11 +113,13 @@ ProductListFragment extends BaseFragment {
                 );
     }
 
+    /**
+     * To be defined in the fragments inherited from this ProductListFragment class
+     * @param product (Product) the item clicked on
+     */
     protected abstract void click(Product product);
 
     // Configure SwipeRefreshLayout
     protected abstract void configureSwipeRefreshLayout();
-
-    protected abstract void configureProgressBar();
 
 }
