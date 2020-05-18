@@ -19,6 +19,9 @@ public class Constants {
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
 
+    // Product fields
+    public static final String STATUS = "status";
+
     // Different product statuses
     public static final String AVAILABLE = "Available";
     public static final String COLLECTED = "Collected";

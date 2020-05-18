@@ -23,4 +23,5 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="select_picture">Select Picture</string>
     <string name="file_uri_missing">Sorry, file uri is missing!</string>
+    <string name="product_already_ordered">Someone has already ordered the product</string>
 </resources>

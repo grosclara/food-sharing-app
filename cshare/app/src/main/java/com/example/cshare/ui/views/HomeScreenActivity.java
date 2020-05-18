@@ -1,11 +1,5 @@
 package com.example.cshare.ui.views;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,17 +7,23 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.cshare.R;
 import com.example.cshare.data.models.Order;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
-import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
-import com.example.cshare.R;
 import com.example.cshare.ui.views.productlists.CartFragment;
 import com.example.cshare.ui.views.productlists.HomeFragment;
 import com.example.cshare.ui.views.productlists.ProductDialogFragment;
 import com.example.cshare.ui.views.productlists.SharedFragment;
-import com.example.cshare.utils.MediaFiles;
+import com.example.cshare.utils.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
@@ -32,13 +32,30 @@ import java.util.Map;
 import static com.example.cshare.utils.MediaFiles.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
 import static com.example.cshare.utils.MediaFiles.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
-
+/**
+ * Main activity of the application that acts as a controller between the product and user profile
+ * fragments.
+ * <p>
+ * On the one hand it implements a bottomNavigationView and the necessary methods to be able to
+ * navigate between all fragments.
+ * On
+ *
+ * @see BottomNavigationView
+ * @see BottomNavigationView.OnNavigationItemSelectedListener
+ * @see ProductDialogFragment.ProductDialogListener
+ * @see ProductViewModel
+ * @since 1.1
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public class HomeScreenActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,
         ProductDialogFragment.ProductDialogListener {
 
     BottomNavigationView bottomNav;
     BaseFragment selectedFragment;
+
+    private static final int HOME_FRAGMENT_INDEX = 0;
 
     private ProductViewModel productViewModel;
 
@@ -61,7 +78,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
         grantReadExternalStoragePermission();
 
         // Show first fragment when creating this activity
-        this.showFirstFragment(savedInstanceState);
+        this.showFirstFragment();
     }
 
     /**
@@ -135,7 +152,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         // Generic method that will replace and show a fragment inside the HomeScreenActivity
         // Frame Layout
-
         getSupportFragmentManager().beginTransaction()
                 // Add it to FrameLayout container
                 .replace(R.id.fragment_container,
@@ -144,57 +160,75 @@ public class HomeScreenActivity extends AppCompatActivity implements
     }
 
     /**
-     * Show first fragment when activity is created
-     * @param savedInstanceState
+     * Show first fragment (which is Home Fragment) when activity is created
      */
-    private void showFirstFragment(Bundle savedInstanceState) {
-        // if statement to keep the selected fragment when rotating the device
-        if (savedInstanceState == null) {
-            selectedFragment = new HomeFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    selectedFragment).commit();
-        }
-    }
+    private void showFirstFragment() {
 
-    protected void configureViewModel() {
-        // Retrieve data for view model
-        productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
+        Fragment visibleFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (visibleFragment == null){
+            // Show Home Fragment
+            visibleFragment = new HomeFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    visibleFragment).commit();
+            // Mark as selected the menu item corresponding to HomeFragment
+            this.bottomNav.getMenu().getItem(HOME_FRAGMENT_INDEX).setChecked(true);
+        }
     }
 
     protected void configureDesign() {
         this.configureBottomNavigationView();
     }
 
-    // Configure Bottom Navigation View
-    // Retrieve the BottomNavigationView so that it can record itself to the activity listener via the
-    // interface BottomNavigationView.OnNavigationItemSelectedListener), allowing to retrieve menu clicks.
+    /**
+     * Configuring productViewModel with default ViewModelProvider
+     *
+     * @see ProductViewModel
+     * @see ViewModelProvider
+     */
+    protected void configureViewModel() {
+        // Retrieve data for view model
+        productViewModel = new ViewModelProvider(
+                this,
+                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(ProductViewModel.class);
+    }
+
+    /**
+     * Configure Bottom Navigation View
+     * <p>
+     * Retrieve the BottomNavigationView so that it can record itself to the activity listener via
+     * the interface BottomNavigationView.OnNavigationItemSelectedListener, allowing to retrieve
+     * menu clicks.
+     *
+     * @see com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener
+     */
     private void configureBottomNavigationView() {
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onOrderClicked(Product product, User customer) {
-        Log.d(Constants.TAG, "order listener");
         // Order the product
-        if (product.getStatus().equals("Available")) {
+        if (product.getStatus().equals(Constants.AVAILABLE)) {
             // Create the order object
             Order request = new Order(customer.getId(), product.getId());
             // Change the status attribute of the product object to not available
             Map<String, String> status = new HashMap<>();
-            status.put("status", Constants.COLLECTED);
+            status.put(Constants.STATUS, Constants.COLLECTED);
             productViewModel.order(request);
         }
     }
 
     @Override
     public void onDeleteClicked(Product product) {
-        Log.d(Constants.TAG, "delete listener");
         // Check the status
         if (product.getStatus().equals(Constants.AVAILABLE)) {
             // if still available, delete the product from the database
             productViewModel.deleteProduct(product.getId());
         } else {
-            Toast.makeText(this, "Someone has already ordered the product", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    R.string.product_already_ordered,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -202,7 +236,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
     public void onDeliverClicked(Product product) {
         // Set status to delivered and send request to update in database
         Map<String, String> status = new HashMap<>();
-        status.put("status", Constants.DELIVERED);
+        status.put(Constants.STATUS, Constants.DELIVERED);
         productViewModel.deliver(product.getId());
     }
 
@@ -210,7 +244,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
     public void onCancelOrderClicked(Product product) {
         // Delete order and set product status to available
         Map<String, String> status = new HashMap<>();
-        status.put("status", Constants.AVAILABLE);
+        status.put(Constants.STATUS, Constants.AVAILABLE);
         productViewModel.cancelOrder(product.getId());
     }
 
