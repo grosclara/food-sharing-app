@@ -45,7 +45,7 @@ ProductListFragment extends BaseFragment {
     protected abstract BaseFragment newInstance();
 
     @Override
-    protected void updateDesign()   {}
+    protected void updateDesign() {}
 
     @Override
     protected int getFragmentLayout() {
@@ -101,6 +101,7 @@ ProductListFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         // Set layout manager to position the items
+        // Permet de positionner correctement l'ensemble des données de la liste.
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         configureOnItemClickedRecyclerView();
 
@@ -110,6 +111,7 @@ ProductListFragment extends BaseFragment {
     protected void configureOnItemClickedRecyclerView() {
 
         // Configure item click on RecyclerView
+        // Quand un clic se produit, la méthode  onItemClicked()  est automatiquement appelée.
         ItemClickSupport.addTo(recyclerView, R.layout.product_list_item)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                             @Override

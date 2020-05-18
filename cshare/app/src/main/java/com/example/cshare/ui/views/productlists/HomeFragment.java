@@ -115,9 +115,11 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isClickable = false;
                 homeViewModel.refresh();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
+                isClickable = true;
             }
         });
     }
@@ -138,6 +140,9 @@ public class HomeFragment extends ProductListFragment {
             DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), tag);
 
+        }
+        else {
+            Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
         }
     }
 }
