@@ -16,7 +16,6 @@ import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;
-import com.example.cshare.ui.views.BaseFragment;
 
 public class SharedFragment extends ProductListFragment {
 
@@ -24,11 +23,6 @@ public class SharedFragment extends ProductListFragment {
     private ProfileViewModel profileViewModel;
     private SharedViewModel sharedViewModel;
     private HomeViewModel homeViewModel;
-
-    @Override
-    protected BaseFragment newInstance() {
-        return new SharedFragment();
-    }
 
     @Override
     protected void configureViewModel() {
@@ -91,11 +85,8 @@ public class SharedFragment extends ProductListFragment {
 
     @Override
     protected void click(Product product) {
-        if (isClickable) {
-
             DialogFragment productDetailsFragment = new ProductDialogFragment(product, Constants.SHARED, profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), Constants.SHARED);
-        }
     }
 
 }

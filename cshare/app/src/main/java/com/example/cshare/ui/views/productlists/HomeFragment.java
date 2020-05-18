@@ -1,7 +1,6 @@
 package com.example.cshare.ui.views.productlists;
 
 
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -19,7 +18,6 @@ import com.example.cshare.data.models.Product;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;
-import com.example.cshare.ui.views.BaseFragment;
 
 
 public class HomeFragment extends ProductListFragment {
@@ -31,11 +29,6 @@ public class HomeFragment extends ProductListFragment {
     private CartViewModel cartViewModel;
 
     private static String tag;
-
-    @Override
-    protected BaseFragment newInstance() {
-        return new HomeFragment();
-    }
 
     @Override
     protected void configureViewModel() {
@@ -66,7 +59,7 @@ public class HomeFragment extends ProductListFragment {
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
 
-                    if (response.getError().getDetail() != null){
+                    if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -91,7 +84,7 @@ public class HomeFragment extends ProductListFragment {
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
 
-                    if (response.getError().getDetail() != null){
+                    if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -105,7 +98,8 @@ public class HomeFragment extends ProductListFragment {
 
     }
 
-    /** Configure the SwipeRefreshLayout
+    /**
+     * Configure the SwipeRefreshLayout
      * We create a method that will allow us to configure our SwipeRefreshLayout and especially
      * to add a listener to it. The latter will be launched when the user performs a
      * Pull To Refresh" and triggers the onRefresh() method which will launch our usual stream.
@@ -115,34 +109,28 @@ public class HomeFragment extends ProductListFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isClickable = false;
                 homeViewModel.refresh();
                 // Stop refreshing and clear actual list of users
                 swipeRefreshLayout.setRefreshing(false);
-                isClickable = true;
             }
         });
     }
 
     @Override
-    protected void configureProgressBar() {}
+    protected void configureProgressBar() {
+    }
 
     @Override
     protected void click(Product product) {
         // Check whether the current user is the supplier of the product or not
         // (if yes, he won't be able to order it)
-        if (isClickable) {
-            if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
-                tag = Constants.SHARED;
-            } else {
-                tag = Constants.ORDER;
-            }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
-            productDetailsFragment.show(getChildFragmentManager(), tag);
+        if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getId()) {
+            tag = Constants.SHARED;
+        } else {
+            tag = Constants.ORDER;
+        }
+        DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
 
-        }
-        else {
-            Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-        }
     }
 }

@@ -45,13 +45,19 @@ import java.util.Locale;
 public class MediaFiles {
 
     /**
-     * Capture image request code
+     * Capture image request codes
      */
     public static final int CAPTURE_IMAGE_REQUEST_CODE = 100;
     /**
      * Select image from gallery applications request code
      */
     public static final int CHOOSE_IMAGE_REQUEST_CODE = 200;
+
+    /**
+     * External storage permissions request codes
+     */
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     /**
      * Launches the camera application to capture an image, creates a file to store the picture and

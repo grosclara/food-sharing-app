@@ -35,14 +35,9 @@ ProductListFragment extends BaseFragment {
     // Declare list of products (Product) & Adapter
     protected ProductPagedListAdapter adapter;
 
-    protected Boolean isClickable = true;
-
     // --------------
     // BASE METHODS
     // --------------
-
-    @Override
-    protected abstract BaseFragment newInstance();
 
     @Override
     protected void updateDesign() {}

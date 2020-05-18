@@ -17,7 +17,6 @@ import com.example.cshare.ui.viewmodels.CartViewModel;
 import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
-import com.example.cshare.ui.views.BaseFragment;
 
 public class CartFragment extends ProductListFragment {
 
@@ -30,11 +29,6 @@ public class CartFragment extends ProductListFragment {
 
 
     @Override
-    protected BaseFragment newInstance() {
-        return new CartFragment();
-    }
-
-    @Override
     protected void configureViewModel() {
         // Retrieve view models
         productViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProductViewModel.class);
@@ -44,7 +38,9 @@ public class CartFragment extends ProductListFragment {
 
         cartViewModel.getProductPagedList().observe(this, new Observer<PagedList<Product>>() {
             @Override
-            public void onChanged(PagedList<Product> products) { adapter.submitList(products); }
+            public void onChanged(PagedList<Product> products) {
+                adapter.submitList(products);
+            }
         });
         productViewModel.getCancelOrderResponse().observe(this, new Observer<ProductResponse>() {
             @Override
@@ -62,7 +58,7 @@ public class CartFragment extends ProductListFragment {
 
                     productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());
 
-                    if (response.getError().getDetail() != null){
+                    if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -86,7 +82,7 @@ public class CartFragment extends ProductListFragment {
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
 
-                    if (response.getError().getDetail() != null){
+                    if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -113,19 +109,17 @@ public class CartFragment extends ProductListFragment {
     }
 
     @Override
-    protected void configureProgressBar() {}
+    protected void configureProgressBar() {
+    }
 
     @Override
     protected void click(Product product) {
-        if (isClickable) {
-            if (product.getStatus().equals(Constants.COLLECTED)) {
-                tag = Constants.INCART;
-            } else {
-                tag = Constants.ARCHIVED;
-            }
-            DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
-            productDetailsFragment.show(getChildFragmentManager(), tag);
+        if (product.getStatus().equals(Constants.COLLECTED)) {
+            tag = Constants.INCART;
+        } else {
+            tag = Constants.ARCHIVED;
         }
+        DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
+        productDetailsFragment.show(getChildFragmentManager(), tag);
     }
-
 }

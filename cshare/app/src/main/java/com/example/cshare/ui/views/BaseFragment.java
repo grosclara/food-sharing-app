@@ -2,20 +2,16 @@ package com.example.cshare.ui.views;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 public abstract class BaseFragment extends Fragment {
 
     // Abstract BaseFragment class, inheriting from the Fragment class. Inside,
     // we have redefined the most repeated methods
-
-    // Force the developer to implement them in future children's classes.
-    protected abstract BaseFragment newInstance();
 
     protected abstract int getFragmentLayout();
 

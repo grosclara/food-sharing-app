@@ -98,11 +98,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private Button buttonGallery;
 
     @Override
-    protected BaseFragment newInstance() {
-        return new ProfileFragment();
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_profile;
     }
