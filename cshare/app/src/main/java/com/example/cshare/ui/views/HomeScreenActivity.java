@@ -40,10 +40,12 @@ import static com.example.cshare.utils.MediaFiles.MY_PERMISSIONS_REQUEST_WRITE_E
  * navigate between all fragments.
  * On
  *
+ * @see AppCompatActivity
  * @see BottomNavigationView
  * @see BottomNavigationView.OnNavigationItemSelectedListener
  * @see ProductDialogFragment.ProductDialogListener
  * @see ProductViewModel
+ *
  * @since 1.1
  * @author Clara Gros
  * @author Babacar Toure
