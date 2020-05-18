@@ -12,13 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cshare.R;
+import com.example.cshare.data.apiresponses.ProductResponse;
+import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.data.models.Order;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
+import com.example.cshare.ui.viewmodels.CartViewModel;
+import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
+import com.example.cshare.ui.viewmodels.ProfileViewModel;
+import com.example.cshare.ui.viewmodels.SharedViewModel;
 import com.example.cshare.ui.views.productlists.CartFragment;
 import com.example.cshare.ui.views.productlists.HomeFragment;
 import com.example.cshare.ui.views.productlists.ProductDialogFragment;
@@ -60,6 +67,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
     private static final int HOME_FRAGMENT_INDEX = 0;
 
     private ProductViewModel productViewModel;
+    private HomeViewModel homeViewModel;
+    private SharedViewModel sharedViewModel;
+    private CartViewModel cartViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         // Call all our configuration methods from the onCreate() method of our activity
         configureViewModel();
+
+        observeDataChanges();
 
         // Configure all views
         configureDesign();
@@ -182,20 +194,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
     }
 
     /**
-     * Configuring productViewModel with default ViewModelProvider
-     *
-     * @see ProductViewModel
-     * @see ViewModelProvider
-     */
-    protected void configureViewModel() {
-        // Retrieve data for view model
-        productViewModel = new ViewModelProvider(
-                this,
-                new ViewModelProvider.AndroidViewModelFactory(getApplication())
-        ).get(ProductViewModel.class);
-    }
-
-    /**
      * Configure Bottom Navigation View
      * <p>
      * Retrieve the BottomNavigationView so that it can record itself to the activity listener via
@@ -206,6 +204,145 @@ public class HomeScreenActivity extends AppCompatActivity implements
      */
     private void configureBottomNavigationView() {
         bottomNav.setOnNavigationItemSelectedListener(this);
+    }
+
+    protected void configureViewModel() {
+        // Retrieve data for view model
+        productViewModel = new ViewModelProvider(
+                this,
+                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(ProductViewModel.class);
+        homeViewModel = new ViewModelProvider(this,
+                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(HomeViewModel.class);
+        sharedViewModel = new ViewModelProvider(this,
+                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(SharedViewModel.class);
+        cartViewModel = new ViewModelProvider(this,
+                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(CartViewModel.class);
+    }
+
+    private void observeDataChanges(){
+        this.getDeleteResponse();
+        this.getOrderResponse();
+        this.getCancelOrderResponse();
+        this.getDeliverResponse();
+    }
+
+    private void getDeleteResponse(){
+        productViewModel.getDeleteProductResponse().observe(this, new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    Toast.makeText(getApplicationContext(), "Product successfully deleted", Toast.LENGTH_SHORT).show();
+                    homeViewModel.refresh();
+                    sharedViewModel.refresh();
+
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getDeleteProductResponse().setValue(ProductResponse.complete());
+                }
+            }
+        });
+    }
+
+    private void getOrderResponse(){
+        productViewModel.getOrderProductResponse().observe(this, new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    Toast.makeText(getApplicationContext(), "Product successfully ordered", Toast.LENGTH_SHORT).show();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
+
+                    productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getOrderProductResponse().setValue(ProductResponse.complete());
+                }
+            }
+        });
+
+    }
+
+    private void getCancelOrderResponse(){
+        productViewModel.getCancelOrderResponse().observe(this, new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    Toast.makeText(getApplicationContext(), "Order successfully canceled", Toast.LENGTH_SHORT).show();
+                    homeViewModel.refresh();
+                    cartViewModel.refresh();
+
+                    productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    productViewModel.getCancelOrderResponse().setValue(ProductResponse.complete());
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void getDeliverResponse(){
+        productViewModel.getDeliverProductResponse().observe(this, new Observer<ProductResponse>() {
+            @Override
+            public void onChanged(ProductResponse response) {
+
+                if (response.getStatus().equals(Status.SUCCESS)) {
+
+                    Toast.makeText(getApplicationContext(), "Product successfully delivered", Toast.LENGTH_SHORT).show();
+                    cartViewModel.refresh();
+
+                    productViewModel.getDeliverProductResponse().setValue(ProductResponse.complete());
+
+                } else if (response.getStatus().equals(Status.ERROR)) {
+
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                    }
+                    productViewModel.getDeliverProductResponse().setValue(ProductResponse.complete());
+
+                }
+            }
+        });
     }
 
     @Override

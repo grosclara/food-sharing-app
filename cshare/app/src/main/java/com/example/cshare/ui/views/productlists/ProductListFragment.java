@@ -118,7 +118,18 @@ public abstract class ProductListFragment extends BaseFragment {
      */
     protected abstract void click(Product product);
 
-    // Configure SwipeRefreshLayout
+    /**
+     * Configure the SwipeRefreshLayout
+     * <p>
+     * Method to to add a listener to the SwipeRefreshLayout.
+     * The latter will be launched when the user performs a "Pull To Refresh" and triggers the
+     * onRefresh() method which will launch our usual stream.
+     **/
     protected abstract void configureSwipeRefreshLayout();
+
+    /**
+     *
+      */
+    protected abstract void getProducts();
 
 }

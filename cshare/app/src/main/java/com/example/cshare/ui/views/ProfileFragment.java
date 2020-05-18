@@ -273,6 +273,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         });
     }
 
+    @Override
+    protected void observeDataChanges() {
+
+    }
+
     private void updateUserDetails(User profile) {
         textViewEmail.setText(profile.getEmail());
         textViewLastName.setText(profile.getLastName());

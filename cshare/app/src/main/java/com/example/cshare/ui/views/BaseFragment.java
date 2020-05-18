@@ -26,7 +26,20 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void updateDesign();
 
+    /**
+     * Configures ViewModels with default ViewModelProvider
+     *
+     * @see androidx.lifecycle.ViewModelProvider
+     */
     protected abstract void configureViewModel();
+
+    /**
+     * Calls the public methods of our ViewModel to observe their results.
+     * <p>
+     * For the Get methods, we used the observe() method to be automatically alerted if the
+     * database result changes.
+     */
+    protected abstract void observeDataChanges();
 
     // -----------------
     // METHODS OVERRIDE
@@ -43,6 +56,7 @@ public abstract class BaseFragment extends Fragment {
         // but instead to call configureDesign()
         this.configureDesign(view);
         this.configureViewModel();
+        this.observeDataChanges();
         return (view);
     }
 
