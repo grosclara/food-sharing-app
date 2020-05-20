@@ -58,4 +58,9 @@
     <string name="delete_account_successful">Account deleted successfully</string>
     <string name="sign_up">Sign up</string>
     <string name="account_creation_successful">Account successfully created !</string>
+    <string name="reset_password_indications">Enter your email to reset your password</string>
+    <string name="reset_password">Reset password</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="password_reset">Password reset</string>
+    <string name="logged_in_successful">Successfully logged in</string>
 </resources>

@@ -55,7 +55,6 @@ import okhttp3.RequestBody;
  * @see LoginActivity
  * @see User
  * @see AppCompatActivity
- * @see com.mobsandgeeks.saripaar.Validator.ValidationListener
  * @since 1.0
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener,

@@ -55,11 +55,14 @@ import static android.app.Activity.RESULT_OK;
  * it. On the other hand, the authViewModel allows to manage several authentication features
  * proposed in this fragment such as password change, account deletion or log out.
  *
+ * @see BaseFragment
+ * @see ProfileViewModel
+ * @see AuthViewModel
+ * @see User
+ * @since 1.1
  * @author Clara Gros
  * @author Babacar Toure
- * @since 1.0
  */
-
 public class ProfileFragment extends BaseFragment implements View.OnClickListener,
         Validator.ValidationListener {
 
@@ -135,7 +138,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         imageViewProfilePicture.setOnClickListener(this);
 
         configureCampusSpinner();
-
         configureValidator();
     }
 
