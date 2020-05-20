@@ -237,6 +237,12 @@ public class HomeScreenActivity extends AppCompatActivity implements
         ).get(ProfileViewModel.class);
     }
 
+    /**
+     * Calls the public methods of our ViewModel to observe their results.
+     * <p>
+     * For the Get methods, we used the observe() method to be automatically alerted if the
+     * database result changes.
+     */
     private void observeDataChanges(){
         this.getDeleteResponse();
         this.getOrderResponse();
