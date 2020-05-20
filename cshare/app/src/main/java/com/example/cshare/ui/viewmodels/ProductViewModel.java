@@ -23,6 +23,7 @@ import java.security.GeneralSecurityException;
  *
  * @see AndroidViewModel
  * @see MutableLiveData
+ * @see ProductResponse
  * @see ProductRequestManager
  * @since 2.0
  * @author Clara Gros

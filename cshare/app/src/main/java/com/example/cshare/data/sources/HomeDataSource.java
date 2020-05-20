@@ -33,8 +33,14 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
     }
 
     // Load the initial data
+    /*
+     * This method is responsible to load the data initially  when app screen is launched for the
+     * first time. We are fetching the first page data from the api and passing it via the callback
+     * method to the UI.
+     */
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
+        Log.d(Constants.TAG, "LOAD INITIAL");
 
         NetworkClient.getInstance()
                 .getProductAPI()
@@ -68,9 +74,9 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
 
     }
 
-    // Load the former data when scrolling up
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+        Log.d(Constants.TAG, "LOAD BEFORE");
 
         NetworkClient.getInstance()
                 .getProductAPI()
@@ -103,9 +109,16 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
 
     }
 
-    // Load the further data when scrolling down
+    /*
+     * This method is responsible for the subsequent call to load the data page wise. This method
+     * is executed in the background thread. We are fetching the next page data from the api
+     * and passing it via the callback method to the UI. The "params.key" variable will have
+     * the updated value.
+     */
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+
+        Log.d(Constants.TAG, "LOAD AFTER");
 
         NetworkClient.getInstance()
                 .getProductAPI()

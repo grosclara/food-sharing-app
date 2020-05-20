@@ -22,8 +22,9 @@ import java.security.GeneralSecurityException;
  * perform some actions on the data
  *
  * @see AndroidViewModel
- * @see MutableLiveData
  * @see ProfileRequestManager
+ * @see MutableLiveData
+ * @see UserReponse
  * @since 2.0
  * @author Clara Gros
  * @author Babacar Toure

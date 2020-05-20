@@ -25,6 +25,9 @@ import java.security.GeneralSecurityException;
  * @see AndroidViewModel
  * @see MutableLiveData
  * @see AuthRequestManager
+ * @see EmptyAuthResponse
+ * @see LoginResponse
+ * @see RegistrationResponse
  * @since 2.0
  * @author Clara Gros
  * @author Babacar Toure
