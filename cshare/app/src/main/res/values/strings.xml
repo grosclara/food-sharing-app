@@ -51,4 +51,9 @@
     <string name="current_password">Enter your current password</string>
     <string name="password_length">Passwords should be at least 6 characters long</string>
     <string name="password_should_match">Passwords should match</string>
+    <string name="delete_account_confirm">Are you sure you want to delete your profile? This action is irreversible.</string>
+    <string name="delete_account">Delete account</string>
+    <string name="password_change_successful">Password changed successfully</string>
+    <string name="log_out_successful">Logged out successfully</string>
+    <string name="delete_account_successful">Account deleted successfully</string>
 </resources>

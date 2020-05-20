@@ -1,5 +1,6 @@
 package com.example.cshare.ui.views.auth;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -54,9 +55,9 @@ import static android.app.Activity.RESULT_OK;
  * it. On the other hand, the authViewModel allows to manage several authentication features
  * proposed in this fragment such as password change, account deletion or log out.
  *
- * @since 1.0
  * @author Clara Gros
  * @author Babacar Toure
+ * @since 1.0
  */
 
 public class ProfileFragment extends BaseFragment implements View.OnClickListener,
@@ -76,16 +77,13 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     //Views
     private TextView textViewFirstName;
     private TextView textViewLastName;
+    private TextView textViewEmail;
     private Spinner spinnerCampus;
     @NotEmpty
     private EditText editTextRoomNumber;
     private ImageView imageViewProfilePicture;
-    private TextView textViewEmail;
     private String[] campusArray;
     private String campus;
-    private String firstName;
-    private String lastName;
-    private String roomNumber;
     private EditText editTextOldPassword;
     private EditText editTextNewPassword;
     private EditText editTextConfirmNewPassword;
@@ -175,11 +173,21 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        if (v == logOutButton) { logOut(); }
-        if (v == changePasswordButton) { changePassword(); }
-        if (v == deleteAccountButton) { deleteAccount(); }
-        if (v == buttonSave) { saveEdit(); }
-        if (v == buttonGallery || v == imageViewProfilePicture) { showPictureDialog(this);}
+        if (v == logOutButton) {
+            logOut();
+        }
+        if (v == changePasswordButton) {
+            changePassword();
+        }
+        if (v == deleteAccountButton) {
+            deleteAccount();
+        }
+        if (v == buttonSave) {
+            saveEdit();
+        }
+        if (v == buttonGallery || v == imageViewProfilePicture) {
+            showPictureDialog(this);
+        }
     }
 
     /**
@@ -190,7 +198,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
      * @see AlertDialog
      * @see AuthViewModel#logOut()
      */
-    private void logOut(){
+    private void logOut() {
         // Alert Dialog to confirm the will to sign out
         // Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -213,6 +221,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     /**
      * Creates and shows an alertDialog to change password.
      * <p>
@@ -223,7 +232,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
      * @see User
      * @see AuthViewModel#changePassword(User)
      */
-    private void changePassword(){
+    private void changePassword() {
         // Alert Dialog to change password
         // Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
@@ -245,10 +254,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                 editTextNewPassword.getText().toString().trim(),
                                 editTextConfirmNewPassword.getText().toString().trim());
                         // Validation
-                        if (changePasswordForm.getOldPassword().isEmpty()){
+                        if (changePasswordForm.getOldPassword().isEmpty()) {
                             Toast.makeText(getContext(), R.string.current_password, Toast.LENGTH_SHORT).show();
-                        }
-                        else if (changePasswordForm.getPassword1().length() < 6) {
+                        } else if (changePasswordForm.getPassword1().length() < 6) {
                             Toast.makeText(getContext(), R.string.password_length, Toast.LENGTH_SHORT).show();
                         } else if (!changePasswordForm.getPassword2().equals(changePasswordForm.getPassword2())) {
                             Toast.makeText(getContext(), R.string.password_should_match, Toast.LENGTH_SHORT).show();
@@ -266,30 +274,30 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         AlertDialog dialogPassword = builderPassword.create();
         dialogPassword.show();
     }
+
     /**
      * Creates and shows an alertDialog to delete account.
      * <p>
-     * In case of confirmation, calls the dleete account method of the authViewModel
+     * In case of confirmation, calls the delete account method of the authViewModel
      *
      * @see AlertDialog
-     * @see User
      * @see AuthViewModel#deleteAccount()
      */
-    private void deleteAccount(){
+    private void deleteAccount() {
         // Alert Dialog to confirm the will to delete account
         // Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
         // Chain together various setter methods to set the dialog characteristics
-        deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
-                .setTitle("Delete account")
+        deleteAccountBuilder.setMessage(R.string.delete_account_confirm)
+                .setTitle(R.string.delete_account)
                 // Add the buttons
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button -> delete the user's account
                         authViewModel.deleteAccount();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                     }
@@ -298,16 +306,33 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
         deleteAccountDialog.show();
     }
-    private void saveEdit(){
+
+    /**
+     * Validate the fields and calls the editProfile method of the profileViewModel.
+     * <p>
+     * Once the fields are validated, creates an editProfileForm.
+     * Check whether the profile picture has been changed. If yes, add it to the editProfileForm
+     * and eventually edit the profile.
+     * Moreover, if the campus has also been edited, calls the onCampusChanged method of the
+     * HomeScreenActivity to update the product lists.
+     *
+     * @see AlertDialog
+     * @see ProfileViewModel#editProfile(User)
+     * @see HomeScreenActivity#onCampusChanged()
+     */
+    private void saveEdit() {
         // Validate the field
         validator.validate();
         if (validated) {
-            if (campus != profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getCampus()){
+            if (campus != profileViewModel.getUserProfileMutableLiveData()
+                    .getValue().getUser().getCampus()) {
                 HomeScreenActivity.onCampusChanged();
             }
-
             // Retrieve user details from the edit text
-            roomNumber = editTextRoomNumber.getText().toString().trim();
+            String roomNumber = editTextRoomNumber.getText().toString().trim();
+            String firstName = textViewFirstName.getText().toString().trim();
+            String lastName = textViewLastName.getText().toString().trim();
+
             editProfileForm = new User(lastName, firstName, roomNumber, campus);
 
             if (fileToUploadUri != null) {
@@ -326,44 +351,62 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-    private void getChangePasswordResponse(){
+    /**
+     * Observe the change password response from the authViewModel.
+     * <p>
+     * After a request to change password, the response status changes to success or failure.
+     * In case of failure, toasts an error message.
+     * After having done so, Set the status of the response to Complete to indicate the event has
+     * been handled.
+     *
+     * @see AuthViewModel#getChangePasswordMutableLiveData()
+     * @see EmptyAuthResponse
+     */
+    private void getChangePasswordResponse() {
         authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
             public void onChanged(EmptyAuthResponse response) {
-
                 if (response.getStatus().equals(Status.SUCCESS)) {
-                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
-                    Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            R.string.password_change_successful,
+                            Toast.LENGTH_SHORT).show();
+                    authViewModel.getChangePasswordMutableLiveData()
+                            .setValue(EmptyAuthResponse.complete());
                 } else if (response.getStatus().equals(Status.ERROR)) {
-
-                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
-
-                    if (response.getError().getDetail() != null ){
+                    if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
-
-                    }
-                    else if (response.getError().getOld_password() != null) {
+                    } else if (response.getError().getOld_password() != null) {
                         Toast.makeText(getContext(), response.getError().getOld_password(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
-                    }
+                    authViewModel.getChangePasswordMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
     }
-    private void getLogoutResponse(){
+
+    /**
+     * Observe the log out response from the authViewModel.
+     * <p>
+     * After a request to log out, the response status changes to success or failure.
+     * In case of success, calls the updateUserCredentials method of the authViewModel and redirects
+     * to the LoginActivity. In case of failure, toasts an error message.
+     * After having done so, Set the status of the response to Complete to indicate the event has
+     * been handled.
+     *
+     * @see AuthViewModel#getLogoutResponseMutableLiveData()
+     * @see EmptyAuthResponse
+     * @see AuthViewModel#updateUserCredentials()
+     */
+    private void getLogoutResponse() {
         authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
             public void onChanged(EmptyAuthResponse response) {
-
                 if (response.getStatus().equals(Status.SUCCESS)) {
-
                     authViewModel.updateUserCredentials();
-
+                    Toast.makeText(getContext(), R.string.log_out_successful, Toast.LENGTH_SHORT).show();
                     authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
-
-                    Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
 
                     // Redirect to the Login activity
                     Intent toLoginActivityIntent = new Intent();
@@ -371,77 +414,94 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     startActivity(toLoginActivityIntent);
 
                 } else if (response.getStatus().equals(Status.ERROR)) {
-
                     if (response.getError().getDetail() != null) {
-
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
-                    }
-
                     authViewModel.getLogoutResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
         });
     }
-    private void getDeleteAccountResponse(){authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
-        @Override
-        public void onChanged(EmptyAuthResponse response) {
 
-            if (response.getStatus().equals(Status.SUCCESS)) {
+    /**
+     * Observe the delete account response from the authViewModel.
+     * <p>
+     * After a request to delete ones account, the response status changes to success or failure.
+     * In case of success, calls the updateUserCredentials method of the authViewModel and redirects
+     * to the LoginActivity. In case of failure, toasts an error message.
+     * After having done so, Set the status of the response to Complete to indicate the event has
+     * been handled.
+     *
+     * @see AuthViewModel#getDeleteResponseMutableLiveData() ()
+     * @see EmptyAuthResponse
+     * @see AuthViewModel#updateUserCredentials()
+     */
+    private void getDeleteAccountResponse() {
+        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
+            @Override
+            public void onChanged(EmptyAuthResponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    authViewModel.updateUserCredentials();
+                    Toast.makeText(getContext(), R.string.delete_account_successful, Toast.LENGTH_SHORT).show();
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
 
-                authViewModel.updateUserCredentials();
+                    // Redirect to the Login activity
+                    Intent toLoginActivityIntent = new Intent();
+                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                    startActivity(toLoginActivityIntent);
 
-                authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
-
-                Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
-
-                // Redirect to the Login activity
-                Intent toLoginActivityIntent = new Intent();
-                toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
-                startActivity(toLoginActivityIntent);
-
-            } else if (response.getStatus().equals(Status.ERROR)) {
-
-                if (response.getError().getDetail() != null) {
-
-                    Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
-                }
-
-                authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
-            }
-        }
-    });}
-    private void getUserDetails(){profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
-        @Override
-        public void onChanged(UserReponse response) {
-            Log.d(Constants.TAG, "USER PROFILE ON CHANGED "+response.getStatus());
-
-            if (response.getStatus().equals(Status.SUCCESS)) {
-
-                // profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
-                Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
-                updateUserDetails(response.getUser());
-
-            }
-
-            else if (response.getStatus().equals(Status.ERROR)) {
-
-                if (response.getError().getDetail() != null ){
-                    Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
-
-                }
-                else {
-                    Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
+                    }
+                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
                 }
             }
-        }
-    });}
+        });
+    }
 
+    /**
+     * Observe the user details from the profileViewModel.
+     * <p>
+     * After a request to retrieve the user details, the response status changes to success or
+     * failure.
+     * In case of a successful response, calls the updateUserDetails to update data that has
+     * changed. In case of failure, toasts an error message.
+     *
+     * @see ProfileViewModel#getUserProfileMutableLiveData()
+     * @see UserReponse
+     * @see #updateUserDetails(User)
+     */
+    private void getUserDetails() {
+        profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
+            @Override
+            public void onChanged(UserReponse response) {
+                if (response.getStatus().equals(Status.SUCCESS)) {
+                    updateUserDetails(response.getUser());
+                } else if (response.getStatus().equals(Status.ERROR)) {
+                    if (response.getError().getDetail() != null) {
+                        Toast.makeText(getContext(),
+                                response.getError().getDetail(),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.unexpected_error, Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Update the views according to the profile (User) parameter
+     *
+     * @param profile (User)
+     * @see User
+     */
     private void updateUserDetails(User profile) {
         textViewEmail.setText(profile.getEmail());
         textViewLastName.setText(profile.getLastName());
@@ -452,13 +512,22 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
     }
 
+    /**
+     * Builds and shows an AlertDialog to select the method from the MediaFiles class to apply :
+     * either choosePictureFromGallery or captureImage
+     *
+     * @param fragment (Fragment) the current Fragment
+     * @see AlertDialog
+     * @see MediaFiles#captureImage(Activity, Fragment)
+     * @see MediaFiles#choosePictureFromGallery(Activity, Fragment)
+     */
     private void showPictureDialog(Fragment fragment) {
 
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(fragment.getContext());
-        pictureDialog.setTitle("Select Action");
+        pictureDialog.setTitle(R.string.select_action);
         String[] pictureDialogItems = {
-                "Select photo from gallery",
-                "Capture photo from camera"};
+                getString(R.string.gallery),
+                getString(R.string.camera)};
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -470,9 +539,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                             case 1:
                                 try {
                                     pictureFileUri = MediaFiles.captureImage(null, fragment);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                } catch (IOException e) { e.printStackTrace(); }
                                 break;
                         }
                     }
@@ -481,7 +548,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
     /**
-     * Receiving activity result method will be called after closing the gallery
+     * Receiving activity result method will be called after closing the gallery or the camera.
+     * Modify the raw picture, store it in a new file and retrieve its Uri
+     *
+     * @see MediaFiles
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -489,25 +559,19 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
         // Result code is RESULT_OK only if the user selects an Image
         if (requestCode == MediaFiles.CHOOSE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-
             // data.getData returns the content URI for the selected Image
             pictureFileUri = data.getData();
-
             // modify the raw picture taken in a new file and retrieve its Uri
             try {
                 fileToUpload = MediaFiles.processPicture(getActivity(), pictureFileUri);
-
                 fileToUploadPath = fileToUpload.getAbsolutePath();
                 fileToUploadUri = MediaFiles.getOutputMediaFileUri(getActivity(), fileToUpload);
 
                 Picasso.get().load(fileToUploadUri).into(imageViewProfilePicture);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) { e.printStackTrace();}
         } else if (requestCode == MediaFiles.CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
-
             try {
                 Log.d(Constants.TAG, pictureFileUri.toString());
                 fileToUpload = MediaFiles.processPicture(getActivity(), pictureFileUri); // modify the raw picture taken
@@ -516,25 +580,27 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
                 Picasso.get().load(fileToUploadUri).into(imageViewProfilePicture);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
+            } catch (IOException e) { e.printStackTrace();}
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
-            Toast.makeText(getActivity(),
-                    "User cancelled image capture", Toast.LENGTH_SHORT)
-                    .show();
         } else {
             // failed to capture image
             Toast.makeText(getActivity(),
-                    "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
+                    R.string.image_choice_failed, Toast.LENGTH_SHORT)
                     .show();
         }
     }
 
-
+    /**
+     * Configure the spinner that contains every campus.
+     * <p>
+     * Creates an ArrayAdapter using a defined campus string array and a default spinner layout
+     * and enables to retrieve the item when selected
+     *
+     * @see Spinner
+     * @see ArrayAdapter
+     * @see Spinner#setOnItemClickListener(AdapterView.OnItemClickListener)
+     */
     private void configureCampusSpinner() {
         campusArray = getResources().getStringArray(R.array.campus_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -555,12 +621,20 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         });
     }
 
+    /**
+     * Called when the form has passed all the validations and set the boolean validated to true.
+     *
+     * @see Validator
+     */
     @Override
-    public void onValidationSucceeded() {
-        //Called when all your views pass all validations.
-        validated = true;
-    }
+    public void onValidationSucceeded() { validated = true; }
 
+    /**
+     * Called when the form hasn't passed all the validations : set the boolean validated to false
+     * and display the errors.
+     *
+     * @see Validator
+     */
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         //Called when there are validation error(s).
@@ -568,13 +642,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getContext());
-
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
-            } else {
-                Log.d(Constants.TAG, message);
-                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-            }
+            } else {Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();}
         }
 
     }

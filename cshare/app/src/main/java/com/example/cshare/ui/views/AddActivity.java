@@ -331,7 +331,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
      * Build and show an AlertDialog to select the method from the MediaFiles class to apply :
      * either choosePictureFromGallery or captureImage
      *
-     * @param activity
+     * @param activity (Activity) the current activity
      * @see AlertDialog
      * @see MediaFiles#captureImage(Activity, Fragment)
      * @see MediaFiles#choosePictureFromGallery(Activity, Fragment)
@@ -378,7 +378,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
      * @see Product
      * @see ProductViewModel#addProduct(Product) 
      */
-
     private void submitProduct() {
         // Validate the field
         validator.validate();
@@ -420,7 +419,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             productViewModel.addProduct(product);
         } else if (fileToUploadUri == null) { textViewPictureError.setVisibility(View.VISIBLE); }
     }
-
 
     /*
       Here we store the file uri as it will be null after returning from camera app
