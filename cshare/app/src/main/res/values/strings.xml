@@ -56,4 +56,6 @@
     <string name="password_change_successful">Password changed successfully</string>
     <string name="log_out_successful">Logged out successfully</string>
     <string name="delete_account_successful">Account deleted successfully</string>
+    <string name="sign_up">Sign up</string>
+    <string name="account_creation_successful">Account successfully created !</string>
 </resources>

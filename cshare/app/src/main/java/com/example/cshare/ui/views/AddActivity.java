@@ -118,6 +118,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         configureDesign();
 
+        // Validator
+        configureValidator();
+
         // VM business logic
         configureViewModel();
         observeDataChanges();
@@ -137,8 +140,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
 
-        // Validator
-        configureValidator();
 
         // Click listeners
         buttonPhoto.setOnClickListener(this);
@@ -427,9 +428,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save file uri in bundle as it will be null on screen orientation changes
-        outState.putParcelable("file_uri", fileToUploadUri);
-        outState.putString("file_path", fileToUploadPath);
-
+        outState.putParcelable(MediaFiles.URI, fileToUploadUri);
+        outState.putString(MediaFiles.PATH, fileToUploadPath);
     }
 
     @Override
@@ -437,8 +437,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             // get the file uri
-            fileToUploadUri = savedInstanceState.getParcelable("file_uri");
-            fileToUploadPath = savedInstanceState.getString("file_path");
+            fileToUploadUri = savedInstanceState.getParcelable(MediaFiles.URI);
+            fileToUploadPath = savedInstanceState.getString(MediaFiles.PATH);
             // Reload the image view picture
             if (fileToUploadUri != null) {
                 Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);

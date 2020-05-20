@@ -54,6 +54,9 @@ public class MediaFiles {
      */
     public static final int CHOOSE_IMAGE_REQUEST_CODE = 200;
 
+    public static final String URI = "file_uri";
+    public static final String PATH = "file_path";
+
     /**
      * External storage permissions request codes
      */
