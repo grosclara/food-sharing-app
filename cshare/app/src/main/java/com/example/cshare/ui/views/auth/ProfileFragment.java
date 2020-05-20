@@ -1,4 +1,4 @@
-package com.example.cshare.ui.views;
+package com.example.cshare.ui.views.auth;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,19 +20,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.cshare.data.apiresponses.EmptyAuthResponse;
-import com.example.cshare.data.apiresponses.UserReponse;
-import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.utils.MediaFiles;
-import com.example.cshare.utils.Constants;
-import com.example.cshare.ui.viewmodels.CartViewModel;
-import com.example.cshare.ui.viewmodels.HomeViewModel;
-import com.example.cshare.ui.viewmodels.SharedViewModel;
-import com.example.cshare.ui.views.auth.LoginActivity;
-import com.example.cshare.data.models.User;
 import com.example.cshare.R;
+import com.example.cshare.data.apiresponses.EmptyAuthResponse;
+import com.example.cshare.data.apiresponses.Status;
+import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
+import com.example.cshare.ui.views.BaseFragment;
+import com.example.cshare.ui.views.HomeScreenActivity;
+import com.example.cshare.utils.Constants;
+import com.example.cshare.utils.MediaFiles;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -49,16 +47,29 @@ import okhttp3.RequestBody;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener, Validator.ValidationListener {
+/**
+ * Fragment which inherits from the BaseFragment class and manages all user information.
+ * <p>
+ * Implements a profileViewModel to be able to retrieve information from the user but also to edit
+ * it. On the other hand, the authViewModel allows to manage several authentication features
+ * proposed in this fragment such as password change, account deletion or log out.
+ *
+ * @since 1.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 
-    // ViewModel
+public class ProfileFragment extends BaseFragment implements View.OnClickListener,
+        Validator.ValidationListener {
+
+    // ViewModels
     private ProfileViewModel profileViewModel;
     private AuthViewModel authViewModel;
-    private SharedViewModel sharedViewModel;
-    private CartViewModel cartViewModel;
-    private HomeViewModel homeViewModel;
 
     // Form validation
+    /**
+     * Asynchronous validations, provided by the Saripaar library.
+     */
     protected Validator validator;
     private boolean validated;
 
@@ -70,14 +81,23 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private EditText editTextRoomNumber;
     private ImageView imageViewProfilePicture;
     private TextView textViewEmail;
-
     private String[] campusArray;
-
     private String campus;
     private String firstName;
     private String lastName;
     private String roomNumber;
+    private EditText editTextOldPassword;
+    private EditText editTextNewPassword;
+    private EditText editTextConfirmNewPassword;
 
+    // Buttons
+    private Button buttonSave;
+    private Button logOutButton;
+    private Button changePasswordButton;
+    private Button deleteAccountButton;
+    private Button buttonGallery;
+
+    // Forms
     private User editProfileForm;
     private User changePasswordForm;
 
@@ -87,20 +107,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private Uri fileToUploadUri;
     private String fileToUploadPath;
 
-    private EditText editTextOldPassword;
-    private EditText editTextNewPassword;
-    private EditText editTextConfirmNewPassword;
-
-    private Button buttonSave;
-    private Button logOutButton;
-    private Button changePasswordButton;
-    private Button deleteAccountButton;
-    private Button buttonGallery;
-
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_profile;
-    }
+    protected int getFragmentLayout() { return R.layout.fragment_profile; }
 
     @Override
     protected void configureDesign(View view) {
@@ -111,7 +119,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         spinnerCampus = view.findViewById(R.id.spinnerCampus);
         editTextRoomNumber = view.findViewById(R.id.editTextRoomNumber);
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
-
         textViewEmail = view.findViewById(R.id.textViewEmail);
 
         // Buttons
@@ -132,12 +139,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         configureCampusSpinner();
 
         configureValidator();
-
     }
 
     @Override
     protected void updateDesign() {}
 
+    /**
+     * Instantiate a new Validator
+     *
+     * @see Validator
+     */
     private void configureValidator() {
         // Instantiate a new Validator
         validator = new Validator((this));
@@ -146,17 +157,176 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void configureViewModel() {
-        // Retrieve auth data from view model (log out, change password)
-        authViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(AuthViewModel.class);
-        // Retrieve user details from profile view model
-        profileViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(ProfileViewModel.class);
+        authViewModel = new ViewModelProvider(getActivity(),
+                new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())
+        ).get(AuthViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity(),
+                new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())
+        ).get(ProfileViewModel.class);
+    }
 
-        // Update VM if the campus is changed
-        cartViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(CartViewModel.class);
-        homeViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
-        sharedViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SharedViewModel.class);
+    @Override
+    protected void observeDataChanges() {
+        this.getChangePasswordResponse();
+        this.getLogoutResponse();
+        this.getDeleteAccountResponse();
+        this.getUserDetails();
+    }
 
+    @Override
+    public void onClick(View v) {
+        if (v == logOutButton) { logOut(); }
+        if (v == changePasswordButton) { changePassword(); }
+        if (v == deleteAccountButton) { deleteAccount(); }
+        if (v == buttonSave) { saveEdit(); }
+        if (v == buttonGallery || v == imageViewProfilePicture) { showPictureDialog(this);}
+    }
 
+    /**
+     * Creates and shows an alertDialog to confirm or not logout.
+     * <p>
+     * In case of confirmation, calls the log out method of the authViewModel
+     *
+     * @see AlertDialog
+     * @see AuthViewModel#logOut()
+     */
+    private void logOut(){
+        // Alert Dialog to confirm the will to sign out
+        // Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        // Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(R.string.log_out_confirmation)
+                .setTitle(R.string.log_out)
+                // Add the buttons
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button -> logout the user
+                        authViewModel.logOut();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        // Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    /**
+     * Creates and shows an alertDialog to change password.
+     * <p>
+     * In case of confirmation, creates a changePassword form if the form is valid and
+     * calls the change password method of the authViewModel
+     *
+     * @see AlertDialog
+     * @see User
+     * @see AuthViewModel#changePassword(User)
+     */
+    private void changePassword(){
+        // Alert Dialog to change password
+        // Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
+        // Inflate the layout
+        View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password, null);
+        // Load the edit texts
+        editTextOldPassword = changePasswordLayout.findViewById(R.id.editTextOldPassword);
+        editTextNewPassword = changePasswordLayout.findViewById(R.id.editTextNewPassword);
+        editTextConfirmNewPassword = changePasswordLayout.findViewById(R.id.editTextConfirmNewPassword);
+        builderPassword.setView(changePasswordLayout);
+        // Chain together various setter methods to set the dialog characteristics
+        builderPassword.setMessage(R.string.change_password_indications)
+                .setTitle(R.string.change_password)
+                // Add the buttons
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button -> change password
+                        changePasswordForm = new User(editTextOldPassword.getText().toString().trim(),
+                                editTextNewPassword.getText().toString().trim(),
+                                editTextConfirmNewPassword.getText().toString().trim());
+                        // Validation
+                        if (changePasswordForm.getOldPassword().isEmpty()){
+                            Toast.makeText(getContext(), R.string.current_password, Toast.LENGTH_SHORT).show();
+                        }
+                        else if (changePasswordForm.getPassword1().length() < 6) {
+                            Toast.makeText(getContext(), R.string.password_length, Toast.LENGTH_SHORT).show();
+                        } else if (!changePasswordForm.getPassword2().equals(changePasswordForm.getPassword2())) {
+                            Toast.makeText(getContext(), R.string.password_should_match, Toast.LENGTH_SHORT).show();
+                        } else {
+                            authViewModel.changePassword(changePasswordForm);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        // Get the AlertDialog from create()
+        AlertDialog dialogPassword = builderPassword.create();
+        dialogPassword.show();
+    }
+    /**
+     * Creates and shows an alertDialog to delete account.
+     * <p>
+     * In case of confirmation, calls the dleete account method of the authViewModel
+     *
+     * @see AlertDialog
+     * @see User
+     * @see AuthViewModel#deleteAccount()
+     */
+    private void deleteAccount(){
+        // Alert Dialog to confirm the will to delete account
+        // Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
+        // Chain together various setter methods to set the dialog characteristics
+        deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
+                .setTitle("Delete account")
+                // Add the buttons
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button -> delete the user's account
+                        authViewModel.deleteAccount();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        // Get the AlertDialog from create()
+        AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
+        deleteAccountDialog.show();
+    }
+    private void saveEdit(){
+        // Validate the field
+        validator.validate();
+        if (validated) {
+            if (campus != profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getCampus()){
+                HomeScreenActivity.onCampusChanged();
+            }
+
+            // Retrieve user details from the edit text
+            roomNumber = editTextRoomNumber.getText().toString().trim();
+            editProfileForm = new User(lastName, firstName, roomNumber, campus);
+
+            if (fileToUploadUri != null) {
+
+                fileToUpload = new File(fileToUploadPath);
+                // Create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
+                // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
+
+                editProfileForm.setProfilePictureBody(profilePictureBody);
+            }
+
+            profileViewModel.editProfile(editProfileForm);
+
+        }
+    }
+
+    private void getChangePasswordResponse(){
         authViewModel.getChangePasswordMutableLiveData().observe(this, new Observer<EmptyAuthResponse>() {
             @Override
             public void onChanged(EmptyAuthResponse response) {
@@ -181,7 +351,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
             }
         });
-
+    }
+    private void getLogoutResponse(){
         authViewModel.getLogoutResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
             @Override
             public void onChanged(EmptyAuthResponse response) {
@@ -213,70 +384,63 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
             }
         });
+    }
+    private void getDeleteAccountResponse(){authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
+        @Override
+        public void onChanged(EmptyAuthResponse response) {
 
-        authViewModel.getDeleteResponseMutableLiveData().observe(getViewLifecycleOwner(), new Observer<EmptyAuthResponse>() {
-            @Override
-            public void onChanged(EmptyAuthResponse response) {
+            if (response.getStatus().equals(Status.SUCCESS)) {
 
-                if (response.getStatus().equals(Status.SUCCESS)) {
+                authViewModel.updateUserCredentials();
 
-                    authViewModel.updateUserCredentials();
+                authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
 
-                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+                Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                // Redirect to the Login activity
+                Intent toLoginActivityIntent = new Intent();
+                toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
+                startActivity(toLoginActivityIntent);
 
-                    // Redirect to the Login activity
-                    Intent toLoginActivityIntent = new Intent();
-                    toLoginActivityIntent.setClass(getContext(), LoginActivity.class);
-                    startActivity(toLoginActivityIntent);
+            } else if (response.getStatus().equals(Status.ERROR)) {
 
-                } else if (response.getStatus().equals(Status.ERROR)) {
+                if (response.getError().getDetail() != null) {
 
-                    if (response.getError().getDetail() != null) {
+                    Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                }
 
-                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
-                    }
+                authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+            }
+        }
+    });}
+    private void getUserDetails(){profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
+        @Override
+        public void onChanged(UserReponse response) {
+            Log.d(Constants.TAG, "USER PROFILE ON CHANGED "+response.getStatus());
 
-                    authViewModel.getDeleteResponseMutableLiveData().setValue(EmptyAuthResponse.complete());
+            if (response.getStatus().equals(Status.SUCCESS)) {
+
+                // profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
+                Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
+                updateUserDetails(response.getUser());
+
+            }
+
+            else if (response.getStatus().equals(Status.ERROR)) {
+
+                if (response.getError().getDetail() != null ){
+                    Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-
-        profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
-            @Override
-            public void onChanged(UserReponse response) {
-                Log.d(Constants.TAG, "USER PROFILE ON CHANGED "+response.getStatus());
-
-                if (response.getStatus().equals(Status.SUCCESS)) {
-
-                    // profileViewModel.getUserProfileMutableLiveData().setValue(UserReponse.complete());
-                    Toast.makeText(getContext(), "User info retrieved successfully", Toast.LENGTH_SHORT).show();
-                    updateUserDetails(response.getUser());
-
-                }
-
-                else if (response.getStatus().equals(Status.ERROR)) {
-
-                    if (response.getError().getDetail() != null ){
-                        Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void observeDataChanges() {
-
-    }
+        }
+    });}
 
     private void updateUserDetails(User profile) {
         textViewEmail.setText(profile.getEmail());
@@ -286,147 +450,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         textViewEmail.setText(profile.getEmail());
         editTextRoomNumber.setText(profile.getRoomNumber());
         Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        if (v == logOutButton) {
-            // Alert Dialog to confirm the will to sign out
-            // Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            // Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("Are you sure you want to log out ?")
-                    .setTitle("Log out")
-                    // Add the buttons
-                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button -> logout the user
-                            authViewModel.logOut();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-
-        if (v == changePasswordButton) {
-            // Alert Dialog to change password
-            // Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder builderPassword = new AlertDialog.Builder(getContext());
-
-            // Inflate the layout
-            View changePasswordLayout = LayoutInflater.from(getContext()).inflate(R.layout.change_password, null);
-
-            // Load the edit texts
-            editTextOldPassword = changePasswordLayout.findViewById(R.id.editTextOldPassword);
-            editTextNewPassword = changePasswordLayout.findViewById(R.id.editTextNewPassword);
-            editTextConfirmNewPassword = changePasswordLayout.findViewById(R.id.editTextConfirmNewPassword);
-
-            builderPassword.setView(changePasswordLayout);
-
-            // Chain together various setter methods to set the dialog characteristics
-            builderPassword.setMessage("Enter your old password and a new one")
-                    .setTitle("Change Password")
-                    // Add the buttons
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button -> change password
-                            changePasswordForm = new User(editTextOldPassword.getText().toString().trim(),
-                                    editTextNewPassword.getText().toString().trim(),
-                                    editTextConfirmNewPassword.getText().toString().trim());
-
-                            // Validation
-                            if (changePasswordForm.getOldPassword().isEmpty()){
-                                Toast.makeText(getContext(),"Enter your current password", Toast.LENGTH_SHORT).show();
-                            }
-                            else if (changePasswordForm.getPassword1().length() < 6) {
-                                Toast.makeText(getContext(),"Passwords should be at least 6 characters long", Toast.LENGTH_SHORT).show();
-                            } else if (!changePasswordForm.getPassword2().equals(changePasswordForm.getPassword2())) {
-                                Toast.makeText(getContext(),"Passwords should match", Toast.LENGTH_SHORT).show();
-                            } else {
-                                authViewModel.changePassword(changePasswordForm);
-                            }
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Get the AlertDialog from create()
-            AlertDialog dialogPassword = builderPassword.create();
-            dialogPassword.show();
-        }
-
-        if (v == deleteAccountButton) {
-
-            // Alert Dialog to confirm the will to delete account
-            // Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder deleteAccountBuilder = new AlertDialog.Builder(getContext());
-            // Chain together various setter methods to set the dialog characteristics
-            deleteAccountBuilder.setMessage("Are you sure you want to delete your profile? This action is irreversible.")
-                    .setTitle("Delete account")
-                    // Add the buttons
-                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button -> delete the user's account
-                            authViewModel.deleteAccount();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Get the AlertDialog from create()
-            AlertDialog deleteAccountDialog = deleteAccountBuilder.create();
-            deleteAccountDialog.show();
-        }
-
-        if (v == buttonSave) {
-
-            // Validate the field
-            validator.validate();
-
-            if (validated) {
-
-                if (campus != profileViewModel.getUserProfileMutableLiveData().getValue().getUser().getCampus()){
-                    sharedViewModel.refresh();
-                    homeViewModel.refresh();
-                    cartViewModel.refresh();
-                }
-
-                // Retrieve user details from the edit text
-                roomNumber = editTextRoomNumber.getText().toString().trim();
-
-                editProfileForm = new User(lastName, firstName, roomNumber, campus);
-
-                if (fileToUploadUri != null) {
-
-                    fileToUpload = new File(fileToUploadPath);
-                    // Create RequestBody instance from file
-                    RequestBody requestFile = RequestBody.create(MediaType.parse(getActivity().getContentResolver().getType(fileToUploadUri)), fileToUpload);
-                    // MultipartBody.Part is used to send also the actual file name
-                    MultipartBody.Part profilePictureBody = MultipartBody.Part.createFormData("profile_picture", fileToUploadPath, requestFile);
-
-                    editProfileForm.setProfilePictureBody(profilePictureBody);
-                }
-
-                profileViewModel.editProfile(editProfileForm);
-
-            }
-        }
-
-        if (v == buttonGallery || v == imageViewProfilePicture) {
-
-            showPictureDialog(this);
-        }
     }
 
     private void showPictureDialog(Fragment fragment) {

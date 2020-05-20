@@ -1,7 +1,7 @@
 package com.example.cshare.ui.views.productlists;
 
 
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
@@ -9,28 +9,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.cshare.data.apiresponses.ProductResponse;
-import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.data.models.Product;
-import com.example.cshare.ui.viewmodels.CartViewModel;
 import com.example.cshare.ui.viewmodels.HomeViewModel;
-import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
-import com.example.cshare.ui.viewmodels.SharedViewModel;
 import com.example.cshare.utils.Constants;
 
 /**
  * Fragment inheriting from the ProductListFragment class that displays the list of products
  * available on the user's campus.
- * <p>
- *
  *
  * @see ProductListFragment
- * @see ProductViewModel
  * @see ProfileViewModel
  * @see HomeViewModel
- * @see SharedViewModel
- * @see CartViewModel
  * @since 2.0
  * @author Clara Gros
  * @author Babacar Toure
@@ -39,8 +29,6 @@ public class HomeFragment extends ProductListFragment {
 
     private ProfileViewModel profileViewModel;
     private HomeViewModel homeViewModel;
-
-    private static String tag;
 
     @Override
     protected void configureViewModel() {
@@ -70,21 +58,32 @@ public class HomeFragment extends ProductListFragment {
     }
 
     /**
+     * Method called when clicking on an item of the recyclerView to interact with products.
+     * <p>
      * Check whether the current user is the supplier of the product or not and then display an
-     * appropriate ProductDialogFragment
+     * appropriate ProductDialogFragment through a string tag passed as parameter when creating the
+     * productDialogFragment object.
+     * <p>
+     * If the user is the supplier, it will display a productDialogFragment to see and optionally
+     * delete the product. Otherwise, it will display a different productDialogFragment to see and
+     * optionally order the product.
      *
      * @param product (Product) the item clicked on
      * @see ProductDialogFragment
      */
     @Override
     protected void click(Product product) {
+        String tag;
         // Check whether the current user is the supplier of the product or not
+        // and update the tag conveniently
         if (product.getSupplier() == profileViewModel.getUserProfileMutableLiveData()
                 .getValue().getUser().getId()) {
             tag = Constants.SHARED;
         } else {
             tag = Constants.ORDER;
         }
+
+        // Create a new DialogFragment and show it
         DialogFragment productDetailsFragment = new ProductDialogFragment(product,
                 tag,
                 profileViewModel);

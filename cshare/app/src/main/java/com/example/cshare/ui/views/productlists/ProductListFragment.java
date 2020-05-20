@@ -4,6 +4,7 @@ package com.example.cshare.ui.views.productlists;
 import android.content.Intent;
 import android.view.View;
 
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -128,7 +129,15 @@ public abstract class ProductListFragment extends BaseFragment {
     protected abstract void configureSwipeRefreshLayout();
 
     /**
-     *
+     *  To be defined in the fragments inherited from this ProductListFragment class
+     *  <p>
+     *  Calls the public methods of the ViewModel of the fragment
+     *  (which stores the list of products to be displayed) the  to observe the result.
+     *  <p>
+     *  Whenever the the observe() method is alerted when the product list changes, the adapter
+     *  of the recycler view is updated calling the method submitList
+     * 
+     * @see ProductPagedListAdapter#submitList(PagedList) 
       */
     protected abstract void getProducts();
 

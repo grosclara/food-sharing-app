@@ -1,11 +1,5 @@
 package com.example.cshare.ui.views;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -14,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,17 +19,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.ProductResponse;
+import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
-import com.example.cshare.R;
-import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.utils.MediaFiles;
-import com.example.cshare.utils.Constants;
-import com.example.cshare.ui.viewmodels.HomeViewModel;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
-import com.example.cshare.ui.viewmodels.ProfileViewModel;
-import com.example.cshare.ui.viewmodels.SharedViewModel;
+import com.example.cshare.utils.Constants;
+import com.example.cshare.utils.MediaFiles;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -51,12 +48,33 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class AddActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
+/**
+ * Activity responsible for the addition of a product by the user.
+ * <p>
+ * Once the user fills out the form, a validator checks the validity of the fields.
+ * If the form is valid, the product is added using the ProductViewModel's addProduct method and
+ * then an Intent is used to access the HomeScreenActivity again.
+ *
+ * @author Clara Gros
+ * @author Babacar Toure
+ * @see ProductViewModel
+ * @see Product
+ * @see User
+ * @see AppCompatActivity
+ * @see com.mobsandgeeks.saripaar.Validator.ValidationListener
+ * @since 1.0
+ */
+public class AddActivity extends AppCompatActivity implements View.OnClickListener,
+        Validator.ValidationListener {
 
     // Form validation
+    /**
+     * Asynchronous validations, provided by the Saripaar library.
+     */
     protected Validator validator;
     private boolean validated;
 
+    // Views
     private TextView textViewPictureError;
     @NotEmpty
     private EditText editTextProductName;
@@ -70,6 +88,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private Button buttonSubmit;
     private Button buttonExpirationDate;
 
+    // Form fields
     private String productName;
     private String[] productCategoriesArray;
     private String productCategory;
@@ -77,6 +96,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private String quantity;
     private User supplier;
 
+    // Product to add
     private Product product;
 
     // Path to the location of the picture taken by the phone
@@ -87,9 +107,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     // ViewModels
     ProductViewModel productViewModel;
-    ProfileViewModel profileViewModel;
-    HomeViewModel homeViewModel;
-    SharedViewModel sharedViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +118,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         configureDesign();
 
+        // VM business logic
         configureViewModel();
+        observeDataChanges();
     }
 
     protected void configureDesign() {
@@ -131,54 +150,87 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         configureProductSpinner();
     }
 
+    /**
+     * Configures ViewModels with default ViewModelProvider
+     *
+     * @see androidx.lifecycle.ViewModelProvider
+     */
     protected void configureViewModel() {
-        // Retrieve data from view model
         productViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProductViewModel.class);
-        profileViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ProfileViewModel.class);
-        homeViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(HomeViewModel.class);
-        sharedViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(SharedViewModel.class);
+    }
 
+    /**
+     * Calls the public methods of our ViewModel to observe their results.
+     * <p>
+     * For the Get methods, we used the observe() method to be automatically alerted if the
+     * database result changes.
+     */
+    private void observeDataChanges() {
+        getAddProductResponse();
+    }
+
+    /**
+     * Observe the add response data from the productViewModel.
+     * <p>
+     * After a request to add a product, the response status changes to success or failure.
+     * In case of a successful response, calls the onProductAdded method in the HomeScreenActivity
+     * to update data that has changed following the addition of the product and creates an Intent
+     * to go back to the HomeScreenActivity. In case of failure,
+     * toasts an error message.
+     * After having done so, Set the status of the response to Complete to indicate the event has
+     * been handled.
+     *
+     * @see ProductViewModel#getAddProductResponse() ()
+     * @see ProductResponse
+     * @see HomeScreenActivity
+     * @see HomeScreenActivity#onProductAdded()
+     */
+    private void getAddProductResponse() {
         productViewModel.getAddProductResponse().observe(this, new Observer<ProductResponse>() {
             @Override
             public void onChanged(ProductResponse productResponse) {
-
                 if (productResponse.getStatus().equals(Status.SUCCESS)) {
-
+                    Toast.makeText(getApplicationContext(), R.string.addition_successful, Toast.LENGTH_SHORT).show();
+                    // Call the main activity on product added method to refresh product lists
+                    HomeScreenActivity.onProductAdded();
                     productViewModel.getAddProductResponse().setValue(ProductResponse.complete());
-
-                    Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
-                    // Call the BottomNavigationView.OnNavigationItemSelectedListener in the main activity
-                    homeViewModel.refresh();
-                    sharedViewModel.refresh();
-
+                    // Intent
                     Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
                     startActivity(intent);
+                    finish();
 
                 } else if (productResponse.getStatus().equals(Status.ERROR)) {
-
-                    if (productResponse.getError().getDetail() != null){
+                    if (productResponse.getError().getDetail() != null) {
                         Toast.makeText(getApplicationContext(), productResponse.getError().getDetail(), Toast.LENGTH_SHORT).show();
-
                     } else {
-
-                        Toast.makeText(getApplicationContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
                     }
                     productViewModel.getAddProductResponse().setValue(ProductResponse.complete());
-
                 }
-
             }
         });
-
-        supplier = profileViewModel.getUserProfileMutableLiveData().getValue().getUser();
     }
 
+    /**
+     * Instantiate a new Validator
+     *
+     * @see Validator
+     */
     private void configureValidator() {
-        // Instantiate a new Validator
         validator = new Validator((this));
         validator.setValidationListener(this);
     }
 
+    /**
+     * Configure the spinner that contains every category.
+     * <p>
+     * Creates an ArrayAdapter using a defined category string array and a default spinner layout
+     * and enables to retrieve the item when selected
+     *
+     * @see Spinner
+     * @see ArrayAdapter
+     * @see Spinner#setOnItemClickListener(AdapterView.OnItemClickListener)
+     */
     private void configureProductSpinner() {
         productCategoriesArray = getResources().getStringArray(R.array.product_categories_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -194,12 +246,17 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }
 
-    private void configureDatePicker(){
+    /**
+     * When called, this method creates and shows a datePickerDialog and enables to retrieve the
+     * selected date and set it to the corresponding text view
+     *
+     * @see DatePicker
+     */
+    private void configureDatePicker() {
 
         // Get Current Date
         final Calendar calendar = Calendar.getInstance();
@@ -215,34 +272,42 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                                           int monthOfYear, int dayOfMonth) {
                         int realMonth = monthOfYear + 1;
                         String strMonth = "";
-                        if (realMonth < 10){
-                            strMonth = "0"+ realMonth;
+                        if (realMonth < 10) {
+                            strMonth = "0" + realMonth;
                         } else {
-                            strMonth = String.valueOf(realMonth) ;
+                            strMonth = String.valueOf(realMonth);
                         }
                         String strDay = "";
-                        if (dayOfMonth < 10){
-                            strDay = "0"+ dayOfMonth;
+                        if (dayOfMonth < 10) {
+                            strDay = "0" + dayOfMonth;
                         } else {
-                            strDay = String.valueOf(dayOfMonth) ;
+                            strDay = String.valueOf(dayOfMonth);
                         }
                         expiration_date = year + "-" + strMonth + "-" + strDay;
                         textViewExpirationDate.setText(expiration_date);
                     }
                 },
                 year, month, day);
-        datePickerDialog.show();
-
         datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         datePickerDialog.show();
     }
 
+    /**
+     * Called when the form has passed all the validations and set the boolean validated to true.
+     *
+     * @see Validator
+     */
     @Override
     public void onValidationSucceeded() {
-        //Called when all your views pass all validations.
         validated = true;
     }
 
+    /**
+     * Called when the form hasn't passed all the validations : set the boolean validated to false
+     * and display the errors.
+     *
+     * @see Validator
+     */
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         //Called when there are validation error(s).
@@ -250,27 +315,33 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(this);
-
             // Display error messages
             if (view == textViewExpirationDate) {
                 ((TextView) view).setError(message);
-                Toast.makeText(this, "Expiration date is required", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.expiration_date_required, Toast.LENGTH_LONG).show();
             } else if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
-                Log.d(Constants.TAG, message);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
     }
 
+    /**
+     * Build and show an AlertDialog to select the method from the MediaFiles class to apply :
+     * either choosePictureFromGallery or captureImage
+     *
+     * @param activity
+     * @see AlertDialog
+     * @see MediaFiles#captureImage(Activity, Fragment)
+     * @see MediaFiles#choosePictureFromGallery(Activity, Fragment)
+     */
     private void showPictureDialog(Activity activity) {
-
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(activity);
-        pictureDialog.setTitle("Select Action");
+        pictureDialog.setTitle(R.string.select_action);
         String[] pictureDialogItems = {
-                "Select photo from gallery",
-                "Capture photo from camera"};
+                getString(R.string.gallery),
+                getString(R.string.camera)};
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -294,48 +365,62 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-
-        if (v == buttonPhoto || v == imageViewPreviewProduct) {
-
-            showPictureDialog(this);
-
-        } else if (v == buttonSubmit) {
-
-            Log.d(Constants.TAG, productCategory);
-
-            // Validate the field
-            validator.validate();
-
-            if (validated & fileToUploadUri != null) {
-
-                // Retrieve the name of the product typed in the editText field
-                productName = String.valueOf(editTextProductName.getText());
-                // Retrieve the quantity of the product typed in the editText field
-                quantity = String.valueOf(editTextQuantity.getText());
-
-                fileToUpload = new File(fileToUploadPath);
-                // Create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileToUploadUri)), fileToUpload);
-                // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData("product_picture", fileToUpload.getAbsolutePath(), requestFile);
-
-                // Format the product to update view models
-                String imageFileName = Constants.BASE_URL_API + "media/product/" + fileToUpload.getPath().split("/")[fileToUpload.getPath().split("/").length - 1];
-
-                // HTTP Post request
-                product = new Product(productPictureBody, productName, productCategory, quantity, expiration_date, supplier.getId(), imageFileName, supplier.getCampus(), supplier.getRoomNumber());
-
-                productViewModel.addProduct(product);
-
-            } else if (fileToUploadUri == null) {
-                textViewPictureError.setVisibility(View.VISIBLE);
-            }
-
-        } else if (v == buttonExpirationDate) {
-            configureDatePicker();
-        }
-
+        if (v == buttonPhoto || v == imageViewPreviewProduct) { showPictureDialog(this); 
+        } else if (v == buttonSubmit) { submitProduct(); 
+        } else if (v == buttonExpirationDate) { configureDatePicker(); }
     }
+
+    /**
+     * Check if the form and valid and if there is a product photo. If yes, the method creates
+     * the product object to share and calls the addProduct method of the productViewModel.
+     *
+     * @see Validator#validate() 
+     * @see Product
+     * @see ProductViewModel#addProduct(Product) 
+     */
+
+    private void submitProduct() {
+        // Validate the field
+        validator.validate();
+        if (validated & fileToUploadUri != null) {
+            // Retrieve the name of the product typed in the editText field
+            productName = String.valueOf(editTextProductName.getText());
+            // Retrieve the quantity of the product typed in the editText field
+            quantity = String.valueOf(editTextQuantity.getText());
+            supplier = HomeScreenActivity.profileViewModel.getUserProfileMutableLiveData().getValue()
+                    .getUser();
+
+            fileToUpload = new File(fileToUploadPath);
+            // Create RequestBody instance from file
+            RequestBody requestFile = RequestBody.create(
+                    MediaType.parse(getContentResolver().getType(fileToUploadUri)), 
+                    fileToUpload);
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData(
+                    "product_picture", 
+                    fileToUpload.getAbsolutePath(), 
+                    requestFile);
+            // Format the product to update view models
+            String imageFileName = Constants.BASE_URL_API + 
+                    "media/product/" + 
+                    fileToUpload.getPath()
+                            .split("/")[fileToUpload.getPath().split("/").length - 1];
+
+            // HTTP Post request
+            product = new Product(productPictureBody,
+                    productName, 
+                    productCategory, 
+                    quantity, 
+                    expiration_date, 
+                    supplier.getId(), 
+                    imageFileName, 
+                    supplier.getCampus(), 
+                    supplier.getRoomNumber()
+            );
+            productViewModel.addProduct(product);
+        } else if (fileToUploadUri == null) { textViewPictureError.setVisibility(View.VISIBLE); }
+    }
+
 
     /*
       Here we store the file uri as it will be null after returning from camera app
@@ -366,7 +451,10 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     * Receiving activity result method will be called after closing the gallery
+     * Receiving activity result method will be called after closing the gallery or the camera.
+     * Modify the raw picture, store it in a new file and retrieve its Uri
+     *
+     * @see MediaFiles
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -392,9 +480,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             }
         } else if (requestCode == MediaFiles.CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             // successfully captured the image
-
             try {
-                Log.d(Constants.TAG, pictureFileUri.toString());
                 fileToUpload = MediaFiles.processPicture(this, pictureFileUri); // modify the raw picture taken
                 fileToUploadPath = fileToUpload.getAbsolutePath();
                 fileToUploadUri = MediaFiles.getOutputMediaFileUri(this, fileToUpload);
@@ -405,16 +491,11 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 e.printStackTrace();
             }
 
-
-        } else if (resultCode == RESULT_CANCELED) {
-            // user cancelled Image capture
-            Toast.makeText(this,
-                    "User cancelled image capture", Toast.LENGTH_SHORT)
-                    .show();
+        } else if (resultCode == RESULT_CANCELED) {// user cancelled Image capture
         } else {
             // failed to capture image
             Toast.makeText(this,
-                    "Sorry! Failed to choose any image", Toast.LENGTH_SHORT)
+                    R.string.image_choice_failed, Toast.LENGTH_SHORT)
                     .show();
         }
     }

@@ -11,6 +11,17 @@ import com.example.cshare.ui.viewmodels.ProfileViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;
 import com.example.cshare.utils.Constants;
 
+/**
+ * Fragment inheriting from the ProductListFragment class that displays the list of products
+ * the user has shared on the platform.
+ *
+ * @see ProductListFragment
+ * @see ProfileViewModel
+ * @see SharedViewModel
+ * @since 2.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public class SharedFragment extends ProductListFragment {
 
     private ProfileViewModel profileViewModel;
@@ -18,7 +29,6 @@ public class SharedFragment extends ProductListFragment {
 
     @Override
     protected void configureViewModel() {
-        // Retrieve data for view model
         profileViewModel = new ViewModelProvider(getActivity(),
                 new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())
         ).get(ProfileViewModel.class);
@@ -30,7 +40,6 @@ public class SharedFragment extends ProductListFragment {
     @Override
     protected void observeDataChanges() {
         this.getProducts();
-
     }
 
     @Override
@@ -53,9 +62,18 @@ public class SharedFragment extends ProductListFragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
     }
 
+    /**
+     * Method called when clicking on an item of the recyclerView to interact with products.
+     * <p>
+     * Display an appropriate ProductDialogFragment to see and optionally to delete the shared
+     * product through the string Constant.SHARED passed as parameter when creating the
+     * productDialogFragment object.
+     *
+     * @param product (Product) the item clicked on
+     * @see ProductDialogFragment
+     */
     @Override
     protected void click(Product product) {
             DialogFragment productDetailsFragment = new ProductDialogFragment(product,
@@ -63,5 +81,4 @@ public class SharedFragment extends ProductListFragment {
                     profileViewModel);
             productDetailsFragment.show(getChildFragmentManager(), Constants.SHARED);
     }
-
 }

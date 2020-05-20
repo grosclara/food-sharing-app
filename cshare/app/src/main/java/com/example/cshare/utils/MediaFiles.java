@@ -19,6 +19,7 @@ import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 
 import com.example.cshare.R;
+import com.example.cshare.ui.views.auth.ProfileFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +37,7 @@ import java.util.Locale;
  * The class also contains methods needed to create and retrieve files to store these images.
  *
  * @see com.example.cshare.ui.views.auth.RegisterActivity
- * @see com.example.cshare.ui.views.ProfileFragment
+ * @see ProfileFragment
  * @see com.example.cshare.ui.views.AddActivity
  * @since 1.0
  * @author Clara Gros
