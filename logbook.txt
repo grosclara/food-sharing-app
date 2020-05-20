@@ -132,6 +132,13 @@ Implementation of the dialogs to interact with products, 2h00"
 "06/05 : CG : Modify the createsuperuser command to prevent superuser from filling useless fields 
 	      while registrating (such as campus or room_number), 3h00"
 "07/05 - CG : Clean and comment server code, 5h00"
+"10/05 to 21/05 - CG : Work on the Javadoc, 2h00 a day"
+"08/05 - BT : CollectFragment style implemented with Material, 2h00"
+"09/05 - BT : Style for collect product alert dialog, 1h30"
+"10/05 - BT : All alert dialogs style completed, 1h30"
+"17/05 - BT : Review/correction of design, 4h00"
+"17/05 - BT : Generate terms of use with https://www.websitepolicies.com, 30mn"
+
 
 
 
