@@ -13,6 +13,7 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cshare.R;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.utils.Constants;
 import com.squareup.picasso.Picasso;
@@ -66,6 +67,8 @@ public class ProductPagedListAdapter extends PagedListAdapter<Product,
 
         TextView textViewProductName;
         TextView textViewStatus;
+        TextView textViewQuantity;
+        TextView textViewExpirationDate;
         ImageView imageViewProduct;
 
         /**
@@ -76,6 +79,8 @@ public class ProductPagedListAdapter extends PagedListAdapter<Product,
 
             textViewStatus = itemView.findViewById(id.product_list_item_status);
             textViewProductName = itemView.findViewById(id.product_list_item_name);
+            textViewQuantity = itemView.findViewById(id.product_list_item_quantity);
+            textViewExpirationDate = itemView.findViewById(id.product_list_item_expiration_date);
             imageViewProduct = itemView.findViewById(id.product_list_item_image);
         }
 
@@ -91,6 +96,9 @@ public class ProductPagedListAdapter extends PagedListAdapter<Product,
             // Set product name and product status into TextViews
             this.textViewProductName.setText(product.getName());
             this.textViewStatus.setText(product.getStatus());
+            this.textViewQuantity.setText(context.getString(R.string.quantity)+ product.getQuantity());
+            this.textViewExpirationDate.setText(context.getString(R.string.expiration_date)+ product.getExpiration_date());
+
             // Edit text color according to the status
             switch(product.getStatus()) {
                 case Constants.AVAILABLE:
