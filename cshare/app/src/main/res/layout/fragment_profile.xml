@@ -14,11 +14,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
+            android:text="@string/edit_profile"
             android:id="@+id/editProfileTextView"
             android:textColor="@color/colorPrimaryText"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
+
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/imageViewProfilePicture"
             android:layout_width="80dp"
@@ -47,34 +48,19 @@
                 android:id="@+id/textViewEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress" />
+                android:hint="@string/email" />
 
-            <com.google.android.material.textfield.TextInputLayout
+            <TextView
+                android:id="@+id/textViewFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/EditText"
-                android:hint="@string/first_name">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextFirstName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/inputEditText"
-                    android:inputType="textPersonName" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/first_name" />
 
-            <com.google.android.material.textfield.TextInputLayout
+            <TextView
+                android:id="@+id/textViewLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/EditText"
-                android:hint="@string/last_name">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextLastName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/inputEditText"
-                    android:inputType="textPersonName"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/last_name" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

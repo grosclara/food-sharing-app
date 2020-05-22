@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -81,11 +82,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private TextView textViewFirstName;
     private TextView textViewLastName;
     private TextView textViewEmail;
-    private Spinner spinnerCampus;
+    private MaterialSpinner spinnerCampus;
     @NotEmpty
     private EditText editTextRoomNumber;
     private ImageView imageViewProfilePicture;
-    private String[] campusArray;
     private String campus;
     private EditText editTextOldPassword;
     private EditText editTextNewPassword;
@@ -96,7 +96,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private Button logOutButton;
     private Button changePasswordButton;
     private Button deleteAccountButton;
-    private Button buttonGallery;
 
     // Forms
     private User editProfileForm;
@@ -127,14 +126,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         changePasswordButton = view.findViewById(R.id.buttonChangePassword);
         deleteAccountButton = view.findViewById(R.id.buttonDeleteAccount);
         buttonSave = view.findViewById(R.id.buttonSave);
-        buttonGallery = view.findViewById(R.id.buttonGallery);
 
         // Activate buttons
         logOutButton.setOnClickListener(this);
         changePasswordButton.setOnClickListener(this);
         deleteAccountButton.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
-        buttonGallery.setOnClickListener(this);
         imageViewProfilePicture.setOnClickListener(this);
 
         configureCampusSpinner();
@@ -187,7 +184,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         if (v == buttonSave) {
             saveEdit();
         }
-        if (v == buttonGallery || v == imageViewProfilePicture) {
+        if (v == imageViewProfilePicture) {
             showPictureDialog(this);
         }
     }
@@ -604,9 +601,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
      * @see Spinner#setOnItemClickListener(AdapterView.OnItemClickListener)
      */
     private void configureCampusSpinner() {
-        campusArray = getResources().getStringArray(R.array.campus_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, campusArray);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(getContext(),R.array.campus_array, R.layout.spinner_item);
         // Apply the adapter to the spinner
         spinnerCampus.setAdapter(adapterSpinner);
         spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
