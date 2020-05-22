@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -83,14 +84,13 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private TextView textViewExpirationDate;
     @NotEmpty
     private EditText editTextQuantity;
-    private Spinner spinnerProductCategories;
+    private MaterialSpinner spinnerProductCategories;
     private Button buttonPhoto;
     private Button buttonSubmit;
     private Button buttonExpirationDate;
 
     // Form fields
     private String productName;
-    private String[] productCategoriesArray;
     private String productCategory;
     private String expiration_date;
     private String quantity;
@@ -138,7 +138,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         spinnerProductCategories = findViewById(R.id.spinnerProductCategories);
         imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
 
-        Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
+        Picasso.get().load(R.drawable.default_product_picture).into(imageViewPreviewProduct);
 
 
         // Click listeners
@@ -233,9 +233,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
      * @see Spinner#setOnItemClickListener(AdapterView.OnItemClickListener)
      */
     private void configureProductSpinner() {
-        productCategoriesArray = getResources().getStringArray(R.array.product_categories_array);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, productCategoriesArray);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.product_categories_array, R.layout.spinner_item);
         // Apply the adapter to the spinner
         spinnerProductCategories.setAdapter(adapterSpinner);
         spinnerProductCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -366,18 +364,22 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        if (v == buttonPhoto || v == imageViewPreviewProduct) { showPictureDialog(this); 
-        } else if (v == buttonSubmit) { submitProduct(); 
-        } else if (v == buttonExpirationDate) { configureDatePicker(); }
+        if (v == buttonPhoto || v == imageViewPreviewProduct) {
+            showPictureDialog(this);
+        } else if (v == buttonSubmit) {
+            submitProduct();
+        } else if (v == buttonExpirationDate) {
+            configureDatePicker();
+        }
     }
 
     /**
      * Check if the form and valid and if there is a product photo. If yes, the method creates
      * the product object to share and calls the addProduct method of the productViewModel.
      *
-     * @see Validator#validate() 
+     * @see Validator#validate()
      * @see Product
-     * @see ProductViewModel#addProduct(Product) 
+     * @see ProductViewModel#addProduct(Product)
      */
     private void submitProduct() {
         // Validate the field
@@ -393,32 +395,34 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             fileToUpload = new File(fileToUploadPath);
             // Create RequestBody instance from file
             RequestBody requestFile = RequestBody.create(
-                    MediaType.parse(getContentResolver().getType(fileToUploadUri)), 
+                    MediaType.parse(getContentResolver().getType(fileToUploadUri)),
                     fileToUpload);
             // MultipartBody.Part is used to send also the actual file name
             MultipartBody.Part productPictureBody = MultipartBody.Part.createFormData(
-                    "product_picture", 
-                    fileToUpload.getAbsolutePath(), 
+                    "product_picture",
+                    fileToUpload.getAbsolutePath(),
                     requestFile);
             // Format the product to update view models
-            String imageFileName = Constants.BASE_URL_API + 
-                    "media/product/" + 
+            String imageFileName = Constants.BASE_URL_API +
+                    "media/product/" +
                     fileToUpload.getPath()
                             .split("/")[fileToUpload.getPath().split("/").length - 1];
 
             // HTTP Post request
             product = new Product(productPictureBody,
-                    productName, 
-                    productCategory, 
-                    quantity, 
-                    expiration_date, 
-                    supplier.getId(), 
-                    imageFileName, 
-                    supplier.getCampus(), 
+                    productName,
+                    productCategory,
+                    quantity,
+                    expiration_date,
+                    supplier.getId(),
+                    imageFileName,
+                    supplier.getCampus(),
                     supplier.getRoomNumber()
             );
             productViewModel.addProduct(product);
-        } else if (fileToUploadUri == null) { textViewPictureError.setVisibility(View.VISIBLE); }
+        } else if (fileToUploadUri == null) {
+            textViewPictureError.setVisibility(View.VISIBLE);
+        }
     }
 
     /*
@@ -443,7 +447,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             if (fileToUploadUri != null) {
                 Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
             } else {
-                Picasso.get().load(R.drawable.test).into(imageViewPreviewProduct);
+                Picasso.get().load(R.drawable.default_product_picture).into(imageViewPreviewProduct);
             }
         }
     }
