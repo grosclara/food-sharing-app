@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,6 +14,7 @@
             android:id="@+id/imageViewProduct"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center"/>
 
         <LinearLayout
@@ -24,30 +26,42 @@
                 android:id="@+id/textViewProductName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Product" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/product" />
 
             <TextView
                 android:id="@+id/textViewProductCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Category" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/category" />
 
             <TextView
                 android:id="@+id/textViewProductStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:hint="Status" />
+                android:hint="@string/status" />
 
             <TextView
                 android:id="@+id/textViewExpirationDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Date" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/exp_date" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryText"
+        android:text="@string/supplier"
+        android:layout_marginLeft="15dp"
+        android:textSize="19sp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,6 +73,7 @@
             android:id="@+id/imageViewSupplierProfilePicture"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center"/>
 
         <LinearLayout
@@ -71,28 +86,56 @@
                 android:id="@+id/textViewSupplierFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="First name" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/first_name" />
 
             <TextView
                 android:id="@+id/textViewSupplierLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Last name" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/last_name" />
 
             <TextView
                 android:id="@+id/textViewSupplierRoomNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Room number" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/room_number" />
 
             <TextView
                 android:id="@+id/textViewSupplierCampus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Campus" />
+                android:textColor="@color/colorPrimaryText"
+                android:hint="@string/campus" />
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/buttonNegative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/buttonPositive"
+                android:layout_marginRight="10dp"
+                style="@style/OutlinedButton"/>
+            <Button
+                android:id="@+id/buttonPositive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                style="@style/ContainedButton"/>
+        </RelativeLayout>
     </LinearLayout>
 
 

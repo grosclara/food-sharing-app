@@ -82,4 +82,13 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="old_passsword">Old passsword</string>
     <string name="new_password">New password</string>
+    <string name="product">Product</string>
+    <string name="category">Category</string>
+    <string name="status">Status</string>
+    <string name="exp_date">Exp date</string>
+    <string name="supplier">Supplier:</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="room_number">Room number</string>
+    <string name="campus">Campus</string>
 </resources>
