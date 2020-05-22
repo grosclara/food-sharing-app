@@ -89,6 +89,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonLogin.setOnClickListener(this);
         buttonCreateAccount.setOnClickListener(this);
         buttonResetPassword.setOnClickListener(this);
+
+        configureActionBar();
+    }
+
+    /**
+     * Hide ActionBar
+     */
+    private void configureActionBar() {
+        if (getSupportActionBar() != null) { getSupportActionBar().hide(); }
     }
 
     /**
