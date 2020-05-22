@@ -63,4 +63,21 @@
     <string name="invalid_email">Invalid email</string>
     <string name="password_reset">Password reset</string>
     <string name="logged_in_successful">Successfully logged in</string>
+    <string name="fill_form">Fill in the form to give your product:</string>
+    <string name="name">Name</string>
+    <string name="choose_category">Choose a category</string>
+    <string name="quantity">Quantity</string>
+    <string name="expiration_date">Expiration Date</string>
+    <string name="set_expiration_date">Set expiration date</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="you_must_choose_a_profile_picture">You must choose a profile picture</string>
+    <string name="submit">Submit</string>
+    <string name="create_account">Create Account</string>
+    <string name="password_forgotten">Password forgotten?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="room_number">Room number</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
