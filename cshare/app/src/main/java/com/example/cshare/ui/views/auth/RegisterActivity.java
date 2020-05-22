@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -78,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextPasswordSignUp;
     @ConfirmPassword
     private EditText editTextPasswordConfirm;
-    private Spinner spinnerCampus;
+    private MaterialSpinner spinnerCampus;
     @NotEmpty
     private EditText editTextRoomNumber;
     private ImageView imageViewGallery;
@@ -86,12 +87,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     // Buttons
     private Button buttonSignUp;
     private Button buttonAlreadyHaveAnAccount;
-    private Button buttonGallery;
 
     // Form
     private User registerForm;
 
-    private String[] campusArray;
     private String email;
     private String lastName;
     private String firstName;
@@ -135,14 +134,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imageViewGallery = findViewById(R.id.imageViewGallery);
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
-        buttonGallery = findViewById(R.id.buttonGallery);
         spinnerCampus = findViewById(R.id.spinnerCampus);
-        Picasso.get().load(R.drawable.test).into(imageViewGallery);
+        Picasso.get().load(R.drawable.default_profile_picture).into(imageViewGallery);
 
         // Activate buttons
         buttonSignUp.setOnClickListener(this);
         buttonAlreadyHaveAnAccount.setOnClickListener(this);
-        buttonGallery.setOnClickListener(this);
         imageViewGallery.setOnClickListener(this);
 
         // Campus spinner
@@ -178,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             startActivity(toLoginActivityIntent);
         }
         if (v == buttonSignUp) { signUp(); }
-        if (v == buttonGallery || v == imageViewGallery) { showPictureDialog(this); }
+        if (v == imageViewGallery) { showPictureDialog(this); }
     }
 
     /**
@@ -306,10 +303,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * @see Spinner#setOnItemClickListener(AdapterView.OnItemClickListener)
      */
     private void configureCampusSpinner() {
-        campusArray = getResources().getStringArray(R.array.campus_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, campusArray);
-        // Apply the adapter to the spinner
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this,R.array.campus_array, R.layout.spinner_item);// Apply the adapter to the spinner
         spinnerCampus.setAdapter(adapterSpinner);
         spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -423,7 +418,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             if (fileToUploadUri != null) {
                 Picasso.get().load(fileToUploadUri).into(imageViewGallery);
             } else {
-                Picasso.get().load(R.drawable.test).into(imageViewGallery);
+                Picasso.get().load(R.drawable.default_profile_picture).into(imageViewGallery);
             }
         }
     }
