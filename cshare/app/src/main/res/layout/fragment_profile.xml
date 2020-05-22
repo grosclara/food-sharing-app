@@ -16,84 +16,123 @@
             android:layout_height="wrap_content"
             android:text="Edit Profile"
             android:id="@+id/editProfileTextView"
+            android:textColor="@color/colorPrimaryText"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"/>
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/imageViewProfilePicture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_gravity="center"
+            app:civ_border_color="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/editProfileTextView" />
+        <ImageView
+            android:id="@+id/imageViewGallery"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewProfilePicture"
+            app:layout_constraintRight_toRightOf="@+id/imageViewProfilePicture"
+            android:src="@drawable/ic_create_black_24dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/formLinearLayout"
-            app:layout_constraintTop_toBottomOf="@id/editProfileTextView">
-
-            <ImageView
-                android:id="@+id/imageViewProfilePicture"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_gravity="center" />
-
-            <Button
-                android:id="@+id/buttonGallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Modify your profile picture" />
+            app:layout_constraintTop_toBottomOf="@id/imageViewProfilePicture">
 
             <TextView
                 android:id="@+id/textViewEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="email"
+                android:hint="@string/email"
                 android:inputType="textEmailAddress" />
 
-            <TextView
-                android:id="@+id/textViewFirstName"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="first name"
-                android:inputType="textPersonName" />
+                style="@style/EditText"
+                android:hint="@string/first_name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/inputEditText"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textViewLastName"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="last name"
-                android:inputType="textPersonName" />
+                style="@style/EditText"
+                android:hint="@string/last_name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/inputEditText"
+                    android:inputType="textPersonName"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextRoomNumber"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Room number"
-                android:inputType="text" />
+                style="@style/EditText"
+                android:hint="@string/room_number">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextRoomNumber"
+                    style="@style/inputEditText"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
+            <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/spinnerCampus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:ms_arrowColor="@color/colorPrimary"
+                app:ms_floatingLabelColor="@color/colorPrimaryText"
+                app:ms_enableFloatingLabel="true"
+                app:ms_baseColor="@color/colorSecondaryDark"
+                app:ms_hintColor="@color/colorPrimaryText"
+                android:background="@color/colorSecondaryLight"
+                android:popupBackground="@color/colorSecondaryLight"
+                app:ms_multiline="true"
                 app:layout_constraintTop_toBottomOf="@id/editTextRoomNumber" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/formLinearLayout"/>
-
-        <Button
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            app:layout_constraintTop_toBottomOf="@id/formLinearLayout">
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:layout_centerHorizontal="true"
+                style="@style/ContainedButton"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/buttonSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/OutlinedButton"
+            android:text="@string/settings"
             app:layout_constraintBottom_toTopOf="@id/buttonChangePassword" />
 
         <Button
             android:id="@+id/buttonChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Change password"
+            android:text="@string/change_password"
+            style="@style/OutlinedButton"
             app:layout_constraintBottom_toTopOf="@id/buttonLogOut" />
 
 
@@ -101,16 +140,19 @@
             android:id="@+id/buttonLogOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out"
+            style="@style/OutlinedButton"
+            android:textColor="@color/error_color"
+            android:text="@string/log_out"
             app:layout_constraintBottom_toTopOf="@id/buttonDeleteAccount" />
 
         <Button
             android:id="@+id/buttonDeleteAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete account"
+            android:backgroundTint="@color/error_color"
+            style="@style/ContainedButton"
+            android:text="@string/delete_account"
             app:layout_constraintBottom_toBottomOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
