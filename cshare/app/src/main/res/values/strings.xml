@@ -52,11 +52,9 @@
     <string name="password_length">Passwords should be at least 6 characters long</string>
     <string name="password_should_match">Passwords should match</string>
     <string name="delete_account_confirm">Are you sure you want to delete your profile? This action is irreversible.</string>
-    <string name="delete_account">Delete account</string>
     <string name="password_change_successful">Password changed successfully</string>
     <string name="log_out_successful">Logged out successfully</string>
     <string name="delete_account_successful">Account deleted successfully</string>
-    <string name="sign_up">Sign up</string>
     <string name="account_creation_successful">Account successfully created !</string>
     <string name="reset_password_indications">Enter your email to reset your password</string>
     <string name="reset_password">Reset password</string>
@@ -66,7 +64,6 @@
     <string name="fill_form">Fill in the form to give your product:</string>
     <string name="name">Name</string>
     <string name="choose_category">Choose a category</string>
-    <string name="quantity">Quantity</string>
     <string name="expiration_date">Expiration Date</string>
     <string name="set_expiration_date">Set expiration date</string>
     <string name="take_a_photo">Take a photo</string>
@@ -87,9 +84,6 @@
     <string name="status">Status</string>
     <string name="exp_date">Exp date</string>
     <string name="supplier">Supplier:</string>
-    <string name="first_name">First name</string>
-    <string name="last_name">Last name</string>
-    <string name="room_number">Room number</string>
     <string name="campus">Campus</string>
     <string name="email">Email</string>
     <string name="save">Save</string>
