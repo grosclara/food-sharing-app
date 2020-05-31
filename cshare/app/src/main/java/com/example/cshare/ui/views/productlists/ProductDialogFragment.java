@@ -56,21 +56,20 @@ public class ProductDialogFragment extends DialogFragment {
      * Listener interface to handle clicks on a productDialogFragment
      */
     public interface ProductDialogListener {
-        void onOrderClicked(Product product, User customer);
+        void onOrderClicked(Product product);
         void onDeleteClicked(Product product);
         void onDeliverClicked(Product product);
         void onCancelOrderClicked(Product product);
     }
 
     private Product product;
-    private User customer;
 
     /**
      * String that defines the actions that can be performed on a clicked product
      */
     private String tag;
 
-    private ProfileViewModel profileViewModel;
+    protected ProfileViewModel profileViewModel;
 
     // Declare views
     private TextView textViewProductName;
@@ -98,8 +97,6 @@ public class ProductDialogFragment extends DialogFragment {
     public ProductDialogFragment(Product product, String tag, ProfileViewModel profileViewModel) {
         this.product = product;
         this.tag = tag;
-        this.profileViewModel = profileViewModel;
-
         this.profileViewModel.getUserByID(product.getSupplier());
     }
 
@@ -149,9 +146,6 @@ public class ProductDialogFragment extends DialogFragment {
         textViewSupplierRoomNumber = view.findViewById(R.id.textViewSupplierRoomNumber);
         imageViewSupplierProfilePicture = view.findViewById(R.id.imageViewSupplierProfilePicture);
 
-        // Retrieve all information from the supplier, the customer and fill in the views
-        customer = profileViewModel.getUserProfileMutableLiveData().getValue().getUser();
-
         // Fill in product related views
         fillInProductDetails(product);
         // Fill in supplier related views
@@ -164,7 +158,7 @@ public class ProductDialogFragment extends DialogFragment {
                 builder.setTitle(product.getName())
                         .setPositiveButton(R.string.order, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                listener.onOrderClicked(product, customer);
+                                listener.onOrderClicked(product);
                             }
                         })
                         .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -86,10 +86,10 @@ public class ProductViewModel extends AndroidViewModel {
     /**
      * Calls the order method of the  product request manager
      *
-     * @param request (Order)
-     * @see ProductRequestManager#order(Order)
+     * @param request (int) the id of the porduct to order
+     * @see ProductRequestManager#order(int)
      */
-    public void order(Order request){
+    public void order(int request){
         productRequestManager.order(request);
     }
     /**

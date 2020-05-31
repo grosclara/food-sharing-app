@@ -444,19 +444,16 @@ public class HomeScreenActivity extends AppCompatActivity implements
      * object, and call the order method of the product view model
      *
      * @param product (Product) product to be ordered
-     * @param customer (User) Customer (current user) that orders the product
      * @see Order
      * @see Product
      * @see User
      * @see ProductDialogFragment.ProductDialogListener
-     * @see ProductViewModel#order(Order)
+     * @see ProductViewModel#order(int)
      */
     @Override
-    public void onOrderClicked(Product product, User customer) {
+    public void onOrderClicked(Product product) {
         if (product.getStatus().equals(Constants.AVAILABLE)) {
-            // Creates the order object
-            Order request = new Order(customer.getId(), product.getId());
-            productViewModel.order(request);
+            productViewModel.order(product.getId());
         } else {
             Toast.makeText(this,
                     R.string.product_already_ordered,

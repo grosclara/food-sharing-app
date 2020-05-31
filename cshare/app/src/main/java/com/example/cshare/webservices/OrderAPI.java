@@ -7,6 +7,7 @@ import com.example.cshare.data.models.Product;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -58,13 +59,12 @@ public interface OrderAPI {
      * @param productID (int) ID of the product to order (request body)
      * @return (Call) A Call object containing the ordered product in a {@link Product} object
      * @see Product
-     * @see com.example.cshare.data.sources.ProductRequestManager#order(Order)
+     * @see com.example.cshare.data.sources.ProductRequestManager#order(int)
      */
-    @FormUrlEncoded
     @POST("order/")
     Call<Product> order(
             @Header("Authorization") String token,
-            @FieldMap Map<String, Integer> productID
+            @Body Map<String, Integer> productID
     );
 
     /**

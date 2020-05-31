@@ -138,10 +138,9 @@ public class ProductRequestManager {
                 });
     }
 
-    public void order(Order order) {
+    public void order(int productID) {
         Map<String, Integer> productIDMap = new HashMap<>();
-        productIDMap.put("product", order.getProductID());
-
+        productIDMap.put("product", productID);
         orderAPI
                 .order(prefs.getToken(), productIDMap)
                 .enqueue(new Callback<Product>() {
