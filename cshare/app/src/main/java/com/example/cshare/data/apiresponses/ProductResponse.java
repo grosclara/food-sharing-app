@@ -48,10 +48,6 @@ public class ProductResponse {
         return error;
     }
 
-    public static ProductResponse loading() {
-        return new ProductResponse(LOADING, null, null);
-    }
-
     public static ProductResponse success(@NonNull Product product) {
         return new ProductResponse(SUCCESS, product, null);
     }

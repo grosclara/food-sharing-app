@@ -48,10 +48,6 @@ public class UserReponse {
         return error;
     }
 
-    public static UserReponse loading() {
-        return new UserReponse(LOADING, null, null);
-    }
-
     public static UserReponse success(@NonNull User user) {
         return new UserReponse(SUCCESS, user, null);
     }

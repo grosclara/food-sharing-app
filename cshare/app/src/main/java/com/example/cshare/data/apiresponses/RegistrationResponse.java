@@ -56,10 +56,6 @@ public class RegistrationResponse {
 
     public RegistrationError getError(){ return error; }
 
-    public static RegistrationResponse loading() {
-        return new RegistrationResponse(LOADING, null, null, null);
-    }
-
     public static RegistrationResponse success(@NonNull String token, @NonNull User user) {
         return new RegistrationResponse(SUCCESS, token, user, null);
     }

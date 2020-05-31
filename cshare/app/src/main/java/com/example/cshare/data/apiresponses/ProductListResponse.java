@@ -69,10 +69,6 @@ public class ProductListResponse {
         return error;
     }
 
-    public static ProductListResponse loading() {
-        return new ProductListResponse(LOADING, null, null);
-    }
-
     public static ProductListResponse success(@NonNull ApiProductListResponse apiProductListResponse) {
         return new ProductListResponse(SUCCESS, apiProductListResponse, null);
     }

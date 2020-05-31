@@ -55,10 +55,6 @@ public class LoginResponse {
         return error;
     }
 
-    public static LoginResponse loading() {
-        return new LoginResponse(LOADING, null, null, null);
-    }
-
     public static LoginResponse success(@NonNull String token, @NonNull User user) {
         return new LoginResponse(SUCCESS, token, user, null);
     }

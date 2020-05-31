@@ -42,10 +42,6 @@ public class EmptyAuthResponse {
         return error;
     }
 
-    public static EmptyAuthResponse loading() {
-        return new EmptyAuthResponse(LOADING, null);
-    }
-
     public static EmptyAuthResponse success() {
         return new EmptyAuthResponse(SUCCESS, null);
     }
