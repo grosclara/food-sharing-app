@@ -1,5 +1,5 @@
 /**
- * Contains Model classes designed to retrieve and operate on some data
+ * Contains model classes designed to retrieve and operate on some data
  *
  * @since 1.0
  * @author Clara Gros

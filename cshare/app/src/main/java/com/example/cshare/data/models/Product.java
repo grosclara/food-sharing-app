@@ -25,6 +25,9 @@ public class Product {
     private String name;
     private String status;
     private int supplier;
+    /**
+     * Image url (ex: "http://127.0.0.1:8000/media/product/apple.png/")
+     */
     private String product_picture;
     private String category;
     private String quantity;
@@ -32,10 +35,18 @@ public class Product {
     private String campus;
     private String room_number;
 
-    /*
+    /**
      * Constructor of the Product class.
      *
-     * Used to create a new product and add it to the remote database
+     * @param productPictureBody
+     * @param productName
+     * @param productCategory
+     * @param quantity
+     * @param expirationDate
+     * @param supplierID
+     * @param productPicture
+     * @param campus
+     * @param room_number
      */
     public Product(MultipartBody.Part productPictureBody, String productName, String productCategory, String quantity, String expirationDate, int supplierID, String productPicture, String campus, String room_number) {
         this.product_picture_body = productPictureBody;
