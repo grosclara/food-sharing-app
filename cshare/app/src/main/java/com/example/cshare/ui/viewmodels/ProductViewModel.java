@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.data.apiresponses.ProductResponse;
-import com.example.cshare.data.models.Order;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.sources.ProductRequestManager;
 

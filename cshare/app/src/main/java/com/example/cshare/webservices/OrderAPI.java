@@ -1,7 +1,6 @@
 package com.example.cshare.webservices;
 
 import com.example.cshare.data.apiresponses.ProductListResponse;
-import com.example.cshare.data.models.Order;
 import com.example.cshare.data.models.Product;
 
 import java.util.Map;
@@ -9,8 +8,6 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;

@@ -8,14 +8,14 @@ import okhttp3.MultipartBody;
 
 /**
  * Class of the User table.
- * The attributes defined corresponds to the ones of the remote database.
- * This model is used to facilitate user's CRUD HTTP requests.
+ * <p>
+ * The attributes defined correspond to the ones of the remote database.
+ * This model is used to facilitate users' CRUD HTTP requests.
  * The defined methods are the constructor and the getters/setters.
- *
- * @author Clara Gros, Babacar Toure
+ * @author Clara Gros
+ * @author Babacar Toure
  * @version 1.0
  */
-
 public class User {
 
     private int id;

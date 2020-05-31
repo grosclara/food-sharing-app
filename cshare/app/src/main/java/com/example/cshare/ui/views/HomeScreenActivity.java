@@ -18,7 +18,6 @@ import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.ProductResponse;
 import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.data.apiresponses.UserReponse;
-import com.example.cshare.data.models.Order;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.CartViewModel;
@@ -444,7 +443,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
      * object, and call the order method of the product view model
      *
      * @param product (Product) product to be ordered
-     * @see Order
      * @see Product
      * @see User
      * @see ProductDialogFragment.ProductDialogListener
