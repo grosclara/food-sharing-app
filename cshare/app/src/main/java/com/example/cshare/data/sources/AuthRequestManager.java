@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.data.apiresponses.ApiError;
 import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.EmptyAuthResponse;
 import com.example.cshare.data.apiresponses.RegistrationResponse;
@@ -108,9 +109,9 @@ public class AuthRequestManager {
                             loginResponseMutableLiveData.setValue(LoginResponse.success(response.body().getToken(), response.body().getUser()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            LoginResponse.LoginError mError = new LoginResponse.LoginError();
+                            ApiError.LoginError mError = new ApiError.LoginError();
                             try {
-                                mError= gson.fromJson(response.errorBody().string(), LoginResponse.LoginError.class);
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.LoginError.class);
                                 loginResponseMutableLiveData.setValue(LoginResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -147,9 +148,9 @@ public class AuthRequestManager {
                         logoutResponseMutableLiveData.setValue(EmptyAuthResponse.success());
                     } else {
                         Gson gson = new GsonBuilder().create();
-                        EmptyAuthResponse.EmptyAuthError mError = new EmptyAuthResponse.EmptyAuthError();
+                        ApiError.ChangePasswordError mError = new ApiError.ChangePasswordError();
                         try {
-                            mError= gson.fromJson(response.errorBody().string(), EmptyAuthResponse.EmptyAuthError.class);
+                            mError= gson.fromJson(response.errorBody().string(), ApiError.ChangePasswordError.class);
                             logoutResponseMutableLiveData.setValue(EmptyAuthResponse.error(mError));
                         } catch (IOException e) {
                             // handle failure to read error
@@ -174,9 +175,9 @@ public class AuthRequestManager {
                             registrationResponseMutableLiveData.setValue(RegistrationResponse.success(response.body().getToken(), response.body().getUser()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            RegistrationResponse.RegistrationError mError = new RegistrationResponse.RegistrationError();
+                            ApiError.RegistrationError mError = new ApiError.RegistrationError();
                             try {
-                                mError= gson.fromJson(response.errorBody().string(), RegistrationResponse.RegistrationError.class);
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.RegistrationError.class);
                                 registrationResponseMutableLiveData.setValue(RegistrationResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -210,9 +211,9 @@ public class AuthRequestManager {
                             registrationResponseMutableLiveData.setValue(RegistrationResponse.success(response.body().getToken(), response.body().getUser()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            RegistrationResponse.RegistrationError mError = new RegistrationResponse.RegistrationError();
+                            ApiError.RegistrationError mError = new ApiError.RegistrationError();
                             try {
-                                mError= gson.fromJson(response.errorBody().string(), RegistrationResponse.RegistrationError.class);
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.RegistrationError.class);
                                 registrationResponseMutableLiveData.setValue(RegistrationResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -238,9 +239,9 @@ public class AuthRequestManager {
                             changePasswordMutableLiveData.setValue(EmptyAuthResponse.success());
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            EmptyAuthResponse.EmptyAuthError mError = new EmptyAuthResponse.EmptyAuthError();
+                            ApiError.ChangePasswordError mError = new ApiError.ChangePasswordError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), EmptyAuthResponse.EmptyAuthError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.ChangePasswordError.class);
                                 changePasswordMutableLiveData.setValue(EmptyAuthResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -267,9 +268,9 @@ public class AuthRequestManager {
                             changePasswordMutableLiveData.setValue(EmptyAuthResponse.success());
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            EmptyAuthResponse.EmptyAuthError mError = new EmptyAuthResponse.EmptyAuthError();
+                            ApiError.ChangePasswordError mError = new ApiError.ChangePasswordError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), EmptyAuthResponse.EmptyAuthError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.ChangePasswordError.class);
                                 changePasswordMutableLiveData.setValue(EmptyAuthResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -295,9 +296,9 @@ public class AuthRequestManager {
                             deleteResponseMutableLiveData.setValue(EmptyAuthResponse.success());
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            EmptyAuthResponse.EmptyAuthError mError = new EmptyAuthResponse.EmptyAuthError();
+                            ApiError.ChangePasswordError mError = new ApiError.ChangePasswordError();
                             try {
-                                mError= gson.fromJson(response.errorBody().string(), EmptyAuthResponse.EmptyAuthError.class);
+                                mError= gson.fromJson(response.errorBody().string(), ApiError.ChangePasswordError.class);
                                 deleteResponseMutableLiveData.setValue(EmptyAuthResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error

@@ -10,6 +10,15 @@ import com.example.cshare.data.models.Product;
 import com.example.cshare.data.sources.SharedDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
+/**
+ * Factory class responsible for the creation of a SharedDataSource.
+ *
+ * @see SharedDataSource
+ * @see DataSource.Factory
+ * @since 2.1
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public class SharedDataSourceFactory extends DataSource.Factory {
 
     private MutableLiveData<PageKeyedDataSource<Integer, Product>> sharedProductsLiveDataSource = new MutableLiveData<>();
@@ -18,6 +27,12 @@ public class SharedDataSourceFactory extends DataSource.Factory {
     private Context context;
     private SharedDataSource sharedProductsDataSource;
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param prefs
+     */
     public SharedDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.prefs = prefs;

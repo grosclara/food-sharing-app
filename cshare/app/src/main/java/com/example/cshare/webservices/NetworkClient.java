@@ -43,7 +43,7 @@ public class NetworkClient {
                 .build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL_API)
+                .baseUrl(Constants.SERVER_URL)
                 .client(okHttpClient)
                 // A converter which supports converting strings and both primitives
                 // and their boxed types to text/plain bodies.

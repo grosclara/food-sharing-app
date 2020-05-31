@@ -264,7 +264,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                android.R.style.Theme_DeviceDefault_Light_Dialog,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year,
@@ -403,7 +403,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                     fileToUpload.getAbsolutePath(),
                     requestFile);
             // Format the product to update view models
-            String imageFileName = Constants.BASE_URL_API +
+            String imageFileName = Constants.SERVER_URL +
                     "media/product/" +
                     fileToUpload.getPath()
                             .split("/")[fileToUpload.getPath().split("/").length - 1];

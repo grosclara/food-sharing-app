@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -505,7 +506,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         textViewEmail.setText(profile.getEmail());
         textViewLastName.setText(profile.getLastName());
         textViewFirstName.setText(profile.getFirstName());
-        spinnerCampus.setSelection(((ArrayAdapter) spinnerCampus.getAdapter()).getPosition(profile.getCampus()));
+        spinnerCampus.setSelection(((ArrayAdapter<String>)spinnerCampus.getAdapter()).getPosition(profile.getCampus()));
         textViewEmail.setText(profile.getEmail());
         editTextRoomNumber.setText(profile.getRoomNumber());
         Picasso.get().load(profile.getProfilePictureURL()).into(imageViewProfilePicture);

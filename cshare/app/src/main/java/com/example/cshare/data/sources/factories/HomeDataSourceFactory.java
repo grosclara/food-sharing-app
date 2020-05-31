@@ -10,12 +10,27 @@ import com.example.cshare.data.models.Product;
 import com.example.cshare.data.sources.HomeDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
+/**
+ * Factory class responsible for the creation of a HomeDataSource.
+ *
+ * @see HomeDataSource
+ * @see DataSource.Factory
+ * @since 2.1
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 public class HomeDataSourceFactory extends DataSource.Factory {
 
     private PreferenceProvider prefs;
     private Context context;
     private HomeDataSource homeProductsDataSource;
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param prefs
+     */
     public HomeDataSourceFactory(Context context, PreferenceProvider prefs) {
         this.prefs = prefs;
         this.context = context;

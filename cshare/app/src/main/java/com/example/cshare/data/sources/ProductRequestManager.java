@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cshare.data.apiresponses.ApiError;
 import com.example.cshare.data.apiresponses.ProductResponse;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.utils.Constants;
@@ -91,9 +92,9 @@ public class ProductRequestManager {
                             addProductResponse.setValue(ProductResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
                                 addProductResponse.setValue(ProductResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -119,9 +120,9 @@ public class ProductRequestManager {
                             deleteProductResponse.setValue(ProductResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
                                 deleteProductResponse.setValue(ProductResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -149,9 +150,9 @@ public class ProductRequestManager {
                             orderProductResponse.setValue(ProductResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
                                 orderProductResponse.setValue(ProductResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -177,9 +178,9 @@ public class ProductRequestManager {
                             deliverProductResponse.setValue(ProductResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
                                 deliverProductResponse.setValue(ProductResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
@@ -206,9 +207,9 @@ public class ProductRequestManager {
                             cancelOrderResponse.setValue(ProductResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            ProductResponse.ProductError mError = new ProductResponse.ProductError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), ProductResponse.ProductError.class);
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
                                 cancelOrderResponse.setValue(ProductResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error

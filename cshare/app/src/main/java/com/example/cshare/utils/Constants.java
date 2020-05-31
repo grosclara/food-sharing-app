@@ -1,26 +1,28 @@
 package com.example.cshare.utils;
 
-import androidx.annotation.NonNull;
+import com.example.cshare.BuildConfig;
 
 public class Constants {
 
-    // Temp variables
-    public static final String TOKEN = "Token 80a2fc33b76d00061bafe0b7ccfad323dadfb432";
-
     //public static final String BASE_URL_API = "http://10.59.33.8:8000/api/v1/";
-    public static final String BASE_URL_API = "http://192.168.1.29:8000/api/v1/";
-    //public static final String BASE_URL_API = "http://192.168.28.44:8000/api/v1/";
+    //public static final String BASE_URL_API = "http://192.168.1.29:8000/api/v1/";
+    public static final String SERVER_URL = BuildConfig.SERVER_URL;
 
     public static final String TAG = "csharetag";
 
+    /**
+     * Page size for pagination
+     */
     public static final int PAGE_SIZE = 12;
+    /**
+     * Fetch data from the first page which is 1
+     */
+    public static final int FIRST_PAGE = 1;
+
 
 
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
-
-    // Product fields
-    public static final String STATUS = "status";
 
     // Different product statuses
     public static final String AVAILABLE = "Available";
