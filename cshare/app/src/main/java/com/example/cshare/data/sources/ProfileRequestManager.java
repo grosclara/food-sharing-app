@@ -7,7 +7,8 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.apiresponses.ApiError;
+import com.example.cshare.data.apiresponses.UserResponse;
 import com.example.cshare.data.models.User;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.webservices.AuthenticationAPI;
@@ -36,9 +37,9 @@ public class ProfileRequestManager {
     private static ProfileRequestManager profileRequestManager;
 
     // MutableLiveData object that contains the user data
-    private MutableLiveData<UserReponse> userProfileResponse = new MutableLiveData<>();
-    private MutableLiveData<UserReponse> editedProfileResponse = new MutableLiveData<>();
-    private MutableLiveData<UserReponse> otherUserProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<UserResponse> userProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<UserResponse> editedProfileResponse = new MutableLiveData<>();
+    private MutableLiveData<UserResponse> otherUserProfileResponse = new MutableLiveData<>();
 
     // Data sources dependencies
     private PreferenceProvider prefs;
@@ -60,11 +61,11 @@ public class ProfileRequestManager {
     }
 
     // Getter method
-    public MutableLiveData<UserReponse> getUserProfileResponse() {
+    public MutableLiveData<UserResponse> getUserProfileResponse() {
         return userProfileResponse;
     }
-    public MutableLiveData<UserReponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
-    public MutableLiveData<UserReponse> getEditedProfileResponse() { return editedProfileResponse; }
+    public MutableLiveData<UserResponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
+    public MutableLiveData<UserResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
         Log.d(Constants.TAG, "get userprofile");
@@ -74,13 +75,13 @@ public class ProfileRequestManager {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful()) {
-                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                            getUserProfileResponse().setValue(UserResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            UserReponse.UserError mError = new UserReponse.UserError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
-                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
+                                getUserProfileResponse().setValue(UserResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }
@@ -102,13 +103,13 @@ public class ProfileRequestManager {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful()) {
-                            getOtherUserProfileResponse().setValue(UserReponse.success(response.body()));
+                            getOtherUserProfileResponse().setValue(UserResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            UserReponse.UserError mError = new UserReponse.UserError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
-                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
+                                getUserProfileResponse().setValue(UserResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }
@@ -134,13 +135,13 @@ public class ProfileRequestManager {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful()) {
-                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                            getUserProfileResponse().setValue(UserResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            UserReponse.UserError mError = new UserReponse.UserError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
-                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
+                                getUserProfileResponse().setValue(UserResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }
@@ -162,13 +163,13 @@ public class ProfileRequestManager {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful()) {
-                            getUserProfileResponse().setValue(UserReponse.success(response.body()));
+                            getUserProfileResponse().setValue(UserResponse.success(response.body()));
                         } else {
                             Gson gson = new GsonBuilder().create();
-                            UserReponse.UserError mError = new UserReponse.UserError();
+                            ApiError mError = new ApiError();
                             try {
-                                mError = gson.fromJson(response.errorBody().string(), UserReponse.UserError.class);
-                                getUserProfileResponse().setValue(UserReponse.error(mError));
+                                mError = gson.fromJson(response.errorBody().string(), ApiError.class);
+                                getUserProfileResponse().setValue(UserResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }

@@ -34,12 +34,12 @@ public interface OrderAPI {
      *              to the token of the authenticated user and it is passed in the request header
      * @param page (int) number of the page to display (query parameter in the url)
      * @return (Call) A Call object containing a product list and pagination information in a
-     * {@link ProductListResponse.ApiProductListResponse} object
-     * @see ProductListResponse.ApiProductListResponse
+     * {@link ProductListResponse} object
+     * @see ProductListResponse
      * @see com.example.cshare.data.sources.CartDataSource
      */
     @GET("order/")
-    Call<ProductListResponse.ApiProductListResponse> getOrderedProducts(
+    Call<ProductListResponse> getOrderedProducts(
             @Header("Authorization") String token,
             @Query("page") int page
     );

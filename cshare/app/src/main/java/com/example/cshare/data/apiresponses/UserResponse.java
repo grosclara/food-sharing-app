@@ -3,30 +3,31 @@ package com.example.cshare.data.apiresponses;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.cshare.data.models.Product;
+import com.example.cshare.data.models.User;
 
 import static com.example.cshare.data.apiresponses.Status.COMPLETE;
 import static com.example.cshare.data.apiresponses.Status.ERROR;
 import static com.example.cshare.data.apiresponses.Status.SUCCESS;
 
 /**
- * Class that contains the response to a query returning a product.
+ * Class that contains the response to a query returning a user.
  * <p>
  * The class consists of a status that indicates the status of the response returned by the server.
- * If successful, the response contains the returned product. In case of failure, the response
- * contains an instance of the ApiError class to access the error message returned by the server.
+ * If successful, the response contains the returned user. In case of failure, the response contains
+ * an instance of the class Api error to access the error message returned by the server.
  * <p>
  * The defined methods are on the one hand the getters and on the other hand methods that allow to
  * create instances of the class by associating them a certain status
  *
  * @see Status
  * @see ApiError
- * @see Product
+ * @see User
  * @since 2.0
  * @author Clara Gros
  * @author Babacar Toure
  */
-public class ProductResponse {
+public class UserResponse {
+
     /**
      * Response status
      */
@@ -35,7 +36,7 @@ public class ProductResponse {
      * Response body of the request in case of success
      */
     @Nullable
-    public final Product product;
+    public final User user;
     /**
      * Response error object in case of failure
      */
@@ -46,59 +47,55 @@ public class ProductResponse {
      * Class constructor
      *
      * @param status
-     * @param product
+     * @param user
      * @param error
      */
-    private ProductResponse(Status status, @Nullable Product product, @Nullable ApiError error) {
+    private UserResponse(Status status, @Nullable User user, @Nullable ApiError error) {
         this.status = status;
-        this.product = product;
+        this.user = user;
         this.error = error;
     }
 
-    public Status getStatus() {
-        return status;
-    }
+    public Status getStatus() { return status; }
+
     @Nullable
-    public Product getProduct() {
-        return product;
-    }
+    public User getUser() { return user; }
+
     @Nullable
-    public ApiError getError() {
-        return error;
-    }
+    public ApiError getError() { return error; }
 
     /**
-     * Following a successful response, this method returns a ProductResponse object containing the
-     * corresponding status SUCCESS and the response body which is a product
-     * @param product (Product)
-     * @return ProductResponse
+     * Following a successful response, this method returns a UserResponse object containing the
+     * corresponding status SUCCESS and the response body which is a user
+     * @param user (User)
+     * @return UserResponse
      * @see Status#SUCCESS
-     * @see Product
+     * @see User
      */
-    public static ProductResponse success(@NonNull Product product) {
-        return new ProductResponse(SUCCESS, product, null);
+    public static UserResponse success(@NonNull User user) {
+        return new UserResponse(SUCCESS, user, null);
     }
 
     /**
-     * Following a failure when querying the server response, this method returns a ProductResponse
+     * Following a failure when querying the server response, this method returns a UserResponse
      * object containing the corresponding status ERROR and a ApiError object that contains the
      * error message from the server.
      * @param error (ApiError) Error message from the server
-     * @return ProductResponse
+     * @return UserResponse
      * @see Status#ERROR
      * @see ApiError
      */
-    public static ProductResponse error(@NonNull ApiError error) {
-        return new ProductResponse(ERROR, null, error);
+    public static UserResponse error(@NonNull ApiError error) {
+        return new UserResponse(ERROR, null, error);
     }
 
     /**
      * Special method to reset the response once the request has taken place and the result has
      * been processed.
-     * @return ProductResponse
+     * @return UserResponse
      * @see Status#COMPLETE
      */
-    public static ProductResponse complete(){
-        return new ProductResponse(COMPLETE, null, null);
+    public static UserResponse complete(){
+        return new UserResponse(COMPLETE, null, null);
     }
 }

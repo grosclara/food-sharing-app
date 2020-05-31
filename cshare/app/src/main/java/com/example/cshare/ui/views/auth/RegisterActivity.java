@@ -204,7 +204,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else if (registrationResponse.getStatus().equals(Status.ERROR)) {
                     if (registrationResponse.getError().getEmail() != null) {
                         Toast.makeText(getApplicationContext(), registrationResponse.getError().getEmail(), Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else if (registrationResponse.getError().getDetail() != null) {
+                        Toast.makeText(getApplicationContext(), registrationResponse.getError().getDetail(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
                     }
                     authViewModel.getRegistrationResponseMutableLiveData().setValue(RegistrationResponse.complete());

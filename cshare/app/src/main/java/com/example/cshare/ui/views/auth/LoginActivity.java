@@ -179,7 +179,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     toMainActivityIntent.setClass(getApplicationContext(), HomeScreenActivity.class);
                     startActivity(toMainActivityIntent);
                 } else if (response.getStatus().equals(Status.ERROR)) {
-                    if (response.getError().getDetail() != null) {
+                    if (response.getError().getFieldErrors() != null) {
+                        Toast.makeText(getApplicationContext(), response.getError().getFieldErrors(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (response.getError().getDetail() != null) {
                         Toast.makeText(getApplicationContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();

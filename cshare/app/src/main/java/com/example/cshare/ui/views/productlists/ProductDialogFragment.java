@@ -3,9 +3,7 @@ package com.example.cshare.ui.views.productlists;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +17,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.apiresponses.UserResponse;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
@@ -221,25 +219,25 @@ public class ProductDialogFragment extends DialogFragment {
      * After having done so, Set the status of the response to Complete to indicate the event has
      * been handled.
      *
-     * @see UserReponse
+     * @see UserResponse
      * @see User
      * @see #fillInSupplierDetails(User)
      */
     private void getSupplierInfo(){
-        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+        profileViewModel.getOtherProfileMutableLiveData().observe(this, new Observer<UserResponse>() {
             @Override
-            public void onChanged(UserReponse response) {
+            public void onChanged(UserResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     // Retrieve the supplier from the response and call the fillInSupplier method
                     fillInSupplierDetails(response.getUser());
-                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserResponse.complete());
                 } else if (response.getStatus().equals(Status.ERROR)) {
                     if (response.getError().getDetail() != null) {
                         Toast.makeText(getContext(), response.getError().getDetail(), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(), R.string.unexpected_error, Toast.LENGTH_SHORT).show();
                     }
-                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserReponse.complete());
+                    profileViewModel.getOtherProfileMutableLiveData().setValue(UserResponse.complete());
                 }
             }
         });

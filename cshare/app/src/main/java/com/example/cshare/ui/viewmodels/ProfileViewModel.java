@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.apiresponses.UserResponse;
 import com.example.cshare.data.models.User;
 import com.example.cshare.data.sources.AuthRequestManager;
 import com.example.cshare.data.sources.ProfileRequestManager;
@@ -24,7 +24,7 @@ import java.security.GeneralSecurityException;
  * @see AndroidViewModel
  * @see ProfileRequestManager
  * @see MutableLiveData
- * @see UserReponse
+ * @see UserResponse
  * @since 2.0
  * @author Clara Gros
  * @author Babacar Toure
@@ -37,8 +37,8 @@ public class ProfileViewModel extends AndroidViewModel {
     private ProfileRequestManager profileRequestManager;
 
     // MutableLiveData object that contains the data
-    private MutableLiveData<UserReponse> userProfileMutableLiveData;
-    private MutableLiveData<UserReponse> otherProfileMutableLiveData;
+    private MutableLiveData<UserResponse> userProfileMutableLiveData;
+    private MutableLiveData<UserResponse> otherProfileMutableLiveData;
 
     /**
      * Constructor of the ViewModel.
@@ -61,8 +61,8 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     // Getter method
-    public MutableLiveData<UserReponse> getUserProfileMutableLiveData() { return userProfileMutableLiveData; }
-    public MutableLiveData<UserReponse> getOtherProfileMutableLiveData() {return otherProfileMutableLiveData; }
+    public MutableLiveData<UserResponse> getUserProfileMutableLiveData() { return userProfileMutableLiveData; }
+    public MutableLiveData<UserResponse> getOtherProfileMutableLiveData() {return otherProfileMutableLiveData; }
 
     /**
      * Calls the getUserByID method of the request manager

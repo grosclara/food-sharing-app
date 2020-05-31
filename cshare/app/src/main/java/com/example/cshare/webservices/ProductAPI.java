@@ -35,12 +35,12 @@ public interface ProductAPI {
      * @param shared (int) if true (1), retrieve shared products (query parameter in the url)
      * @param page (int) number of the page to display (query parameter in the url)
      * @return (Call) A Call object containing the product list and pagination information in a
-     * {@link ProductListResponse.ApiProductListResponse} object
-     * @see ProductListResponse.ApiProductListResponse
+     * {@link ProductListResponse} object
+     * @see ProductListResponse
      * @see com.example.cshare.data.sources.HomeDataSource
      */
     @GET("product/")
-    Call<ProductListResponse.ApiProductListResponse> getProducts(
+    Call<ProductListResponse> getProducts(
             @Header("Authorization") String token,
             @Query("status") String status,
             @Query("category") String category,

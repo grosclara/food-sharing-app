@@ -39,9 +39,9 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, null, null, 1, FIRST_PAGE)
-                .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
+                .enqueue(new Callback<ProductListResponse>() {
                     @Override
-                    public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
+                    public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
 
                         if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? FIRST_PAGE + 1 : null;
@@ -60,7 +60,7 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                     }
 
                     @Override
-                    public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
+                    public void onFailure(Call<ProductListResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
                         Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -76,9 +76,9 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, null, null, 1, params.key)
-                .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
+                .enqueue(new Callback<ProductListResponse>() {
                     @Override
-                    public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
+                    public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
 
                         if (response.isSuccessful()) {
                             Integer key = (params.key > 1) ? params.key - 1 : null;
@@ -96,7 +96,7 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                     }
 
                     @Override
-                    public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
+                    public void onFailure(Call<ProductListResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
                         Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -110,9 +110,9 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, null, null, 1, params.key)
-                .enqueue(new Callback<ProductListResponse.ApiProductListResponse>() {
+                .enqueue(new Callback<ProductListResponse>() {
                     @Override
-                    public void onResponse(Call<ProductListResponse.ApiProductListResponse> call, Response<ProductListResponse.ApiProductListResponse> response) {
+                    public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
 
                         if (response.isSuccessful()) {
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
@@ -130,7 +130,7 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                     }
 
                     @Override
-                    public void onFailure(Call<ProductListResponse.ApiProductListResponse> call, Throwable t) {
+                    public void onFailure(Call<ProductListResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
                         Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }

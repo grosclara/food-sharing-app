@@ -24,7 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.EmptyAuthResponse;
 import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.apiresponses.UserResponse;
 import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
@@ -472,13 +472,13 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
      * changed. In case of failure, toasts an error message.
      *
      * @see ProfileViewModel#getUserProfileMutableLiveData()
-     * @see UserReponse
+     * @see UserResponse
      * @see #updateUserDetails(User)
      */
     private void getUserDetails() {
-        profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserReponse>() {
+        profileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), new Observer<UserResponse>() {
             @Override
-            public void onChanged(UserReponse response) {
+            public void onChanged(UserResponse response) {
                 if (response.getStatus().equals(Status.SUCCESS)) {
                     updateUserDetails(response.getUser());
                 } else if (response.getStatus().equals(Status.ERROR)) {

@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.ProductResponse;
 import com.example.cshare.data.apiresponses.Status;
-import com.example.cshare.data.apiresponses.UserReponse;
+import com.example.cshare.data.apiresponses.UserResponse;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.CartViewModel;
@@ -279,12 +279,12 @@ public class HomeScreenActivity extends AppCompatActivity implements
      * failure. In case of failure, toasts an error message.
      *
      * @see ProfileViewModel#getUserProfileMutableLiveData()
-     * @see UserReponse
+     * @see UserResponse
      */
     private void getUserInfo(){
-        profileViewModel.getUserProfileMutableLiveData().observe(this, new Observer<UserReponse>() {
+        profileViewModel.getUserProfileMutableLiveData().observe(this, new Observer<UserResponse>() {
             @Override
-            public void onChanged(UserReponse response) {
+            public void onChanged(UserResponse response) {
                  if (response.getStatus().equals(Status.ERROR)) {
                     if (response.getError().getDetail() != null) {
                         Toast.makeText(getApplicationContext(),
