@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/prompt_password"
-        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeActionLabel="@string/action_sign_in"
         android:imeOptions="actionDone"
         android:selectAllOnFocus="true"
         android:layout_marginStart="24dp"
@@ -93,7 +93,7 @@
         android:id="@+id/buttonCreateAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_account"
+        android:text="@string/sign_up"
         style="@style/TextButton"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         app:layout_constraintBottom_toTopOf="@id/buttonResetPassword" />
