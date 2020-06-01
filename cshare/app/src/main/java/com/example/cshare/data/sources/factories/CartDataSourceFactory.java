@@ -11,10 +11,7 @@ import com.example.cshare.data.sources.CartDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
 /**
- * Factory class responsible for the creation of a CartDataSource.
- * <p>
- * The CartDataSource will be store in a MutableLiveData<> to store our PageKeyedDataSource
- * through this class
+ * Factory class responsible for the storage of a CartDataSource in a MutableLiveData object.=
  *
  * @see CartDataSource
  * @see MutableLiveData

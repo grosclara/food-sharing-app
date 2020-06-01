@@ -11,10 +11,11 @@ import com.example.cshare.data.sources.HomeDataSource;
 import com.example.cshare.data.sources.PreferenceProvider;
 
 /**
- * Factory class responsible for the creation of a HomeDataSource.
+ * Factory class responsible for the storage of a CartDataSource in a MutableLiveData object.=
  *
- * @see HomeDataSource
- * @see DataSource.Factory
+ * @see com.example.cshare.data.sources.HomeDataSource
+ * @see androidx.lifecycle.MutableLiveData
+ * @see androidx.paging.DataSource.Factory
  * @since 2.1
  * @author Clara Gros
  * @author Babacar Toure
@@ -36,15 +37,28 @@ public class HomeDataSourceFactory extends DataSource.Factory {
         this.context = context;
     }
 
+    // Creating the mutable live data
     private MutableLiveData<PageKeyedDataSource<Integer, Product>> homeProductsLiveDataSource = new MutableLiveData<>();
 
+    /**
+     * Method that retrieves and stores the data source object in a live data object and returns it
+     * @return homeProductsDataSource
+     * @see HomeDataSource
+     */
     @Override
     public DataSource create() {
+        // Getting our data source object
         homeProductsDataSource = new HomeDataSource(context, prefs.getToken());
+        // Posting the datasource to get the values
         homeProductsLiveDataSource.postValue(homeProductsDataSource);
+        // Returning the datasource
         return homeProductsDataSource;
     }
 
+    /**
+     * Getter for homeProductsLiveDataSource
+     * @return
+     */
     public MutableLiveData<PageKeyedDataSource<Integer, Product>> getHomeProductsLiveDataSource() {
         return homeProductsLiveDataSource;
     }
