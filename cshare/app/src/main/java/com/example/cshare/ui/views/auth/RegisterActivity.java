@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,11 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,11 +40,14 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import static com.example.cshare.utils.MediaFiles.readFile;
 
 /**
  * Activity responsible for the registration of a new user.
@@ -174,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toLoginActivityIntent);
         }
-        if (v == buttonSignUp) { signUp(); }
+        if (v == buttonSignUp) { acceptTermsAndSignUp(); }
         if (v == imageViewGallery) { showPictureDialog(this); }
     }
 
@@ -230,13 +236,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * Check if the form and valid and if there is a product photo. If yes, the method creates
-     * the registerForm (User) object to create and calls the register method of the authViewModel.
+     * the registerForm (User) object. Then it displays an alertDialog to accept the minimal terms.
+     * If the user accepts, calls the register method of the authViewModel.
      *
      * @see Validator#validate()
+     * @see AlertDialog
      * @see User
      * @see AuthViewModel#register(User)
      */
-    private void signUp(){
+    private void acceptTermsAndSignUp(){
         // Validate the field
         validator.validate();
         if (validated) {
@@ -258,7 +266,40 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         "profile_picture", fileToUploadPath, requestFile);
                 registerForm.setProfilePictureBody(profilePictureBody);
             }
-            authViewModel.register(registerForm);
+
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.terms_and_conditions)
+                    .setPositiveButton(R.string.i_accept, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            authViewModel.register(registerForm);
+                        }
+                    })
+                    .setNegativeButton(R.string.i_reject, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Whatever ....
+                        }
+                    });
+            // Get the layout inflater
+            LayoutInflater inflater = getLayoutInflater();
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            View view = inflater.inflate(R.layout.minimal_terms, null);
+
+            // Retrieve the minimal terms text according to the language
+            String filepath;
+            if (Locale.getDefault().getLanguage().equals("fr")){
+                filepath = "minimal_terms_fr.txt";
+            } else { filepath = "minimal_terms_en.txt";}
+            TextView minimalTermsTextView = view.findViewById(R.id.minimalTermsTextView);
+            String content = readFile(this, filepath);
+            // Set HTML text
+            minimalTermsTextView.setText(HtmlCompat.fromHtml(content,0));
+            // Set view and show the dialog
+            builder.setView(view)
+                    .show();
         }
     }
 

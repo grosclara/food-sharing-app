@@ -21,10 +21,13 @@ import androidx.fragment.app.Fragment;
 import com.example.cshare.R;
 import com.example.cshare.ui.views.auth.ProfileFragment;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -373,6 +376,27 @@ public class MediaFiles {
             e.printStackTrace();
         }
         return file;
+    }
+
+    /**
+     * Retrieve a file in the assets directory from its filepath and store its content in a string
+     * that the method returns
+     *
+     * @param context (Context) The current context
+     * @param filepath (String) The path of the file to read
+     * @return (String) The file content
+     */
+    public static String readFile(Context context, String filepath) {
+        String htmlText = null;
+        InputStream is;
+        try {
+            is = context.getAssets().open(filepath);
+            htmlText = IOUtils.toString(is, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Log.d(Constants.TAG, filepath+" not found");
+            e.printStackTrace();
+        }
+        return htmlText;
     }
 
 }
