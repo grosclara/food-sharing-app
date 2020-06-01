@@ -7,9 +7,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
 
+import com.example.cshare.data.apiresponses.ApiError;
 import com.example.cshare.data.apiresponses.ProductListResponse;
 import com.example.cshare.data.models.Product;
-import com.example.cshare.data.apiresponses.ApiError;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.webservices.NetworkClient;
 import com.google.gson.Gson;
@@ -21,18 +21,38 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.cshare.utils.Constants.FIRST_PAGE;
+
+/**
+ * Data source of our shared product item from where we will fetch the actual data.
+ * <p>
+ * As in our API we need to pass the page number for each page that we want to fetch, this class
+ * extends the We extended PageKeyedDataSource<Integer, Product> class.
+ * Integer here defines the page key, which is in our case a number or an integer.
+ * Every time we want a new page from the API we need to pass the page number that we want which
+ * is an integer. Product is the item that we will get from the API.
+ */
 public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
 
-    private static final int FIRST_PAGE = 1;
     private String token;
     private Context context;
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param token Token of the user
+     */
     public SharedDataSource(Context context, String token) {
         this.context = context;
         this.token = token;
     }
 
-    // Load the initial data
+    /*
+     * This method is responsible to load the data initially  when app screen is launched for the
+     * first time. We are fetching the first page data from the api and passing it via the callback
+     * method to the UI.
+     */
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
 
@@ -56,7 +76,6 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                                 // handle failure to read error
                             }
                         }
-
                     }
 
                     @Override
@@ -65,11 +84,9 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                         Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
 
-    // Load the former data when scrolling up
+    // Load the previous page data when scrolling up
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
 
@@ -81,7 +98,8 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                     public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
 
                         if (response.isSuccessful()) {
-                            Integer key = (params.key > 1) ? params.key - 1 : null;
+                            // If the response has previous page, decrementing the next page number
+                            Integer key = (response.body().getPrevious() != null) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
                             Gson gson = new GsonBuilder().create();
@@ -104,7 +122,12 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
 
     }
 
-    // Load the further data when scrolling down
+    /*
+     * This method is responsible for the subsequent call to load the data page wise. This method
+     * is executed in the background thread. We are fetching the next page data from the api
+     * and passing it via the callback method to the UI. The "params.key" variable will have
+     * the updated value.
+     */
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
         NetworkClient.getInstance()
@@ -113,8 +136,8 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                 .enqueue(new Callback<ProductListResponse>() {
                     @Override
                     public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
-
                         if (response.isSuccessful()) {
+                            // If the response has next page, incrementing the next page number
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
@@ -128,7 +151,6 @@ public class SharedDataSource extends PageKeyedDataSource<Integer, Product> {
                             }
                         }
                     }
-
                     @Override
                     public void onFailure(Call<ProductListResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());

@@ -38,5 +38,7 @@ public class ProductListResponse {
 
     public List<Product> getProductList() { return results; }
     public String getNext() { return next; }
+    public String getPrevious() {return previous;}
+
 }
 

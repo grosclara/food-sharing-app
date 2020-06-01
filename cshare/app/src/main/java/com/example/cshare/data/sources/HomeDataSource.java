@@ -21,18 +21,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.cshare.utils.Constants.FIRST_PAGE;
+
+/**
+ * Data source of our available product item from where we will fetch the actual data.
+ * <p>
+ * As in our API we need to pass the page number for each page that we want to fetch, this class
+ * extends the We extended PageKeyedDataSource<Integer, Product> class.
+ * Integer here defines the page key, which is in our case a number or an integer.
+ * Every time we want a new page from the API we need to pass the page number that we want which
+ * is an integer. Product is the item that we will get from the API.
+ */
 public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
 
-    private static final int FIRST_PAGE = 1;
     private String token;
     private Context context;
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param token Token of the user
+     */
     public HomeDataSource(Context context, String token) {
         this.token = token;
         this.context = context;
     }
 
-    // Load the initial data
     /*
      * This method is responsible to load the data initially  when app screen is launched for the
      * first time. We are fetching the first page data from the api and passing it via the callback
@@ -70,10 +85,14 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
                         Toast.makeText(context, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
 
+    /*
+     * This method is responsible for the subsequent call to load the data page wise. This method
+     * is executed in the background thread. We are fetching the previous page data from the api
+     * and passing it via the callback method to the UI. The "params.key" variable will have
+     * the updated value.
+     */
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
         Log.d(Constants.TAG, "LOAD BEFORE");
@@ -86,7 +105,8 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
                     public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
 
                         if (response.isSuccessful()) {
-                            Integer key = (params.key > 1) ? params.key - 1 : null;
+                            // If the response has previous page, decrementing the next page number
+                            Integer key = (response.body().getPrevious() != null) ? params.key - 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
                                 Gson gson = new GsonBuilder().create();
@@ -99,7 +119,6 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
                                 }
                         }
                     }
-
                     @Override
                     public void onFailure(Call<ProductListResponse> call, Throwable t) {
                         Log.d(Constants.TAG, t.getLocalizedMessage());
@@ -118,8 +137,6 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
 
-        Log.d(Constants.TAG, "LOAD AFTER");
-
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, Constants.AVAILABLE, null, 0, params.key)
@@ -127,6 +144,7 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
                     @Override
                     public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
                         if (response.isSuccessful()) {
+                            // If the response has next page, incrementing the next page number
                             Integer key = (response.body().getNext() != null) ? params.key + 1 : null;
                             callback.onResult(response.body().getProductList(), key);
                         } else {
