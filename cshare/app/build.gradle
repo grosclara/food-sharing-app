@@ -78,5 +78,8 @@ dependencies {
     api 'com.google.android.material:material:1.1.0-alpha06'
     implementation 'com.github.ganfra:material-spinner:2.0.0'
 
+    // File reader
+    implementation "commons-io:commons-io:2.7"
+
 
 }
