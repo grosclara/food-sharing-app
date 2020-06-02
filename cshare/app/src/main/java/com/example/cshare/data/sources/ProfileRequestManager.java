@@ -56,19 +56,15 @@ public class ProfileRequestManager {
         update();
     }
 
-    public void update() {
-        getUserProfile();
-    }
+    public void update() { getUserProfile(); }
 
     // Getter method
     public MutableLiveData<UserResponse> getUserProfileResponse() {
         return userProfileResponse;
     }
     public MutableLiveData<UserResponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
-    public MutableLiveData<UserResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
     public void getUserProfile() {
-        Log.d(Constants.TAG, "get userprofile");
         authenticationAPI
                 .getProfileInfo(prefs.getToken())
                 .enqueue(new Callback<User>() {
@@ -109,7 +105,7 @@ public class ProfileRequestManager {
                             ApiError mError = new ApiError();
                             try {
                                 mError = gson.fromJson(response.errorBody().string(), ApiError.class);
-                                getUserProfileResponse().setValue(UserResponse.error(mError));
+                                getOtherUserProfileResponse().setValue(UserResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }

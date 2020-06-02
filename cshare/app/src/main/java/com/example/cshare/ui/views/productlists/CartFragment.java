@@ -90,7 +90,7 @@ public class CartFragment extends ProductListFragment {
         } else { tag = Constants.ARCHIVED; }
 
         // Create a new DialogFragment and show it
-        DialogFragment productDetailsFragment = new ProductDialogFragment(product, tag, profileViewModel);
+        DialogFragment productDetailsFragment = new ProductDialogFragment(getActivity(), product, tag);
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 }

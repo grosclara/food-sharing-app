@@ -55,8 +55,6 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
      */
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, Product> callback) {
-        Log.d(Constants.TAG, "LOAD INITIAL");
-
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, Constants.AVAILABLE, null, 0, FIRST_PAGE)
@@ -95,8 +93,6 @@ public class HomeDataSource extends PageKeyedDataSource<Integer, Product> {
      */
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
-        Log.d(Constants.TAG, "LOAD BEFORE");
-
         NetworkClient.getInstance()
                 .getProductAPI()
                 .getProducts(token, Constants.AVAILABLE, null, 0, params.key)

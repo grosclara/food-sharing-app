@@ -1,9 +1,11 @@
 package com.example.cshare.ui.views.productlists;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.Status;
@@ -66,6 +70,7 @@ public class ProductDialogFragment extends DialogFragment {
      * String that defines the actions that can be performed on a clicked product
      */
     private String tag;
+    private Activity activity;
 
     protected ProfileViewModel profileViewModel;
 
@@ -88,14 +93,29 @@ public class ProductDialogFragment extends DialogFragment {
      *
      * @param product
      * @param tag
-     * @param profileViewModel
      * @see Product
      * @see ProfileViewModel#getUserByID(int)
      */
-    public ProductDialogFragment(Product product, String tag, ProfileViewModel profileViewModel) {
+    public ProductDialogFragment(Activity activity, Product product, String tag) {
         this.product = product;
         this.tag = tag;
-        this.profileViewModel.getUserByID(product.getSupplier());
+        this.activity = activity;
+
+        configureViewModel();
+        loadSupplierData();
+
+    }
+
+    private void configureViewModel(){
+        // Retrieve view models
+        profileViewModel = new ViewModelProvider((ViewModelStoreOwner) activity,
+                new ViewModelProvider.AndroidViewModelFactory(activity.getApplication())
+        ).get(ProfileViewModel.class);
+    }
+
+    private void loadSupplierData(){
+        profileViewModel.getUserByID(product.getSupplier());
+        getSupplierInfo();
     }
 
     /**
@@ -146,8 +166,6 @@ public class ProductDialogFragment extends DialogFragment {
 
         // Fill in product related views
         fillInProductDetails(product);
-        // Fill in supplier related views
-        this.getSupplierInfo();
 
         // Depending on the tag of the dialog, display its title and buttons
         switch (tag) {

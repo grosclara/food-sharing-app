@@ -84,9 +84,9 @@ public class HomeFragment extends ProductListFragment {
         }
 
         // Create a new DialogFragment and show it
-        DialogFragment productDetailsFragment = new ProductDialogFragment(product,
-                tag,
-                profileViewModel);
+        DialogFragment productDetailsFragment = new
+                ProductDialogFragment(getActivity(), product, tag
+        );
         productDetailsFragment.show(getChildFragmentManager(), tag);
     }
 
