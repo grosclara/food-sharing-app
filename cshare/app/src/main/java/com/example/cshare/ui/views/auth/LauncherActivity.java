@@ -67,12 +67,10 @@ public class LauncherActivity extends AppCompatActivity {
             Intent toMainActivityIntent = new Intent();
             toMainActivityIntent.setClass(getApplicationContext(), HomeScreenActivity.class);
             startActivity(toMainActivityIntent);
-            finish();
         } else {
             Intent toSignInActivityIntent = new Intent();
             toSignInActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toSignInActivityIntent);
-            finish();
         }
     }
 }
