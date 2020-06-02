@@ -3,18 +3,20 @@
 <!-- Base application theme. -->
 <style name="Theme.CShare" parent="Theme.MaterialComponents">
     <!-- Customize your theme here. -->
+    <item name="android:colorBackground">@color/background</item>
+    <!-- Customize your theme here. -->
     <item name="colorPrimary"> @color/colorPrimary </item>
     <item name="colorPrimaryVariant"> @color/colorPrimaryDark </item>
     <item name="colorOnPrimary"> @color/colorPrimaryText </item>
     <item name="colorSecondary"> @color/colorSecondary </item>
     <item name="colorSecondaryVariant"> @color/colorSecondaryDark </item>
     <item name="colorOnSecondary"> @color/colorSecondaryText </item>
-    <item name="colorError"> #F44336 </item>
-    <item name="colorOnError">#FFFFFF</item>
-    <item name="colorSurface">#eceaea</item>
-    <item name="colorOnSurface">#000000</item>
-    <item name="android:colorBackground">@color/background</item>
-    <item name="colorOnBackground">#000000</item>
+    <item name="colorError"> @color/colorError </item>
+    <item name="colorOnError">@color/colorOnError</item>
+    <item name="colorSurface">@color/colorSurface</item>
+    <item name="colorOnSurface">@color/colorOnSurface</item>
+    <item name="colorOnBackground">@color/colorOnBackground</item>
+
 </style>
 
 <style name="ContainedButton" parent="@style/Widget.MaterialComponents.Button">

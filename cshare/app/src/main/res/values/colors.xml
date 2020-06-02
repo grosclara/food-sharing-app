@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="background"> #FAFAFA </color>
+    <color name="background"> #f5f5f5 </color>
 
     <color name="colorPrimary">#9ae017</color>
     <color name="colorPrimaryLight">#cfff58</color>
@@ -15,5 +15,12 @@
     <color name="colorAvailable">#5CB85C</color>
     <color name="colorCollected">#f0960c</color>
     <color name="colorDelivered">#f0230c</color>
+
+    <color name="colorError"> #F44336 </color>
+    <color name="colorOnError">#FFFFFF</color>
+    <color name="colorSurface">#eceaea</color>
+    <color name="colorOnSurface">#000000</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+
 
 </resources>

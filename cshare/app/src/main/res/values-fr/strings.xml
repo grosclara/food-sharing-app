@@ -70,5 +70,14 @@
     <string name="i_reject">Je refuse</string>
     <string name="terms_and_conditions">Conditions Générales</string>
     <string name="picture_required">Une photo de produit est requise</string>
+    <string name="other">Autres</string>
+    <string name="carbohydrates">Féculents</string>
+    <string name="fruits_vegetables">Fruits/Légumes</string>
+    <string name="cans">Conserves/Plats cuisinés</string>
+    <string name="dairies">Produits laitiers</string>
+    <string name="desserts_bread">Desserts/Pain</string>
+    <string name="meat_eggs">Viandes/Oeufs</string>
+    <string name="self_care_products">Produits d\'hygiène</string>
+    <string name="household_products">Produits d\'entretien</string>
 
 </resources>

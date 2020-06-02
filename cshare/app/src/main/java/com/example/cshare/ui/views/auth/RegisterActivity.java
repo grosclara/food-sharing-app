@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -209,7 +210,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     // Redirect to the LoginActivity
                     Intent intent = new Intent();
                     intent.putExtra("email", registrationResponse.getUser().getEmail());
-                    setResult(LoginActivity.REGISTER_REQUEST_CODE,intent);
+                    startActivity(intent);
                     finish();
 
                 } else if (registrationResponse.getStatus().equals(Status.ERROR)) {
