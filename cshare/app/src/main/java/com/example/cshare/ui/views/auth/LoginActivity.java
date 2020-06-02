@@ -46,6 +46,8 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
     Validator.ValidationListener {
 
+    public final static int REGISTER_REQUEST_CODE = 300;
+
     // Validation
     private Validator loginValidator;
 
@@ -211,8 +213,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Redirect to the Register Activity
             Intent toRegisterActivityIntent = new Intent();
             toRegisterActivityIntent.setClass(getApplicationContext(), RegisterActivity.class);
-            startActivity(toRegisterActivityIntent);
+            startActivityForResult(toRegisterActivityIntent, REGISTER_REQUEST_CODE);
         } else if (v == buttonResetPassword) { resetPassword(); }
+    }
+
+    /**
+     * Callback method called when a user has registered successfully
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REGISTER_REQUEST_CODE)
+        { emailAddressEditText.setText(data.getStringExtra("email")); }
     }
 
     /**

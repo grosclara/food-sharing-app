@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +29,7 @@ import com.example.cshare.data.apiresponses.RegistrationResponse;
 import com.example.cshare.data.apiresponses.Status;
 import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
+import com.example.cshare.utils.Constants;
 import com.example.cshare.utils.MediaFiles;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -203,10 +205,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if (registrationResponse.getStatus().equals(Status.SUCCESS)) {
                     Toast.makeText(getApplicationContext(), R.string.account_creation_successful, Toast.LENGTH_SHORT).show();
                     authViewModel.getRegistrationResponseMutableLiveData().setValue(RegistrationResponse.complete());
+
                     // Redirect to the LoginActivity
-                    Intent toLoginActivityIntent = new Intent();
-                    toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
-                    startActivity(toLoginActivityIntent);
+                    Intent intent = new Intent();
+                    intent.putExtra("email", registrationResponse.getUser().getEmail());
+                    setResult(LoginActivity.REGISTER_REQUEST_CODE,intent);
+                    finish();
+
                 } else if (registrationResponse.getStatus().equals(Status.ERROR)) {
                     if (registrationResponse.getError().getEmail() != null) {
                         Toast.makeText(getApplicationContext(), registrationResponse.getError().getEmail(), Toast.LENGTH_SHORT).show();
