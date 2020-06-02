@@ -11,6 +11,8 @@ import com.example.cshare.data.apiresponses.ApiError;
 import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.EmptyAuthResponse;
 import com.example.cshare.data.apiresponses.RegistrationResponse;
+import com.example.cshare.data.apiresponses.Status;
+import com.example.cshare.data.models.Product;
 import com.example.cshare.data.models.User;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.webservices.AuthenticationAPI;
@@ -24,6 +26,29 @@ import java.security.GeneralSecurityException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/**
+ * Class that holds several MutableLiveData that contain data related to the authentication.
+ * <p>
+ * The class consists of the 7 following live data:
+ *  - isLoggedInMutableLiveData that contains a boolean
+ *  - loginResponseMutableLiveData that contains the a LoginResponse instance
+ *  - logoutResponseMutableLiveData that contains an EmptyAuthResponse instance
+ *  - deleteResponseMutableLiveData that contains an EmptyAuthResponse instance
+ *  - changePasswordMutableLiveData that contains an EmptyAuthResponse instance
+ *  - resetPasswordMutableLiveData that contains an EmptyAuthResponse instance
+ *  - registrationResponseMutableLiveData that contains an RegistrationResponse instance
+ * <p>
+ * The defined methods are on the one hand the getters and on the other hand methods that make requests
+ * to fill the livedata
+ *
+ * @see LoginResponse
+ * @see EmptyAuthResponse
+ * @see RegistrationResponse
+ * @since 2.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 
 public class AuthRequestManager {
 
@@ -44,6 +69,12 @@ public class AuthRequestManager {
     private Context context;
     private NetworkClient networkClient = NetworkClient.getInstance();
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param prefs
+     */
     public AuthRequestManager(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.prefs = prefs;
@@ -52,18 +83,22 @@ public class AuthRequestManager {
         isLoggedIn();
     }
 
+    /**
+     * Method that returns the current repository object if it exists
+     * else it creates new repository and returns it
+     * @param application
+     * @return AuthRequestManager
+     */
     public synchronized static AuthRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
-        /**
-         * Method that return the current repository object if it exists
-         * else it creates new repository and returns it
-         */
         if (authRequestManager == null) {
+            // create new RequestManager if one does not exist
             authRequestManager = new AuthRequestManager(application, new PreferenceProvider(application));
         }
+        // return existing RequestManager
         return authRequestManager;
     }
 
-    // Getter method
+    // Getter methods
     public MutableLiveData<Boolean> getIsLoggedInMutableLiveData() {
         return isLoggedInMutableLiveData;
     }
@@ -98,6 +133,11 @@ public class AuthRequestManager {
         isLoggedInMutableLiveData.setValue(prefs.isLoggedIn());
     }
 
+    /**
+     * This method sends a login form to the API and sets the data that it receives back in
+     * loginResponseMutableLiveData
+     * It logs the user in
+     **/
     public void logIn(User loginForm){
         NetworkClient.getInstance()
                 .getAuthAPI()
@@ -125,7 +165,10 @@ public class AuthRequestManager {
                 });
 
     }
-
+    /**
+     * This method fills the response of the login request in the shared preferences
+     * It saves user's credentials in shared preferences
+     **/
     public void saveUserCredentials(LoginResponse loginResponse) {
         prefs.fillPrefs(loginResponse);
         // Update isLoggedInMutableLiveData
@@ -137,7 +180,11 @@ public class AuthRequestManager {
         // Update isLoggedInMutableLiveData
         isLoggedIn();
     }
-
+    /**
+     * This method sends a request to the API to logout and set the response it gets in
+     * logoutResponseMutableLiveData
+     * It logs the user out
+     **/
     public void logOut() {NetworkClient.getInstance()
             .getAuthAPI()
             .logout(prefs.getToken())
@@ -165,6 +212,11 @@ public class AuthRequestManager {
             });
     }
 
+    /**
+     * This method sends a register form that has no picture field to the API and sets the data that it receives back in
+     * registrationResponseMutableLiveData
+     * It registers a new user
+     **/
     public void registerWithoutPicture(User registerForm){
         authenticationAPI
                 .createUserWithoutPicture(registerForm)
@@ -194,6 +246,11 @@ public class AuthRequestManager {
 
     }
 
+    /**
+     * This method sends a register form that has a picture field to the API and sets the data that it receives back in
+     * registrationResponseMutableLiveData
+     * It register a new user with picture profile
+     **/
     public void registerWithPicture(User registerForm){
         authenticationAPI
                 .createUserWithPicture(registerForm.getProfilePictureBody(),
@@ -229,6 +286,11 @@ public class AuthRequestManager {
 
     }
 
+    /**
+     * This method sends a form to the API to change the password and sets the data that it receives back in
+     * changePasswordMutableLiveData
+     * It changes the password of the user
+     **/
     public void changePassword(User changePasswordForm) {
         authenticationAPI
                 .changePassword(prefs.getToken(), changePasswordForm)
@@ -257,6 +319,11 @@ public class AuthRequestManager {
                 });
     }
 
+    /**
+     * This method sends a form to the API to reset password and sets the data that it receives back in
+     * changePasswordMutableLiveData
+     * It resets the password of the user
+     **/
     public void resetPassword(User resetPasswordForm) {
 
         authenticationAPI
@@ -285,7 +352,11 @@ public class AuthRequestManager {
                     }
                 });
     }
-
+    /**
+     * This method sends a request to the API to delete an account and sets the data that it receives back in
+     * deleteResponseMutableLiveData
+     * It deletes the account of the user
+     **/
     public void deleteAccount() {
         authenticationAPI
                 .delete(prefs.getToken(), prefs.getUserID())

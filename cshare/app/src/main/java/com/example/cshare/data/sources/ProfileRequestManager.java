@@ -25,12 +25,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * ProfileRequestManager is a class that sends api calls and holds the user data as
- * attributes
+ * Class that holds several MutableLiveData that contain data related to the profile.
+ * <p>
+ * The class mainly consists of the 3 following live data:
+ *  - userProfileResponse that contains the a UserResponse instance
+ *  - editedProfileResponse that contains the a UserResponse instance
+ *  - otherUserProfileResponse that contains the a UserResponse instance
+ * <p>
+ * The defined methods are on the one hand the getters and on the other hand methods that make requests
+ * to fill the livedata
  *
- * @author Clara Gros, Babacar Toure
- * @version 1.0
+ * @see UserResponse
+ * @since 2.0
+ * @author Clara Gros
+ * @author Babacar Toure
  */
+
 
 public class ProfileRequestManager {
 
@@ -47,7 +57,12 @@ public class ProfileRequestManager {
     private AuthenticationAPI authenticationAPI;
     private UserAPI userAPI;
     private Context context;
-
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param prefs
+     */
     public ProfileRequestManager(Context context, PreferenceProvider prefs) {
         this.context = context;
         this.authenticationAPI = networkClient.getAuthAPI();
@@ -67,6 +82,11 @@ public class ProfileRequestManager {
     public MutableLiveData<UserResponse> getOtherUserProfileResponse() { return otherUserProfileResponse; }
     public MutableLiveData<UserResponse> getEditedProfileResponse() { return editedProfileResponse; }
 
+    /**
+     * This method sends a token to the API and sets the data that it receives back in
+     * userProfileResponse
+     * It retrieves user's info
+     **/
     public void getUserProfile() {
         Log.d(Constants.TAG, "get userprofile");
         authenticationAPI
@@ -96,6 +116,11 @@ public class ProfileRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token to the API and sets the data that it receives back in
+     * userProfileResponse
+     * It retrieves user's info given his id
+     **/
     public void getUserByID(int userID) {
         userAPI
                 .getUserByID(prefs.getToken(), userID)
@@ -124,6 +149,11 @@ public class ProfileRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and a user form with a picture field to the API and sets the data that it receives back in
+     * userProfileResponse
+     * It edits the user's info
+     **/
     public void editProfileWithPicture(User editProfileForm) {
         userAPI
                 .updateProfileWithPicture(prefs.getToken(),
@@ -156,6 +186,11 @@ public class ProfileRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and a user form without a picture field to the API and sets the data that it receives back in
+     * userProfileResponse
+     * It edits the user's info
+     **/
     public void editProfileWithoutPicture(User editProfileForm) {
         userAPI
                 .updateProfileWithoutPicture(prefs.getToken(), prefs.getUserID(), editProfileForm)
@@ -183,12 +218,13 @@ public class ProfileRequestManager {
                 });
     }
 
-
+    /**
+     * Method that returns the current repository object if it exists
+     * else it creates new repository and returns it
+     * @param application
+     * @return ProfileRequestManager
+     */
     public synchronized static ProfileRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
-        /**
-         * Method that return the current repository object if it exists
-         * else it creates new repository and returns it
-         */
         if (profileRequestManager == null) {
             profileRequestManager = new ProfileRequestManager(application, new PreferenceProvider(application));
         }
