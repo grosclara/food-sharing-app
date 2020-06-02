@@ -79,5 +79,9 @@
     <string name="meat_eggs">Viandes/Oeufs</string>
     <string name="self_care_products">Produits d\'hygiène</string>
     <string name="household_products">Produits d\'entretien</string>
+    <string name="cart">Panier</string>
+    <string name="home">Accueil</string>
+    <string name="shared">Partagés</string>
+    <string name="profile">Profile</string>
 
 </resources>

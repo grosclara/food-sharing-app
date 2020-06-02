@@ -97,4 +97,8 @@
     <string name="i_accept">I accept</string>
     <string name="i_reject">I reject</string>
     <string name="terms_and_conditions">Terms and conditions</string>
+    <string name="cart">Cart</string>
+    <string name="home">Home</string>
+    <string name="shared">Shared</string>
+    <string name="profile">Profile</string>
 </resources>

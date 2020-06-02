@@ -1,11 +1,15 @@
 package com.example.cshare.ui.views.productlists;
 
+import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.cshare.R;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.ui.viewmodels.ProfileViewModel;
 import com.example.cshare.ui.viewmodels.SharedViewModel;

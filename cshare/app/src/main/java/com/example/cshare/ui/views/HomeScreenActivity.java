@@ -75,10 +75,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
     //This is our viewPager
     private ViewPager viewPager;
     MenuItem prevMenuItem;
-    /**
-     * The current fragment displayed
-     */
-    BaseFragment selectedFragment;
 
     // Fragments
     HomeFragment homeFragment;
@@ -104,6 +100,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         // Binding views
         bottomNav = findViewById(R.id.bottom_navigation);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
 
         // Configure all views
         configureDesign();
@@ -115,26 +113,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
         // VM business logic
         configureViewModel();
         observeDataChanges();
-
-        //Initializing viewPager
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) { prevMenuItem.setChecked(false); }
-                else
-                { bottomNav.getMenu().getItem(0).setChecked(false); }
-                bottomNav.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = bottomNav.getMenu().getItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) { }
-        });
-
-        setupViewPager(viewPager);
     }
 
     /**
@@ -181,15 +159,19 @@ public class HomeScreenActivity extends AppCompatActivity implements
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
                 viewPager.setCurrentItem(0);
+                getSupportActionBar().setTitle(R.string.home);
                 break;
             case R.id.nav_cart:
                 viewPager.setCurrentItem(1);
+                getSupportActionBar().setTitle(R.string.cart);
                 break;
             case R.id.nav_shared:
                 viewPager.setCurrentItem(2);
+                getSupportActionBar().setTitle(R.string.shared);
                 break;
             case R.id.nav_profile:
                 viewPager.setCurrentItem(3);
+                getSupportActionBar().setTitle(R.string.profile);
                 break;
         }
         return false;
@@ -201,6 +183,36 @@ public class HomeScreenActivity extends AppCompatActivity implements
     }
 
     private void configureViewPager(){
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            @Override
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null) { prevMenuItem.setChecked(false); }
+                else {bottomNav.getMenu().getItem(0).setChecked(false);}
+                bottomNav.getMenu().getItem(position).setChecked(true);
+                switch (position){
+                    case 0:
+                        getSupportActionBar().setTitle(R.string.home);
+                        break;
+                    case 1:
+                        getSupportActionBar().setTitle(R.string.cart);
+                        break;
+                    case 2:
+                        getSupportActionBar().setTitle(R.string.shared);
+                        break;
+                    case 3:
+                        getSupportActionBar().setTitle(R.string.profile);
+                        break;
+                    default:
+                        getSupportActionBar().setTitle(R.string.app_name);
+                }
+                prevMenuItem = bottomNav.getMenu().getItem(position);
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+        });
+        setupViewPager(viewPager);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -214,6 +226,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
         adapter.addFragment(sharedFragment);
         adapter.addFragment(profileFragment);
         viewPager.setAdapter(adapter);
+        getSupportActionBar().setTitle(R.string.home);
     }
 
     /**

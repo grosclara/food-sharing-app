@@ -70,7 +70,6 @@ public abstract class ProductListFragment extends BaseFragment {
 
         // Call during UI creation
         this.configureRecyclerView();
-
         // Configure the SwipeRefreshLayout
         this.configureSwipeRefreshLayout();
 
