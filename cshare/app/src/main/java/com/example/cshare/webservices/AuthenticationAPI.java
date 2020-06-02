@@ -149,7 +149,6 @@ public interface AuthenticationAPI {
      * @see EmptyAuthResponse
      * @see AuthRequestManager#resetPassword(User)
      */
-    @FormUrlEncoded
     @POST("rest-auth/password/reset/")
     Call<EmptyAuthResponse> resetPassword(
             @Body User resetPasswordForm

@@ -39,7 +39,7 @@
     <string name="reset_password_indications">Entrer l\'email pour réinitialiser le mot de passe</string>
     <string name="reset_password">Réinitialiser le mot de passe</string>
     <string name="invalid_email">Email invalide</string>
-    <string name="password_reset">Mot de passe réinitialisé</string>
+    <string name="password_reset">Un email pour réinitialiser le mot de passe a été envoyé</string>
     <string name="logged_in_successful">Connecté</string>
     <string name="fill_form">Remplir le formulaire pour partager un produit</string>
     <string name="name">Nom</string>

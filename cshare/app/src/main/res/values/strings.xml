@@ -57,7 +57,7 @@
     <string name="reset_password_indications">Enter your email to reset your password</string>
     <string name="reset_password">Reset password</string>
     <string name="invalid_email">Invalid email</string>
-    <string name="password_reset">Password reset</string>
+    <string name="password_reset">Password reset e-mail has been sent</string>
     <string name="logged_in_successful">Successfully logged in</string>
     <string name="fill_form">Fill in the form to share a product</string>
     <string name="name">Name</string>
