@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cshare.R;
 import com.example.cshare.data.apiresponses.ProductResponse;
@@ -71,10 +72,19 @@ public class HomeScreenActivity extends AppCompatActivity implements
         ProductDialogFragment.ProductDialogListener {
 
     BottomNavigationView bottomNav;
+    //This is our viewPager
+    private ViewPager viewPager;
+    MenuItem prevMenuItem;
     /**
      * The current fragment displayed
      */
     BaseFragment selectedFragment;
+
+    // Fragments
+    HomeFragment homeFragment;
+    SharedFragment sharedFragment;
+    CartFragment cartFragment;
+    ProfileFragment profileFragment;
 
     /**
      * Menu index of the home fragment which is the first fragment to be displayed
@@ -106,8 +116,25 @@ public class HomeScreenActivity extends AppCompatActivity implements
         configureViewModel();
         observeDataChanges();
 
-        // Show first fragment when creating this activity
-        this.showFirstFragment();
+        //Initializing viewPager
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            @Override
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null) { prevMenuItem.setChecked(false); }
+                else
+                { bottomNav.getMenu().getItem(0).setChecked(false); }
+                bottomNav.getMenu().getItem(position).setChecked(true);
+                prevMenuItem = bottomNav.getMenu().getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+        });
+
+        setupViewPager(viewPager);
     }
 
     /**
@@ -151,53 +178,43 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-        // Retrieve the id of the clicked item in the menu
-        int id = menuItem.getItemId();
-        selectedFragment = null;
-
-        // Create and show corresponding fragment after user clicked on a menu item
-        switch (id) {
-            case R.id.nav_profile:
-                selectedFragment = new ProfileFragment();
-                break;
+        switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                selectedFragment = new HomeFragment();
+                viewPager.setCurrentItem(0);
                 break;
             case R.id.nav_cart:
-                selectedFragment = new CartFragment();
+                viewPager.setCurrentItem(1);
                 break;
             case R.id.nav_shared:
-                selectedFragment = new SharedFragment();
+                viewPager.setCurrentItem(2);
+                break;
+            case R.id.nav_profile:
+                viewPager.setCurrentItem(3);
                 break;
         }
-
-        // Generic method that will replace and show a fragment inside the HomeScreenActivity
-        // Frame Layout
-        getSupportFragmentManager().beginTransaction()
-                // Add it to FrameLayout container
-                .replace(R.id.fragment_container,
-                        selectedFragment).commit();
-        return true;
+        return false;
     }
 
-    /**
-     * Show first fragment (which is Home Fragment) when activity is created
-     */
-    private void showFirstFragment() {
-
-        Fragment visibleFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (visibleFragment == null){
-            // Show Home Fragment
-            visibleFragment = new HomeFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    visibleFragment).commit();
-            // Mark as selected the menu item corresponding to HomeFragment
-            this.bottomNav.getMenu().getItem(HOME_FRAGMENT_INDEX).setChecked(true);
-        }
+    protected void configureDesign() {
+        this.configureBottomNavigationView();
+        this.configureViewPager();
     }
 
-    protected void configureDesign() { this.configureBottomNavigationView(); }
+    private void configureViewPager(){
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        homeFragment = new HomeFragment();
+        cartFragment = new CartFragment();
+        sharedFragment = new SharedFragment();
+        profileFragment = new ProfileFragment();
+        adapter.addFragment(homeFragment);
+        adapter.addFragment(cartFragment);
+        adapter.addFragment(sharedFragment);
+        adapter.addFragment(profileFragment);
+        viewPager.setAdapter(adapter);
+    }
 
     /**
      * Configure Bottom Navigation View
