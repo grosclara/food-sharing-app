@@ -25,12 +25,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.views.auth.LoginActivity"/>
+        <activity android:name=".ui.views.auth.LoginActivity"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".ui.views.auth.RegisterActivity"
             android:parentActivityName=".ui.views.auth.LoginActivity"/>
 
-        <activity android:name=".ui.views.HomeScreenActivity"/>
+        <activity android:name=".ui.views.HomeScreenActivity"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".ui.views.AddActivity"
             android:parentActivityName=".ui.views.HomeScreenActivity"/>
