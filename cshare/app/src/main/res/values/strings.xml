@@ -44,7 +44,7 @@
     <string name="cancel_order">Cancel the order</string>
     <string name="transaction_done">Transaction done, enjoy!</string>
     <string name="addition_successful">Product added successfully</string>
-    <string name="expiration_date_required">Expiration date is required</string>
+    <string name="expiration_date_required">Date required</string>
     <string name="select_action">Select action</string>
     <string name="gallery">Select photo from gallery</string>
     <string name="camera">Capture photo from camera</string>

@@ -130,7 +130,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         editTextProductName = findViewById(R.id.editTextProductName);
         editTextQuantity = findViewById(R.id.editTextQuantity);
         textViewExpirationDate = findViewById(R.id.textViewExpirationDate);
-        textViewPictureError = findViewById(R.id.textViewPictureError);
         buttonPhoto = findViewById(R.id.buttonPhoto);
         buttonSubmit = findViewById(R.id.buttonSubmit);
         buttonExpirationDate = findViewById(R.id.buttonExpirationDate);
@@ -320,6 +319,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                         }
                         expiration_date = year + "-" + strMonth + "-" + strDay;
                         textViewExpirationDate.setText(expiration_date);
+                        textViewExpirationDate.setTextColor(getResources().getColor(R.color.colorPrimaryText));
                     }
                 },
                 year, month, day);
@@ -351,8 +351,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             String message = error.getCollatedErrorMessage(this);
             // Display error messages
             if (view == textViewExpirationDate) {
-                ((TextView) view).setError(message);
-                Toast.makeText(this, R.string.expiration_date_required, Toast.LENGTH_LONG).show();
+                ((TextView) view).setText(R.string.expiration_date_required);
+                ((TextView) view).setTextColor(getResources().getColor(R.color.colorError));
+                //((TextView) view).setError(message);
             } else if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
@@ -456,7 +457,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             );
             productViewModel.addProduct(product);
         } else if (fileToUploadUri == null) {
-            textViewPictureError.setVisibility(View.VISIBLE);
+            Toast.makeText(this, R.string.picture_required, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -18,7 +18,7 @@
     <string name="cancel_order">Annuler la commande</string>
     <string name="transaction_done">Transaction réussie, bravo!</string>
     <string name="addition_successful">Produit ajouté avec succès</string>
-    <string name="expiration_date_required">La date de péremption est requise</string>
+    <string name="expiration_date_required">Date requise</string>
     <string name="select_action">Choisir une action</string>
     <string name="gallery">Choisir une photo depuis la gallerie</string>
     <string name="camera">Prendre une photo</string>
