@@ -8,7 +8,10 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.cshare.data.apiresponses.ApiError;
+import com.example.cshare.data.apiresponses.EmptyAuthResponse;
+import com.example.cshare.data.apiresponses.LoginResponse;
 import com.example.cshare.data.apiresponses.ProductResponse;
+import com.example.cshare.data.apiresponses.RegistrationResponse;
 import com.example.cshare.data.models.Product;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.webservices.NetworkClient;
@@ -25,6 +28,25 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/**
+ * Class that holds several MutableLiveData that contain data related to the products.
+ * <p>
+ * The class mainly consists of the 5 following live data:
+ *  - addProductResponse that contains the a ProductResponse instance
+ *  - deleteProductResponse that contains the a ProductResponse instance
+ *  - cancelOrderResponse that contains the a ProductResponse instance
+ *  - deliverProductResponse that contains the a ProductResponse instance
+ *  - orderProductResponse that contains the a ProductResponse instance
+ * <p>
+ * The defined methods are on the one hand the getters and on the other hand methods that make requests
+ * to fill the livedata
+ *
+ * @see ProductResponse
+ * @since 2.0
+ * @author Clara Gros
+ * @author Babacar Toure
+ */
 
 public class ProductRequestManager {
 
@@ -44,6 +66,12 @@ public class ProductRequestManager {
     private OrderAPI orderAPI;
     private PreferenceProvider prefs;
 
+    /**
+     * Class constructor
+     *
+     * @param context
+     * @param prefs
+     */
     public ProductRequestManager(Context context, PreferenceProvider prefs) {
         /**
          * Constructor that fetch all the list of available products and store it in the
@@ -56,7 +84,7 @@ public class ProductRequestManager {
         this.prefs = prefs;
     }
 
-    // Getter method
+    // Getter methods
     public MutableLiveData<ProductResponse> getAddProductResponse() {
         return addProductResponse;
     }
@@ -77,6 +105,11 @@ public class ProductRequestManager {
         return orderProductResponse;
     }
 
+    /**
+     * This method sends a product and a token to the API and sets the data that it receives back in
+     * addProductResponse
+     * It adds the product given into the API
+     **/
     public void addProduct(Product product) {
         productAPI
                 .addProduct(prefs.getToken(),
@@ -110,6 +143,11 @@ public class ProductRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and product id to the API and sets the data that it receives back in
+     * deleteProductResponse
+     * It deletes the product associated to the given product id
+     **/
     public void deleteProduct(int productID) {
        productAPI
                 .deleteProduct(prefs.getToken(),productID)
@@ -138,6 +176,11 @@ public class ProductRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and product id to the API and sets the data that it receives back in
+     * orderProductResponse
+     * It completes an order of a the product associated to the product id
+     **/
     public void order(int productID) {
         Map<String, Integer> productIDMap = new HashMap<>();
         productIDMap.put("product", productID);
@@ -168,6 +211,11 @@ public class ProductRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and product id to the API and sets the data that it receives back in
+     * deliverProductResponse
+     * It sets the product status to delivered
+     **/
     public void deliver(int productID) {
         orderAPI
                 .deliverOrder(prefs.getToken(),productID)
@@ -196,6 +244,11 @@ public class ProductRequestManager {
                 });
     }
 
+    /**
+     * This method sends a token and product id to the API and sets the data that it receives back in
+     * cancelOrderResponse
+     * It cancels the order related to the given product id
+     **/
     public void cancelOrder(int productID) {
 
         orderAPI
@@ -225,11 +278,14 @@ public class ProductRequestManager {
                 });
     }
 
+    /**
+     * Method that returns the current repository object if it exists
+     * else it creates new repository and returns it
+     * @param application
+     * @return ProductRequestManager
+     */
     public synchronized static ProductRequestManager getInstance(Application application) throws GeneralSecurityException, IOException {
-        /**
-         * Method that return the current repository object if it exists
-         * else it creates new repository and returns it
-         */
+
         if (productRequestManager == null) {
             productRequestManager = new ProductRequestManager(application, new PreferenceProvider(application));
         }
