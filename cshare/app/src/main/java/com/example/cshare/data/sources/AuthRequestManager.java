@@ -332,13 +332,13 @@ public class AuthRequestManager {
                     @Override
                     public void onResponse(Call<EmptyAuthResponse> call, Response<EmptyAuthResponse> response) {
                         if (response.isSuccessful()) {
-                            changePasswordMutableLiveData.setValue(EmptyAuthResponse.success());
+                            resetPasswordMutableLiveData.setValue(EmptyAuthResponse.success());
                         } else {
                             Gson gson = new GsonBuilder().create();
                             ApiError.ChangePasswordError mError = new ApiError.ChangePasswordError();
                             try {
                                 mError = gson.fromJson(response.errorBody().string(), ApiError.ChangePasswordError.class);
-                                changePasswordMutableLiveData.setValue(EmptyAuthResponse.error(mError));
+                                resetPasswordMutableLiveData.setValue(EmptyAuthResponse.error(mError));
                             } catch (IOException e) {
                                 // handle failure to read error
                             }
