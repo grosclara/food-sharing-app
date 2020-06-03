@@ -96,8 +96,8 @@ public class ProductPagedListAdapter extends PagedListAdapter<Product,
             // Set product name and product status into TextViews
             this.textViewProductName.setText(product.getName());
             this.textViewStatus.setText(product.getStatus());
-            this.textViewQuantity.setText(context.getString(R.string.quantity)+ product.getQuantity());
-            this.textViewExpirationDate.setText(context.getString(R.string.expiration_date)+ product.getExpiration_date());
+            this.textViewQuantity.setText(product.getQuantity());
+            this.textViewExpirationDate.setText(product.getExpiration_date());
 
             // Edit text color according to the status
             switch(product.getStatus()) {
