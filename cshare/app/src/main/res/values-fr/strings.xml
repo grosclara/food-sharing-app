@@ -83,5 +83,7 @@
     <string name="home">Accueil</string>
     <string name="shared">Partagés</string>
     <string name="profile">Profile</string>
+    <string name="room">Chambre</string>
+    <string name="expired_at">Périmé le</string>
 
 </resources>

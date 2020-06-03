@@ -101,4 +101,6 @@
     <string name="home">Home</string>
     <string name="shared">Shared</string>
     <string name="profile">Profile</string>
+    <string name="room">Room</string>
+    <string name="expired_at">Expired at</string>
 </resources>

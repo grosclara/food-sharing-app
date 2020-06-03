@@ -75,13 +75,11 @@ public class ProductDialogFragment extends DialogFragment {
     protected ProfileViewModel profileViewModel;
 
     // Declare views
-    private TextView textViewProductName;
     private TextView textViewProductStatus;
     private TextView textViewProductCategory;
     private TextView textViewExpirationDate;
     private ImageView imageViewProduct;
-    private TextView textViewSupplierFirstName;
-    private TextView textViewSupplierLastName;
+    private TextView textViewSupplier;
     private TextView textViewSupplierRoomNumber;
     private TextView textViewSupplierCampus;
     private ImageView imageViewSupplierProfilePicture;
@@ -152,14 +150,12 @@ public class ProductDialogFragment extends DialogFragment {
         builder.setView(view);
 
         // Bind product related views
-        textViewProductName = view.findViewById(R.id.textViewProductName);
         textViewProductCategory = view.findViewById(R.id.textViewProductCategory);
         textViewProductStatus = view.findViewById(R.id.textViewProductStatus);
         textViewExpirationDate = view.findViewById(R.id.textViewExpirationDate);
         imageViewProduct = view.findViewById(R.id.imageViewProduct);
         // Bind supplier related views
-        textViewSupplierFirstName = view.findViewById(R.id.textViewSupplierFirstName);
-        textViewSupplierLastName = view.findViewById(R.id.textViewSupplierLastName);
+        textViewSupplier = view.findViewById(R.id.textViewSupplier);
         textViewSupplierCampus = view.findViewById(R.id.textViewSupplierCampus);
         textViewSupplierRoomNumber = view.findViewById(R.id.textViewSupplierRoomNumber);
         imageViewSupplierProfilePicture = view.findViewById(R.id.imageViewSupplierProfilePicture);
@@ -269,7 +265,6 @@ public class ProductDialogFragment extends DialogFragment {
      */
     private void fillInProductDetails(Product product) {
         // Set text
-        textViewProductName.setText(product.getName());
         textViewProductCategory.setText(product.getCategory());
         textViewExpirationDate.setText(product.getExpiration_date());
         textViewProductStatus.setText(product.getStatus());
@@ -298,8 +293,7 @@ public class ProductDialogFragment extends DialogFragment {
      */
     private void fillInSupplierDetails(User supplier) {
         // HTTP Request to retrieve the user information
-        textViewSupplierFirstName.setText(supplier.getFirstName());
-        textViewSupplierLastName.setText(supplier.getLastName());
+        textViewSupplier.setText(supplier.getFirstName()+" "+supplier.getLastName());
         textViewSupplierCampus.setText(supplier.getCampus());
         textViewSupplierRoomNumber.setText(supplier.getRoomNumber());
         Picasso.get().load(supplier.getProfilePictureURL()).into(imageViewSupplierProfilePicture);
