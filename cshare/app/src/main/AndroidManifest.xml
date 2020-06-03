@@ -19,7 +19,8 @@
         android:usesCleartextTraffic="true">
 
         <activity android:name=".ui.views.auth.LauncherActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,17 +28,24 @@
         </activity>
 
         <activity android:name=".ui.views.auth.LoginActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            />
 
         <activity android:name=".ui.views.auth.RegisterActivity"
-            android:parentActivityName=".ui.views.auth.LoginActivity"/>
+            android:parentActivityName=".ui.views.auth.LoginActivity"
+            android:screenOrientation="portrait"
+            />
 
         <activity android:name=".ui.views.HomeScreenActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             />
 
         <activity android:name=".ui.views.AddActivity"
-            android:parentActivityName=".ui.views.HomeScreenActivity"/>
+            android:parentActivityName=".ui.views.HomeScreenActivity"
+            android:screenOrientation="portrait"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"
