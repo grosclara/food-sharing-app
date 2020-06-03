@@ -13,18 +13,16 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="115dp"
+        android:layout_height="102dp"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_launcher_foreground"
-        tools:layout_editor_absoluteX="155dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:srcCompat="@mipmap/ic_logo" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
