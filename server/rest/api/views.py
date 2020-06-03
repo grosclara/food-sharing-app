@@ -199,7 +199,7 @@ class OrderViewSet(mixins.CreateModelMixin,
 
         # Retrieve every orders whose customer matches the authenticated user
         # Order by the updated_at field (in descendent order)
-        order_queryset = Order.objects.filter(customer=self.request.user).order_by('-updated_at')
+        order_queryset = Order.objects.filter(customer=self.request.user)
         
         product_ids = []
         # Retrieve the ids of the product of the orders in the order_queryset
@@ -207,7 +207,7 @@ class OrderViewSet(mixins.CreateModelMixin,
             product_ids.append(order.product.id)
         
         # Queryset that contains products whose id is in the product_ids array     
-        return Product.objects.filter(id__in=product_ids)
+        return Product.objects.filter(id__in=product_ids).order_by('-updated_at')
 
     def create(self, request, *args, **kwargs):
 

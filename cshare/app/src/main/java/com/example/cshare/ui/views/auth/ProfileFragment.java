@@ -347,6 +347,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             }
 
             profileViewModel.editProfile(editProfileForm);
+            Toast.makeText(getContext(), R.string.profile_info_updated, Toast.LENGTH_SHORT).show();
 
         }
     }
