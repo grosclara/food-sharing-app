@@ -136,8 +136,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         spinnerProductCategories = findViewById(R.id.spinnerProductCategories);
         imageViewPreviewProduct = findViewById(R.id.imageViewPreviewProduct);
 
-        Picasso.get().load(R.drawable.default_product_picture).into(imageViewPreviewProduct);
-
 
         // Click listeners
         buttonPhoto.setOnClickListener(this);
@@ -292,7 +290,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                     }
                 },
                 year, month, day);
-        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         datePickerDialog.show();
     }
 
@@ -451,8 +448,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             // Reload the image view picture
             if (fileToUploadUri != null) {
                 Picasso.get().load(fileToUploadUri).into(imageViewPreviewProduct);
-            } else {
-                Picasso.get().load(R.drawable.default_product_picture).into(imageViewPreviewProduct);
             }
         }
     }

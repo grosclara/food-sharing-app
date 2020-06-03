@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,136 +14,139 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Surface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/share_a_product"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-            style="@style/Widget.MaterialComponents.Toolbar.Surface"
-            />
+            app:title="@string/share_a_product" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/textViewAdd"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fill_form"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutName"
-        style="@style/EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        app:layout_constraintTop_toBottomOf="@id/textViewAdd">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextProductName"
-            style="@style/inputEditText"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <fr.ganfra.materialspinner.MaterialSpinner
-        android:id="@+id/spinnerProductCategories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorSecondaryLight"
-        android:popupBackground="@color/colorSecondaryLight"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
-        app:ms_arrowColor="@color/colorPrimary"
-        app:ms_baseColor="@color/colorSecondaryDark"
-        app:ms_floatingLabelColor="@color/colorPrimaryText"
-        app:ms_hint="@string/choose_category"
-        app:ms_hintColor="@color/colorPrimaryText"
-        app:ms_multiline="true" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutName"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutQuantity"
-        style="@style/EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/quantity"
-        app:layout_constraintTop_toBottomOf="@id/spinnerProductCategories">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextProductName"
+                    style="@style/inputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextQuantity"
-            style="@style/inputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerProductCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSecondaryLight"
+                android:popupBackground="@color/colorSecondaryLight"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
+                app:ms_arrowColor="@color/colorPrimary"
+                app:ms_baseColor="@color/colorSecondaryDark"
+                app:ms_floatingLabelColor="@color/colorPrimaryText"
+                app:ms_hint="@string/category"
+                app:ms_hintColor="@color/colorPrimaryText"
+                app:ms_multiline="true" />
 
-    <RelativeLayout
-        android:id="@+id/linearLayoutExpirationDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayoutQuantity">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutQuantity"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/quantity"
+                app:layout_constraintTop_toBottomOf="@id/spinnerProductCategories">
 
-        <TextView
-            android:id="@+id/textViewExpirationDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:text="@string/expiration_date"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextQuantity"
+                    style="@style/inputEditText"
+                    android:inputType="text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/buttonExpirationDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/OutlinedButton"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:text="@string/expiration_date" />
+            <RelativeLayout
+                android:id="@+id/linearLayoutExpirationDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayoutQuantity">
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/textViewExpirationDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/expiration_date"
+                    android:textColor="@color/colorPrimaryText" />
 
-    <Button
-        android:id="@+id/buttonPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/OutlinedButton"
-        android:text="@string/camera"
-        app:icon="@drawable/ic_camera_24dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutExpirationDate" />
+                <Button
+                    android:id="@+id/buttonExpirationDate"
+                    style="@style/OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/expiration_date" />
 
-    <TextView
-        android:id="@+id/textViewPictureError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#33FF0000"
-        android:text="@string/picture_required"
-        android:textColor="#FF0000"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@id/buttonPhoto" />
+            </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageViewPreviewProduct"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewPictureError"
-        tools:src="@drawable/ic_person_black_80dp" />
+            <Button
+                android:id="@+id/buttonPhoto"
+                style="@style/OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/camera"
+                app:icon="@drawable/ic_camera_24dp"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutExpirationDate" />
 
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+            <TextView
+                android:id="@+id/textViewPictureError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#33FF0000"
+                android:text="@string/picture_required"
+                android:textColor="#FF0000"
+                android:visibility="invisible"
+                app:layout_constraintTop_toBottomOf="@id/buttonPhoto" />
+
+            <ImageView
+                android:id="@+id/imageViewPreviewProduct"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="100dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewPictureError" />
+
+            <Button
+                android:id="@+id/buttonSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/submit"
+                android:layout_gravity="center_horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

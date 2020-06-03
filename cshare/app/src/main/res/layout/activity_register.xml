@@ -117,12 +117,15 @@
                 android:id="@+id/spinnerCampus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorSecondaryLight"
+                android:popupBackground="@color/colorSecondaryLight"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
                 app:ms_arrowColor="@color/colorPrimary"
+                app:ms_baseColor="@color/colorSecondaryDark"
                 app:ms_floatingLabelColor="@color/colorPrimaryText"
                 app:ms_hint="@string/campus"
-                app:ms_baseColor="@color/colorSecondaryText"
-                android:popupBackground="@color/colorSecondaryLight"
-                app:layout_constraintTop_toBottomOf="@id/password2TextInputLayout"/>
+                app:ms_hintColor="@color/colorPrimaryText"
+                app:ms_multiline="true" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/roomNumberTextInputLayout"
