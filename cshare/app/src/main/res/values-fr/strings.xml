@@ -86,5 +86,6 @@
     <string name="room">Chambre</string>
     <string name="expired_at">Périmé le</string>
     <string name="share_a_product">Partage un produit</string>
+    <string name="profile_info_updated">Informations mises à jour avec succès</string>
 
 </resources>

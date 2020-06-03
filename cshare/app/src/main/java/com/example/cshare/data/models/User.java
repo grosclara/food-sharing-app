@@ -20,9 +20,9 @@ public class User {
     private String email;
     private String password;
     private String password1;
-    private String password2;
     private String new_password1;
     private String new_password2;
+    private String password2;
     private String old_password;
     private String last_name;
     private String first_name;
@@ -81,7 +81,7 @@ public class User {
     }
 
     /**
-     * Constructor to create a reset password form
+     * Constructor to create a change password form
      *
      * @param oldPassword
      * @param password1
@@ -135,6 +135,14 @@ public class User {
 
     public void setProfilePictureBody(@Nullable MultipartBody.Part profilePictureBody) {
         this.profilePictureBody = profilePictureBody;
+    }
+
+    public String getNew_password1() {
+        return new_password1;
+    }
+
+    public String getNew_password2() {
+        return new_password2;
     }
 }
 

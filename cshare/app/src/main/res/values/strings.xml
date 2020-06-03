@@ -20,7 +20,7 @@
     <string name="other">Other</string>
     <string name="carbohydrates">Carbohydrates</string>
     <string name="fruits_vegetables">Fruits/Vegetables</string>
-    <string name="cans">Cans/Prepared diches</string>
+    <string name="cans">Cans/Prepared dishes</string>
     <string name="dairies">Dairy products</string>
     <string name="desserts_bread">Desserts/Bread</string>
     <string name="meat_eggs">Meat/Eggs</string>
@@ -104,4 +104,5 @@
     <string name="room">Room</string>
     <string name="expired_at">Expired at</string>
     <string name="share_a_product">Share a product</string>
+    <string name="profile_info_updated">Profile information successfully updated</string>
 </resources>

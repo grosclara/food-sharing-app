@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import okhttp3.MediaType;
@@ -242,8 +243,40 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         spinnerProductCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // An item was selected. You can retrieve the selected item using
-                productCategory = parent.getItemAtPosition(position).toString();
+                if (Locale.getDefault().getLanguage().equals("fr")){
+                    // An item was selected. You can retrieve the selected item using
+                    productCategory = parent.getItemAtPosition(position).toString();
+                } else {
+                    switch (position){
+                        case 0:
+                            productCategory = "Féculents";
+                            break;
+                        case 1:
+                            productCategory = "Fruits/Légumes";
+                            break;
+                        case 2:
+                            productCategory = "Conserves/Plats cuisinés";
+                            break;
+                        case 3:
+                            productCategory = "Produits laitiers";
+                            break;
+                        case 4:
+                            productCategory = "Desserts/Pain";
+                            break;
+                        case 5:
+                            productCategory = "Viandes/Oeufs";
+                            break;
+                        case 6:
+                            productCategory = "Produits d'hygiène";
+                            break;
+                        case 7:
+                            productCategory = "Produits d'entretien";
+                            break;
+                        case 8:
+                            productCategory = "Autres";
+                            break;
+                    }
+                }
             }
 
             @Override

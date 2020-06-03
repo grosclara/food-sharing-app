@@ -34,4 +34,6 @@ public class Constants {
     public static final String ORDER = "order";
     public static final String INCART = "inCart";
     public static final String ARCHIVED = "archived";
+
+    public static final int PASSWORD_MIN_LENGTH = 6;
 }

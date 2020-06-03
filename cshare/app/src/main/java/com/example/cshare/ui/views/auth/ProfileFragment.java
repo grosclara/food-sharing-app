@@ -256,9 +256,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         // Validation
                         if (changePasswordForm.getOldPassword().isEmpty()) {
                             Toast.makeText(getContext(), R.string.current_password, Toast.LENGTH_SHORT).show();
-                        } else if (changePasswordForm.getPassword1().length() < 6) {
+                        } else if (changePasswordForm.getNew_password1().length() < Constants.PASSWORD_MIN_LENGTH) {
                             Toast.makeText(getContext(), R.string.password_length, Toast.LENGTH_SHORT).show();
-                        } else if (!changePasswordForm.getPassword2().equals(changePasswordForm.getPassword2())) {
+                        } else if (!changePasswordForm.getNew_password2().equals(changePasswordForm.getNew_password1())) {
                             Toast.makeText(getContext(), R.string.password_should_match, Toast.LENGTH_SHORT).show();
                         } else {
                             authViewModel.changePassword(changePasswordForm);
