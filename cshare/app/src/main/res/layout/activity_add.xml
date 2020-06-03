@@ -33,11 +33,11 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayoutName"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/name">
+                android:hint="@string/name"
+                app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextProductName"
@@ -56,10 +56,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
                 app:ms_arrowColor="@color/colorPrimary"
                 app:ms_baseColor="@color/colorSecondaryDark"
-                app:ms_floatingLabelColor="@color/colorPrimaryText"
-                app:ms_hint="@string/category"
-                app:ms_hintColor="@color/colorPrimaryText"
-                app:ms_multiline="true" />
+                app:ms_enableFloatingLabel="false"
+                />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutQuantity"
@@ -122,8 +120,8 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="100dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="70dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/buttonPhoto" />
@@ -132,10 +130,9 @@
                 android:id="@+id/buttonSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:text="@string/submit"
-                android:layout_gravity="center_horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_gravity="center_horizontal"/>
 
         </LinearLayout>
     </ScrollView>

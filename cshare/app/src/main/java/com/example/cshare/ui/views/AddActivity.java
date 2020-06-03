@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,6 +36,7 @@ import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.utils.MediaFiles;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -78,7 +80,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private boolean validated;
 
     // Views
-    private TextView textViewPictureError;
     @NotEmpty
     private EditText editTextProductName;
     private ImageView imageViewPreviewProduct;
