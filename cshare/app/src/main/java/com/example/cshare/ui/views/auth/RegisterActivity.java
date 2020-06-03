@@ -32,6 +32,7 @@ import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.AuthViewModel;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.utils.MediaFiles;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
@@ -182,6 +183,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Intent toLoginActivityIntent = new Intent();
             toLoginActivityIntent.setClass(getApplicationContext(), LoginActivity.class);
             startActivity(toLoginActivityIntent);
+            finish();
         }
         if (v == buttonSignUp) { acceptTermsAndSignUp(); }
         if (v == imageViewGallery) { showPictureDialog(this); }
@@ -372,7 +374,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void configureActionBar(){
-        getSupportActionBar().setTitle(R.string.sign_up);
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

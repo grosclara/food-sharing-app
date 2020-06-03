@@ -34,6 +34,7 @@ import com.example.cshare.data.models.User;
 import com.example.cshare.ui.viewmodels.ProductViewModel;
 import com.example.cshare.utils.Constants;
 import com.example.cshare.utils.MediaFiles;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -113,9 +114,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        getSupportActionBar().setTitle("Share your product");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         configureDesign();
 
         // Validator
@@ -149,6 +147,13 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         // Product spinner
         configureProductSpinner();
+        configureActionBar();
+    }
+
+    private void configureActionBar(){
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**

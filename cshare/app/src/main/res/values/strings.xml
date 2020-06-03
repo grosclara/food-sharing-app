@@ -103,4 +103,5 @@
     <string name="profile">Profile</string>
     <string name="room">Room</string>
     <string name="expired_at">Expired at</string>
+    <string name="share_a_product">Share a product</string>
 </resources>
