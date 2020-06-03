@@ -53,6 +53,7 @@ public abstract class ProductListFragment extends BaseFragment {
 
     @Override
     protected void configureDesign(View view) {
+
         // Bind views
         recyclerView = view.findViewById(R.id.products_recycler_view);
         swipeRefreshLayout = view.findViewById(R.id.fragment_product_list_swipe_container);

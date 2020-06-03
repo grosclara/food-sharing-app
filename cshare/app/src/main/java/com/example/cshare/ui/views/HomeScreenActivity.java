@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ import com.example.cshare.ui.views.productlists.HomeFragment;
 import com.example.cshare.ui.views.productlists.ProductDialogFragment;
 import com.example.cshare.ui.views.productlists.SharedFragment;
 import com.example.cshare.utils.Constants;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static com.example.cshare.utils.MediaFiles.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
@@ -180,6 +182,13 @@ public class HomeScreenActivity extends AppCompatActivity implements
     protected void configureDesign() {
         this.configureBottomNavigationView();
         this.configureViewPager();
+        this.configureActionBar();
+    }
+
+    private void configureActionBar(){
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.home);
     }
 
     private void configureViewPager(){
@@ -226,7 +235,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
         adapter.addFragment(sharedFragment);
         adapter.addFragment(profileFragment);
         viewPager.setAdapter(adapter);
-        getSupportActionBar().setTitle(R.string.home);
     }
 
     /**

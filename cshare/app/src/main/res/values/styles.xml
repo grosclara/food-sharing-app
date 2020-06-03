@@ -1,10 +1,10 @@
 <resources>
 
 <!-- Base application theme. -->
-<style name="Theme.CShare" parent="Theme.MaterialComponents">
+<style name="Theme.CShare" parent="Theme.MaterialComponents.Light.NoActionBar">
     <!-- Customize your theme here. -->
+    <item name="android:statusBarColor">@color/colorSecondaryDark</item>
     <item name="android:colorBackground">@color/background</item>
-    <!-- Customize your theme here. -->
     <item name="colorPrimary"> @color/colorPrimary </item>
     <item name="colorPrimaryVariant"> @color/colorPrimaryDark </item>
     <item name="colorOnPrimary"> @color/colorPrimaryText </item>
@@ -16,7 +16,6 @@
     <item name="colorSurface">@color/colorSurface</item>
     <item name="colorOnSurface">@color/colorOnSurface</item>
     <item name="colorOnBackground">@color/colorOnBackground</item>
-
 </style>
 
 <style name="ContainedButton" parent="@style/Widget.MaterialComponents.Button">
