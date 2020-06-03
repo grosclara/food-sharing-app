@@ -69,7 +69,7 @@ class ProductViewSet(mixins.CreateModelMixin,
         """
         Queryset that retrieves instances from the Product model used for list and retrieve methods.
 
-        Return queryset of all products that have the same location as the campus of the authenticated user ordered by their expiration_date.
+        Return queryset of all products that have the same location as the campus of the authenticated user ordered by their updated_date.
         Optionally restricts the queryset by filtering against query parameters in the URL such as supplier, category or status.
         """
 
@@ -90,7 +90,7 @@ class ProductViewSet(mixins.CreateModelMixin,
                 queryset = queryset.filter(supplier=self.request.user)
                 
         # Order by expiration_date (in ascendent order)
-        return queryset.order_by('expiration_date')
+        return queryset.order_by('-updated_at')
 
     def create(self, request, *args, **kwargs):
         
