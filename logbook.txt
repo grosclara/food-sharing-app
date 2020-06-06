@@ -124,9 +124,22 @@ Implementation of the dialogs to interact with products, 2h00"
 "29/04 - CG : Improve HTTP requests in Django (ex : don't need to specify the product campus when a product is created (the auth user campus is automatically set as the campus attribute of the product, 1h00" 
 "01/05 - BT : Custom admin dashbord, 1h00"
 "02/05 - CG : Handling request errors with Retrofit (deletion of RXJava), 2h00"
+"03/05 : BT : Test designing tools from Materials.io to design our app, 3h00"
 "04/05 - CG : Fix auth issue, 30mn
-	      Generate server architecture diagram, 1h00
-	      Review of Babacar's work on the admin panel, 30 mn"
+	      Generate server architecture diagram, 1h00"
+"05/05 : BT : Design of the login and the register activity, 2h00"
+"05/05 : CG : Change of the admin panel to provide the right to ban users, 4h00"
+"06/05 : CG : Modify the createsuperuser command to prevent superuser from filling useless fields 
+	      while registrating (such as campus or room_number), 3h00"
+"07/05 - CG : Clean and comment server code, 5h00"
+"10/05 to 21/05 - CG : Work on the Javadoc, 2h00 a day"
+"08/05 - BT : CollectFragment style implemented with Material, 2h00"
+"09/05 - BT : Style for collect product alert dialog, 1h30"
+"10/05 - BT : All alert dialogs style completed, 1h30"
+"17/05 - BT : Review/correction of design, 4h00"
+"17/05 - BT : Generate terms of use with https://www.websitepolicies.com, 30mn"
+"18/05 : BT - CG : Review/correction of design, 4h00"
+"01/06 - BT: Comment request managers, 1h00"
 
 
 

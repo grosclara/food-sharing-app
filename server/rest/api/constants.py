@@ -1,3 +1,5 @@
+""" Define enumeration tuples """
+
 GIF = 'Gif'
 RENNES = 'Rennes'
 METZ = 'Metz'

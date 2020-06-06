@@ -1,29 +1,108 @@
 <resources>
-    <string name="app_name">CShare</string>
+    <string name="app_name" translatable="false">CShare</string>
 
     <string-array name="product_categories_array">
-        <item>Féculents</item>
-        <item>Fruits/Légumes</item>
-        <item>Conserves/Plats cuisinés</item>
-        <item>Produits laitiers</item>
-        <item>Desserts/Pain</item>
-        <item>Viandes/Oeufs</item>
-        <item>Produits d\'hygiène</item>
-        <item>Produits d\'entretien</item>
-        <item>Autres</item>
+        <item>@string/carbohydrates</item>
+        <item>@string/fruits_vegetables</item>
+        <item>@string/cans</item>
+        <item>@string/dairies</item>
+        <item>@string/desserts_bread</item>
+        <item>@string/meat_eggs</item>
+        <item>@string/self_care_products</item>
+        <item>@string/household_products</item>
+        <item>@string/other</item>
     </string-array>
     <string-array name="campus_array">
         <item>Gif</item>
         <item>Rennes</item>
         <item>Metz</item>
     </string-array>
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <string name="other">Other</string>
+    <string name="carbohydrates">Carbohydrates</string>
+    <string name="fruits_vegetables">Fruits/Vegetables</string>
+    <string name="cans">Cans/Prepared dishes</string>
+    <string name="dairies">Dairy products</string>
+    <string name="desserts_bread">Desserts/Bread</string>
+    <string name="meat_eggs">Meat/Eggs</string>
+    <string name="self_care_products">Self care products</string>
+    <string name="household_products">Household products</string>
+    <string name="password">Password</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="file_uri_missing">File URI is missing</string>
+    <string name="product_already_ordered">Someone has already ordered this product</string>
+    <string name="deletion_successful">Product successfully deleted</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="order_successful">Product successfully ordered</string>
+    <string name="cancel_successful">Order successfully canceled</string>
+    <string name="delivery_successful">Product successfully delivered</string>
+    <string name="product_already_delivered">Seems like the product has already been delivered</string>
+    <string name="order">Order</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delievered">Delivered</string>
+    <string name="cancel_order">Cancel the order</string>
+    <string name="transaction_done">Transaction done, enjoy!</string>
+    <string name="addition_successful">Product added successfully</string>
+    <string name="expiration_date_required">Date required</string>
+    <string name="select_action">Select action</string>
+    <string name="gallery">Select photo from gallery</string>
+    <string name="camera">Capture photo from camera</string>
+    <string name="image_choice_failed">Failed to choose any image</string>
+    <string name="log_out_confirmation">Are you sure you want to log out ?</string>
+    <string name="log_out">Log out</string>
+    <string name="confirm">Confirm</string>
+    <string name="change_password_indications">Enter your old password and a new one</string>
+    <string name="change_password">Change Password</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="current_password">Enter your current password</string>
+    <string name="password_length">Passwords should be at least 6 characters long</string>
+    <string name="password_should_match">Passwords should match</string>
+    <string name="delete_account_confirm">Are you sure you want to delete your profile? This action is irreversible.</string>
+    <string name="password_change_successful">Password changed successfully</string>
+    <string name="log_out_successful">Logged out successfully</string>
+    <string name="delete_account_successful">Account deleted successfully</string>
+    <string name="account_creation_successful">Account successfully created</string>
+    <string name="reset_password_indications">Enter your email to reset your password</string>
+    <string name="reset_password">Reset password</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="password_reset">Password reset e-mail has been sent</string>
+    <string name="logged_in_successful">Successfully logged in</string>
+    <string name="fill_form">Fill in the form to share a product</string>
+    <string name="name">Name</string>
+    <string name="choose_category">Choose a category</string>
+    <string name="expiration_date">Expiration date</string>
+    <string name="picture_required">Product picture is necessary</string>
+    <string name="submit">Submit</string>
+    <string name="password_forgotten">Password forgotten?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="room_number">Room number</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="old_passsword">Old passsword</string>
+    <string name="new_password">New password</string>
+    <string name="product">Product</string>
+    <string name="category">Category</string>
+    <string name="status">Status</string>
+    <string name="supplier">Supplier</string>
+    <string name="campus">Campus</string>
+    <string name="email">Email</string>
+    <string name="save">Save</string>
+    <string name="settings">Settings</string>
+    <string name="delete_account">Delete account</string>
+    <string name="quantity">Quantity</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="i_accept">I accept</string>
+    <string name="i_reject">I reject</string>
+    <string name="terms_and_conditions">Terms and conditions</string>
+    <string name="cart">Cart</string>
+    <string name="home">Home</string>
+    <string name="shared">Shared</string>
+    <string name="profile">Profile</string>
+    <string name="room">Room</string>
+    <string name="expired_at">Expired at</string>
+    <string name="share_a_product">Share a product</string>
+    <string name="profile_info_updated">Profile information successfully updated</string>
 </resources>

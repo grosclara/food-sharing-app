@@ -18,10 +18,11 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-Xlint:unchecked'
+        options.deprecation = true
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
