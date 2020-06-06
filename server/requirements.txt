@@ -1,0 +1,9 @@
+python-decouple
+django
+djangorestframework
+django-rest-auth
+django-allauth
+django-filter
+django-extensions
+mysqlclient
+Pillow

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'uqslo&1_*_ramq8*lmnv$0za1-c=2k4j&$aya*%!_k1*+9)*2-'
+SECRET_KEY = config("CSHARE_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -110,11 +111,11 @@ WSGI_APPLICATION = 'rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cshare',
-        'USER': 'root',
-        'PASSWORD': 'P@ssword1',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': config('CSHARE_DATABASE_NAME'),
+        'USER': config('CSHARE_ROOT_USER'),
+        'PASSWORD': config('CSHARE_ROOT_PASSWORD'),
+        'HOST': config('CSHARE_HOST'),
+        'PORT': config('CSHARE_DATABASE_PORT'),
     }
 }
 
