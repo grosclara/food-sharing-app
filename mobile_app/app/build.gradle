@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.example.cshare"
+        minSdkVersion 24
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "SERVER_URL", SERVER_URL)
+        }
+        debug {
+            buildConfigField("String", "SERVER_URL", SERVER_URL)
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+dependencies {
+
+    // Adding Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+
+    // Adding OKHTTPLogInterceptor
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    // Adding view model
+    implementation "android.arch.lifecycle:extensions:2.2.0"
+    implementation "android.arch.lifecycle:viewmodel:2.2.0"
+
+    // Adding paging
+    implementation "android.arch.paging:runtime:2.1.2"
+
+    // Adding Recyclerview, Cardview and SwipeRefreshLayout
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    // Adding Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // Adding Circular ImageView
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
+
+    // Adding Saripaar form validation
+    implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
+
+    // Adding encrypted shared preferences
+    implementation "androidx.security:security-crypto:1.0.0-alpha02"
+
+    // Default implementations provided by Android
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // Adding material design
+    api 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.github.ganfra:material-spinner:2.0.0'
+
+    // File reader
+    implementation "commons-io:commons-io:2.7"
+
+    // Viewpager
+    implementation "androidx.viewpager:viewpager:1.0.0"
+
+
+}
