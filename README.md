@@ -12,6 +12,8 @@ After you’ve installed MySQL, you can create a user and create your database.
 
 ## Backend configuration
 
+This project is based on version 3 of python.
+
 ### Create vitualenv
 
 In the `server` directory (your python project directory), create a vritual environment runnning the command.
