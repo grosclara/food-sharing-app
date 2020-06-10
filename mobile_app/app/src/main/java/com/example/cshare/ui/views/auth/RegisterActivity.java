@@ -145,7 +145,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonAlreadyHaveAnAccount = findViewById(R.id.buttonAlreadyHaveAnAccount);
         spinnerCampus = findViewById(R.id.spinnerCampus);
-        Picasso.get().load(R.drawable.default_profile_picture).into(imageViewGallery);
+
+        //Picasso.get().load(R.drawable.ic_person_black_24dp).into(imageViewGallery);
 
         // Activate buttons
         buttonSignUp.setOnClickListener(this);
@@ -471,8 +472,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             // Reload the image view picture
             if (fileToUploadUri != null) {
                 Picasso.get().load(fileToUploadUri).into(imageViewGallery);
-            } else {
-                Picasso.get().load(R.drawable.default_profile_picture).into(imageViewGallery);
             }
         }
     }
